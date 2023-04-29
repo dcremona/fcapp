@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final utlizzo versione della libreria JasperReports6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="statisticheVoti" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="64765eec-c1e9-4f9f-884f-6933228740a7">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Mysql"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="style1" backcolor="#FF9999">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{MEDIA_VOTO}.doubleValue() >= 6 || $F{FANTA_MEDIA}.doubleValue() >= 6]]></conditionExpression>
+			<style forecolor="#FF3333" backcolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[SELECT
+    ID_GIOCATORE,COGN_GIOCATORE,ID_RUOLO,NOME_SQUADRA,PROPRIETARIO,GIOCATE,
+cast( MEDIA_VOTO / 100 as decimal(14, 2)) AS MEDIA_VOTO, cast( FANTA_MEDIA / 100 as decimal(14, 2)) AS FANTA_MEDIA,GOAL_FATTO,RIGORE_SEGNATO,RIGORE_SBAGLIATO,ASSIST,AMMONIZIONE,ESPULSIONE
+FROM
+    fc_statistiche
+WHERE FLAG_ATTIVO=1    
+ORDER BY
+    id_ruolo DESC,
+    giocate DESC,
+    media_voto DESC ,
+    fanta_media DESC]]>
+	</queryString>
+	<field name="ID_GIOCATORE" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="COGN_GIOCATORE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ID_RUOLO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NOME_SQUADRA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROPRIETARIO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="GIOCATE" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="MEDIA_VOTO" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FANTA_MEDIA" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="GOAL_FATTO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RIGORE_SEGNATO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RIGORE_SBAGLIATO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ASSIST" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="AMMONIZIONE" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ESPULSIONE" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699" uuid="b65d0e23-23f6-47d6-906d-3559aa5e8867"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="fd1e57e0-7298-4e32-af20-32515219fab9"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Statistiche]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="afd46827-a48f-4a04-b1e0-da5e08053c22"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[FC]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="10" y="20" width="595" height="1" forecolor="#666666" uuid="a4a073d7-498c-47ca-92b5-88429bfaa361"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="2f8ae2a6-07ba-4365-bd59-fd5afd88087a"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="20" y="0" width="100" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="c9a799f7-7689-4464-b292-055ecf51908c"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Giocatore]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="120" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="c70c77a1-e76d-4f65-901c-557183d1c36d"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[R]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="140" y="0" width="100" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="0d199c4d-4a4c-45fb-b6cd-feeb15399f88"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Squadra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="240" y="0" width="100" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="6e24ff0c-b726-42f7-89a2-a5fceeb98d2e"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Propetario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="340" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="f57f21c8-9530-48c6-b75b-2ce993bec256"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[G]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="360" y="0" width="30" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="35b524c3-06ee-4002-b625-3a752d11e156"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="390" y="0" width="30" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="76eb0826-7e1d-46ed-a537-307d11164184"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="418" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="d51e6fc7-21c2-4bd3-923f-ddae5960f444"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gf]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="438" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="356ef2e8-1c9c-4da8-a1cc-9885a9548a60"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[R+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="458" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="4333e5f5-39ae-4639-ae08-1ad898af8b72"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[R-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="478" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="e257799e-777e-456d-8d3e-3725551ebc79"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[As]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="498" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="f96cbf0f-2143-478e-9a06-ea2611b26cca"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Am]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="518" y="0" width="20" height="20" forecolor="#006699" backcolor="#E6E6E6" uuid="caffb7e3-6dba-4dcb-bdc6-0b6b85e00eed"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Es]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="c3f89256-d4a3-4be4-ad90-ec23b2004c5f"/>
+			</line>
+			<textField textAdjust="StretchHeight" pattern="">
+				<reportElement style="style1" x="-1" y="0" width="20" height="20" uuid="da32711f-7cc6-44ac-afd3-4a484ef83c25"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ID_GIOCATORE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="style1" x="20" y="0" width="100" height="20" uuid="077d8c4b-b3ae-425b-ac0d-be6b8f7bac08"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COGN_GIOCATORE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="style1" x="120" y="0" width="20" height="20" uuid="762b576f-2d5e-4a28-9eb4-b8a3f60a7716"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ID_RUOLO}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement style="style1" x="140" y="0" width="100" height="20" uuid="3af2beda-5dab-4453-8209-c98ee73ea520"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME_SQUADRA}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement style="style1" x="240" y="0" width="100" height="20" uuid="551fc0d2-8921-4f3b-b88b-091de3e3eb79"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROPRIETARIO}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="340" y="0" width="20" height="20" uuid="74b1ed55-c227-4a68-b63e-d4fb825dceb8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GIOCATE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="360" y="0" width="30" height="20" uuid="0905fdef-54a2-4bae-a074-6fab5872d113"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEDIA_VOTO}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="390" y="0" width="30" height="20" uuid="ed0f8383-87ef-470e-847b-a8ed19603f02"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FANTA_MEDIA}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="418" y="0" width="20" height="20" uuid="6bdc2965-3a37-40af-a515-68f7a69a86da"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GOAL_FATTO}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="438" y="0" width="20" height="20" uuid="7a1106b9-214c-4681-8447-c0fd23df69e4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RIGORE_SEGNATO}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="458" y="0" width="20" height="20" uuid="b1be0e03-5510-4d13-a660-1593f18ad8eb"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RIGORE_SBAGLIATO}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="478" y="0" width="20" height="20" uuid="e4504d3f-fd34-4c24-9d41-d4a9acd79453"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASSIST}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="498" y="0" width="20" height="20" uuid="75de4916-67cf-4ad2-8b30-29f02ce1b8e7"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMMONIZIONE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="518" y="0" width="20" height="20" uuid="65e7477e-aba3-4bb4-b14b-aba82d290ab7"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ESPULSIONE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="3f0f1334-e944-41dd-b2ea-f7389ef36fb4"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="5ecc5d81-0782-4a27-9321-7574da480e6b"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="ad32de8e-9dc3-47af-bbab-37a05c6987c8"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

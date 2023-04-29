@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.15.0.final utlizzo versione della libreria JasperReports6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" language="groovy" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5" uuid="d8163b33-5221-4f2c-b381-e1b06ea4f3a5">
+	<property name="ireport.zoom" value="6.727499949325615"/>
+	<property name="ireport.x" value="4044"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Mysql"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<queryString language="SQL">
+		<![CDATA[select * from fc_exp_rosea]]>
+	</queryString>
+	<field name="ID" class="java.math.BigDecimal"/>
+	<field name="S1" class="java.lang.String"/>
+	<field name="R1" class="java.lang.String"/>
+	<field name="Q1" class="java.lang.String"/>
+	<field name="S2" class="java.lang.String"/>
+	<field name="R2" class="java.lang.String"/>
+	<field name="Q2" class="java.lang.String"/>
+	<field name="S3" class="java.lang.String"/>
+	<field name="R3" class="java.lang.String"/>
+	<field name="Q3" class="java.lang.String"/>
+	<field name="S4" class="java.lang.String"/>
+	<field name="R4" class="java.lang.String"/>
+	<field name="Q4" class="java.lang.String"/>
+	<field name="S5" class="java.lang.String"/>
+	<field name="R5" class="java.lang.String"/>
+	<field name="Q5" class="java.lang.String"/>
+	<field name="S6" class="java.lang.String"/>
+	<field name="R6" class="java.lang.String"/>
+	<field name="Q6" class="java.lang.String"/>
+	<field name="S7" class="java.lang.String"/>
+	<field name="R7" class="java.lang.String"/>
+	<field name="Q7" class="java.lang.String"/>
+	<field name="S8" class="java.lang.String"/>
+	<field name="R8" class="java.lang.String"/>
+	<field name="Q8" class="java.lang.String"/>
+	<field name="S9" class="java.lang.String"/>
+	<field name="R9" class="java.lang.String"/>
+	<field name="Q9" class="java.lang.String"/>
+	<field name="S10" class="java.lang.String"/>
+	<field name="R10" class="java.lang.String"/>
+	<field name="Q10" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="0" y="0" width="50" height="10" uuid="67fdd757-e471-4778-9fd8-cba76a7c3c95"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="55" y="0" width="10" height="10" uuid="0da85f9f-4c93-495e-944f-3a6e5ca6a452"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="65" y="0" width="15" height="10" uuid="d2a9b162-5c42-4f27-a383-b76e2cec201f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="80" y="0" width="55" height="10" uuid="9187d58f-d6ec-4e98-821d-5d58e5120110"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="135" y="0" width="10" height="10" uuid="dda2b06a-1adf-4c7d-b157-5ad594783a13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="145" y="0" width="15" height="10" uuid="11e96fe2-9778-4883-bc8d-7f0a14907a20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="160" y="0" width="55" height="10" uuid="f65fbc91-50d2-427c-9d19-6592ae8a90ab"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="215" y="0" width="10" height="10" uuid="c4bf0686-d464-4594-847d-16749ee9abf1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="225" y="0" width="15" height="10" uuid="ecebc8d5-d0cc-420c-9a99-3d799b271f1d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="240" y="0" width="55" height="10" uuid="3a987d6e-66e1-4715-89ad-15e01ac0b70c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="295" y="0" width="10" height="10" uuid="9b9c0846-5774-4c54-932f-b17b0d087346"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="305" y="0" width="15" height="10" uuid="6fdf24af-fd7e-499e-b299-f52611477ec3"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="320" y="0" width="55" height="10" uuid="a8477549-5ae6-42db-bbed-9fdc09b5ceba"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="375" y="0" width="10" height="10" uuid="82f7a565-9349-4267-a018-bc86b97b01c1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="385" y="0" width="15" height="10" uuid="55742778-9a62-44f2-9110-a6aa52ebd95c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="400" y="0" width="55" height="10" uuid="d1571ab4-b76b-4c46-bee0-ac32d6f94cd6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="455" y="0" width="10" height="10" uuid="53d7ef59-5cc8-441b-86b6-ac0a70a70c16"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="465" y="0" width="15" height="10" uuid="fa4186be-8d3a-4606-9af5-034aab7aef97"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="480" y="0" width="55" height="10" uuid="a3224c17-91fe-45e6-9dab-950024c94c98"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="535" y="0" width="10" height="10" uuid="874de01f-2912-4d22-a278-d4201609ae10"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="545" y="0" width="15" height="10" uuid="dcb5ddd8-bd06-4a0f-876a-6a40fa9f9efe"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="560" y="0" width="55" height="10" uuid="26a6ed8a-db3b-416b-9fae-0505dbd503d0"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S8}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="615" y="0" width="10" height="10" uuid="a047a646-89de-478d-bf71-3c7d631ca881"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R8}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="625" y="0" width="15" height="10" uuid="554827df-2e64-4102-9757-221be6da8792"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q8}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="640" y="0" width="55" height="10" uuid="c17ce7c8-5901-4af2-8593-0af6f4c37629"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S9}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="695" y="0" width="10" height="10" uuid="de69d32f-e92f-406f-87ee-6aa39388d63e"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R9}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="705" y="0" width="15" height="10" uuid="b8c56d87-57b4-45e9-80dc-4a00db2ec2e4"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q9}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="720" y="0" width="55" height="10" uuid="fb1eb89f-50cb-4fed-a798-ebfb1734bcbc"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="775" y="0" width="10" height="10" uuid="87080e03-25bf-4cb8-bb66-b5f8c652d631"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{R10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" positionType="Float" x="785" y="0" width="15" height="10" uuid="a53f8e01-1c09-4c53-ac74-f7115830c183"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Q10}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="15" width="800" height="3" uuid="75ec9c03-f418-453a-ba02-9b8201b9a922"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

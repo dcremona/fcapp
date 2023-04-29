@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final utlizzo versione della libreria JasperReports6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="classifica" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="efa4f62a-4bf6-46ac-aef8-6191024c6667">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="1215"/>
+	<property name="ireport.y" value="799"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Mysql"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<subDataset name="SubDataset1" uuid="e816d285-4b75-4118-98ac-a31c0b250d9f">
+		<queryString>
+			<![CDATA[select b.DESC_ATTORE,(a.TOT_PT/10) AS TOT_PUNTI,c.DESC_GIORNATA, parz.PARZ_TOT
+from fc_classifica_tot_pt a,fc_attore b,fc_giornata_info c,
+(
+SELECT id_attore,SUM(TOT_PT) AS PARZ_TOT
+FROM fc_classifica_tot_pt            
+GROUP BY id_attore
+) parz
+where a.id_attore=b.id_attore
+and a.id_attore=parz.id_attore
+and a.id_giornata=c.codice_giornata
+order by parz.PARZ_TOT desc]]>
+		</queryString>
+		<field name="DESC_ATTORE" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="TOT_PUNTI" class="java.lang.Double">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="DESC_GIORNATA" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<parameter name="PATH_IMG" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select b.DESC_ATTORE,
+sum(a.tot_pt)/10 as TOT_PUNTI
+from fc_classifica_tot_pt a , fc_attore b
+where a.id_attore=b.id_attore
+group by b.desc_attore
+order by tot_punti desc]]>
+	</queryString>
+	<field name="DESC_ATTORE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TOT_PUNTI" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="76" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" x="100" y="16" width="400" height="40" uuid="413f4848-af04-4976-a409-23828a3bec76"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="28" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Classifica]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line" positionType="FixRelativeToBottom" x="0" y="68" width="534" height="1" forecolor="#000000" uuid="824f7237-b2ac-4151-be1b-44f3a2ef2ce3"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line" x="0" y="3" width="534" height="1" forecolor="#000000" uuid="8269ce59-6faa-4755-b5bc-a93f4f160cf7"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<image>
+				<reportElement key="image-1" x="13" y="11" width="74" height="54" uuid="5216a74b-4fcf-4ffd-a47f-afe9305fd4e7"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[$P{PATH_IMG}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<rectangle radius="0">
+				<reportElement key="element-22" mode="Opaque" x="1" y="1" width="534" height="17" forecolor="#000000" backcolor="#330099" uuid="c9470cd1-7928-48ba-b7dc-feed5d4c1750"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement key="element-90" x="0" y="1" width="267" height="16" forecolor="#FFFFFF" uuid="ccf39444-a59b-488d-8b03-2a1390c57ebc"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="element-90" x="267" y="1" width="267" height="16" forecolor="#FFFFFF" uuid="8d3ded14-a8b1-4cd3-87a5-b7c8b81bab65"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Serif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totale Punteggio]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement key="line" positionType="FixRelativeToBottom" x="0" y="17" width="535" height="1" forecolor="#808080" uuid="9fe3c299-6ebe-41af-b6fe-d8adc063a9b3"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
+				<reportElement key="textField" x="0" y="1" width="267" height="15" uuid="582579f7-84c2-4919-8908-b60281319e08"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESC_ATTORE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" pattern="###0.00;(-###0.00)" isBlankWhenNull="true">
+				<reportElement key="textField" x="267" y="1" width="267" height="15" uuid="7e56a3fe-e659-4407-9cf5-8a938372a94d"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Serif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOT_PUNTI}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="27" splitType="Stretch">
+			<line>
+				<reportElement key="line" x="0" y="1" width="535" height="1" forecolor="#000000" uuid="32e10dc9-a61b-49bb-b8f7-2e1bbcb0c2d3"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="14" width="515" height="13" backcolor="#E6E6E6" uuid="3e8ecf59-532c-4dda-b028-0390b9d49122"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="14" width="100" height="13" uuid="6005fcbd-0caa-4b2a-8bea-65424995df26"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="14" width="40" height="13" backcolor="#E6E6E6" uuid="3ff35fc2-744b-48e9-8e6c-25b30f4ea91d"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="224" splitType="Stretch">
+			<crosstab>
+				<reportElement key="crosstab-1" x="4" y="13" width="759" height="193" uuid="a068dbb5-8c1a-4572-9b98-e512589bec2e"/>
+				<crosstabDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="SubDataset1" uuid="a8d7e49f-ec53-44c9-b419-883d67d737aa">
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+					</dataset>
+				</crosstabDataset>
+				<crosstabHeaderCell>
+					<cellContents mode="Transparent">
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabHeaderCell>
+				<rowGroup name="DESC_ATTORE" width="100" totalPosition="End">
+					<bucket order="None" class="java.lang.String">
+						<bucketExpression><![CDATA[$F{DESC_ATTORE}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents mode="Transparent">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" x="0" y="0" width="100" height="20" uuid="e5def4ae-9f23-427f-a0ac-772f1967b92c"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DESC_ATTORE}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents mode="Transparent">
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" mode="Opaque" x="0" y="0" width="100" height="20" forecolor="#000000" backcolor="#CCCCFF" uuid="7837d21d-a65e-4d9c-a103-7cdff886ae8e"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA["Totale Generale"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="DESC_GIORNATA" height="25" totalPosition="End" headerPosition="Center">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{DESC_GIORNATA}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+							<box>
+								<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" x="0" y="0" width="50" height="25" uuid="f188243f-79e5-455b-8791-9ea7b2310c9f"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DESC_GIORNATA}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents mode="Transparent">
+							<box>
+								<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" mode="Opaque" x="0" y="0" width="50" height="25" backcolor="#CCFFCC" uuid="2870c392-af1e-4673-ba53-c1db4f728be8"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA["Tot.Pt."]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="TOT_PUNTI_Sum" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{TOT_PUNTI}]]></measureExpression>
+				</measure>
+				<crosstabCell width="51" height="21">
+					<cellContents mode="Transparent">
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="###0.00;(-###0.00)" isBlankWhenNull="false">
+							<reportElement key="textField" x="0" y="0" width="50" height="20" uuid="536c916c-e880-4bd1-ae73-bb7df811c6c3"/>
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{TOT_PUNTI_Sum}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="51" height="21" columnTotalGroup="DESC_GIORNATA">
+					<cellContents mode="Transparent">
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="###0.00;(-###0.00)" isBlankWhenNull="true">
+							<reportElement key="textField" mode="Opaque" x="0" y="0" width="50" height="20" backcolor="#CCFFCC" uuid="55c56327-3b40-4982-9cfe-6f91e32becc3"/>
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{TOT_PUNTI_Sum}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="51" height="21" rowTotalGroup="DESC_ATTORE">
+					<cellContents mode="Transparent">
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="###0.00;(-###0.00)" isBlankWhenNull="false">
+							<reportElement key="textField" mode="Opaque" x="0" y="0" width="50" height="20" backcolor="#CCCCFF" uuid="241b9961-f351-46a7-8acd-b01c812ba1e0"/>
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{TOT_PUNTI_Sum}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="51" height="21" rowTotalGroup="DESC_ATTORE" columnTotalGroup="DESC_GIORNATA">
+					<cellContents mode="Transparent">
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="###0.00;(-###0.00)" isBlankWhenNull="false">
+							<reportElement key="textField" mode="Opaque" x="0" y="0" width="50" height="20" backcolor="#CCCCFF" uuid="88b11ad0-b542-453b-a413-0ba0f8d6d5ee"/>
+							<box>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textElement textAlignment="Center" verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{TOT_PUNTI_Sum}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<whenNoDataCell>
+					<cellContents mode="Transparent">
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</whenNoDataCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

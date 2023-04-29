@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.15.0.final utlizzo versione della libreria JasperReports6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="statistica" pageWidth="850" pageHeight="566" orientation="Landscape" columnWidth="790" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="12462ed7-ea29-42a2-845d-7f754197dc66">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="31"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Mysql"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Crosstab Data Text" hTextAlign="Center" hImageAlign="Center"/>
+	<parameter name="ID_ATTORE" class="java.lang.String"/>
+	<parameter name="ID_CAMPIONATO" class="java.lang.String"/>
+	<parameter name="START" class="java.lang.String"/>
+	<parameter name="END" class="java.lang.String"/>
+	<parameter name="DIVISORE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+    pag.ID_GIORNATA,
+    pag.ID_GIOCATORE,
+    gio.ID_RUOLO,
+    gio.COGN_GIOCATORE ,
+    sq.NOME_SQUADRA,
+    pag.VOTO_GIOCATORE/$P{DIVISORE} as VOTO_GIOCATORE,
+    st.media_voto/$P{DIVISORE} as media_voto
+FROM
+    fc_giocatore gio ,
+    fc_pagelle pag ,
+    fc_squadra sq,
+    fc_statistiche st
+WHERE
+   pag.ID_GIOCATORE= gio.ID_GIOCATORE
+ AND st.ID_GIOCATORE= gio.ID_GIOCATORE
+ AND sq.ID_SQUADRA=gio.ID_SQUADRA
+ AND st.ID_GIOCATORE in (select id_giocatore from fc_formazione where id_attore =  $P{ID_ATTORE} and id_campionato = $P{ID_CAMPIONATO})
+ AND pag.ID_GIORNATA >= $P{START}
+    AND pag.ID_GIORNATA <= $P{END}
+ ORDER BY pag.ID_GIORNATA, gio.ID_RUOLO DESC, sq.ID_SQUADRA]]>
+	</queryString>
+	<field name="ID_GIORNATA" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ID_GIOCATORE" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ID_RUOLO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="COGN_GIOCATORE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NOME_SQUADRA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VOTO_GIOCATORE" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="media_voto" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="526" splitType="Stretch">
+			<elementGroup>
+				<crosstab>
+					<reportElement key="crosstab-1" x="0" y="0" width="770" height="508" uuid="2651e2e1-9f14-4a79-a017-2634e58832c8"/>
+					<crosstabDataset>
+						<dataset resetType="Report"/>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents mode="Transparent">
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" x="0" y="0" width="107" height="24" uuid="ca7b3877-22b5-4ade-a6cc-f16cab2827b5"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["Giocatore-Giornata"]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" x="107" y="0" width="35" height="24" uuid="d26acb1b-dc71-435b-9b97-12e960bfecd0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["Media Voto"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="ID_RUOLO" width="21">
+						<bucket order="Descending" class="java.lang.String">
+							<bucketExpression><![CDATA[$F{ID_RUOLO}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents mode="Transparent">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid"/>
+									<topPen lineWidth="0.5" lineStyle="Solid"/>
+									<leftPen lineWidth="0.5" lineStyle="Solid"/>
+									<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+									<rightPen lineWidth="0.5" lineStyle="Solid"/>
+								</box>
+								<textField isBlankWhenNull="false">
+									<reportElement key="textField" x="0" y="0" width="20" height="30" uuid="0905b657-36ab-4697-a6a8-b9948b5855d9"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textFieldExpression><![CDATA[$V{ID_RUOLO}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<rowGroup name="COGN_GIOCATORE" width="121">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{COGN_GIOCATORE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents mode="Transparent">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid"/>
+									<topPen lineWidth="0.5" lineStyle="Solid"/>
+									<leftPen lineWidth="0.5" lineStyle="Solid"/>
+									<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+									<rightPen lineWidth="0.5" lineStyle="Solid"/>
+								</box>
+								<textField isBlankWhenNull="false">
+									<reportElement key="textField" x="0" y="0" width="86" height="30" uuid="bf2eae8e-5b74-4e01-980b-d7a3c1091110"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textFieldExpression><![CDATA[$V{COGN_GIOCATORE}]]></textFieldExpression>
+								</textField>
+								<textField pattern="###0.00;(###0.00)" isBlankWhenNull="false">
+									<reportElement key="textField" x="86" y="0" width="33" height="30" uuid="70b8f181-fc66-40ad-87d4-6b30e7b9ed46"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textFieldExpression><![CDATA[$V{measure1}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents mode="Transparent"/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="ID_GIORNATA" height="25" totalPosition="End" headerPosition="Center">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[$F{ID_GIORNATA}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents mode="Transparent">
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textField isBlankWhenNull="false">
+									<reportElement key="textField" x="0" y="0" width="25" height="25" uuid="092ae2fa-9a54-43b9-829b-8872f82ab563"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textFieldExpression><![CDATA[$V{ID_GIORNATA}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents mode="Transparent">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid"/>
+									<topPen lineWidth="0.5" lineStyle="Solid"/>
+									<leftPen lineWidth="0.5" lineStyle="Solid"/>
+									<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+									<rightPen lineWidth="0.5" lineStyle="Solid"/>
+								</box>
+							</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="VOTO_GIOCATORE_Average" class="java.math.BigDecimal" calculation="Average">
+						<measureExpression><![CDATA[$F{VOTO_GIOCATORE}]]></measureExpression>
+					</measure>
+					<measure name="measure1" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{media_voto}]]></measureExpression>
+					</measure>
+					<crosstabCell width="30" height="30">
+						<cellContents mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid"/>
+								<topPen lineWidth="0.5" lineStyle="Solid"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid"/>
+							</box>
+							<textField pattern="###0.00;(###0.00)" isBlankWhenNull="false">
+								<reportElement key="textField" x="0" y="0" width="25" height="30" uuid="5e020c54-d4df-4e6b-a140-6044ba18dbd5"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{VOTO_GIOCATORE_Average}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="2" height="30" columnTotalGroup="ID_GIORNATA">
+						<cellContents mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid"/>
+								<topPen lineWidth="0.5" lineStyle="Solid"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid"/>
+							</box>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="26" height="0" rowTotalGroup="ID_RUOLO">
+						<cellContents mode="Transparent"/>
+					</crosstabCell>
+					<crosstabCell width="26" height="0" rowTotalGroup="ID_RUOLO" columnTotalGroup="ID_GIORNATA">
+						<cellContents mode="Transparent"/>
+					</crosstabCell>
+					<crosstabCell width="26" height="30" rowTotalGroup="COGN_GIOCATORE">
+						<cellContents mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid"/>
+								<topPen lineWidth="0.5" lineStyle="Solid"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid"/>
+							</box>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" x="0" y="0" width="25" height="30" uuid="b481fa91-16ad-424e-b89b-b6577eb1360d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{VOTO_GIOCATORE_Average}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="26" height="30" rowTotalGroup="COGN_GIOCATORE" columnTotalGroup="ID_GIORNATA">
+						<cellContents mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid"/>
+								<topPen lineWidth="0.5" lineStyle="Solid"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid"/>
+							</box>
+							<textField isBlankWhenNull="false">
+								<reportElement key="textField" x="0" y="0" width="25" height="30" uuid="2fd13770-b66f-48a6-9dc6-0ae7cb63f942"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{VOTO_GIOCATORE_Average}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>
+						<cellContents mode="Transparent"/>
+					</whenNoDataCell>
+				</crosstab>
+			</elementGroup>
+		</band>
+	</summary>
+</jasperReport>

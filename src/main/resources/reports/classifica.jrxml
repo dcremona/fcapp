@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final utlizzo versione della libreria JasperReports6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="classifica" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="16c756f2-9671-43dc-a18f-46f2e119b5d1">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="13"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<subDataset name="SubDataset1" uuid="a225d3dc-dc8d-4426-b1fd-79372ed19b32">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="ID_CAMPIONATO2" class="java.lang.String"/>
+		<parameter name="DIVISORE2" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT
+    B.DESC_ATTORE,
+    ROUND(A.TOT_PUNTI_ROSA/ $P{DIVISORE2}) AS TOT_PUNTI
+FROM
+    fc_classifica A,
+    fc_attore B
+WHERE
+    A.ID_ATTORE        = B.ID_ATTORE
+AND A.ID_CAMPIONATO= $P{ID_CAMPIONATO2}
+ORDER BY
+   2 DESC]]>
+		</queryString>
+		<field name="DESC_ATTORE" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="desc_attore"/>
+			<property name="com.jaspersoft.studio.field.label" value="DESC_ATTORE"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="fc_attore"/>
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="TOT_PUNTI" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.name" value="TOT_PUNTI"/>
+			<property name="com.jaspersoft.studio.field.label" value="TOT_PUNTI"/>
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="SubDatesetTvsT" uuid="4e54f0a7-eb7f-4a5b-af83-33204628d49f">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="ID_CAMPIONATO2" class="java.lang.String"/>
+		<parameter name="DIVISORE2" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT
+    B.DESC_ATTORE,
+    A.tot_punti_Tvst AS TOT_PUNTI_TvsT
+FROM
+    fc_classifica A,
+    fc_attore B
+WHERE
+    A.ID_ATTORE        = B.ID_ATTORE
+AND A.ID_CAMPIONATO= $P{ID_CAMPIONATO2}
+ORDER BY
+    2 DESC]]>
+		</queryString>
+		<field name="DESC_ATTORE" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="desc_attore"/>
+			<property name="com.jaspersoft.studio.field.label" value="DESC_ATTORE"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="fc_attore"/>
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="TOT_PUNTI_TvsT" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.name" value="tot_punti_tvst"/>
+			<property name="com.jaspersoft.studio.field.label" value="TOT_PUNTI_TvsT"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<parameter name="ID_CAMPIONATO" class="java.lang.String"/>
+	<parameter name="DIVISORE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+    B.DESC_ATTORE,
+    A.PUNTI,
+    A.VINTE,
+    A.PARI,
+    A.PERSE,
+    A.GF,
+    A.GS,
+    A.DR,
+    A.TOT_PUNTI_ROSA/$P{DIVISORE} AS TOT_PUNTI,
+    A.tot_punti_Tvst AS TOT_PUNTI_TvsT,
+    A.TOT_FM,
+    A.ID_POSIZ
+FROM
+    fc_classifica A,
+    fc_attore B
+WHERE
+    A.ID_ATTORE        = B.ID_ATTORE
+    AND A.ID_CAMPIONATO= $P{ID_CAMPIONATO}
+ORDER BY
+    2 DESC,
+    11 ASC]]>
+	</queryString>
+	<field name="DESC_ATTORE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="desc_attore"/>
+		<property name="com.jaspersoft.studio.field.label" value="DESC_ATTORE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_attore"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PUNTI" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="punti"/>
+		<property name="com.jaspersoft.studio.field.label" value="PUNTI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VINTE" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="vinte"/>
+		<property name="com.jaspersoft.studio.field.label" value="VINTE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PARI" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="pari"/>
+		<property name="com.jaspersoft.studio.field.label" value="PARI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PERSE" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="perse"/>
+		<property name="com.jaspersoft.studio.field.label" value="PERSE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="GF" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="gf"/>
+		<property name="com.jaspersoft.studio.field.label" value="GF"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="GS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="gs"/>
+		<property name="com.jaspersoft.studio.field.label" value="GS"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DR" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="dr"/>
+		<property name="com.jaspersoft.studio.field.label" value="DR"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TOT_PUNTI" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="TOT_PUNTI"/>
+		<property name="com.jaspersoft.studio.field.label" value="TOT_PUNTI"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TOT_PUNTI_TvsT" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="tot_punti_tvst"/>
+		<property name="com.jaspersoft.studio.field.label" value="TOT_PUNTI_TvsT"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TOT_FM" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="tot_fm"/>
+		<property name="com.jaspersoft.studio.field.label" value="TOT_FM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ID_POSIZ" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_posiz"/>
+		<property name="com.jaspersoft.studio.field.label" value="ID_POSIZ"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="0" y="6" width="533" height="40" forecolor="#9999FF" backcolor="#FFFFFF" uuid="e583fcd2-9a23-425c-8df4-4b1f271891e1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="30" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Classifica]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line" mode="Opaque" x="0" y="48" width="534" height="1" forecolor="#808080" backcolor="#FFFFFF" uuid="08a19f9b-e4ab-4b59-aefa-5e74307fc00e"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="line" mode="Opaque" x="0" y="3" width="534" height="1" forecolor="#808080" backcolor="#FFFFFF" uuid="077366fe-158a-4d55-8a7c-17a80836df7c"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<line direction="BottomUp">
+				<reportElement key="line" mode="Opaque" x="0" y="0" width="535" height="1" forecolor="#FFFFFF" backcolor="#FF9966" uuid="164ebf25-c65c-48fd-ae61-c9d00f3ae968"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="0" y="3" width="80" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="ffc286da-bb45-4ed5-8147-2ec18041a3c3"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SQUADRA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="80" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="f0367dd8-42f9-4ce2-8a11-161f6da5f47b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PUNTI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="120" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="6699bfba-2559-44dc-a883-6785ddc8906f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VINTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="160" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="97d90cba-5fb1-49cd-af4d-092b60e6fd1f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PARI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="200" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="8c67ea8f-817c-4675-8364-fae85cbaf7a1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PERSE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="240" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="d8443d48-4ee8-4bfc-8569-5f132d24ce67">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[GF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="280" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="4d2aef76-7893-421d-a6ba-ad4d1d14ca29">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[GS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="320" y="3" width="40" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="7768c480-de79-459e-90bd-6d1b8fe8bd14">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[DR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="360" y="3" width="60" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="d1733849-ab6e-4444-8091-989dcf93e75d"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PT ROSA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="480" y="3" width="50" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="ca6b9639-e5bf-4041-b787-c2616a1c5e4f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[TOT_FM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="420" y="3" width="60" height="17" forecolor="#FFFFFF" backcolor="#6666FF" uuid="2886dd8c-bd85-48ed-928b-98650dd670ba"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PT TvsT]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="0" y="2" width="80" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="7f225720-a30c-4177-b9d6-d32c6b4f772f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESC_ATTORE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="80" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="56d0627d-286e-4335-af7a-2b5bff1dcc41"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PUNTI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="120" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="35b1dc8b-77c8-4a76-a480-7cdbf2588984">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VINTE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="160" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="d5451c18-7208-4838-865e-f955ec11588f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PARI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="200" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="edb25e93-34f4-488b-a1c6-1529caa2349c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERSE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="240" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="a70ba58c-8dbb-49ce-a0aa-1268c56628d3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GF}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="280" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="50db805e-e19b-4490-9281-d9488fa2085e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="320" y="2" width="40" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="1d4d356f-c339-45e7-bf5d-6a9abeb0a045">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="360" y="2" width="60" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="6f5a1e0a-53c5-4f59-a573-41372e6d54df"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOT_PUNTI}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="480" y="2" width="50" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="1bfd3b4c-1f0d-45c3-8d63-8addf0e71a34"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOT_FM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Opaque" x="420" y="2" width="60" height="16" forecolor="#333333" backcolor="#CCCCCC" uuid="83cc34d3-3aec-4c53-89e1-4d2c10a259a3"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOT_PUNTI_TvsT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="27" splitType="Stretch">
+			<line>
+				<reportElement key="line" mode="Opaque" x="0" y="3" width="535" height="1" forecolor="#000000" backcolor="#FFFFFF" uuid="c475b053-2638-4199-9140-f24957a55058"/>
+				<graphicElement fill="Solid">
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Transparent" x="1" y="6" width="209" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="68b7bb04-d123-4d86-8590-d6c465f51824"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+					<font size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Transparent" x="325" y="4" width="174" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="46cbcd2e-0791-46fb-9c10-d9b3e17c7805"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None">
+					<font size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina " + $V{PAGE_NUMBER} + " di "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" mode="Transparent" x="499" y="4" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="4a67815f-bd83-4e36-8948-379918a2f164"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+					<font size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="645" splitType="Stretch">
+			<stackedBarChart>
+				<chart isShowLegend="true">
+					<reportElement key="element-1" x="0" y="29" width="535" height="250" uuid="8b3a98ad-2b04-4e05-bfab-1a9f1476b8d4"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend textColor="#000000" backgroundColor="#FFFFFF"/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="SubDatesetTvsT" uuid="89ddd4b2-4a48-4a7d-b7d8-57296583b587">
+							<datasetParameter name="ID_CAMPIONATO2">
+								<datasetParameterExpression><![CDATA[$P{ID_CAMPIONATO}]]></datasetParameterExpression>
+							</datasetParameter>
+						</datasetRun>
+					</dataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{DESC_ATTORE}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESC_ATTORE}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{TOT_PUNTI_TvsT}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="true">
+					<plot/>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</stackedBarChart>
+			<stackedBarChart>
+				<chart isShowLegend="true">
+					<reportElement key="element-2" x="0" y="334" width="535" height="250" uuid="fcebc2a8-ef94-4727-85ea-adc37f658e67"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend textColor="#000000" backgroundColor="#FFFFFF"/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="SubDataset1" uuid="0216cd0b-5a2b-4ddb-9c54-54f553953f8a">
+							<datasetParameter name="ID_CAMPIONATO2">
+								<datasetParameterExpression><![CDATA[$P{ID_CAMPIONATO}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="DIVISORE2">
+								<datasetParameterExpression><![CDATA[$P{DIVISORE}]]></datasetParameterExpression>
+							</datasetParameter>
+						</datasetRun>
+					</dataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{DESC_ATTORE}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESC_ATTORE}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{TOT_PUNTI}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="true">
+					<plot/>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<tickLabelFont>
+								<font size="8"/>
+							</tickLabelFont>
+						</axisFormat>
+					</valueAxisFormat>
+				</barPlot>
+			</stackedBarChart>
+			<staticText>
+				<reportElement key="staticText-2" x="5" y="309" width="530" height="20" forecolor="#9999FF" uuid="7c67edff-ad00-434f-b37a-41dd025873eb"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Classifica per totale punti rosa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" mode="Opaque" x="0" y="6" width="533" height="22" forecolor="#9999FF" backcolor="#FFFFFF" uuid="82c0a19f-f98a-44e5-81aa-1e67f6068a4c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Classifica per totale punti TvsT]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

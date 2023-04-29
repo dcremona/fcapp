@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final utlizzo versione della libreria JasperReports6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="andamentoSquadra" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="87ae3a3f-1f71-4f6c-af5a-ea39c5427d7e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="191"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Mysql"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="ID_ATTORE" class="java.lang.String"/>
+	<parameter name="DIVISORE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT att.desc_attore,
+                        p.id_giornata,
+                        ris.somma as pt,
+                        ris.somma2 /100 as tot_pt
+                FROM  
+                (
+                        select t.id_giornata, t.id_attore,  t.punti, (select  sum(u.punti) from fc_giornata_ris u where u.id_giornata <= t.id_giornata and u.id_attore = t.id_attore and u.id_giornata <15)  as SOMMA,
+                                                                (select  sum(v.tot_pt) from  fc_classifica_tot_pt v where v.id_giornata <= t.id_giornata and v.id_attore = t.id_attore)  as SOMMA2
+                        from fc_giornata_ris t
+                )
+                 ris,
+                        fc_attore att,
+                        fc_classifica_tot_pt p
+                WHERE att.id_attore= ris.id_attore
+                         and att.id_attore= p.id_attore
+                         and ris.id_giornata= p.id_giornata
+order by p.id_attore,p.id_giornata]]>
+	</queryString>
+	<field name="desc_attore" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="desc_attore"/>
+		<property name="com.jaspersoft.studio.field.label" value="desc_attore"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_attore"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_giornata" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_giornata"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_giornata"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_classifica_tot_pt"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="pt" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="punti"/>
+		<property name="com.jaspersoft.studio.field.label" value="pt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fc_giornata_ris"/>
+	</field>
+	<field name="tot_pt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="tot_pt"/>
+		<property name="com.jaspersoft.studio.field.label" value="tot_pt"/>
+	</field>
+	<variable name="variable1" class="java.lang.String">
+		<variableExpression><![CDATA[$P{ID_ATTORE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="13" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="9" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="7" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="9" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="632" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="53" width="555" height="271" uuid="bf41be14-014a-4d4e-8ec8-3ee9910f03fa"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report"/>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{desc_attore}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{id_giornata}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{pt}]]></valueExpression>
+						<labelExpression><![CDATA[$F{desc_attore}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+			<staticText>
+				<reportElement x="0" y="22" width="555" height="31" uuid="480bfc82-f63c-41cb-a567-9fe01c568f6d"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Punteggio della squadra nelle varie giornate di campionato:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="324" width="555" height="31" uuid="2d692b04-33ac-4438-9cd8-2212196d0540"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Posizione in classifica della squadra nelle varie giornate di campionato:]]></text>
+			</staticText>
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="355" width="555" height="277" uuid="21c0de13-17db-4be8-b6d7-e611f14bb055"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report"/>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{desc_attore}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{id_giornata}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{tot_pt}]]></valueExpression>
+						<labelExpression><![CDATA[$F{desc_attore}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>
