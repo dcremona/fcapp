@@ -270,7 +270,7 @@ public class EmMercatoView extends VerticalLayout
 
 		CREDITI_MERCATO = (String) p.get("CREDITI_MERCATO");
 
-		attori = attoreController.findAll();
+		attori = attoreController.findByActive(true);
 		ruoli = ruoloController.findAll();
 		squadre = squadraController.findAll();
 	}
@@ -1615,13 +1615,14 @@ public class EmMercatoView extends VerticalLayout
 				dialog.setText(msg);
 
 				dialog.setCancelable(true);
+				dialog.setCancelText("Annulla");
 				//dialog.addCancelListener(event -> System.out.println("Canceled"));
 
-				dialog.setRejectable(true);
-				dialog.setRejectText("Discard");
+				dialog.setRejectable(false);
+				//dialog.setRejectText("Discard");
 				//dialog.addRejectListener(event -> System.out.println("Discarded"));
 
-				dialog.setConfirmText("Save");
+				dialog.setConfirmText("Conferma");
 				dialog.addConfirmListener(e -> {
 					
 					try {

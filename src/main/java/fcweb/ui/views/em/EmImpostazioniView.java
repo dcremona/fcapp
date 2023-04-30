@@ -510,7 +510,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 			if (event.getSource() == initDb) {
 
-				List<FcAttore> attori = attoreController.findAll();
+				List<FcAttore> attori = attoreController.findByActive(true);
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 23; j++) {
@@ -670,7 +670,7 @@ public class EmImpostazioniView extends VerticalLayout
 				String email_destinatario = "";
 
 				if (this.chkSendMail.getValue()) {
-					List<FcAttore> attori = attoreController.findAll();
+					List<FcAttore> attori = attoreController.findByActive(true);
 					for (FcAttore a : attori) {
 						if (a.isNotifiche()) {
 							email_destinatario += a.getEmail() + ";";
@@ -706,7 +706,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 				MailClient client = new MailClient(javaMailSender);
 				String email_destinatario = "";
-				List<FcAttore> attori = attoreController.findAll();
+				List<FcAttore> attori = attoreController.findByActive(true);
 				for (FcAttore a : attori) {
 					email_destinatario += a.getEmail() + ";";
 				}
@@ -756,7 +756,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(Integer.valueOf(giornata));
 
-		List<FcAttore> squadre = attoreController.findAll();
+		List<FcAttore> squadre = attoreController.findByActive(true);
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("path_img", pathImg);
@@ -866,7 +866,7 @@ public class EmImpostazioniView extends VerticalLayout
 		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
 		LOG.info("ACTIVE_MAIL " + ACTIVE_MAIL);
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findAll();
+			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario += a.getEmail() + ";";

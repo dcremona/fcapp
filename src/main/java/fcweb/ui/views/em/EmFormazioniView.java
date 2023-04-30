@@ -138,7 +138,7 @@ public class EmFormazioniView extends VerticalLayout{
 		Integer to = campionato.getEnd();
 		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 
-		squadre = attoreController.findAll();
+		squadre = attoreController.findByActive(true);
 	}
 
 	private void initImg() throws Exception {

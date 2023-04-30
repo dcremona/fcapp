@@ -136,6 +136,7 @@ public class EmDownloadView extends VerticalLayout
 		
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Rose Nazionali", layout1);
+		tabSheet.setSizeFull();
 		add(tabSheet);
 		
 	}
@@ -144,11 +145,16 @@ public class EmDownloadView extends VerticalLayout
 
 		List<FcExpRosea> items = expRoseAController.findAll();
 
+//		gridRosea.setItems(items);
+//		gridRosea.setSelectionMode(Grid.SelectionMode.NONE);
+//		gridRosea.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+//		gridRosea.setAllRowsVisible(true);
+//		gridRosea.getStyle().set("fontSize", "smaller");
+
 		gridRosea.setItems(items);
-		gridRosea.setSelectionMode(Grid.SelectionMode.NONE);
-		gridRosea.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		gridRosea.setSelectionMode(Grid.SelectionMode.SINGLE);
 		gridRosea.setAllRowsVisible(true);
-		gridRosea.getStyle().set("fontSize", "smaller");
+		gridRosea.addThemeVariants(GridVariant.LUMO_COMPACT);
 
 		for (int i = 1; i < 11; i++) {
 
