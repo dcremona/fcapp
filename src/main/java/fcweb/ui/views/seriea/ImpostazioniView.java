@@ -554,7 +554,7 @@ public class ImpostazioniView extends VerticalLayout
 
 			if (event.getSource() == initDb) {
 
-				List<FcAttore> attori = attoreController.findAll();
+				List<FcAttore> attori = attoreController.findByActive(true);
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 26; j++) {
@@ -839,7 +839,7 @@ public class ImpostazioniView extends VerticalLayout
 		String email_destinatario = "";
 		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findAll();
+			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario += a.getEmail() + ";";
