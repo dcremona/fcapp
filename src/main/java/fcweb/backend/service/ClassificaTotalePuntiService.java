@@ -149,7 +149,7 @@ public class ClassificaTotalePuntiService{
 		query += " FROM  ";
 		query += " (  ";
 		query += " select t.id_giornata, t.id_attore,  t.punti, (select  sum(u.punti) from fc_giornata_ris u where u.id_giornata <= t.id_giornata and u.id_attore = t.id_attore and u.id_giornata >=" + start + "  and u.id_giornata<=" + endClas + " )  as SOMMA,  ";
-		query += " (select  sum(v.tot_pt_rosa) from  fc_classifica_tot_pt v where v.id_giornata <= t.id_giornata and v.id_attore = t.id_attore and v.id_giornata >=" + start + "  and v.id_giornata<=" + endClas + " )  as SOMMA2  ";
+		query += " (select  sum(v.tot_pt_rosa) from  fc_classifica_tot_pt v where v.id_giornata <= t.id_giornata and v.id_attore = t.id_attore and v.id_giornata >=" + start + "  and v.id_giornata<=" + end + " )  as SOMMA2  ";
 		query += " from fc_giornata_ris t ";
 		query += " ) ";
 		query += " ris, ";
