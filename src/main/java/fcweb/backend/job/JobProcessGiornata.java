@@ -3261,7 +3261,7 @@ public class JobProcessGiornata{
 	public Buffer getCalendarioScontroAndataRitorno(int g_a, int g_r,
 			boolean calFinale, FcCampionato campionato) throws Exception {
 
-		String sql = " SELECT ID_ATTORE_CASA,ID_ATTORE_FUORI,GOL_CASA,GOL_FUORI, ";
+		String sql = " SELECT ID_ATTORE_CASA,ID_ATTORE_FUORI,GOL_CASA,GOL_FUORI,TOT_CASA,TOT_FUORI, ";
 		sql += " (SELECT ID_POSIZ FROM fc_classifica WHERE ID_ATTORE = ID_ATTORE_FUORI and id_campionato=" + campionato.getIdCampionato() + ") ID_POSIZ ";
 		sql += " FROM fc_giornata WHERE ID_GIORNATA=" + g_a + " OR ID_GIORNATA=" + g_r;
 		sql += " ORDER BY ID_GIORNATA,ID_TIPO_GIORNATA,ID_POSIZ";
@@ -3276,6 +3276,8 @@ public class JobProcessGiornata{
 				int attore_fuori = 0;
 				int gol_casa = 0;
 				int gol_fuori = 0;
+				int tot_casa = 0;
+				int tot_fuori = 0;
 				int id_posizione = 0;
 				while (rs.next()) {
 
@@ -3283,9 +3285,11 @@ public class JobProcessGiornata{
 					attore_fuori = rs.getInt(2);
 					gol_casa = rs.getInt(3);
 					gol_fuori = rs.getInt(4);
-					id_posizione = rs.getInt(5);
+					tot_casa = rs.getInt(5);
+					tot_fuori = rs.getInt(6);
+					id_posizione = rs.getInt(7);
 
-					buf.addNew("@1" + attore_casa + "@2" + attore_fuori + "@3" + gol_casa + "@4" + gol_fuori + "@5" + id_posizione);
+					buf.addNew("@1" + attore_casa + "@2" + attore_fuori + "@3" + gol_casa + "@4" + gol_fuori + "@5" + tot_casa + "@6" + tot_fuori + "@7" + id_posizione);
 
 				}
 
@@ -3306,7 +3310,10 @@ public class JobProcessGiornata{
 				int goal_casa = 0;
 				int goal_fuori = 0;
 				int somma_goal = 0;
-
+				int tot_casa = 0;
+				int tot_fuori = 0;
+				int somma_tot = 0;
+				
 				while (rs.next()) {
 
 					att = rs.getInt(1);
@@ -3315,14 +3322,17 @@ public class JobProcessGiornata{
 					int idx = buf.findFirst("" + att, 1, false);
 					if (idx != -1) {
 						goal_casa = buf.getFieldByInt(3);
+						tot_casa = buf.getFieldByInt(5);
 					}
 					idx = buf.findFirst("" + att, 2, false);
 					if (idx != -1) {
 						goal_fuori = buf.getFieldByInt(4);
+						tot_fuori = buf.getFieldByInt(6);
 					}
 					somma_goal = goal_casa + goal_fuori;
+					somma_tot = tot_casa + tot_fuori;
 
-					bufAppo.addNew("@1" + att + "@2" + goal_casa + "@3" + goal_fuori + "@4" + somma_goal + "@5" + id_posiz);
+					bufAppo.addNew("@1" + att + "@2" + goal_casa + "@3" + goal_fuori + "@4" + somma_goal + "@5" + tot_casa + "@6" + tot_fuori + "@7" + somma_tot + "@8" + id_posiz);
 
 				}
 
@@ -3341,12 +3351,16 @@ public class JobProcessGiornata{
 
 		int att_1 = 0;
 		int att_1_somma_goal = 0;
-		int att_1_goal_fuori = 0;
+		//int att_1_goal_fuori = 0;
+		int att_1_somma_tot = 0;
 		int att_1_id_posiz = 0;
+		
 		int att_2 = 0;
 		int att_2_somma_goal = 0;
-		int att_2_goal_fuori = 0;
+		//int att_2_goal_fuori = 0;
+		int att_2_somma_tot = 0;
 		int att_2_id_posiz = 0;
+		
 		buf.moveFirst();
 		int id_win = 0;
 		int id_lose = 0;
@@ -3357,23 +3371,25 @@ public class JobProcessGiornata{
 
 			int idx = bufAppo.findFirst("" + att_1, 1, false);
 			if (idx != -1) {
+				//att_1_goal_fuori = bufAppo.getFieldByInt(3);
 				att_1_somma_goal = bufAppo.getFieldByInt(4);
-				att_1_goal_fuori = bufAppo.getFieldByInt(3);
-				att_1_id_posiz = bufAppo.getFieldByInt(5);
+				att_1_somma_tot = bufAppo.getFieldByInt(7);
+				att_1_id_posiz = bufAppo.getFieldByInt(8);
 			}
 			idx = bufAppo.findFirst("" + att_2, 1, false);
 			if (idx != -1) {
+				//att_2_goal_fuori = bufAppo.getFieldByInt(3);
 				att_2_somma_goal = bufAppo.getFieldByInt(4);
-				att_2_goal_fuori = bufAppo.getFieldByInt(3);
-				att_2_id_posiz = bufAppo.getFieldByInt(5);
+				att_2_somma_tot = bufAppo.getFieldByInt(7);
+				att_2_id_posiz = bufAppo.getFieldByInt(8);
 			}
 
 			if (att_1_somma_goal == att_2_somma_goal) {
 				// UGUALE
-				if (att_1_goal_fuori > att_2_goal_fuori) {
+				if (att_1_somma_tot > att_2_somma_tot) {
 					id_win = att_1;
 					id_lose = att_2;
-				} else if (att_2_goal_fuori > att_1_goal_fuori) {
+				} else if (att_2_somma_tot > att_1_somma_tot) {
 					id_win = att_2;
 					id_lose = att_1;
 				} else {
@@ -3444,11 +3460,11 @@ public class JobProcessGiornata{
 				att_2 = bufCalendarSemi.getFieldByInt(2);
 				int idx = bufAppo.findFirst("" + att_1, 1, false);
 				if (idx != -1) {
-					att_1_id_posiz = bufAppo.getFieldByInt(5);
+					att_1_id_posiz = bufAppo.getFieldByInt(8);
 				}
 				idx = bufAppo.findFirst("" + att_2, 1, false);
 				if (idx != -1) {
-					att_2_id_posiz = bufAppo.getFieldByInt(5);
+					att_2_id_posiz = bufAppo.getFieldByInt(8);
 				}
 
 				if (att_1_id_posiz < att_2_id_posiz) {
