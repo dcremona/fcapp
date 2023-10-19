@@ -22,14 +22,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.vaadin.olli.FileDownloadWrapper;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -329,7 +328,7 @@ public class ClassificaView extends VerticalLayout{
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 			Double dTotPunti = classifica.getTotPuntiRosa() != null ? classifica.getTotPuntiRosa() / Costants.DIVISORE_100 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
-			return new Label(sTotPunti);
+			return new Span(sTotPunti);
 		})).setHeader("Tot Pt Rosa");
 		totPuntiRosaColumn.setSortable(true);
 		totPuntiRosaColumn.setComparator((p1,
@@ -433,7 +432,7 @@ public class ClassificaView extends VerticalLayout{
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 			Double dTotPunti = classifica.getTotPtRosa() != null ? classifica.getTotPtRosa() / Costants.DIVISORE_100 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
-			return new Label(sTotPunti);
+			return new Span(sTotPunti);
 		}));
 		totPtRosaColumn.setHeader("Tot Pt Rosa");
 		totPtRosaColumn.setSortable(true);
@@ -448,7 +447,7 @@ public class ClassificaView extends VerticalLayout{
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 			Double dTotPunti = classifica.getTotPt() != null ? classifica.getTotPt() / Costants.DIVISORE_100 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
-			return new Label(sTotPunti);
+			return new Span(sTotPunti);
 		}));
 		totpuntiColumn.setHeader("Tot Pt 18");
 		totpuntiColumn.setSortable(true);
@@ -459,7 +458,7 @@ public class ClassificaView extends VerticalLayout{
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 			Double dTotPunti = classifica.getTotPtOld() != null ? classifica.getTotPtOld() / Costants.DIVISORE_100 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
-			return new Label(sTotPunti);
+			return new Span(sTotPunti);
 		}));
 		totpuntioldColumn.setHeader("Tot Pt 11");
 		totpuntioldColumn.setSortable(true);

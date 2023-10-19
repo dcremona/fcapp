@@ -12,7 +12,7 @@ import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
@@ -127,14 +127,14 @@ public class FcPagelleView extends VerticalLayout{
 		giocatoreFilter.setRenderer(new ComponentRenderer<>(g -> {
 			VerticalLayout container = new VerticalLayout();
 
-			Label c1 = new Label(g.getCognGiocatore());
+			Span c1 = new Span(g.getCognGiocatore());
 			container.add(c1);
 
-			Label c2 = new Label(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+			Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
 			c2.getStyle().set("fontSize", "smaller");
 			container.add(c2);
 
-			Label c3 = new Label("Q " + g.getQuotazione());
+			Span c3 = new Span("Q " + g.getQuotazione());
 			c2.getStyle().set("fontSize", "smaller");
 			container.add(c3);
 

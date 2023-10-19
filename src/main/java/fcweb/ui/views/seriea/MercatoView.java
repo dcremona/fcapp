@@ -23,7 +23,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -87,14 +87,14 @@ public class MercatoView extends VerticalLayout
 
 	private Button randomSaveButton;
 	private Button saveButton;
-	private Label lblError;
+	private Span lblError;
 
-	private Label[] lblAttore;
+	private Span[] lblAttore;
 	private Grid<FcFormazione>[] tablePlayer;
-	private Label[] lblCreditoPlayer;
-	private Label[] lblTotPagatoPlayer;
-	private Label[] lblResiduoPlayer;
-	private Label[] lblRuoliPlayer;
+	private Span[] lblCreditoPlayer;
+	private Span[] lblTotPagatoPlayer;
+	private Span[] lblResiduoPlayer;
+	private Span[] lblRuoliPlayer;
 	private Grid<FcProperties>[] tableContaPlayer;
 
 	public List<FcAttore> squadre = new ArrayList<FcAttore>();
@@ -236,7 +236,7 @@ public class MercatoView extends VerticalLayout
 			randomSaveButton.addClickListener(this);
 			randomSaveButton.setVisible(false);
 
-			lblError = new Label();
+			lblError = new Span();
 			lblError.getStyle().set("border", Costants.BORDER_COLOR);
 			lblError.getStyle().set("background", "#EC7063");
 			lblError.setVisible(false);
@@ -265,12 +265,12 @@ public class MercatoView extends VerticalLayout
 			layout3.setMargin(false);
 			layout3.setSpacing(false);
 
-			lblAttore = new Label[squadre.size()];
+			lblAttore = new Span[squadre.size()];
 			tablePlayer = new Grid[squadre.size()];
-			lblRuoliPlayer = new Label[squadre.size()];
-			lblCreditoPlayer = new Label[squadre.size()];
-			lblTotPagatoPlayer = new Label[squadre.size()];
-			lblResiduoPlayer = new Label[squadre.size()];
+			lblRuoliPlayer = new Span[squadre.size()];
+			lblCreditoPlayer = new Span[squadre.size()];
+			lblTotPagatoPlayer = new Span[squadre.size()];
+			lblResiduoPlayer = new Span[squadre.size()];
 			tableContaPlayer = new Grid[squadre.size()];
 
 			int att = 0;
@@ -279,7 +279,7 @@ public class MercatoView extends VerticalLayout
 				layoutHeaderInfo.setMargin(false);
 				layoutHeaderInfo.setSpacing(false);
 
-				lblAttore[att] = new Label(a.getDescAttore());
+				lblAttore[att] = new Span(a.getDescAttore());
 				lblAttore[att].setWidth(widthI);
 				lblAttore[att].getStyle().set("border", Costants.BORDER_COLOR);
 				lblAttore[att].getStyle().set("background", "#D2E6F0");
@@ -294,25 +294,25 @@ public class MercatoView extends VerticalLayout
 				layoutInfo.setMargin(false);
 				layoutInfo.setSpacing(false);
 
-				lblCreditoPlayer[att] = new Label("Credito");
+				lblCreditoPlayer[att] = new Span("Credito");
 				lblCreditoPlayer[att].setWidth(widthI);
 				lblCreditoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
 				lblCreditoPlayer[att].getStyle().set("background", "#F5E37F");
 				layoutInfo.add(lblCreditoPlayer[att]);
 
-				lblTotPagatoPlayer[att] = new Label("Pagato");
+				lblTotPagatoPlayer[att] = new Span("Pagato");
 				lblTotPagatoPlayer[att].setWidth(widthI);
 				lblTotPagatoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
 				lblTotPagatoPlayer[att].getStyle().set("background", "#D7DBDD");
 				layoutInfo.add(lblTotPagatoPlayer[att]);
 
-				lblResiduoPlayer[att] = new Label("Residuo");
+				lblResiduoPlayer[att] = new Span("Residuo");
 				lblResiduoPlayer[att].setWidth(widthI);
 				lblResiduoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
 				lblResiduoPlayer[att].getStyle().set("background", "#ABEBC6");
 				layoutInfo.add(lblResiduoPlayer[att]);
 
-				lblRuoliPlayer[att] = new Label("P D C A");
+				lblRuoliPlayer[att] = new Span("P D C A");
 				lblRuoliPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
 				lblRuoliPlayer[att].getStyle().set("background", "#AED6F1");
 				lblRuoliPlayer[att].setWidth(widthI);
@@ -543,14 +543,14 @@ public class MercatoView extends VerticalLayout
 		giocatore.setRenderer(new ComponentRenderer<>(g -> {
 			VerticalLayout container = new VerticalLayout();
 
-			Label c1 = new Label(g.getCognGiocatore());
+			Span c1 = new Span(g.getCognGiocatore());
 			container.add(c1);
 
-			Label c2 = new Label(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+			Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
 			c2.getStyle().set("fontSize", "smaller");
 			container.add(c2);
 
-			Label c3 = new Label("Q " + g.getQuotazione());
+			Span c3 = new Span("Q " + g.getQuotazione());
 			c2.getStyle().set("fontSize", "smaller");
 			container.add(c3);
 
@@ -643,9 +643,9 @@ public class MercatoView extends VerticalLayout
 		// Double residuo = totCrediti - somma;
 		//
 		// grid.appendFooterRow().getCell(cognGiocatoreColumn).setComponent(new
-		// Label("RES " + residuo));
+		// Span("RES " + residuo));
 		// grid.appendFooterRow().getCell(totPagatoColumn).setComponent(new
-		// Label("TOT " + somma));
+		// Span("TOT " + somma));
 		// if (residuo < 0) {
 		// ConfirmDialog.createInfo().withCaption("Messaggio di
 		// errore").withMessage(descAttore + " Residuo minore di
@@ -690,7 +690,7 @@ public class MercatoView extends VerticalLayout
 					}
 				}
 				
-				Label lblSquadra = new Label(f.getKey());
+				Span lblSquadra = new Span(f.getKey());
 				cellLayout.add(lblSquadra);
 			}
 

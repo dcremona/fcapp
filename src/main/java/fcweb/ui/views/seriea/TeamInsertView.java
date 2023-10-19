@@ -2,7 +2,6 @@ package fcweb.ui.views.seriea;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -30,7 +29,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.vaadin.ronny.AbsoluteLayout;
 
-
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -39,7 +37,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -418,12 +416,12 @@ public class TeamInsertView extends VerticalLayout
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
-		Label lblInfo = new Label("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
+		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
 		cssLayout.add(lblInfo);
 		layoutAvviso.add(cssLayout);
 
 		HorizontalLayout cssLayout2 = new HorizontalLayout();
-		Label lblInfo2 = new Label("Consegna Formazione entro: " + nextDate);
+		Span lblInfo2 = new Span("Consegna Formazione entro: " + nextDate);
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 
@@ -724,7 +722,7 @@ public class TeamInsertView extends VerticalLayout
 				img.setSrc(resource);
 				img.setTitle(title);
 
-				Label lblGiocatore = new Label(p.getCognGiocatore());
+				Span lblGiocatore = new Span(p.getCognGiocatore());
 				lblGiocatore.getStyle().set("font-size", "11px");
 				lblGiocatore.setTitle(title);
 
@@ -899,7 +897,7 @@ public class TeamInsertView extends VerticalLayout
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);
@@ -2029,7 +2027,7 @@ public class TeamInsertView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraCasa().substring(0, 3));
+				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
 				cellLayout.add(lblSquadra);
 			}
 
@@ -2061,7 +2059,7 @@ public class TeamInsertView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraFuori().substring(0, 3));
+				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
 				cellLayout.add(lblSquadra);
 			}
 

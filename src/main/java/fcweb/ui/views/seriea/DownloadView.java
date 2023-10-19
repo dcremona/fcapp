@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.vaadin.filesystemdataprovider.FileSelect;
 
 import com.flowingcode.vaadin.addons.gridexporter.GridExporter;
 import com.vaadin.componentfactory.pdfviewer.PdfViewer;
@@ -29,6 +31,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -155,28 +158,28 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 			rootFile3 = new File(basePathData);
 			LOG.info(" pathPdf " + rootFile3.exists());
 		}
-//		FileSelect fileSelect = new FileSelect(rootFile3);
-//		fileSelect.addValueChangeListener(event -> {
-//			File file = fileSelect.getValue();
-//			Date date = new Date(file.lastModified());
-//			if (!file.isDirectory()) {
-//				// UI.getCurrent().navigate(PdfView.class,file.getPath());
-//
-//				Dialog dialog = new Dialog();
-//				// dialog.getElement().setAttribute("aria-label", "System maintenance hint");
-//				VerticalLayout dialogLayout = createDialogLayout(dialog, file);
-//				dialog.add(dialogLayout);
-//				dialog.open();
-//
-//				Notification.show(file.getPath() + ", " + date + ", " + file.length());
-//
-//			} else {
-//				Notification.show(file.getPath() + ", " + date);
-//			}
-//		});
-//		fileSelect.setWidth(resX + "px");
-//		fileSelect.setHeight(resY + "px");
-//		fileSelect.setLabel("Select file");
+		FileSelect fileSelect = new FileSelect(rootFile3);
+		fileSelect.addValueChangeListener(event -> {
+			File file = fileSelect.getValue();
+			Date date = new Date(file.lastModified());
+			if (!file.isDirectory()) {
+				// UI.getCurrent().navigate(PdfView.class,file.getPath());
+
+				Dialog dialog = new Dialog();
+				// dialog.getElement().setAttribute("aria-label", "System maintenance hint");
+				VerticalLayout dialogLayout = createDialogLayout(dialog, file);
+				dialog.add(dialogLayout);
+				dialog.open();
+
+				Notification.show(file.getPath() + ", " + date + ", " + file.length());
+
+			} else {
+				Notification.show(file.getPath() + ", " + date);
+			}
+		});
+		fileSelect.setWidth(resX + "px");
+		fileSelect.setHeight(resY + "px");
+		fileSelect.setLabel("Select file");
 
 //		VerticalLayout container = new VerticalLayout();
 //		PagedTabs tabs = new PagedTabs(container);
@@ -188,7 +191,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Rose A", layout1);
 		tabSheet.add("Free Players",layout2);
-//		tabSheet.add("Pdf", fileSelect);
+		tabSheet.add("Pdf", fileSelect);
 		tabSheet.setSizeFull();
 		this.add(tabSheet);
 	}

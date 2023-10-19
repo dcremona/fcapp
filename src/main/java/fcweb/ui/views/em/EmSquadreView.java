@@ -29,7 +29,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -304,7 +304,7 @@ public class EmSquadreView extends VerticalLayout {
 				// Image img = new Image(resource,"");
 				// img.setSrc(resource);
 
-				Label lblGiocatore = new Label(f.getFcGiocatore().getCognGiocatore());
+				Span lblGiocatore = new Span(f.getFcGiocatore().getCognGiocatore());
 				// lblGiocatore.getStyle().set("font-size", "11px");
 				// cellLayout.add(img);
 				cellLayout.add(lblGiocatore);
@@ -339,7 +339,7 @@ public class EmSquadreView extends VerticalLayout {
 					}
 				}
 
-				Label lblSquadra = new Label(f.getFcGiocatore().getFcSquadra().getNomeSquadra());
+				Span lblSquadra = new Span(f.getFcGiocatore().getFcSquadra().getNomeSquadra());
 				cellLayout.add(lblSquadra);
 			}
 
@@ -377,7 +377,7 @@ public class EmSquadreView extends VerticalLayout {
 					d = s.getMediaVoto() / Costants.DIVISORE_10;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);
@@ -415,7 +415,7 @@ public class EmSquadreView extends VerticalLayout {
 					d = s.getFantaMedia() / Costants.DIVISORE_10;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);
@@ -527,10 +527,10 @@ public class EmSquadreView extends VerticalLayout {
 					cellLayout.add(img);
 				}
 
-				Label lblGiocatore = new Label(m.getFcGiocatoreByIdGiocAcq().getCognGiocatore());
+				Span lblGiocatore = new Span(m.getFcGiocatoreByIdGiocAcq().getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 
-				Label lblSquadra = new Label(
+				Span lblSquadra = new Span(
 						" (" + m.getFcGiocatoreByIdGiocAcq().getFcSquadra().getNomeSquadra().substring(0, 3) + ")");
 				lblSquadra.getStyle().set("font-size", "10px");
 				cellLayout.add(lblSquadra);
@@ -576,10 +576,10 @@ public class EmSquadreView extends VerticalLayout {
 					cellLayout.add(img);
 				}
 
-				Label lblGiocatore = new Label(m.getFcGiocatoreByIdGiocVen().getCognGiocatore());
+				Span lblGiocatore = new Span(m.getFcGiocatoreByIdGiocVen().getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 
-				Label lblSquadra = new Label(
+				Span lblSquadra = new Span(
 						" (" + m.getFcGiocatoreByIdGiocVen().getFcSquadra().getNomeSquadra().substring(0, 3) + ")");
 				lblSquadra.getStyle().set("font-size", "10px");
 				cellLayout.add(lblSquadra);

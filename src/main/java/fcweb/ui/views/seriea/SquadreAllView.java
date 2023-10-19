@@ -27,7 +27,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -231,7 +231,7 @@ public class SquadreAllView extends VerticalLayout{
 					img.setSrc(resource);
 					cellLayout.add(img);
 				}
-				Label lblGiocatore = new Label(f.getFcGiocatore().getCognGiocatore());
+				Span lblGiocatore = new Span(f.getFcGiocatore().getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 			}
 			return cellLayout;
@@ -254,7 +254,7 @@ public class SquadreAllView extends VerticalLayout{
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(f.getFcGiocatore().getFcSquadra().getNomeSquadra());
+				Span lblSquadra = new Span(f.getFcGiocatore().getFcSquadra().getNomeSquadra());
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -286,7 +286,7 @@ public class SquadreAllView extends VerticalLayout{
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);

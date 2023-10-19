@@ -2,7 +2,6 @@ package fcweb.ui.views.em;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -37,7 +36,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -428,12 +426,12 @@ public class EmTeamInsertView extends VerticalLayout
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
-		Label lblInfo = new Label("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
+		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
 		cssLayout.add(lblInfo);
 		layoutAvviso.add(cssLayout);
 
 		HorizontalLayout cssLayout2 = new HorizontalLayout();
-		Label lblInfo2 = new Label("Consegna Formazione entro: " + nextDate);
+		Span lblInfo2 = new Span("Consegna Formazione entro: " + nextDate);
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 
@@ -2135,7 +2133,7 @@ public class EmTeamInsertView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraCasa().substring(0, 3));
+				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
 				cellLayout.add(lblSquadra);
 			}
 
@@ -2156,7 +2154,7 @@ public class EmTeamInsertView extends VerticalLayout
 			// cellLayout.setSizeFull();
 
 			if (s != null && s.getSquadraCasa() != null) {
-				Label lblSquadra = new Label(s.getSquadraFuori().substring(0, 3));
+				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
 				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraFuori());
 				if (sq.getImg() != null) {
 					try {

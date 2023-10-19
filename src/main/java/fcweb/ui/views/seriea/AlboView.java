@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -109,7 +109,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getScudetto())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getScudetto());
+			Span lblAttore = new Span(s.getScudetto());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -130,7 +130,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP2())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP2());
+			Span lblAttore = new Span(s.getP2());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -151,7 +151,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP3())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP3());
+			Span lblAttore = new Span(s.getP3());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -172,7 +172,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP4())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP4());
+			Span lblAttore = new Span(s.getP4());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -193,7 +193,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP5())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP5());
+			Span lblAttore = new Span(s.getP5());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -214,7 +214,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP6())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP6());
+			Span lblAttore = new Span(s.getP6());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -235,7 +235,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP7())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP7());
+			Span lblAttore = new Span(s.getP7());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -256,7 +256,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getP8())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getP8());
+			Span lblAttore = new Span(s.getP8());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -278,7 +278,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getWinClasPt())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getWinClasPt());
+			Span lblAttore = new Span(s.getWinClasPt());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -300,7 +300,7 @@ public class AlboView extends VerticalLayout {
 			if (att.getDescAttore().equals(s.getWinClasReg())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
-			Label lblAttore = new Label(s.getWinClasReg());
+			Span lblAttore = new Span(s.getWinClasReg());
 			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -315,7 +315,7 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
 			if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
-				Label lblAttore = new Label(s.getScudetto());
+				Span lblAttore = new Span(s.getScudetto());
 				lblAttore.getStyle().set("fontSize", "smaller");
 				cellLayout.add(lblAttore);
 			}

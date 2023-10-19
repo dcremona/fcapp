@@ -25,7 +25,7 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -305,7 +305,7 @@ public class FreePlayersView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(g.getFcSquadra().getNomeSquadra());
+				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -352,7 +352,7 @@ public class FreePlayersView extends VerticalLayout
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);
@@ -390,7 +390,7 @@ public class FreePlayersView extends VerticalLayout
 					d = s.getFantaMedia() / Costants.DIVISORE_100;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);

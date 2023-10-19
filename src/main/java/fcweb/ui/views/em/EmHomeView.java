@@ -17,7 +17,7 @@ import org.springframework.core.io.ResourceLoader;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,7 +27,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
@@ -166,7 +165,7 @@ public class EmHomeView extends VerticalLayout{
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraCasa().substring(0, 3));
+				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -195,7 +194,7 @@ public class EmHomeView extends VerticalLayout{
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraFuori().substring(0, 3));
+				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -224,12 +223,12 @@ public class EmHomeView extends VerticalLayout{
 		layoutAvviso.getStyle().set("background", Costants.YELLOW);
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
-		Label lblInfo = new Label("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
+		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
 		cssLayout.add(lblInfo);
 		layoutAvviso.add(cssLayout);
 
 		HorizontalLayout cssLayout2 = new HorizontalLayout();
-		Label lblInfo2 = new Label("Consegna Formazione entro: " + nextDate);
+		Span lblInfo2 = new Span("Consegna Formazione entro: " + nextDate);
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 

@@ -11,14 +11,14 @@
 
     <properties>
         <java.version>17</java.version>
-        <vaadin.version>24.0.5</vaadin.version>
+        <vaadin.version>24.1.12</vaadin.version>
         <selenium.version>4.8.3</selenium.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.6</version>
+        <version>3.1.2</version>
     </parent>
 
     <repositories>
@@ -71,11 +71,11 @@
             <version>8.0.31</version>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -170,12 +170,12 @@
 		   <artifactId>file-download-wrapper</artifactId>
 		   <version>7.0.0</version>
 		</dependency>
-<!--dependency>
+		
+<dependency>
    <groupId>org.vaadin.filesystemdataprovider</groupId>
    <artifactId>filesystemdataprovider</artifactId>
-   <version>3.2.0</version>
-</dependency-->
-
+   <version>4.0.0</version>
+</dependency>
 
 		<dependency>
 		   <groupId>org.vaadin.klaudeta</groupId>
@@ -190,23 +190,18 @@
 		<dependency>
 		   <groupId>org.vaadin.crudui</groupId>
 		   <artifactId>crudui</artifactId>
-		   <version>7.0.0</version>
+		   <version>7.1.0</version>
 		</dependency>
 <!--dependency>
    <groupId>com.wontlost</groupId>
    <artifactId>ckeditor-vaadin</artifactId>
    <version>3.2.1</version>
 </dependency-->
-<dependency>
-   <groupId>com.vaadin.componentfactory</groupId>
-   <artifactId>enhanced-rich-text-editor</artifactId>
-   <version>4.0.1</version>
-</dependency>		
-		<!--dependency>
-		   <groupId>com.github.appreciated</groupId>
-		   <artifactId>apexcharts</artifactId>
-		   <version>23.0.1</version>
-		</dependency-->		
+<!--dependency>
+   <groupId>com.github.appreciated</groupId>
+   <artifactId>apexcharts</artifactId>
+   <version>23.0.1</version>
+</dependency-->		
 
     </dependencies>
 

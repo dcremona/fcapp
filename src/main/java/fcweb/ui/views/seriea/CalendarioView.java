@@ -22,7 +22,7 @@ import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -158,7 +158,7 @@ public class CalendarioView extends VerticalLayout{
 				Grid<FcGiornata> tableGiornata = getTableCalendar(descG, beanContainer);
 
 				final VerticalLayout layout = new VerticalLayout();
-				Label lblInfoSx = new Label(descG);
+				Span lblInfoSx = new Span(descG);
 				lblInfoSx.getStyle().set("font-size", "14px");
 				layout.add(lblInfoSx);
 				layout.add(tableGiornata);

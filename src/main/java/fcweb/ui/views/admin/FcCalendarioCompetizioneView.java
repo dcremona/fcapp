@@ -22,7 +22,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -151,7 +151,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraCasa());
+				Span lblSquadra = new Span(s.getSquadraCasa());
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -175,7 +175,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(s.getSquadraFuori());
+				Span lblSquadra = new Span(s.getSquadraFuori());
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;

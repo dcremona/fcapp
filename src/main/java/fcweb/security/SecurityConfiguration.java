@@ -21,6 +21,7 @@ public class SecurityConfiguration extends VaadinWebSecurity{
 		return new BCryptPasswordEncoder();
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 

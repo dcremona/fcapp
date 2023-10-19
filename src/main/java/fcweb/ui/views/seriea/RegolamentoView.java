@@ -12,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import com.vaadin.componentfactory.EnhancedRichTextEditor;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -57,8 +55,9 @@ public class RegolamentoView extends VerticalLayout
 	private String html = "";
 	private FcRegolamento regolamento = null;
 
-//	private VaadinCKEditor decoupledEditor = null;
-	EnhancedRichTextEditor rte = null;
+	//private VaadinCKEditor decoupledEditor = null;
+	//private RichTextEditor decoupledEditor = null;
+
 	private Button salvaDb;
 
 	public RegolamentoView() {
@@ -129,9 +128,6 @@ public class RegolamentoView extends VerticalLayout
 
 		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 
-		salvaDb = new Button("Salva");
-		salvaDb.setIcon(VaadinIcon.DATABASE.create());
-		salvaDb.addClickListener(this);
 		boolean isAdmin = false;
 		for (Role r : attore.getRoles()) {
 			if (r.equals(Role.ADMIN)) {
@@ -139,7 +135,11 @@ public class RegolamentoView extends VerticalLayout
 				break;
 			}
 		}
-		salvaDb.setVisible(isAdmin);	
+
+		salvaDb = new Button("Salva");
+		salvaDb.setIcon(VaadinIcon.DATABASE.create());
+		salvaDb.addClickListener(this);
+		salvaDb.setVisible(isAdmin);
 
 		this.add(salvaDb);
 
@@ -150,35 +150,24 @@ public class RegolamentoView extends VerticalLayout
 //		}).createVaadinCKEditor();
 //		decoupledEditor.setVisible(isAdmin);
 //		decoupledEditor.setValue(html);
+		
+//		decoupledEditor = new RichTextEditor();
+//		decoupledEditor.setMaxHeight("400px");
+//		decoupledEditor.setVisible(isAdmin);
+//		decoupledEditor.setValue(html);
 //
 //		this.add(decoupledEditor);
-		
-		rte = new EnhancedRichTextEditor();
-		rte.setVisible(isAdmin);
-		rte.setValue(html);
-		this.add(rte);
 
-		
-		Div htmlBlock = new Div();
-		
-		Button showHtmlValue = new Button("Show html value", e -> {
-		    String exsValue = htmlBlock.getElement().getProperty("innerHTML");
-		    if (exsValue == null || !exsValue.equals(rte.getHtmlValue())) {
-		    	LOG.info(rte.getHtmlValue());
-		        htmlBlock.getElement().setProperty("innerHTML", rte.getHtmlValue());
-		    }
-		});
-		this.add(showHtmlValue);
-		this.add(htmlBlock);
-		
-//		VerticalLayout previewHtml = new VerticalLayout();
-//		try {
-//			previewHtml.getElement().setProperty("innerHTML", html);
-//			this.add(previewHtml);
-//
-//		} catch (Exception ex2) {
-//			LOG.error("ex2 " + ex2.getMessage());
-//		}
+		VerticalLayout previewHtml = new VerticalLayout();
+		try {
+
+			previewHtml.getElement().setProperty("innerHTML", html);
+
+			this.add(previewHtml);
+
+		} catch (Exception ex2) {
+			LOG.error("ex2 " + ex2.getMessage());
+		}
 
 	}
 
@@ -188,10 +177,14 @@ public class RegolamentoView extends VerticalLayout
 			if (event.getSource() == salvaDb) {
 				LOG.info("SALVA");
 
-//				String valueHtml = decoupledEditor.getValue();
-				String valueHtml = rte.getHtmlValue();
-
+				String valueHtml = null;
+				//valueHtml = decoupledEditor.getValue();
 				LOG.info(valueHtml);
+				// valueHtml = StringUtils.encodeHtml(valueHtml);
+				// Encoder encoder = Base64.getEncoder();
+				// String encodedString =
+				// encoder.encodeToString(valueHtml.getBytes());
+				// LOG.debug(encodedString);
 				if (regolamento == null) {
 					regolamento = new FcRegolamento();
 				}
@@ -201,11 +194,11 @@ public class RegolamentoView extends VerticalLayout
 				regolamentoController.insertRegolamento(regolamento);
 
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-				
 			}
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
 	}
+
 
 }

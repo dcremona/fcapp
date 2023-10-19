@@ -43,7 +43,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -134,12 +133,12 @@ public class EmMercatoView extends VerticalLayout
 	private ComboBox<FcSquadra> comboNazione;
 	private NumberField txtQuotaz;
 
-	private Label txtCrediti;
-	private Label txtCambi;
-	private Label lblInfoP;
-	private Label lblInfoD;
-	private Label lblInfoC;
-	private Label lblInfoA;
+	private Span txtCrediti;
+	private Span txtCambi;
+	private Span lblInfoP;
+	private Span lblInfoD;
+	private Span lblInfoC;
+	private Span lblInfoA;
 
 	private Grid<FcGiocatore> tablePlayer1;
 	private Grid<FcGiocatore> tablePlayer2;
@@ -384,7 +383,7 @@ public class EmMercatoView extends VerticalLayout
 					e.printStackTrace();
 				}
 			}
-			Label lblSquadra = new Label(item.getNomeSquadra());
+			Span lblSquadra = new Span(item.getNomeSquadra());
 			container.add(lblSquadra);
 			return container;
 		}));
@@ -478,12 +477,12 @@ public class EmMercatoView extends VerticalLayout
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
-		Label lblRow1Info = new Label("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
+		Span lblRow1Info = new Span("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
 		cssLayout.add(lblRow1Info);
 		layoutAvviso.add(cssLayout);
 
 		HorizontalLayout cssLayout2 = new HorizontalLayout();
-		Label lblRow2Info = new Label("Consegna entro: " + nextDate);
+		Span lblRow2Info = new Span("Consegna entro: " + nextDate);
 		cssLayout2.add(lblRow2Info);
 		layoutAvviso.add(cssLayout2);
 
@@ -530,27 +529,27 @@ public class EmMercatoView extends VerticalLayout
 			this.saveSendMail.setEnabled(false);
 		}
 
-		Label lblInfo = new Label();
+		Span lblInfo = new Span();
 		lblInfo.setText("Hai ancora a disposizione:");
 
-		Label lblCrediti = new Label();
+		Span lblCrediti = new Span();
 		lblCrediti.setText("Crediti:");
 		lblCrediti.getElement().getStyle().set("color", Costants.RED);
 		lblCrediti.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 
-		txtCrediti = new Label();
+		txtCrediti = new Span();
 		txtCrediti.setText("" + CREDITI_MERCATO);
 		// txtCrediti.setReadOnly(true);
 		// txtCrediti.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
 		txtCrediti.getElement().getStyle().set("color", Costants.RED);
 		txtCrediti.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 
-		Label lblCanmbi = new Label();
+		Span lblCanmbi = new Span();
 		lblCanmbi.setText("Cambi:");
 		lblCanmbi.getElement().getStyle().set("color", Costants.BLUE);
 		lblCanmbi.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
 
-		txtCambi = new Label();
+		txtCambi = new Span();
 		txtCambi.setText("" + CHECK_TOT_CAMBI_EFFETTUATI);
 		// txtCambi.setReadOnly(true);
 		// txtCambi.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
@@ -581,10 +580,10 @@ public class EmMercatoView extends VerticalLayout
 		Image imgD = buildImage("classpath:images/", "d.png");
 		Image imgC = buildImage("classpath:images/", "c.png");
 		Image imgA = buildImage("classpath:images/", "a.png");
-		lblInfoP = new Label();
-		lblInfoD = new Label();
-		lblInfoC = new Label();
-		lblInfoA = new Label();
+		lblInfoP = new Span();
+		lblInfoD = new Span();
+		lblInfoC = new Span();
+		lblInfoA = new Span();
 		lblInfoP.setText("0");
 		lblInfoD.setText("0");
 		lblInfoC.setText("0");
@@ -705,7 +704,7 @@ public class EmMercatoView extends VerticalLayout
 		top = 200;
 		left = 1250;
 
-		Label lblInfoGiocatori = new Label();
+		Span lblInfoGiocatori = new Span();
 		lblInfoGiocatori.setText("Giocatori per Nazione:");
 		lblInfoGiocatori.getStyle().set("font-size", "16px");
 		lblInfoGiocatori.getStyle().set("background", Costants.LIGHT_BLUE);
@@ -3343,7 +3342,7 @@ public class EmMercatoView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(f.getKey());
+				Span lblSquadra = new Span(f.getKey());
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;

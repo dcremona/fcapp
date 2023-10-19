@@ -28,7 +28,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -53,7 +52,6 @@ import fcweb.backend.data.entity.FcStatistiche;
 import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
-import fcweb.backend.service.ClassificaTotalePuntiService;
 import fcweb.backend.service.SquadraService;
 import fcweb.backend.service.StatisticheService;
 import fcweb.ui.views.MainLayout;
@@ -321,7 +319,7 @@ public class EmStatisticheView extends VerticalLayout
 					e.printStackTrace();
 				}
 			}
-			Label lblSquadra = new Label(item.getNomeSquadra());
+			Span lblSquadra = new Span(item.getNomeSquadra());
 			container.add(lblSquadra);
 			return container;
 		}));

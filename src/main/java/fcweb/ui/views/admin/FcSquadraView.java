@@ -21,7 +21,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -117,7 +117,7 @@ public class FcSquadraView extends VerticalLayout
 						Image img = Utils.getImage(f.getNomeSquadra(), f.getImg().getBinaryStream());
 						cellLayout.add(img);
 					}
-					Label lblSquadra = new Label(f.getNomeSquadra());
+					Span lblSquadra = new Span(f.getNomeSquadra());
 					cellLayout.add(lblSquadra);
 
 //					if (f.getImg40() != null && f.getImg40().getBinaryStream() != null) {

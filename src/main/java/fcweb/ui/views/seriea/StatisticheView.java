@@ -23,7 +23,6 @@ import org.vaadin.olli.FileDownloadWrapper;
 
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -31,7 +30,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -45,7 +44,6 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
-import fcweb.backend.data.ClassificaBean;
 import fcweb.backend.data.Role;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
@@ -54,7 +52,6 @@ import fcweb.backend.data.entity.FcStatistiche;
 import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
-import fcweb.backend.service.ClassificaTotalePuntiService;
 import fcweb.backend.service.SquadraService;
 import fcweb.backend.service.StatisticheService;
 import fcweb.ui.views.MainLayout;
@@ -77,8 +74,8 @@ public class StatisticheView extends VerticalLayout
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
+//	@Autowired
+//	private ClassificaTotalePuntiService classificaTotalePuntiController;
 
 	@Autowired
 	private StatisticheService statisticheController;
@@ -365,7 +362,7 @@ public class StatisticheView extends VerticalLayout
 					e.printStackTrace();
 				}
 			}
-			Label lblSquadra = new Label(item.getNomeSquadra());
+			Span lblSquadra = new Span(item.getNomeSquadra());
 			container.add(lblSquadra);
 			return container;
 		}));
@@ -386,7 +383,7 @@ public class StatisticheView extends VerticalLayout
 		comboProprietario.setPlaceholder("Proprietario");
 		comboProprietario.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
-			Label lblProp = new Label(item.getDescAttore());
+			Span lblProp = new Span(item.getDescAttore());
 			container.add(lblProp);
 			return container;
 		}));
@@ -490,7 +487,7 @@ public class StatisticheView extends VerticalLayout
 				Image img = new Image(resource,"");
 				img.setSrc(resource);
 
-				Label lblSquadra = new Label(s.getNomeSquadra());
+				Span lblSquadra = new Span(s.getNomeSquadra());
 				// lblSquadra.getStyle().set("font-size", "11px");
 
 				cellLayout.add(img);
@@ -544,7 +541,7 @@ public class StatisticheView extends VerticalLayout
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);
@@ -580,7 +577,7 @@ public class StatisticheView extends VerticalLayout
 					d = s.getFantaMedia() / Costants.DIVISORE_100;
 				}
 				String sTotPunti = myFormatter.format(d);
-				Label lbl = new Label(sTotPunti);
+				Span lbl = new Span(sTotPunti);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);

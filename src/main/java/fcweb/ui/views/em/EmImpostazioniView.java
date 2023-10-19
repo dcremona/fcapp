@@ -49,7 +49,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -924,7 +923,7 @@ public class EmImpostazioniView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
-				Label lblGiocatore = new Label(g.getCognGiocatore());
+				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 			}
 			return cellLayout;
@@ -949,7 +948,7 @@ public class EmImpostazioniView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				Label lblSquadra = new Label(g.getFcSquadra().getNomeSquadra());
+				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;

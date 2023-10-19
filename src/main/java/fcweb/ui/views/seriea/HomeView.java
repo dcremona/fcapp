@@ -15,7 +15,7 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -197,12 +197,12 @@ public class HomeView extends VerticalLayout{
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
 
-		Label lblInfo = new Label("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
+		Span lblInfo = new Span	("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
 		cssLayout.add(lblInfo);
 		layoutAvviso.add(cssLayout);
 
 		HorizontalLayout cssLayout2 = new HorizontalLayout();
-		Label lblInfo2 = new Label("Consegna Formazione entro: " + nextDate);
+		Span lblInfo2 = new Span("Consegna Formazione entro: " + nextDate);
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 
@@ -250,7 +250,7 @@ public class HomeView extends VerticalLayout{
 		layoutRis.getStyle().set("border", Costants.BORDER_COLOR);
 		layoutRis.getStyle().set("background", Costants.GREEN);
 
-		Label lblInfoRisSx = new Label("Ultime Partite");
+		Span lblInfoRisSx = new Span("Ultime Partite");
 		lblInfoRisSx.getStyle().set("font-size", "14px");
 		layoutRis.add(lblInfoRisSx);
 

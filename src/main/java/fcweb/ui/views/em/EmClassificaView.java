@@ -17,12 +17,11 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.olli.FileDownloadWrapper;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -199,7 +198,7 @@ public class EmClassificaView extends VerticalLayout{
 
 		Column<ClassificaBean> posizioneColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			int x = items.indexOf(classifica) + 1;
-			Label lblPosizione = new Label("" + x);
+			Span lblPosizione = new Span("" + x);
 			return lblPosizione;
 		})).setHeader("");
 		posizioneColumn.setSortable(false);
@@ -213,7 +212,7 @@ public class EmClassificaView extends VerticalLayout{
 			Double dTotPunti = classifica.getTotPunti() != null ? classifica.getTotPunti() / Costants.DIVISORE_10 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
 
-			Label lblTotPunti = new Label(sTotPunti);
+			Span lblTotPunti = new Span(sTotPunti);
 
 			lblTotPunti.getStyle().set("font-size", "14px");
 			lblTotPunti.getStyle().set("color", Costants.BLUE);
@@ -229,7 +228,7 @@ public class EmClassificaView extends VerticalLayout{
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 			Double dTotPunti = classifica.getTotPuntiParziale() != null ? classifica.getTotPuntiParziale() / Costants.DIVISORE_10 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
-			return new Label(sTotPunti);
+			return new Span(sTotPunti);
 		})).setHeader("Parziale Punti");
 		parzialePuntiColumn.setSortable(true);
 		parzialePuntiColumn.setComparator((p1,
@@ -240,7 +239,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata1() != null ? classifica.getPuntiGiornata1() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_1");
 			punti1Column.setSortable(true);
 			punti1Column.setComparator((p1,
@@ -252,7 +251,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata2() != null ? classifica.getPuntiGiornata2() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_2");
 			punti2Column.setSortable(true);
 			punti2Column.setComparator((p1,
@@ -264,7 +263,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata3() != null ? classifica.getPuntiGiornata3() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_3");
 			punti3Column.setSortable(true);
 			punti3Column.setComparator((p1,
@@ -276,7 +275,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata4() != null ? classifica.getPuntiGiornata4() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_4");
 			punti4Column.setSortable(true);
 			punti4Column.setComparator((p1,
@@ -288,7 +287,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata5() != null ? classifica.getPuntiGiornata5() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_5");
 			punti5Column.setSortable(true);
 			punti5Column.setComparator((p1,
@@ -300,7 +299,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata6() != null ? classifica.getPuntiGiornata6() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_6");
 			punti6Column.setSortable(true);
 			punti6Column.setComparator((p1,
@@ -312,7 +311,7 @@ public class EmClassificaView extends VerticalLayout{
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double dTotPunti = classifica.getPuntiGiornata7() != null ? classifica.getPuntiGiornata7() / Costants.DIVISORE_10 : 0;
 				String sTotPunti = myFormatter.format(dTotPunti);
-				return new Label(sTotPunti);
+				return new Span(sTotPunti);
 			})).setHeader("Punti_7");
 			punti7Column.setSortable(true);
 			punti7Column.setComparator((p1,

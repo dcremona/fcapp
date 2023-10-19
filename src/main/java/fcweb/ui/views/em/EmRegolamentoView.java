@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.engine.jdbc.ClobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

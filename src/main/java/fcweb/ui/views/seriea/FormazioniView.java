@@ -18,7 +18,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.olli.FileDownloadWrapper;
 
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -29,7 +28,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -238,7 +237,7 @@ public class FormazioniView extends VerticalLayout{
 			List<FcGiornataDett> itemsCasaTribuna = (List<FcGiornataDett>) mapCasa.get("itemsTribuna");
 			String schemaCasa = (String) mapCasa.get("schema");
 			String mdCasa = getModificatoreDifesa(schemaCasa);
-			Label labelCasa = new Label(attoreCasa.getDescAttore());
+			Span labelCasa = new Span(attoreCasa.getDescAttore());
 			Grid<FcGiornataDett> tableSqCasaTitolari = buildResultSquadra(itemsCasaTitolari, "Titolari", schemaCasa);
 			Grid<FcGiornataDett> tableSqCasaPanchina = buildResultSquadra(itemsCasaPanchina, "Panchina", "");
 			Grid<FcGiornataDett> tableSqCasaTribuna = buildResultSquadra(itemsCasaTribuna, "Tribuna", "");
@@ -256,7 +255,7 @@ public class FormazioniView extends VerticalLayout{
 			List<FcGiornataDett> itemsFuoriTribuna = (List<FcGiornataDett>) mapFuori.get("itemsTribuna");
 			String schemaFuori = (String) mapFuori.get("schema");
 			String mdFuori = getModificatoreDifesa(schemaFuori);
-			Label labelFuori = new Label(attoreFuori.getDescAttore());
+			Span labelFuori = new Span(attoreFuori.getDescAttore());
 			Grid<FcGiornataDett> tableSqFuoriTitolari = buildResultSquadra(itemsFuoriTitolari, "Titolari", schemaFuori);
 			Grid<FcGiornataDett> tableSqFuoriPanchina = buildResultSquadra(itemsFuoriPanchina, "Panchina", "");
 			Grid<FcGiornataDett> tableSqFuoriTribuna = buildResultSquadra(itemsFuoriTribuna, "Tribuna", "");
@@ -428,7 +427,7 @@ public class FormazioniView extends VerticalLayout{
 					descGiocatore = "(-0,5) " + gd.getFcGiocatore().getCognGiocatore();
 				}
 
-				Label lblGiocatore = new Label(descGiocatore);
+				Span lblGiocatore = new Span(descGiocatore);
 				lblGiocatore.getStyle().set("fontSize", "smaller");
 				cellLayout.add(lblGiocatore);
 
@@ -467,7 +466,7 @@ public class FormazioniView extends VerticalLayout{
 				cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
 			}
 			if (gd != null && gd.getFcGiocatore() != null) {
-				Label lblSquadra = new Label(gd.getFcGiocatore().getFcSquadra().getNomeSquadra().substring(0, 3));
+				Span lblSquadra = new Span(gd.getFcGiocatore().getFcSquadra().getNomeSquadra().substring(0, 3));
 				lblSquadra.getStyle().set("fontSize", "smaller");
 				cellLayout.add(lblSquadra);
 			}
@@ -558,7 +557,7 @@ public class FormazioniView extends VerticalLayout{
 			}
 			String sVoto = myFormatter.format(d);
 
-			Label lbl = new Label(sVoto);
+			Span lbl = new Span(sVoto);
 			lbl.getStyle().set("color", Costants.LIGHT_GRAY);
 			if ("S".equals(gd.getFlagAttivo())) {
 				lbl.getStyle().set("color", Costants.GRAY);
@@ -582,7 +581,7 @@ public class FormazioniView extends VerticalLayout{
 			}
 			String sG = myFormatter.format(dg);
 
-			Label lbl = new Label(sG);
+			Span lbl = new Span(sG);
 			lbl.getStyle().set("color", Costants.LIGHT_GRAY);
 			if ("S".equals(gd.getFlagAttivo())) {
 				lbl.getStyle().set("color", Costants.GRAY);
@@ -606,7 +605,7 @@ public class FormazioniView extends VerticalLayout{
 			}
 			String sCs = myFormatter.format(dcs);
 
-			Label lbl = new Label(sCs);
+			Span lbl = new Span(sCs);
 			lbl.getStyle().set("color", Costants.LIGHT_GRAY);
 			if ("S".equals(gd.getFlagAttivo())) {
 				lbl.getStyle().set("color", Costants.GRAY);
@@ -630,7 +629,7 @@ public class FormazioniView extends VerticalLayout{
 			}
 			String sTs = myFormatter.format(dts);
 
-			Label lbl = new Label(sTs);
+			Span lbl = new Span(sTs);
 			lbl.getStyle().set("color", Costants.LIGHT_GRAY);
 			if ("S".equals(gd.getFlagAttivo())) {
 				lbl.getStyle().set("color", Costants.GRAY);
@@ -766,25 +765,25 @@ public class FormazioniView extends VerticalLayout{
 		} catch (Exception e) {
 		}
 
-		Label lblTotGiornata = new Label();
+		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
 		lblTotGiornata.getStyle().set("font-size", "24px");
 		lblTotGiornata.getStyle().set("background", Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
-		Label lblTotPuntiRosa = new Label();
+		Span lblTotPuntiRosa = new Span();
 		lblTotPuntiRosa.setText("Totale Punteggio Rosa: " + totPuntiRosa);
 		lblTotPuntiRosa.getStyle().set("font-size", "16px");
 		lblTotPuntiRosa.getStyle().set("background", Costants.LIGHT_YELLOW);
 		lblTotPuntiRosa.setSizeFull();
 
-		Label lblTotPuntiTvsT = new Label();
+		Span lblTotPuntiTvsT = new Span();
 		lblTotPuntiTvsT.setText("Totale Punteggio TvsT: " + totPuntiTvsT);
 		lblTotPuntiTvsT.getStyle().set("font-size", "16px");
 		lblTotPuntiTvsT.getStyle().set("background", Costants.LIGHT_GRAY);
 		lblTotPuntiTvsT.setSizeFull();
 
-		Label lblInvio = new Label();
+		Span lblInvio = new Span();
 		lblInvio.setText("Inviata alle: " + (info == null ? "" : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss")));
 		lblInvio.setSizeFull();
 

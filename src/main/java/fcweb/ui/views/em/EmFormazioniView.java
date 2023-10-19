@@ -24,7 +24,7 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -332,7 +332,7 @@ public class EmFormazioniView extends VerticalLayout{
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
-				Label lblGiocatore = new Label(g.getCognGiocatore());
+				Span lblGiocatore = new Span(g.getCognGiocatore());
 				lblGiocatore.getStyle().set("fontSize", "smaller");
 				cellLayout.add(lblGiocatore);
 
@@ -376,7 +376,7 @@ public class EmFormazioniView extends VerticalLayout{
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
-				Label lblSquadra = new Label(g.getFcSquadra().getNomeSquadra().substring(0, 3));
+				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra().substring(0, 3));
 				lblSquadra.getStyle().set("fontSize", "smaller");
 				FcSquadra sq = gd.getFcGiocatore().getFcSquadra();
 				if (sq.getImg() != null) {
@@ -469,7 +469,7 @@ public class EmFormazioniView extends VerticalLayout{
 
 		Column<FcGiornataDett> votoColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 
-			Label lbl = null;
+			Span lbl = null;
 			FcGiocatore g = gd.getFcGiocatore();
 			if (gd != null && g != null) {
 
@@ -480,7 +480,7 @@ public class EmFormazioniView extends VerticalLayout{
 				}
 				String sVoto = myFormatter.format(d);
 
-				lbl = new Label(sVoto);
+				lbl = new Span(sVoto);
 				lbl.getStyle().set("color", Costants.LIGHT_GRAY);
 				if ("S".equals(gd.getFlagAttivo())) {
 					lbl.getStyle().set("color", Costants.GRAY);
@@ -634,13 +634,13 @@ public class EmFormazioniView extends VerticalLayout{
 			totG = formatter.format(totPunti.getTotPt().doubleValue() / Costants.DIVISORE_10);
 		}
 
-		Label lblTotGiornata = new Label();
+		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
 		lblTotGiornata.getStyle().set("font-size", "24px");
 		lblTotGiornata.getStyle().set("background", Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
-		Label lblInvio = new Label();
+		Span lblInvio = new Span();
 		lblInvio.setText("Inviata alle: " + (info == null ? "" : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss")));
 		lblInvio.setSizeFull();
 
@@ -661,54 +661,54 @@ public class EmFormazioniView extends VerticalLayout{
 		horizontalLayout1.setSpacing(true);
 
 		horizontalLayout1.add(iconGolfatto_);
-		Label lbl = new Label("Gol Fatto");
+		Span lbl = new Span("Gol Fatto");
 		horizontalLayout1.add(lbl);
 
 		horizontalLayout1.add(iconGolsubito_);
-		lbl = new Label("Gol Subito");
+		lbl = new Span("Gol Subito");
 		horizontalLayout1.add(lbl);
 
 		horizontalLayout1.add(iconAmm_);
-		lbl = new Label("Ammonizione");
+		lbl = new Span("Ammonizione");
 		horizontalLayout1.add(lbl);
 
 		horizontalLayout1.add(iconEsp_);
-		lbl = new Label("Espulsione");
+		lbl = new Span("Espulsione");
 		horizontalLayout1.add(lbl);
 
 		horizontalLayout1.add(iconAssist_);
-		lbl = new Label("Assist");
+		lbl = new Span("Assist");
 		horizontalLayout1.add(lbl);
 
 		horizontalLayout1.add(iconEntrato_);
-		lbl = new Label("Entrato");
+		lbl = new Span("Entrato");
 		horizontalLayout1.add(lbl);
 
 		HorizontalLayout horizontalLayout2 = new HorizontalLayout();
 		horizontalLayout2.setSpacing(true);
 
 		horizontalLayout2.add(iconUscito_);
-		lbl = new Label("Uscito");
+		lbl = new Span("Uscito");
 		horizontalLayout2.add(lbl);
 
 		horizontalLayout2.add(iconAutogol_);
-		lbl = new Label("Autogol");
+		lbl = new Span("Autogol");
 		horizontalLayout2.add(lbl);
 
 		horizontalLayout2.add(iconRigoreSegnato_);
-		lbl = new Label("Rigore segnato");
+		lbl = new Span("Rigore segnato");
 		horizontalLayout2.add(lbl);
 
 		horizontalLayout2.add(iconRigoreSbagliato_);
-		lbl = new Label("Rigore sbagliato");
+		lbl = new Span("Rigore sbagliato");
 		horizontalLayout2.add(lbl);
 
 		horizontalLayout2.add(iconRigoreParato_);
-		lbl = new Label("Rigore parato");
+		lbl = new Span("Rigore parato");
 		horizontalLayout2.add(lbl);
 
 		horizontalLayout2.add(iconGolVittoria_);
-		lbl = new Label("Gol Vittoria");
+		lbl = new Span("Gol Vittoria");
 		horizontalLayout2.add(lbl);
 
 		layout.add(horizontalLayout1);
