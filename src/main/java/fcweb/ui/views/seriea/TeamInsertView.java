@@ -460,11 +460,14 @@ public class TeamInsertView extends VerticalLayout
 	}
 
 	private void showMessageStopInsert() {
-		LOG.info("showMessageStopInsert");
-		setEnabled(false);
-		CustomMessageDialog.showMessageError("Impossibile inserire la formazione, tempo scaduto!");
+		String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+		if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
+			LOG.info("showMessageStopInsert");
+			setEnabled(false);
+			CustomMessageDialog.showMessageError("Impossibile inserire la formazione, tempo scaduto!");
+		}
 	}
-
+	
 	private String getInfoPlayer(FcGiocatore bean) {
 		String info = "N.D.";
 		if (bean != null && bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
@@ -2080,21 +2083,24 @@ public class TeamInsertView extends VerticalLayout
 	}
 
 	private boolean isGiocatorePartitaGiocata(FcGiocatore giocatore) {
-		// LOG.debug("isGiocatorePartitaGiocata");
-		String squadra = giocatore.getFcSquadra().getNomeSquadra();
-		// LOG.info("squadra " + squadra);
-		for (FcCalendarioCompetizione partita : listPartiteGiocate) {
-			String sqCasa = partita.getSquadraCasa();
-			String sqFuori = partita.getSquadraFuori();
-			// LOG.info("sqCasa " + sqCasa);
-			// LOG.info("sqFuori " + sqFuori);
-			if (squadra.equals(sqCasa) || squadra.equals(sqFuori)) {
-				return true;
+		String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+		if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
+			// LOG.debug("isGiocatorePartitaGiocata");
+			String squadra = giocatore.getFcSquadra().getNomeSquadra();
+			// LOG.info("squadra " + squadra);
+			for (FcCalendarioCompetizione partita : listPartiteGiocate) {
+				String sqCasa = partita.getSquadraCasa();
+				String sqFuori = partita.getSquadraFuori();
+				// LOG.info("sqCasa " + sqCasa);
+				// LOG.info("sqFuori " + sqFuori);
+				if (squadra.equals(sqCasa) || squadra.equals(sqFuori)) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
-
+	
 	private void impostaGiocatoriConVoto(String modulo, FcAttore attore,
 			FcGiornataInfo giornataInfo) throws Exception {
 
