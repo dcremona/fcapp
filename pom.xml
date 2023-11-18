@@ -11,7 +11,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <vaadin.version>24.2.0</vaadin.version>
+        <vaadin.version>24.2.3</vaadin.version>
         <selenium.version>4.8.3</selenium.version>
     </properties>
 
@@ -149,11 +149,11 @@
 		   <version>1.1.1</version>
 		</dependency-->
 
-		<!--dependency>
+		<dependency>
 		   <groupId>com.vaadin.componentfactory</groupId>
 		   <artifactId>svg</artifactId>
-		   <version>1.1.1</version>
-		</dependency-->
+		   <version>1.2.1</version>
+		</dependency>
 		<dependency>
 		   <groupId>org.vaadin.addons.mycompany</groupId>
 		   <artifactId>badge</artifactId>
@@ -187,20 +187,27 @@
 		</dependency>
 		
 <!--dependency>
-   <groupId>com.wontlost</groupId>
-   <artifactId>ckeditor-vaadin</artifactId>
-   <version>3.2.1</version>
-</dependency-->
-<!--dependency>
    <groupId>com.github.appreciated</groupId>
    <artifactId>apexcharts</artifactId>
    <version>23.0.1</version>
 </dependency-->		
+<dependency>
+   <groupId>org.vaadin.addons.tatu</groupId>
+   <artifactId>columnchart</artifactId>
+   <version>1.1.0</version>
+</dependency>
+
 <!--dependency>
    <groupId>com.flowingcode.addons</groupId>
    <artifactId>simple-timer</artifactId>
    <version>2.1.1</version>
 </dependency-->
+<!--dependency>
+   <groupId>com.wontlost</groupId>
+   <artifactId>ckeditor-vaadin</artifactId>
+   <version>3.2.1</version>
+</dependency-->
+
 
     </dependencies>
 
