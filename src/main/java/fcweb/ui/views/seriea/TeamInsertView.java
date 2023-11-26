@@ -225,7 +225,7 @@ public class TeamInsertView extends VerticalLayout
 		idAttore = "" + attore.getIdAttore();
 		descAttore = attore.getDescAttore();
 
-		modelFormazione = getModelFormazione(attore, campionato);
+		modelFormazione = getModelFormazione();
 
 		LocalDateTime now = LocalDateTime.now();
 		listPartiteGiocate = calendarioTimController.findByIdGiornataAndDataLessThanEqual(giornataInfo.getCodiceGiornata(), now);
@@ -379,10 +379,13 @@ public class TeamInsertView extends VerticalLayout
 					absLayout.add(tablePlayer11, _650px, _A);
 				}
 
-				try {
-					impostaGiocatoriConVoto(modulo, attore, giornataInfo);
-				} catch (Exception e) {
-					LOG.error(e.getMessage());
+				String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+				if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
+					try {
+						impostaGiocatoriConVoto(modulo);
+					} catch (Exception e) {
+						LOG.error(e.getMessage());
+					}
 				}
 			}
 		});
@@ -440,7 +443,7 @@ public class TeamInsertView extends VerticalLayout
 		this.add(absLayout);
 
 		try {
-			loadFcGiornatadett(attore, giornataInfo);
+			loadFcGiornatadett();
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
@@ -632,8 +635,7 @@ public class TeamInsertView extends VerticalLayout
 		absLayout.remove(tablePlayer18);
 	}
 
-	private ArrayList<FcGiocatore> getModelFormazione(FcAttore attore,
-			FcCampionato campionato) {
+	private ArrayList<FcGiocatore> getModelFormazione() {
 
 		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
 
@@ -1436,8 +1438,7 @@ public class TeamInsertView extends VerticalLayout
 		return false;
 	}
 
-	private void loadFcGiornatadett(FcAttore attore,
-			FcGiornataInfo giornataInfo) throws Exception {
+	private void loadFcGiornatadett() throws Exception {
 
 		LOG.info("loadFcGiornatadett");
 
@@ -2101,8 +2102,7 @@ public class TeamInsertView extends VerticalLayout
 		return false;
 	}
 	
-	private void impostaGiocatoriConVoto(String modulo, FcAttore attore,
-			FcGiornataInfo giornataInfo) throws Exception {
+	private void impostaGiocatoriConVoto(String modulo) throws Exception {
 
 		// LOG.info("impostaGiocatoriConVoto");
 
