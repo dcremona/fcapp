@@ -24,7 +24,8 @@ public class FcGiornataInfo implements java.io.Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int codiceGiornata;
-	private LocalDateTime dataAnticipo;
+	private LocalDateTime dataAnticipo1;
+	private LocalDateTime dataAnticipo2;
 	private LocalDateTime dataGiornata;
 	private LocalDateTime dataPosticipo;
 	private String descGiornata;
@@ -49,8 +50,9 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.idGiornataFc = idGiornataFc;
 	}
 
-	public FcGiornataInfo(int codiceGiornata, LocalDateTime dataAnticipo,
-			LocalDateTime dataGiornata, LocalDateTime dataPosticipo, String descGiornata,
+	public FcGiornataInfo(int codiceGiornata, LocalDateTime dataAnticipo1,
+			LocalDateTime dataAnticipo2, LocalDateTime dataGiornata,
+			LocalDateTime dataPosticipo, String descGiornata,
 			String descGiornataFc, int idGiornataFc,
 			Set<FcGiornataRis> fcGiornataRises,
 			Set<FcGiornataDett> fcGiornataDetts, Set<FcPagelle> fcPagelles,
@@ -59,7 +61,8 @@ public class FcGiornataInfo implements java.io.Serializable{
 			Set<FcClassificaTotPt> fcClassificaTotPts,
 			Set<FcMercatoDett> fcMercatoDetts) {
 		this.codiceGiornata = codiceGiornata;
-		this.dataAnticipo = dataAnticipo;
+		this.dataAnticipo1 = dataAnticipo1;
+		this.dataAnticipo2 = dataAnticipo2;
 		this.dataGiornata = dataGiornata;
 		this.dataPosticipo = dataPosticipo;
 		this.descGiornata = descGiornata;
@@ -85,13 +88,22 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.codiceGiornata = codiceGiornata;
 	}
 
-	@Column(name = "data_anticipo")
-	public LocalDateTime getDataAnticipo() {
-		return this.dataAnticipo;
+	@Column(name = "data_anticipo1")
+	public LocalDateTime getDataAnticipo1() {
+		return this.dataAnticipo1;
 	}
 
-	public void setDataAnticipo(LocalDateTime dataAnticipo) {
-		this.dataAnticipo = dataAnticipo;
+	public void setDataAnticipo1(LocalDateTime dataAnticipo1) {
+		this.dataAnticipo1 = dataAnticipo1;
+	}
+
+	@Column(name = "data_anticipo2")
+	public LocalDateTime getDataAnticipo2() {
+		return this.dataAnticipo2;
+	}
+
+	public void setDataAnticipo2(LocalDateTime dataAnticipo2) {
+		this.dataAnticipo2 = dataAnticipo2;
 	}
 
 	@Column(name = "data_giornata")

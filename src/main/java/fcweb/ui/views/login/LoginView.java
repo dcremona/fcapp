@@ -50,15 +50,19 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 		// i18n.getHeader().setDescription("Login using user/user or admin/admin");
 		i18n.setAdditionalInformation(null);
 
-		i18n.getForm().setUsername("Email");
-		i18n.getForm().setPassword("Password");
-		i18n.getForm().setSubmit("Login");
-		i18n.getForm().setForgotPassword("Password dimenticata?");
-		i18n.getForm().setSubmit("Login");
-
+		LoginI18n.Form i18nForm = i18n.getForm();
+		//i18nForm.setTitle("Fc App");
+		i18nForm.setUsername("Email");
+		i18nForm.setPassword("Password");
+		i18nForm.setSubmit("Login");
+		i18nForm.setForgotPassword("Password dimenticata?");
+		i18nForm.setSubmit("Login");
+		
 		LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
 		i18nErrorMessage.setTitle("Email o password non valide");
 		i18nErrorMessage.setMessage("Verifica di aver inserito l'email e la password corrette e riprova.");
+		i18nErrorMessage.setUsername("Email richiesta");
+		i18nErrorMessage.setPassword("Password richiesta");
 		i18n.setErrorMessage(i18nErrorMessage);
 
 		setI18n(i18n);

@@ -2005,7 +2005,7 @@ public class JobProcessGiornata{
 			LOG.info("somma parziale prima cambi " + somma);
 			boolean bCambioEffettuato = false;
 			for (String r : listaRuoliPossibiliCambi) {
-					
+
 				if ("P".equals(r)) {
 					HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori2, 12, r, somma);
 					if (mapResult.containsKey("SOMMA")) {
@@ -2039,7 +2039,7 @@ public class JobProcessGiornata{
 						countCambiEffettuati++;
 					}
 				}
-				
+
 				if (bCambioEffettuato) {
 					LOG.info("3 CAMBIO 1 RISERVA EFFETTUATO");
 					break;
@@ -2053,7 +2053,8 @@ public class JobProcessGiornata{
 			// ammessi 2 cambi con le regole che già sappiamo..
 			// il 3 cambio è ammesso solo se non giocano 2 titolari di pari
 			// ruolo .. ( es NON posso cambiare PDA ma potrei cambiare PAA)
-			// in entrambi i casi vale la regola che il 2 cambio pari ruolo ha un malus di -0,5
+			// in entrambi i casi vale la regola che il 2 cambio pari ruolo ha
+			// un malus di -0,5
 
 			if (countCambiEffettuati < 3) {
 
@@ -3063,179 +3064,82 @@ public class JobProcessGiornata{
 		}
 		return buf;
 	}
+	
+	private Buffer getBufferScontro(Buffer position, int posizione, String att1,
+			String att2, int p1, int p2) {
+		if (p1 > p2) {
+			position.addNew("@1" + att2 + "@2" + posizione);
+			posizione--;
+			position.addNew("@1" + att1 + "@2" + posizione);
+		} else if (p1 < p2) {
+			position.addNew("@1" + att1 + "@2" + posizione);
+			posizione--;
+			position.addNew("@1" + att2 + "@2" + posizione);
+		}
+		return null;
+	}
 
 	private Buffer calcolaPosizione(Buffer buffer, int posizione,
 			FcCampionato campionato) throws Exception {
-
-		String START = campionato.getStart().toString();
-		String END = campionato.getEnd().toString();
 
 		Buffer position = new Buffer();
 		int righe = buffer.getRecordCount();
 		// LOG.debug("righe "+righe);
 		if (righe == 1) {
+
 			String attore = buffer.getField(1);
 			position.addNew("@1" + attore + "@2" + posizione);
 
 		} else if (righe == 2) {
 
 			buffer.setCurrentIndex(1);
-			String attore_casa = buffer.getField(1);
-			String diff_reti_attore_casa = buffer.getField(8);
-			String goal_tot_attore_casa = buffer.getField(6);
-			String pt_tot_attore_casa = buffer.getField(9);
+			String att1 = buffer.getField(1);
+			String diffRetiGeneraliAtt1 = buffer.getField(8);
+			String goalTotAtt1 = buffer.getField(6);
+			String ptTotAtt1 = buffer.getField(9);
 			buffer.setCurrentIndex(2);
-			String attore_fuori = buffer.getField(1);
-			String diff_reti_attore_fuori = buffer.getField(8);
-			String goal_tot_attore_fuori = buffer.getField(6);
-			String pt_tot_attore_fuori = buffer.getField(9);
+			String att2 = buffer.getField(1);
+			String diffRetiGeneraliAtt2 = buffer.getField(8);
+			String goalTotAtt2 = buffer.getField(6);
+			String ptTotAtt2 = buffer.getField(9);
 
-			String[] giornate = new String[2];
+			ArrayList<String> giornate = getGiornateGiocate(campionato, att1, buffer);
 
-			// SELEZIONO GIORNATE GIOCATE
-			String sql = " SELECT ID_GIORNATA FROM fc_giornata WHERE ID_GIORNATA >=" + START;
-			sql += " AND ID_GIORNATA <=" + END;
-			sql += " AND ( ID_ATTORE_CASA = " + attore_casa;
-			sql += " AND ID_ATTORE_FUORI = " + attore_fuori;
-			sql += " OR ID_ATTORE_CASA = " + attore_fuori;
-			sql += " AND ID_ATTORE_FUORI = " + attore_casa + " ) ";
+			String[] risAtt1 = getInfoAttore(att1, giornate);
+			String[] risAtt2 = getInfoAttore(att2, giornate);
 
-			jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
-				@Override
-				public String extractData(ResultSet rs)
-						throws SQLException, DataAccessException {
-					int i = 0;
-					while (rs.next()) {
-						giornate[i] = rs.getString(1);
-						i++;
-					}
-					return null;
-				}
-			});
-
-			String[] ris_attore_casa = new String[2];
-
-			// SELEZIONO PUNTI SCONTRO, DIFFERENZA RETI SCONTRI
-			sql = " SELECT SUM(PUNTI), SUM(GF)-SUM(GS) AS DIFF ";
-			sql += " FROM fc_giornata_ris ";
-			sql += " WHERE ID_GIORNATA IN (" + giornate[0] + "," + giornate[1] + ") ";
-			sql += " AND ID_ATTORE= " + attore_casa;
-
-			jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
-
-				@Override
-				public String extractData(ResultSet rs)
-						throws SQLException, DataAccessException {
-					if (rs.next()) {
-
-						String punti = rs.getString(1);
-						String dif = rs.getString(2);
-
-						ris_attore_casa[0] = punti;
-						ris_attore_casa[1] = dif;
-
-						return "1";
-					}
-
-					return null;
-				}
-			});
-
-			String[] ris_attore_fuori = new String[2];
-
-			// SELEZIONO PUNTI SCONTRO, DIFFERENZA RETI SCONTRI
-			sql = " SELECT SUM(PUNTI), SUM(GF)-SUM(GS) AS DIFF ";
-			sql += " FROM fc_giornata_ris ";
-			sql += " WHERE ID_GIORNATA IN (" + giornate[0] + "," + giornate[1] + ") ";
-			sql += " AND ID_ATTORE= " + attore_fuori;
-
-			jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
-
-				@Override
-				public String extractData(ResultSet rs)
-						throws SQLException, DataAccessException {
-					if (rs.next()) {
-
-						String punti = rs.getString(1);
-						String dif = rs.getString(2);
-
-						ris_attore_fuori[0] = punti;
-						ris_attore_fuori[1] = dif;
-
-						return "1";
-					}
-
-					return null;
-				}
-			});
-
+			int p1 = Integer.parseInt(risAtt1[0]);
+			int p2 = Integer.parseInt(risAtt2[0]);
 			// 1) Punti negli scontri diretti
-			// LOG.info("1) Punti negli scontri diretti ");
-			double p1 = Double.parseDouble(ris_attore_casa[0]);
-			double p2 = Double.parseDouble(ris_attore_fuori[0]);
-			if (p1 > p2) {
-				position.addNew("@1" + attore_fuori + "@2" + posizione);
-				posizione--;
-				position.addNew("@1" + attore_casa + "@2" + posizione);
-			} else if (p1 < p2) {
-				position.addNew("@1" + attore_casa + "@2" + posizione);
-				posizione--;
-				position.addNew("@1" + attore_fuori + "@2" + posizione);
-			} else {
+			LOG.info(" 1) Punti negli scontri diretti ");
+			position = getBufferScontro(buffer, posizione, att1, att2, p1, p2);
+			if (position == null) {
 				// 2) Differenza reti negli scontri diretti
-				// LOG.info("2) Differenza reti negli scontri diretti ");
-				double reti1 = Double.parseDouble(ris_attore_casa[1]);
-				double reti2 = Double.parseDouble(ris_attore_fuori[1]);
-				if (reti1 > reti2) {
-					position.addNew("@1" + attore_fuori + "@2" + posizione);
-					posizione--;
-					position.addNew("@1" + attore_casa + "@2" + posizione);
-				} else if (reti1 < reti2) {
-					position.addNew("@1" + attore_casa + "@2" + posizione);
-					posizione--;
-					position.addNew("@1" + attore_fuori + "@2" + posizione);
-				} else {
+				LOG.info("2) Differenza reti negli scontri diretti ");
+				int reti1 = Integer.parseInt(risAtt1[1]);
+				int reti2 = Integer.parseInt(risAtt2[1]);
+				position = getBufferScontro(buffer, posizione, att1, att2, reti1, reti2);
+				if (position == null) {
 					// 3) Differenza reti generali
-					// LOG.info("3) Differenza reti generali");
-					int retiGen1 = Integer.parseInt(diff_reti_attore_casa);
-					int retiGen2 = Integer.parseInt(diff_reti_attore_fuori);
-					if (retiGen1 > retiGen2) {
-						position.addNew("@1" + attore_fuori + "@2" + posizione);
-						posizione--;
-						position.addNew("@1" + attore_casa + "@2" + posizione);
-					} else if (retiGen1 < retiGen2) {
-						position.addNew("@1" + attore_casa + "@2" + posizione);
-						posizione--;
-						position.addNew("@1" + attore_fuori + "@2" + posizione);
-					} else {
+					LOG.info("3) Differenza reti generali");
+					int retiGen1 = Integer.parseInt(diffRetiGeneraliAtt1);
+					int retiGen2 = Integer.parseInt(diffRetiGeneraliAtt2);
+					position = getBufferScontro(buffer, posizione, att1, att2, retiGen1, retiGen2);
+					if (position == null) {
 						// 4) Gol realizzati totali
-						// LOG.info("4) Gol realizzati totali");
-						int goalTot1 = Integer.parseInt(goal_tot_attore_casa);
-						int goalTot2 = Integer.parseInt(goal_tot_attore_fuori);
-						if (goalTot1 > goalTot2) {
-							position.addNew("@1" + attore_fuori + "@2" + posizione);
-							posizione--;
-							position.addNew("@1" + attore_casa + "@2" + posizione);
-						} else if (goalTot1 < goalTot2) {
-							position.addNew("@1" + attore_casa + "@2" + posizione);
-							posizione--;
-							position.addNew("@1" + attore_fuori + "@2" + posizione);
-						} else {
+						LOG.info("4) Gol realizzati totali");
+						int goalTot1 = Integer.parseInt(goalTotAtt1);
+						int goalTot2 = Integer.parseInt(goalTotAtt2);
+						position = getBufferScontro(buffer, posizione, att1, att2, goalTot1, goalTot2);
+						if (position == null) {
 							// 5) Punteggio totale ottenuto
-							// LOG.info("5) Punteggio totale ottenuto");
-							int ptTot1 = Integer.parseInt(pt_tot_attore_casa);
-							int ptTot2 = Integer.parseInt(pt_tot_attore_fuori);
-							if (ptTot1 > ptTot2) {
-								position.addNew("@1" + attore_fuori + "@2" + posizione);
-								posizione--;
-								position.addNew("@1" + attore_casa + "@2" + posizione);
-							} else if (ptTot1 < ptTot2) {
-								position.addNew("@1" + attore_casa + "@2" + posizione);
-								posizione--;
-								position.addNew("@1" + attore_fuori + "@2" + posizione);
-							} else {
+							LOG.info("5) Punteggio totale ottenuto");
+							int ptTot1 = Integer.parseInt(ptTotAtt1);
+							int ptTot2 = Integer.parseInt(ptTotAtt2);
+							position = getBufferScontro(buffer, posizione, att1, att2, ptTot1, ptTot2);
+							if (position == null) {
 								// SPARATE
-								// LOG.info("SPARATE!!!!!!!!!!!!!!!!1");
+								LOG.info("SPARATE!!!!!!!!!!!!!!!!1");
 							}
 						}
 					}
@@ -3243,18 +3147,147 @@ public class JobProcessGiornata{
 			}
 
 		} else {
-			// LOG.debug("@ATTORI CON PARITA PUNTI " + buffer.getRecordCount());
-			buffer.sort(9);
+
+			LOG.debug("@ATTORI CON PARITA PUNTI " + buffer.getRecordCount());
+
+			Buffer mapInfo = new Buffer();
+
+			// PER OGNI ATTORE OTTENGO ULTERIORI INFO PUNTO 1 e PUNTO 2 NEI
+			// SCONTRI DIRETTI
 			for (int r = 1; r <= buffer.getRecordCount(); r++) {
 				buffer.setCurrentIndex(r);
 				String attore = buffer.getField(1);
+
+				ArrayList<String> giornate = getGiornateGiocate(campionato, attore, buffer);
+				String[] ris = getInfoAttore(attore, giornate);
+
+				// 1) Punti negli scontri diretti
+				String ptScontriDiretti = ris[0];
+				// 2) Differenza reti negli scontri diretti
+				String diffRetiScontriDiretti = ris[0];
+				// 3) Differenza reti generali
+				String diffRetiGenerali = buffer.getField(8);
+				// 4) Gol realizzati totali
+				String goalTot = buffer.getField(6);
+				// 5) Punteggio totale ottenuto
+				String ptTot = buffer.getField(9);
+
+				mapInfo.addNew("@1" + attore + "@2" + ptScontriDiretti + "@3" + diffRetiScontriDiretti + "@4" + diffRetiGenerali + "@5" + goalTot + "@6" + ptTot);
+
+			}
+
+			// 1) Punti negli scontri diretti
+			LOG.info(" 1) Punti negli scontri diretti ");
+			mapInfo.sort(2);
+			for (int r = 1; r <= mapInfo.getRecordCount(); r++) {
+				mapInfo.setCurrentIndex(r);
+				String attore = mapInfo.getField(1);
 				position.addNew("@1" + attore + "@2" + posizione);
-				// LOG.debug("PUNTEGGIO " + buffer.getField(2));
-				// LOG.debug("ATT " + attore + "POS@" + posizione);
 				posizione--;
 			}
 		}
+		// else {
+		//
+		// LOG.debug("@ATTORI CON PARITA PUNTI " + buffer.getRecordCount());
+		// buffer.sort(9);
+		// for (int r = 1; r <= buffer.getRecordCount(); r++) {
+		// buffer.setCurrentIndex(r);
+		// String attore = buffer.getField(1);
+		// position.addNew("@1" + attore + "@2" + posizione);
+		// posizione--;
+		// }
+		// }
 		return position;
+	}
+
+	private ArrayList<String> getGiornateGiocate(FcCampionato campionato,
+			String attore, Buffer buffer) {
+
+		String start = campionato.getStart().toString();
+		String end = campionato.getEnd().toString();
+
+		ArrayList<String> giornate = new ArrayList<String>();
+
+		buffer.setCurrentIndex(2);
+		String att2 = buffer.getField(1);
+
+		// SELEZIONO GIORNATE GIOCATE
+		String sql = " SELECT ID_GIORNATA FROM fc_giornata WHERE ID_GIORNATA >=" + start;
+		sql += " AND ID_GIORNATA <=" + end;
+		sql += " AND ( ID_ATTORE_CASA = " + attore;
+		sql += "       AND ID_ATTORE_FUORI = " + att2;
+		sql += "       OR ID_ATTORE_CASA = " + att2;
+		sql += "          AND ID_ATTORE_FUORI = " + attore + " ) ";
+
+		int righe = buffer.getRecordCount();
+		if (righe > 2) {
+			for (int r = 1; r <= buffer.getRecordCount(); r++) {
+				buffer.setCurrentIndex(r);
+				String attNext = buffer.getField(1);
+				if (attore.equals(attNext)) {
+					continue;
+				}
+				sql += " OR ( ID_ATTORE_CASA = " + attore;
+				sql += "       AND ID_ATTORE_FUORI = " + attNext;
+				sql += "       OR ID_ATTORE_CASA = " + attNext;
+				sql += "          AND ID_ATTORE_FUORI = " + attore + " ) ";
+			}
+		}
+
+		jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
+			@Override
+			public String extractData(ResultSet rs)
+					throws SQLException, DataAccessException {
+				while (rs.next()) {
+					giornate.add(rs.getString(1));
+				}
+				return null;
+			}
+		});
+
+		return giornate;
+	}
+
+	private String[] getInfoAttore(String idAttore,
+			ArrayList<String> giornate) {
+
+		String ggIn = "";
+		for (String g : giornate) {
+			ggIn += g + ",";
+		}
+		if (ggIn.length() != -1) {
+			ggIn = ggIn.substring(0, ggIn.length() - 1);
+		}
+
+		String[] ris = new String[2];
+
+		// SELEZIONO PUNTI SCONTRO, DIFFERENZA RETI SCONTRI
+		String sql = " SELECT SUM(PUNTI), SUM(GF)-SUM(GS) AS DIFF ";
+		sql += " FROM fc_giornata_ris ";
+		sql += " WHERE ID_GIORNATA IN (" + ggIn + ") ";
+		sql += " AND ID_ATTORE= " + idAttore;
+
+		jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
+
+			@Override
+			public String extractData(ResultSet rs)
+					throws SQLException, DataAccessException {
+				if (rs.next()) {
+
+					String punti = rs.getString(1);
+					String dif = rs.getString(2);
+
+					ris[0] = punti;
+					ris[1] = dif;
+
+					return "1";
+				}
+
+				return null;
+			}
+		});
+
+		return ris;
 	}
 
 	// CREA CALENDARIO X SEMIFINALI
@@ -3313,7 +3346,7 @@ public class JobProcessGiornata{
 				int tot_casa = 0;
 				int tot_fuori = 0;
 				int somma_tot = 0;
-				
+
 				while (rs.next()) {
 
 					att = rs.getInt(1);
@@ -3351,16 +3384,16 @@ public class JobProcessGiornata{
 
 		int att_1 = 0;
 		int att_1_somma_goal = 0;
-		//int att_1_goal_fuori = 0;
+		// int att_1_goal_fuori = 0;
 		int att_1_somma_tot = 0;
 		int att_1_id_posiz = 0;
-		
+
 		int att_2 = 0;
 		int att_2_somma_goal = 0;
-		//int att_2_goal_fuori = 0;
+		// int att_2_goal_fuori = 0;
 		int att_2_somma_tot = 0;
 		int att_2_id_posiz = 0;
-		
+
 		buf.moveFirst();
 		int id_win = 0;
 		int id_lose = 0;
@@ -3371,14 +3404,14 @@ public class JobProcessGiornata{
 
 			int idx = bufAppo.findFirst("" + att_1, 1, false);
 			if (idx != -1) {
-				//att_1_goal_fuori = bufAppo.getFieldByInt(3);
+				// att_1_goal_fuori = bufAppo.getFieldByInt(3);
 				att_1_somma_goal = bufAppo.getFieldByInt(4);
 				att_1_somma_tot = bufAppo.getFieldByInt(7);
 				att_1_id_posiz = bufAppo.getFieldByInt(8);
 			}
 			idx = bufAppo.findFirst("" + att_2, 1, false);
 			if (idx != -1) {
-				//att_2_goal_fuori = bufAppo.getFieldByInt(3);
+				// att_2_goal_fuori = bufAppo.getFieldByInt(3);
 				att_2_somma_goal = bufAppo.getFieldByInt(4);
 				att_2_somma_tot = bufAppo.getFieldByInt(7);
 				att_2_id_posiz = bufAppo.getFieldByInt(8);

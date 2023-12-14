@@ -101,7 +101,7 @@ public class MainLayout extends AppLayout{
 	}
 
 	private void addDrawerContent() {
-		H1 appName = new H1("fcapp-v24");
+		H1 appName = new H1("Fc App");
 		appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 		Header header = new Header(appName);
 
@@ -372,13 +372,13 @@ public class MainLayout extends AppLayout{
 			div.getElement().getStyle().set("align-items", "center");
 			div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
 			userName.add(div);
-			userName.getSubMenu().addItem("Sign out", e -> {
+			userName.getSubMenu().addItem("Esci", e -> {
 				authenticatedUser.logout();
 			});
 
 			layout.add(userMenu);
 		} else {
-			Anchor loginLink = new Anchor("login","Sign in");
+			Anchor loginLink = new Anchor("login","Entra");
 			layout.add(loginLink);
 		}
 

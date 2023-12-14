@@ -28,8 +28,6 @@ import fcweb.ui.views.MainLayout;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-
-
 @PageTitle("GiornataInfo")
 @Route(value = "giornataInfo", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
@@ -74,41 +72,41 @@ public class FcGiornataInfoView extends VerticalLayout{
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "codiceGiornata", "dataAnticipo", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "codiceGiornata", "dataAnticipo", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "dataAnticipo", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "codiceGiornata", "dataAnticipo1", "dataAnticipo2", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "codiceGiornata", "dataAnticipo1", "dataAnticipo2", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "dataAnticipo1", "dataAnticipo2", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "codiceGiornata", "descGiornata");
 
-		// crud.getGrid().setColumns("codiceGiornata", "dataAnticipo",
-		// "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc",
-		// "idGiornataFc");
-		// crud.getGrid().setColumnReorderingAllowed(true);
-
 		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCodiceGiornata()));
-		//Column<FcGiornataInfo> dataAnticipoColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(Locale.ITALY)));
-		Column<FcGiornataInfo> dataAnticipoColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
-		dataAnticipoColumn.setSortable(false);
-		dataAnticipoColumn.setAutoWidth(true);
-		// dataAnticipoColumn.setFlexGrow(2);
 
-		//Column<FcGiornataInfo> dataGiornataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataGiornata,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(Locale.ITALY)));
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCodiceGiornata()));
+
+		Column<FcGiornataInfo> dataAnticipoColumn1 = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo1,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+		dataAnticipoColumn1.setSortable(false);
+		dataAnticipoColumn1.setAutoWidth(true);
+
+		Column<FcGiornataInfo> dataAnticipoColumn2 = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo2,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+		dataAnticipoColumn2.setSortable(false);
+		dataAnticipoColumn2.setAutoWidth(true);
+
 		Column<FcGiornataInfo> dataGiornataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataGiornata,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataGiornataColumn.setSortable(false);
 		dataGiornataColumn.setAutoWidth(true);
-		// dataGiornataColumn.setFlexGrow(2);
 
-		//Column<FcGiornataInfo> dataPosticipoColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataPosticipo,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(Locale.ITALY)));
 		Column<FcGiornataInfo> dataPosticipoColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataPosticipo,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataPosticipoColumn.setSortable(false);
 		dataPosticipoColumn.setAutoWidth(true);
-		// dataGiornataColumn.setFlexGrow(2);
 
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getDescGiornata()));
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getDescGiornataFc()));
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornataFc()));
 
-		crud.getCrudFormFactory().setFieldProvider("dataAnticipo", a -> {
+		crud.getCrudFormFactory().setFieldProvider("dataAnticipo1", a -> {
+			DateTimePicker data = new DateTimePicker();
+			return data;
+		});
+
+		crud.getCrudFormFactory().setFieldProvider("dataAnticipo2", a -> {
 			DateTimePicker data = new DateTimePicker();
 			return data;
 		});

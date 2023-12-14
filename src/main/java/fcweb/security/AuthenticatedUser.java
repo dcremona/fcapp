@@ -138,22 +138,40 @@ public class AuthenticatedUser{
 
 	private String getNextDate(FcGiornataInfo giornataInfo) {
 
-		LocalDateTime dataAnticipo = giornataInfo.getDataAnticipo();
-		LocalDateTime dataGiornata = giornataInfo.getDataGiornata();
-		LocalDateTime dataPosticipo = giornataInfo.getDataPosticipo();
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime currentDate = LocalDateTime.now();
 
+		LocalDateTime dataAnticipo = null;
+		LocalDateTime dataAnticipo1 = giornataInfo.getDataAnticipo1();
+		LocalDateTime dataAnticipo2 = giornataInfo.getDataAnticipo2();
+		if (dataAnticipo1 != null && dataAnticipo2 != null) {
+			if (now.isBefore(dataAnticipo1)) {
+				dataAnticipo = dataAnticipo1;
+			} else if (now.isAfter(dataAnticipo1)) {
+				dataAnticipo = dataAnticipo2;
+			}
+		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
+			dataAnticipo = dataAnticipo2;
+		}
+		LocalDateTime dataGiornata = giornataInfo.getDataGiornata();
+		LocalDateTime dataPosticipo = giornataInfo.getDataPosticipo();
+
 		if (dataGiornata != null) {
 			currentDate = dataGiornata;
-			if (dataAnticipo != null && dataPosticipo == null) {
-				currentDate = dataAnticipo;
-			} else if (dataAnticipo != null && dataPosticipo != null) {
-				currentDate = dataAnticipo;
 
+			if (dataAnticipo != null) {
+				currentDate = dataAnticipo;
 				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
 				LOG.info("dataGiornata.getDayOfWeek() : " + dataGiornata.getDayOfWeek());
-				if (now.isAfter(dataAnticipo) && now.isBefore(dataGiornata) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
+				if ( now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek() ) {
+					currentDate = dataGiornata;
+				}
+			}
+			
+			if (dataPosticipo != null) {
+				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
+				LOG.info("dataPosticipo.getDayOfWeek() : " + dataPosticipo.getDayOfWeek());
+				if ( now.getDayOfWeek() == dataPosticipo.getDayOfWeek() ) {
 					currentDate = dataGiornata;
 				}
 			}
