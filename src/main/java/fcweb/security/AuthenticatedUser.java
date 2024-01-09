@@ -174,6 +174,10 @@ public class AuthenticatedUser{
 				if ( now.getDayOfWeek() == dataPosticipo.getDayOfWeek() ) {
 					currentDate = dataGiornata;
 				}
+			} else {
+				if (dataAnticipo != null) {
+					currentDate = dataAnticipo;	
+				}
 			}
 		}
 
