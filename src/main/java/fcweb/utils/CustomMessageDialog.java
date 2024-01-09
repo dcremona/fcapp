@@ -1,7 +1,6 @@
 package fcweb.utils;
 
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
-import com.vaadin.flow.component.notification.Notification;
 
 public class CustomMessageDialog{
 
@@ -34,7 +33,7 @@ public class CustomMessageDialog{
 		dialog.setText( msg == null ? "ND" : msg );
 
 		dialog.setConfirmText(LABEL_CHIUDI);
-		dialog.addConfirmListener(event -> Notification.show(LABEL_CHIUDI));
+		//dialog.addConfirmListener(event -> Notification.show(LABEL_CHIUDI));
 		dialog.open();
 	}
 
@@ -52,7 +51,7 @@ public class CustomMessageDialog{
 		dialog.setText( msg == null ? "ND" : msg );
 
 		dialog.setConfirmText(LABEL_CHIUDI);
-		dialog.addConfirmListener(event -> Notification.show(LABEL_CHIUDI));
+		//dialog.addConfirmListener(event -> Notification.show(LABEL_CHIUDI));
 		dialog.open();
 	}
 
@@ -81,7 +80,7 @@ public class CustomMessageDialog{
 		dialog.setText( (msg == null ? "ND" : msg) + " " + (details == null ? "ND" : details) );
 
 		dialog.setConfirmText(LABEL_CHIUDI);
-		dialog.addConfirmListener(event -> Notification.show(LABEL_CHIUDI));
+		//dialog.addConfirmListener(event -> Notification.show(LABEL_CHIUDI));
 		dialog.open();
 
 	}
