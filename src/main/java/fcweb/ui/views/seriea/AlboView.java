@@ -309,6 +309,25 @@ public class AlboView extends VerticalLayout {
 		winClasRegColumn.setResizable(false);
 		winClasRegColumn.setHeader("Clas Regolare");
 
+		Column<FcExpStat> winTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			if (att.getDescAttore().equals(s.getWinClasTvsT())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
+			Span lblAttore = new Span(s.getWinClasTvsT());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		winTvsTColumn.setSortable(false);
+		winTvsTColumn.setResizable(false);
+		winTvsTColumn.setHeader("Clas TvsT");
+		
 		Column<FcExpStat> tripleteColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -390,6 +409,10 @@ public class AlboView extends VerticalLayout {
 		winClasRegColumn.setSortable(true);
 		winClasRegColumn.setHeader("Clas Regolare");
 
+		Column<FcExpStat> winClasTvsTColumn = grid.addColumn(s -> s.getWinClasTvsT());
+		winClasTvsTColumn.setSortable(true);
+		winClasTvsTColumn.setHeader("Clas TvsT");
+
 		return grid;
 
 	}
@@ -416,6 +439,7 @@ public class AlboView extends VerticalLayout {
 			int count_p8 = 0;
 			int count_win_clas_pt = 0;
 			int count_win_clas_reg = 0;
+			int count_win_clas_tvst = 0;
 
 			for (FcExpStat bean : all) {
 
@@ -451,6 +475,10 @@ public class AlboView extends VerticalLayout {
 					if (bean.getWinClasReg().equals(squadra)) {
 						count_win_clas_reg++;
 					}
+					if (bean.getWinClasTvsT().equals(squadra)) {
+						count_win_clas_tvst++;
+					}
+					
 				} catch (Exception e) {
 					continue;
 				}
@@ -469,6 +497,7 @@ public class AlboView extends VerticalLayout {
 
 			b.setWinClasPt(count_win_clas_pt < 10 ? "0" + count_win_clas_pt : "" + count_win_clas_pt);
 			b.setWinClasReg(count_win_clas_reg < 10 ? "0" + count_win_clas_reg : "" + count_win_clas_reg);
+			b.setWinClasTvsT(count_win_clas_tvst < 10 ? "0" + count_win_clas_tvst : "" + count_win_clas_tvst);
 
 			beans.add(b);
 			// }

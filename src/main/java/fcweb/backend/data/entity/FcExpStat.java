@@ -30,6 +30,7 @@ public class FcExpStat implements java.io.Serializable{
 	private String scudetto;
 	private String winClasPt;
 	private String winClasReg;
+	private String winClasTvsT;
 
 	public FcExpStat() {
 	}
@@ -40,7 +41,7 @@ public class FcExpStat implements java.io.Serializable{
 
 	public FcExpStat(int id, String anno, String campionato, String p2,
 			String p3, String p4, String p5, String p6, String p7, String p8,
-			String scudetto, String winClasPt, String winClasReg) {
+			String scudetto, String winClasPt, String winClasReg,String winClasTvsT) {
 		this.id = id;
 		this.anno = anno;
 		this.campionato = campionato;
@@ -54,6 +55,7 @@ public class FcExpStat implements java.io.Serializable{
 		this.scudetto = scudetto;
 		this.winClasPt = winClasPt;
 		this.winClasReg = winClasReg;
+		this.winClasTvsT = winClasTvsT;
 	}
 
 	@Id
@@ -173,6 +175,15 @@ public class FcExpStat implements java.io.Serializable{
 
 	public void setWinClasReg(String winClasReg) {
 		this.winClasReg = winClasReg;
+	}
+
+	@Column(name = "win_clas_TvsT")
+	public String getWinClasTvsT() {
+		return this.winClasTvsT;
+	}
+
+	public void setWinClasTvsT(String winClasTvsT) {
+		this.winClasTvsT = winClasTvsT;
 	}
 
 }
