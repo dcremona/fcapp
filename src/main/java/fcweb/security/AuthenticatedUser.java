@@ -145,9 +145,9 @@ public class AuthenticatedUser{
 		LocalDateTime dataAnticipo1 = giornataInfo.getDataAnticipo1();
 		LocalDateTime dataAnticipo2 = giornataInfo.getDataAnticipo2();
 		if (dataAnticipo1 != null && dataAnticipo2 != null) {
-			if (now.isBefore(dataAnticipo1)) {
+			if (now.getDayOfWeek() == dataAnticipo1.getDayOfWeek()) {
 				dataAnticipo = dataAnticipo1;
-			} else if (now.isAfter(dataAnticipo1)) {
+			} else if (now.getDayOfWeek() == dataAnticipo2.getDayOfWeek()) {
 				dataAnticipo = dataAnticipo2;
 			}
 		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
