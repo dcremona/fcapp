@@ -637,6 +637,24 @@ public class TeamInsertMobileView extends VerticalLayout
 		checkMail.setEnabled(enabled);
 		// viewPartite.setEnabled(enabled);
 		// rosa.setEnabled(enabled);
+		tablePlayer1.setEnabled(enabled);
+		tablePlayer2.setEnabled(enabled);
+		tablePlayer3.setEnabled(enabled);
+		tablePlayer4.setEnabled(enabled);
+		tablePlayer5.setEnabled(enabled);
+		tablePlayer6.setEnabled(enabled);
+		tablePlayer7.setEnabled(enabled);
+		tablePlayer8.setEnabled(enabled);
+		tablePlayer9.setEnabled(enabled);
+		tablePlayer10.setEnabled(enabled);
+		tablePlayer11.setEnabled(enabled);
+		tablePlayer12.setEnabled(enabled);
+		tablePlayer13.setEnabled(enabled);
+		tablePlayer14.setEnabled(enabled);
+		tablePlayer15.setEnabled(enabled);
+		tablePlayer16.setEnabled(enabled);
+		tablePlayer17.setEnabled(enabled);
+		tablePlayer18.setEnabled(enabled);		
 	}
 
 	private String getInfoPlayer(FcGiocatore bean) {
