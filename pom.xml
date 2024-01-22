@@ -11,14 +11,13 @@
 
     <properties>
         <java.version>17</java.version>
-        <vaadin.version>24.2.3</vaadin.version>
-        <selenium.version>4.8.3</selenium.version>
+        <vaadin.version>24.3.3</vaadin.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.2</version>
+        <version>3.2.0</version>
     </parent>
 
     <repositories>
@@ -56,7 +55,7 @@
         <dependency>
             <groupId>org.parttio</groupId>
             <artifactId>line-awesome</artifactId>
-            <version>1.1.0</version>
+            <version>2.0.0</version>
         </dependency>
 
         <dependency>
@@ -70,12 +69,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.31</version>
         </dependency>
-
-        <!--dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -122,33 +115,16 @@
 		   <artifactId>report-ui</artifactId>
 		   <version>4.0.2</version>
 		</dependency>
-		
-		<!--dependency>
-		   <groupId>org.vaadin.haijian</groupId>
-		   <artifactId>exporter</artifactId>
-		   <version>3.0.1</version>
-		</dependency-->
 		<dependency>
 		   <groupId>org.vaadin.addons.flowingcode</groupId>
 		   <artifactId>grid-exporter-addon</artifactId>
-		   <version>1.8.0</version>
+		   <version>2.2.0</version>
 		</dependency>
-		<!--dependency>
-		   <groupId>org.vaadin.tabs</groupId>
-		   <artifactId>paged-tabs</artifactId>
-		   <version>3.0.0</version>
-		</dependency-->
 		<dependency>
 		   <groupId>com.vaadin.componentfactory</groupId>
 		   <artifactId>togglebutton</artifactId>
 		   <version>3.0.0</version>
 		</dependency>	
-		<!--dependency>
-		   <groupId>de.codecamp.vaadin</groupId>
-		   <artifactId>vaadin-message-dialog</artifactId>
-		   <version>1.1.1</version>
-		</dependency-->
-
 		<dependency>
 		   <groupId>com.vaadin.componentfactory</groupId>
 		   <artifactId>svg</artifactId>
@@ -157,9 +133,8 @@
 		<dependency>
 		   <groupId>org.vaadin.addons.mycompany</groupId>
 		   <artifactId>badge</artifactId>
-		   <version>2.2.2</version>
+		   <version>2.4.0</version>
 		</dependency>		
-        
 		<dependency>
 		   <groupId>org.vaadin.olli</groupId>
 		   <artifactId>file-download-wrapper</artifactId>
@@ -178,40 +153,40 @@
 		<dependency>
 		   <groupId>org.vaadin.addons.componentfactory</groupId>
 		   <artifactId>vcf-pdf-viewer</artifactId>
-		   <version>2.7.2</version>
+		   <version>2.8.1</version>
 		</dependency>
 		<dependency>
 		   <groupId>org.vaadin.crudui</groupId>
 		   <artifactId>crudui</artifactId>
 		   <version>7.1.0</version>
 		</dependency>
+		<dependency>
+		   <groupId>com.wontlost</groupId>
+		   <artifactId>ckeditor-vaadin</artifactId>
+		   <version>3.2.1</version>
+		</dependency>
 		
-<!--dependency>
+<dependency>
    <groupId>com.github.appreciated</groupId>
    <artifactId>apexcharts</artifactId>
-   <version>23.0.1</version>
-</dependency-->		
-<dependency>
+   <version>24.0.0</version>
+</dependency>		
+<!--dependency>
    <groupId>org.vaadin.addons.tatu</groupId>
    <artifactId>columnchart</artifactId>
    <version>1.1.0</version>
-</dependency>
+</dependency-->
 
 <!--dependency>
    <groupId>com.flowingcode.addons</groupId>
    <artifactId>simple-timer</artifactId>
    <version>2.1.1</version>
 </dependency-->
-<!--dependency>
-   <groupId>com.wontlost</groupId>
-   <artifactId>ckeditor-vaadin</artifactId>
-   <version>3.2.1</version>
-</dependency-->
 
 
     </dependencies>
 
-    <build>
+	<build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <plugins>
             <plugin>
@@ -237,7 +212,7 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+    </build>    
 
     <profiles>
     
