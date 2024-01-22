@@ -22,7 +22,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.vaadin.olli.FileDownloadWrapper;
 
-
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
 import com.github.appreciated.apexcharts.config.builder.ChartBuilder;
@@ -51,7 +50,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
-
 import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
@@ -68,7 +66,7 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Classifica")
 @Route(value = "classifica", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class ClassificaView extends VerticalLayout {
+public class ClassificaView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
@@ -136,9 +134,6 @@ public class ClassificaView extends VerticalLayout {
 			if (comp2 != null) {
 				this.add(comp2);
 			}
-
-			//this.add(buildGrafico(campionato));
-			//this.add(buildGraficoTuttiVsTutti(campionato));
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
@@ -255,11 +250,12 @@ public class ClassificaView extends VerticalLayout {
 
 	}
 
-	private HorizontalLayout buildButtonPdf(FcCampionato campionato, Properties p) throws Exception {
+	private HorizontalLayout buildButtonPdf(FcCampionato campionato,
+			Properties p) throws Exception {
 
 		Button stampapdf = new Button("Classifica pdf");
 		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf", () -> {
+		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
 			try {
 				Map<String, Object> hm = new HashMap<String, Object>();
 				hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
@@ -281,15 +277,15 @@ public class ClassificaView extends VerticalLayout {
 		return horLayout;
 	}
 
-	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato) throws Exception {
+	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato)
+			throws Exception {
 
 		List<FcClassifica> items = classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 
 		Grid<FcClassifica> grid = new Grid<>();
 		grid.setItems(items);
 		// grid.setWidth("70%");
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-				GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 		grid.setAllRowsVisible(true);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setMultiSort(true);
@@ -339,14 +335,13 @@ public class ClassificaView extends VerticalLayout {
 
 		Column<FcClassifica> totPuntiRosaColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
-			Double dTotPunti = classifica.getTotPuntiRosa() != null
-					? classifica.getTotPuntiRosa() / Costants.DIVISORE_100
-					: 0;
+			Double dTotPunti = classifica.getTotPuntiRosa() != null ? classifica.getTotPuntiRosa() / Costants.DIVISORE_100 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
 			return new Span(sTotPunti);
 		})).setHeader("Tot Pt Rosa");
 		totPuntiRosaColumn.setSortable(true);
-		totPuntiRosaColumn.setComparator((p1, p2) -> p1.getTotPuntiRosa().compareTo(p2.getTotPuntiRosa()));
+		totPuntiRosaColumn.setComparator((p1,
+				p2) -> p1.getTotPuntiRosa().compareTo(p2.getTotPuntiRosa()));
 		totPuntiRosaColumn.setAutoWidth(true);
 
 		Column<FcClassifica> totPuntiTVsTColumn = grid.addColumn(classifica -> classifica.getTotPuntiTvsT());
@@ -364,14 +359,14 @@ public class ClassificaView extends VerticalLayout {
 		// mercatofmColumn.setHeader("Mercato FM");
 
 		HeaderRow headerRow = grid.prependHeaderRow();
-		HeaderCell headerCell = headerRow.join(squadraColumn, puntiColumn, vinteColumn, pariColumn, perseColumn,
-				gfColumn, gsColumn, drColumn, totPuntiRosaColumn, totPuntiTVsTColumn, totfmColumn);
+		HeaderCell headerCell = headerRow.join(squadraColumn, puntiColumn, vinteColumn, pariColumn, perseColumn, gfColumn, gsColumn, drColumn, totPuntiRosaColumn, totPuntiTVsTColumn, totfmColumn);
 		headerCell.setText("Classifica Prima Fase");
 
 		return grid;
 	}
 
-	private Grid<FcClassificaTotPt> buildTableInfoClassifica(FcCampionato campionato) throws Exception {
+	private Grid<FcClassificaTotPt> buildTableInfoClassifica(
+			FcCampionato campionato) throws Exception {
 
 		String sql = " select a.desc_attore, ";
 		sql += " sum(pt.tot_pt) as tot18, ";
@@ -390,9 +385,10 @@ public class ClassificaView extends VerticalLayout {
 
 		List<FcClassificaTotPt> dm = new ArrayList<FcClassificaTotPt>();
 
-		jdbcTemplate.query(sql, new ResultSetExtractor<String>() {
+		jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
 			@Override
-			public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+			public String extractData(ResultSet rs)
+					throws SQLException, DataAccessException {
 				String descAttore = "";
 				double tot18 = 0;
 				double tot11 = 0;
@@ -432,27 +428,25 @@ public class ClassificaView extends VerticalLayout {
 
 		Grid<FcClassificaTotPt> grid = new Grid<>();
 		grid.setItems(dm);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-				GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 		grid.setAllRowsVisible(true);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setMultiSort(true);
 
-		Column<FcClassificaTotPt> squadraColumn = grid
-				.addColumn(classifica -> classifica.getFcAttore().getDescAttore());
+		Column<FcClassificaTotPt> squadraColumn = grid.addColumn(classifica -> classifica.getFcAttore().getDescAttore());
 		squadraColumn.setSortable(false);
 		squadraColumn.setHeader("Squadra");
 
 		Column<FcClassificaTotPt> totPtRosaColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
-			Double dTotPunti = classifica.getTotPtRosa() != null ? classifica.getTotPtRosa() / Costants.DIVISORE_100
-					: 0;
+			Double dTotPunti = classifica.getTotPtRosa() != null ? classifica.getTotPtRosa() / Costants.DIVISORE_100 : 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
 			return new Span(sTotPunti);
 		}));
 		totPtRosaColumn.setHeader("Tot Pt Rosa");
 		totPtRosaColumn.setSortable(true);
-		totPtRosaColumn.setComparator((p1, p2) -> p1.getTotPtRosa().compareTo(p2.getTotPtRosa()));
+		totPtRosaColumn.setComparator((p1,
+				p2) -> p1.getTotPtRosa().compareTo(p2.getTotPtRosa()));
 
 		Column<FcClassificaTotPt> ptTvsTColumn = grid.addColumn(classifica -> classifica.getPtTvsT());
 		ptTvsTColumn.setHeader("Tot Pt TvsT");
@@ -466,7 +460,8 @@ public class ClassificaView extends VerticalLayout {
 		}));
 		totpuntiColumn.setHeader("Tot Pt 18");
 		totpuntiColumn.setSortable(true);
-		totpuntiColumn.setComparator((p1, p2) -> p1.getTotPt().compareTo(p2.getTotPt()));
+		totpuntiColumn.setComparator((p1,
+				p2) -> p1.getTotPt().compareTo(p2.getTotPt()));
 
 		Column<FcClassificaTotPt> totpuntioldColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -476,7 +471,8 @@ public class ClassificaView extends VerticalLayout {
 		}));
 		totpuntioldColumn.setHeader("Tot Pt 11");
 		totpuntioldColumn.setSortable(true);
-		totpuntioldColumn.setComparator((p1, p2) -> p1.getTotPtOld().compareTo(p2.getTotPtOld()));
+		totpuntioldColumn.setComparator((p1,
+				p2) -> p1.getTotPtOld().compareTo(p2.getTotPtOld()));
 
 		Column<FcClassificaTotPt> scoreColumn = grid.addColumn(classifica -> classifica.getScore());
 		scoreColumn.setHeader("GrandPrix G18");
@@ -491,69 +487,10 @@ public class ClassificaView extends VerticalLayout {
 		scoreGrandPrixColumn.setSortable(true);
 
 		HeaderRow headerRow = grid.prependHeaderRow();
-		HeaderCell headerCell = headerRow.join(squadraColumn, totpuntiColumn, totpuntioldColumn, totPtRosaColumn,
-				ptTvsTColumn, scoreColumn, scoreoldColumn, scoreGrandPrixColumn);
+		HeaderCell headerCell = headerRow.join(squadraColumn, totpuntiColumn, totpuntioldColumn, totPtRosaColumn, ptTvsTColumn, scoreColumn, scoreoldColumn, scoreGrandPrixColumn);
 		headerCell.setText("Info Classifiche Generali");
 
 		return grid;
 	}
-
-//	private ColumnChart buildGrafico(FcCampionato campionato) throws Exception {
-//
-//		String[] att = new String[8];
-//		List<ColumnChartValue> values = new ArrayList<ColumnChartValue>();
-//
-//		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
-//		int i = 0;
-//		for (FcClassifica cl : all) {
-//			String sq = cl.getFcAttore().getDescAttore();
-//			double puntiRosa = (cl.getTotPuntiRosa() / Costants.DIVISORE_100);
-//			att[i] = sq;
-//			// data.add(puntiRosa);
-//			values.add(new ColumnChartValue(puntiRosa, sq));
-//			i++;
-//		}
-//
-//		ColumnChart columns = new ColumnChart();
-//		columns.setValues(values);
-//		columns.setWidth(600);
-//		columns.setHeight(400);
-//		columns.setAxis(ColumnChartAxis.RIGHT);
-//		columns.setLines(true);
-//		columns.setColored(true);
-//		columns.getStyle().set("fontSize", "smaller");
-//
-//		return columns;
-//	}
-//
-//	public ColumnChart buildGraficoTuttiVsTutti(FcCampionato campionato) throws Exception {
-//
-//		String[] att = new String[8];
-//		List<ColumnChartValue> values = new ArrayList<ColumnChartValue>();
-//
-//		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
-//
-//		int i = 0;
-//		for (FcClassifica cl : all) {
-//			String sq = cl.getFcAttore().getDescAttore();
-//			int punti1vsT = cl.getTotPuntiTvsT();
-//			att[i] = sq;
-//			// data.add(punti1vsT);
-//			values.add(new ColumnChartValue(punti1vsT, sq));
-//			i++;
-//		}
-//
-//		ColumnChart columns = new ColumnChart();
-//		columns.setValues(values);
-//		columns.setWidth(600);
-//		columns.setHeight(400);
-//		columns.setAxis(ColumnChartAxis.RIGHT);
-//		columns.setLines(true);
-//		columns.setColored(true);
-//		columns.getStyle().set("fontSize", "smaller");
-//
-//		return columns;
-//
-//	}
 
 }

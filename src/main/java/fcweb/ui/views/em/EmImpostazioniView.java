@@ -129,9 +129,6 @@ public class EmImpostazioniView extends VerticalLayout
 	@Autowired
 	private FormazioneService formazioneController;
 
-	// @Autowired
-	// private GiornataController giornataController;
-
 	@Autowired
 	private EmJobProcessFileCsv emjobProcessFileCsv;
 
