@@ -17,6 +17,18 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.olli.FileDownloadWrapper;
 
+import com.github.appreciated.apexcharts.ApexCharts;
+import com.github.appreciated.apexcharts.ApexChartsBuilder;
+import com.github.appreciated.apexcharts.config.builder.ChartBuilder;
+import com.github.appreciated.apexcharts.config.builder.DataLabelsBuilder;
+import com.github.appreciated.apexcharts.config.builder.PlotOptionsBuilder;
+import com.github.appreciated.apexcharts.config.builder.TitleSubtitleBuilder;
+import com.github.appreciated.apexcharts.config.builder.XAxisBuilder;
+import com.github.appreciated.apexcharts.config.chart.Type;
+import com.github.appreciated.apexcharts.config.plotoptions.builder.BarBuilder;
+import com.github.appreciated.apexcharts.config.subtitle.Align;
+import com.github.appreciated.apexcharts.helper.Series;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -117,46 +129,46 @@ public class EmClassificaView extends VerticalLayout{
 			e.printStackTrace();
 		}
 		this.add(layoutGrid);
-//		try {
-//			this.add(buildGrafico(items));
-//		} catch (Exception e) {
-//			LOG.error(e.getMessage());
-//			e.printStackTrace();
-//		}
+		try {
+			this.add(buildGrafico(items));
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	public Component buildGrafico(List<ClassificaBean> items) throws Exception {
-//
-//		String[] att = new String[items.size()];
-//		String[] data = new String[items.size()];
-//
-//		int i = 0;
-//		Series series = new Series("Tot Pt");
-//		for (ClassificaBean cl : items) {
-//			String sq = cl.getSquadra();
-//			double puntiRosa = (cl.getTotPunti() / Costants.DIVISORE_10);
-//			att[i] = sq;
-//			data[i] = new String("" + puntiRosa);
-//			i++;
-//		}
-//		series.setData(data);
-//
-//		ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
-//
-//				.withTitle(TitleSubtitleBuilder.get().withText("Totale Punti").withAlign(Align.LEFT).build()).withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
-//
-//				.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
-//
-//				.withSeries(series)
-//
-//				.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
-//
-//		barChart.setWidth("800px");
-//		barChart.setHeight("600px");
-//
-//		return barChart;
-//	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Component buildGrafico(List<ClassificaBean> items) throws Exception {
+
+		String[] att = new String[items.size()];
+		String[] data = new String[items.size()];
+
+		int i = 0;
+		Series series = new Series("Tot Pt");
+		for (ClassificaBean cl : items) {
+			String sq = cl.getSquadra();
+			double puntiRosa = (cl.getTotPunti() / Costants.DIVISORE_10);
+			att[i] = sq;
+			data[i] = new String("" + puntiRosa);
+			i++;
+		}
+		series.setData(data);
+
+		ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
+
+				.withTitle(TitleSubtitleBuilder.get().withText("Totale Punti").withAlign(Align.LEFT).build()).withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
+
+				.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
+
+				.withSeries(series)
+
+				.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
+
+		barChart.setWidth("800px");
+		barChart.setHeight("600px");
+
+		return barChart;
+	}
 
 	private HorizontalLayout buildButtonPdf(Properties p) throws Exception {
 

@@ -195,6 +195,8 @@ public class FormazioniView extends VerticalLayout{
 			}
 		});
 		comboGiornata.setWidthFull();
+		
+		mainLayout.setSizeFull();
 
 		add(comboGiornata);
 
@@ -211,6 +213,7 @@ public class FormazioniView extends VerticalLayout{
 //		VerticalLayout container = new VerticalLayout();
 //		PagedTabs tabs = new PagedTabs(container);
 		TabSheet tabSheet = new TabSheet();
+		tabSheet.setSizeFull();
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer currGG = 0;

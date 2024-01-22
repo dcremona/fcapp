@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.engine.jdbc.ClobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.wontlost.ckeditor.Constants.EditorType;
+import com.wontlost.ckeditor.VaadinCKEditor;
+import com.wontlost.ckeditor.VaadinCKEditorBuilder;
 
 import common.util.Utils;
 import fcweb.backend.data.Role;
@@ -53,7 +57,7 @@ public class EmRegolamentoView extends VerticalLayout
 	private String html = "";
 	private FcRegolamento regolamento = null;
 
-//	private VaadinCKEditor decoupledEditor = null;
+	private VaadinCKEditor decoupledEditor = null;
 	private Button salvaDb;
 
 	public EmRegolamentoView() {
@@ -139,13 +143,13 @@ public class EmRegolamentoView extends VerticalLayout
 		this.add(salvaDb);
 
 		/** Document Editor */
-//		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
-//			builder.editorType = EditorType.DECOUPLED;
-//			builder.editorData = html;
-//		}).createVaadinCKEditor();
-//		decoupledEditor.setReadOnly(!isAdmin);
-//
-//		this.add(decoupledEditor);
+		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
+			builder.editorType = EditorType.DECOUPLED;
+			builder.editorData = html;
+		}).createVaadinCKEditor();
+		decoupledEditor.setReadOnly(!isAdmin);
+
+		this.add(decoupledEditor);
 
 		VerticalLayout previewHtml = new VerticalLayout();
 		try {
@@ -166,13 +170,13 @@ public class EmRegolamentoView extends VerticalLayout
 			if (event.getSource() == salvaDb) {
 				LOG.info("SALVA");
 
-//				String valueHtml = decoupledEditor.getValue();
-//				LOG.info(valueHtml);
+				String valueHtml = decoupledEditor.getValue();
+				LOG.info(valueHtml);
 				if (regolamento == null) {
 					regolamento = new FcRegolamento();
 				}
 				regolamento.setData(LocalDateTime.now());
-//				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
 
 				regolamentoController.insertRegolamento(regolamento);
 

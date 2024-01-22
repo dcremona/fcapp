@@ -20,11 +20,21 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.vaadin.addons.tatu.ColumnChart;
-import org.vaadin.addons.tatu.ColumnChart.ColumnChartAxis;
-import org.vaadin.addons.tatu.ColumnChart.ColumnChartValue;
 import org.vaadin.olli.FileDownloadWrapper;
 
+
+import com.github.appreciated.apexcharts.ApexCharts;
+import com.github.appreciated.apexcharts.ApexChartsBuilder;
+import com.github.appreciated.apexcharts.config.builder.ChartBuilder;
+import com.github.appreciated.apexcharts.config.builder.DataLabelsBuilder;
+import com.github.appreciated.apexcharts.config.builder.PlotOptionsBuilder;
+import com.github.appreciated.apexcharts.config.builder.TitleSubtitleBuilder;
+import com.github.appreciated.apexcharts.config.builder.XAxisBuilder;
+import com.github.appreciated.apexcharts.config.chart.Type;
+import com.github.appreciated.apexcharts.config.plotoptions.builder.BarBuilder;
+import com.github.appreciated.apexcharts.config.subtitle.Align;
+import com.github.appreciated.apexcharts.helper.Series;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -40,6 +50,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
+
 
 import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
@@ -116,18 +127,18 @@ public class ClassificaView extends VerticalLayout {
 		this.add(layoutGrid);
 		try {
 
-//			Component comp = buildGrafico(campionato);
-//			if (comp != null) {
-//				this.add(comp);
-//			}
-//
-//			Component comp2 = buildGraficoTuttiVsTutti(campionato);
-//			if (comp2 != null) {
-//				this.add(comp2);
-//			}
+			Component comp = buildGrafico(campionato);
+			if (comp != null) {
+				this.add(comp);
+			}
 
-			this.add(buildGrafico(campionato));
-			this.add(buildGraficoTuttiVsTutti(campionato));
+			Component comp2 = buildGraficoTuttiVsTutti(campionato);
+			if (comp2 != null) {
+				this.add(comp2);
+			}
+
+			//this.add(buildGrafico(campionato));
+			//this.add(buildGraficoTuttiVsTutti(campionato));
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
@@ -155,96 +166,94 @@ public class ClassificaView extends VerticalLayout {
 		// secondo, etc"));
 	}
 
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	public Component buildGrafico(FcCampionato campionato) throws Exception {
-//
-//		String[] att = new String[8];
-//		ArrayList<Double> data = new ArrayList<>();
-//
-//		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
-//
-//		int i = 0;
-//		for (FcClassifica cl : all) {
-//			String sq = cl.getFcAttore().getDescAttore();
-//			double puntiRosa = (cl.getTotPuntiRosa() / Costants.DIVISORE_100);
-//			att[i] = sq;
-//			data.add(puntiRosa);
-//			i++;
-//		}
-//
-//		if (all.size() > 0) {
-//
-//			Series series = new Series("Tot Pt Rosa",data.get(0),data.get(1),data.get(2),data.get(3),data.get(4),data.get(5),data.get(6),data.get(7));
-//
-//			ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
-//
-//					.withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
-//
-//					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Rosa").withAlign(Align.LEFT).build())
-//
-//					.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
-//
-//					.withSeries(series)
-//
-//					.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
-//
-//			// barChart.setWidth("600px");
-//			// barChart.setHeight("400px");
-//			// setWidth("80%");
-//			barChart.setWidth("70%");
-//
-//			return barChart;
-//		}
-//
-//		return null;
-//
-//	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Component buildGrafico(FcCampionato campionato) throws Exception {
 
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	public Component buildGraficoTuttiVsTutti(FcCampionato campionato)
-//			throws Exception {
-//
-//		String[] att = new String[8];
-//		ArrayList<Integer> data = new ArrayList<Integer>();
-//
-//		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
-//
-//		int i = 0;
-//		for (FcClassifica cl : all) {
-//			String sq = cl.getFcAttore().getDescAttore();
-//			int punti1vsT = cl.getTotPuntiTvsT();
-//			att[i] = sq;
-//			data.add(punti1vsT);
-//			i++;
-//		}
-//
-//		if (all.size() > 0) {
-//
-//			Series series = new Series("Tot Pt TvsT",data.get(0),data.get(1),data.get(2),data.get(3),data.get(4),data.get(5),data.get(6),data.get(7));
-//
-//			ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
-//
-//					.withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
-//
-//					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Tutti vs Tutti").withAlign(Align.LEFT).build())
-//
-//					.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
-//
-//					.withSeries(series)
-//
-//					.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
-//
-//			// barChart.setWidth("600px");
-//			// barChart.setHeight("400px");
-//			// setWidth("80%");
-//			barChart.setWidth("70%");
-//
-//			return barChart;
-//		}
-//
-//		return null;
-//
-//	}
+		String[] att = new String[8];
+		ArrayList<Double> data = new ArrayList<>();
+
+		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
+
+		int i = 0;
+		for (FcClassifica cl : all) {
+			String sq = cl.getFcAttore().getDescAttore();
+			double puntiRosa = (cl.getTotPuntiRosa() / Costants.DIVISORE_100);
+			att[i] = sq;
+			data.add(puntiRosa);
+			i++;
+		}
+
+		if (all.size() > 0) {
+
+			Series series = new Series("Tot Pt Rosa",data.get(0),data.get(1),data.get(2),data.get(3),data.get(4),data.get(5),data.get(6),data.get(7));
+
+			ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
+
+					.withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
+
+					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Rosa").withAlign(Align.LEFT).build())
+
+					.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
+
+					.withSeries(series)
+
+					.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
+
+			barChart.setWidth("600px");
+			barChart.setHeight("400px");
+			barChart.setWidth("70%");
+
+			return barChart;
+		}
+
+		return null;
+
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Component buildGraficoTuttiVsTutti(FcCampionato campionato)
+			throws Exception {
+
+		String[] att = new String[8];
+		ArrayList<Integer> data = new ArrayList<Integer>();
+
+		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
+
+		int i = 0;
+		for (FcClassifica cl : all) {
+			String sq = cl.getFcAttore().getDescAttore();
+			int punti1vsT = cl.getTotPuntiTvsT();
+			att[i] = sq;
+			data.add(punti1vsT);
+			i++;
+		}
+
+		if (all.size() > 0) {
+
+			Series series = new Series("Tot Pt TvsT",data.get(0),data.get(1),data.get(2),data.get(3),data.get(4),data.get(5),data.get(6),data.get(7));
+
+			ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
+
+					.withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
+
+					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Tutti vs Tutti").withAlign(Align.LEFT).build())
+
+					.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
+
+					.withSeries(series)
+
+					.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
+
+			barChart.setWidth("600px");
+			barChart.setHeight("400px");
+			barChart.setWidth("70%");
+
+			return barChart;
+		}
+
+		return null;
+
+	}
 
 	private HorizontalLayout buildButtonPdf(FcCampionato campionato, Properties p) throws Exception {
 
@@ -489,62 +498,62 @@ public class ClassificaView extends VerticalLayout {
 		return grid;
 	}
 
-	private ColumnChart buildGrafico(FcCampionato campionato) throws Exception {
-
-		String[] att = new String[8];
-		List<ColumnChartValue> values = new ArrayList<ColumnChartValue>();
-
-		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
-		int i = 0;
-		for (FcClassifica cl : all) {
-			String sq = cl.getFcAttore().getDescAttore();
-			double puntiRosa = (cl.getTotPuntiRosa() / Costants.DIVISORE_100);
-			att[i] = sq;
-			// data.add(puntiRosa);
-			values.add(new ColumnChartValue(puntiRosa, sq));
-			i++;
-		}
-
-		ColumnChart columns = new ColumnChart();
-		columns.setValues(values);
-		columns.setWidth(600);
-		columns.setHeight(400);
-		columns.setAxis(ColumnChartAxis.RIGHT);
-		columns.setLines(true);
-		columns.setColored(true);
-		columns.getStyle().set("fontSize", "smaller");
-
-		return columns;
-	}
-
-	public ColumnChart buildGraficoTuttiVsTutti(FcCampionato campionato) throws Exception {
-
-		String[] att = new String[8];
-		List<ColumnChartValue> values = new ArrayList<ColumnChartValue>();
-
-		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
-
-		int i = 0;
-		for (FcClassifica cl : all) {
-			String sq = cl.getFcAttore().getDescAttore();
-			int punti1vsT = cl.getTotPuntiTvsT();
-			att[i] = sq;
-			// data.add(punti1vsT);
-			values.add(new ColumnChartValue(punti1vsT, sq));
-			i++;
-		}
-
-		ColumnChart columns = new ColumnChart();
-		columns.setValues(values);
-		columns.setWidth(600);
-		columns.setHeight(400);
-		columns.setAxis(ColumnChartAxis.RIGHT);
-		columns.setLines(true);
-		columns.setColored(true);
-		columns.getStyle().set("fontSize", "smaller");
-
-		return columns;
-
-	}
+//	private ColumnChart buildGrafico(FcCampionato campionato) throws Exception {
+//
+//		String[] att = new String[8];
+//		List<ColumnChartValue> values = new ArrayList<ColumnChartValue>();
+//
+//		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
+//		int i = 0;
+//		for (FcClassifica cl : all) {
+//			String sq = cl.getFcAttore().getDescAttore();
+//			double puntiRosa = (cl.getTotPuntiRosa() / Costants.DIVISORE_100);
+//			att[i] = sq;
+//			// data.add(puntiRosa);
+//			values.add(new ColumnChartValue(puntiRosa, sq));
+//			i++;
+//		}
+//
+//		ColumnChart columns = new ColumnChart();
+//		columns.setValues(values);
+//		columns.setWidth(600);
+//		columns.setHeight(400);
+//		columns.setAxis(ColumnChartAxis.RIGHT);
+//		columns.setLines(true);
+//		columns.setColored(true);
+//		columns.getStyle().set("fontSize", "smaller");
+//
+//		return columns;
+//	}
+//
+//	public ColumnChart buildGraficoTuttiVsTutti(FcCampionato campionato) throws Exception {
+//
+//		String[] att = new String[8];
+//		List<ColumnChartValue> values = new ArrayList<ColumnChartValue>();
+//
+//		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
+//
+//		int i = 0;
+//		for (FcClassifica cl : all) {
+//			String sq = cl.getFcAttore().getDescAttore();
+//			int punti1vsT = cl.getTotPuntiTvsT();
+//			att[i] = sq;
+//			// data.add(punti1vsT);
+//			values.add(new ColumnChartValue(punti1vsT, sq));
+//			i++;
+//		}
+//
+//		ColumnChart columns = new ColumnChart();
+//		columns.setValues(values);
+//		columns.setWidth(600);
+//		columns.setHeight(400);
+//		columns.setAxis(ColumnChartAxis.RIGHT);
+//		columns.setLines(true);
+//		columns.setColored(true);
+//		columns.getStyle().set("fontSize", "smaller");
+//
+//		return columns;
+//
+//	}
 
 }

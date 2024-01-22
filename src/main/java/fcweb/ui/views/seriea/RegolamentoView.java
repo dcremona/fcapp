@@ -20,6 +20,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.wontlost.ckeditor.Constants.EditorType;
+import com.wontlost.ckeditor.VaadinCKEditor;
+import com.wontlost.ckeditor.VaadinCKEditorBuilder;
 
 import common.util.Utils;
 import fcweb.backend.data.Role;
@@ -55,8 +58,7 @@ public class RegolamentoView extends VerticalLayout
 	private String html = "";
 	private FcRegolamento regolamento = null;
 
-	//private VaadinCKEditor decoupledEditor = null;
-	//private RichTextEditor decoupledEditor = null;
+	private VaadinCKEditor decoupledEditor = null;
 
 	private Button salvaDb;
 
@@ -144,19 +146,14 @@ public class RegolamentoView extends VerticalLayout
 		this.add(salvaDb);
 
 		/** Document Editor */
-//		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
-//			builder.editorType = EditorType.DECOUPLED;
-//			// builder.editorData = html;
-//		}).createVaadinCKEditor();
-//		decoupledEditor.setVisible(isAdmin);
-//		decoupledEditor.setValue(html);
+		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
+			builder.editorType = EditorType.DECOUPLED;
+			// builder.editorData = html;
+		}).createVaadinCKEditor();
+		decoupledEditor.setVisible(isAdmin);
+		decoupledEditor.setValue(html);
 		
-//		decoupledEditor = new RichTextEditor();
-//		decoupledEditor.setMaxHeight("400px");
-//		decoupledEditor.setVisible(isAdmin);
-//		decoupledEditor.setValue(html);
-//
-//		this.add(decoupledEditor);
+		this.add(decoupledEditor);
 
 		VerticalLayout previewHtml = new VerticalLayout();
 		try {
@@ -178,7 +175,7 @@ public class RegolamentoView extends VerticalLayout
 				LOG.info("SALVA");
 
 				String valueHtml = null;
-				//valueHtml = decoupledEditor.getValue();
+				valueHtml = decoupledEditor.getValue();
 				LOG.info(valueHtml);
 				// valueHtml = StringUtils.encodeHtml(valueHtml);
 				// Encoder encoder = Base64.getEncoder();

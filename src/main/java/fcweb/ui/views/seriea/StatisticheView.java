@@ -21,8 +21,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.klaudeta.PaginatedGrid;
 import org.vaadin.olli.FileDownloadWrapper;
 
+import com.github.appreciated.apexcharts.ApexCharts;
+import com.github.appreciated.apexcharts.ApexChartsBuilder;
+import com.github.appreciated.apexcharts.config.builder.ChartBuilder;
+import com.github.appreciated.apexcharts.config.builder.GridBuilder;
+import com.github.appreciated.apexcharts.config.builder.StrokeBuilder;
+import com.github.appreciated.apexcharts.config.builder.TitleSubtitleBuilder;
+import com.github.appreciated.apexcharts.config.builder.XAxisBuilder;
+import com.github.appreciated.apexcharts.config.chart.Type;
+import com.github.appreciated.apexcharts.config.chart.builder.ZoomBuilder;
+import com.github.appreciated.apexcharts.config.grid.builder.RowBuilder;
+import com.github.appreciated.apexcharts.config.stroke.Curve;
+import com.github.appreciated.apexcharts.config.subtitle.Align;
+import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -44,6 +58,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
+import fcweb.backend.data.ClassificaBean;
 import fcweb.backend.data.Role;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
@@ -52,6 +67,7 @@ import fcweb.backend.data.entity.FcStatistiche;
 import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
+import fcweb.backend.service.ClassificaTotalePuntiService;
 import fcweb.backend.service.SquadraService;
 import fcweb.backend.service.StatisticheService;
 import fcweb.ui.views.MainLayout;
@@ -74,8 +90,8 @@ public class StatisticheView extends VerticalLayout
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-//	@Autowired
-//	private ClassificaTotalePuntiService classificaTotalePuntiController;
+	@Autowired
+	private ClassificaTotalePuntiService classificaTotalePuntiController;
 
 	@Autowired
 	private StatisticheService statisticheController;
@@ -156,6 +172,7 @@ public class StatisticheView extends VerticalLayout
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Statistiche", layoutStat);
 		tabSheet.add("Confronti", layoutConfornti);
+		tabSheet.setSizeFull();
 		add(tabSheet);
 		
 	}
@@ -173,7 +190,7 @@ public class StatisticheView extends VerticalLayout
 		comboAttoreA.setPlaceholder("Seleziona attore");
 		comboAttoreA.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
-//			verticalLayoutGrafico.add(buildGrafico(campionato));
+			verticalLayoutGrafico.add(buildGrafico(campionato));
 		});
 
 		comboAttoreB = new ComboBox<>();
@@ -183,7 +200,7 @@ public class StatisticheView extends VerticalLayout
 		comboAttoreB.setPlaceholder("Seleziona attore");
 		comboAttoreB.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
-//			verticalLayoutGrafico.add(buildGrafico(campionato));
+			verticalLayoutGrafico.add(buildGrafico(campionato));
 		});
 
 		comboPunti = new ComboBox<>();
@@ -192,7 +209,7 @@ public class StatisticheView extends VerticalLayout
 		comboPunti.setPlaceholder("Claasifica per");
 		comboPunti.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
-//			verticalLayoutGrafico.add(buildGrafico(campionato));
+			verticalLayoutGrafico.add(buildGrafico(campionato));
 		});
 
 		hlayout1.add(comboAttoreA);
@@ -202,58 +219,60 @@ public class StatisticheView extends VerticalLayout
 		layout.add(hlayout1);
 
 		verticalLayoutGrafico.removeAll();
-//		verticalLayoutGrafico.add(buildGrafico(campionato));
+		verticalLayoutGrafico.add(buildGrafico(campionato));
+		verticalLayoutGrafico.setSizeFull();
 		layout.add(verticalLayoutGrafico);
 
 	}
 
-//	@SuppressWarnings("rawtypes")
-//	public Component buildGrafico(FcCampionato campionato) {
-//
-//		String idAttoreA = "" + comboAttoreA.getValue().getIdAttore();
-//		String descAttoreA = "" + comboAttoreA.getValue().getDescAttore();
-//		String idAttoreB = "" + comboAttoreB.getValue().getIdAttore();
-//		String descAttoreB = "" + comboAttoreB.getValue().getDescAttore();
-//		String sPunti = comboPunti.getValue();
-//		List<ClassificaBean> items = classificaTotalePuntiController.getModelGrafico(idAttoreA, idAttoreB, campionato);
-//
-//		ArrayList<String> giornate = new ArrayList<>();
-//		ArrayList<Double> dataA = new ArrayList<>();
-//		ArrayList<Double> dataB = new ArrayList<>();
-//
-//		for (ClassificaBean c : items) {
-//			String squadra = c.getSquadra();
-//			String gg = c.getGiornata();
-//			double punti = c.getPunti();
-//			double totPunti = c.getTotPunti();
-//
-//			giornate.add(gg);
-//
-//			if (squadra.equals(descAttoreA)) {
-//				if (sPunti.equals("PUNTI")) {
-//					dataA.add(punti);
-//				} else if (sPunti.equals("TOTALE_PUNTI")) {
-//					dataA.add(totPunti);
-//				}
-//
-//			} else if (squadra.equals(descAttoreB)) {
-//				if (sPunti.equals("PUNTI")) {
-//					dataB.add(punti);
-//				} else if (sPunti.equals("TOTALE_PUNTI")) {
-//					dataB.add(totPunti);
-//				}
-//			}
-//		}
-//
-//		Series primaSerie = new Series<>(descAttoreA,dataA.toArray());
-//		Series secondaSerie = new Series<>(descAttoreB,dataB.toArray());
-//
-//		ApexCharts lineChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.LINE).withZoom(ZoomBuilder.get().withEnabled(false).build()).build()).withStroke(StrokeBuilder.get().withCurve(Curve.STRAIGHT).build()).withTitle(TitleSubtitleBuilder.get().withText("Classifica per " + sPunti).withAlign(Align.LEFT).build()).withGrid(GridBuilder.get().withRow(RowBuilder.get().withColors("#f3f3f3", "transparent").withOpacity(0.5).build()).build()).withXaxis(XAxisBuilder.get().withCategories(giornate).build()).withSeries(primaSerie, secondaSerie).build();
-//
-//		lineChart.setWidth("70%");
-//
-//		return lineChart;
-//	}
+	@SuppressWarnings("rawtypes")
+	public Component buildGrafico(FcCampionato campionato) {
+
+		String idAttoreA = "" + comboAttoreA.getValue().getIdAttore();
+		String descAttoreA = "" + comboAttoreA.getValue().getDescAttore();
+		String idAttoreB = "" + comboAttoreB.getValue().getIdAttore();
+		String descAttoreB = "" + comboAttoreB.getValue().getDescAttore();
+		String sPunti = comboPunti.getValue();
+		List<ClassificaBean> items = classificaTotalePuntiController.getModelGrafico(idAttoreA, idAttoreB, campionato);
+
+		ArrayList<String> giornate = new ArrayList<>();
+		ArrayList<Double> dataA = new ArrayList<>();
+		ArrayList<Double> dataB = new ArrayList<>();
+
+		for (ClassificaBean c : items) {
+			String squadra = c.getSquadra();
+			String gg = c.getGiornata();
+			double punti = c.getPunti();
+			double totPunti = c.getTotPunti();
+
+			giornate.add(gg);
+
+			if (squadra.equals(descAttoreA)) {
+				if (sPunti.equals("PUNTI")) {
+					dataA.add(punti);
+				} else if (sPunti.equals("TOTALE_PUNTI")) {
+					dataA.add(totPunti);
+				}
+
+			} else if (squadra.equals(descAttoreB)) {
+				if (sPunti.equals("PUNTI")) {
+					dataB.add(punti);
+				} else if (sPunti.equals("TOTALE_PUNTI")) {
+					dataB.add(totPunti);
+				}
+			}
+		}
+
+		Series primaSerie = new Series<>(descAttoreA,dataA.toArray());
+		Series secondaSerie = new Series<>(descAttoreB,dataB.toArray());
+
+		ApexCharts lineChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.LINE).withZoom(ZoomBuilder.get().withEnabled(false).build()).build()).withStroke(StrokeBuilder.get().withCurve(Curve.STRAIGHT).build()).withTitle(TitleSubtitleBuilder.get().withText("Classifica per " + sPunti).withAlign(Align.LEFT).build()).withGrid(GridBuilder.get().withRow(RowBuilder.get().withColors("#f3f3f3", "transparent").withOpacity(0.5).build()).build()).withXaxis(XAxisBuilder.get().withCategories(giornate).build()).withSeries(primaSerie, secondaSerie).build();
+		lineChart.setWidth("600px");
+		lineChart.setHeight("400px");
+		lineChart.setWidth("70%");
+
+		return lineChart;
+	}
 
 	private void setStatisticheA(VerticalLayout layout, FcCampionato campionato,
 			Properties p, FcAttore att) {
