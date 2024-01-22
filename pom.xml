@@ -165,17 +165,11 @@
 		   <artifactId>ckeditor-vaadin</artifactId>
 		   <version>3.2.1</version>
 		</dependency>
-		
-<dependency>
-   <groupId>com.github.appreciated</groupId>
-   <artifactId>apexcharts</artifactId>
-   <version>24.0.0</version>
-</dependency>		
-<!--dependency>
-   <groupId>org.vaadin.addons.tatu</groupId>
-   <artifactId>columnchart</artifactId>
-   <version>1.1.0</version>
-</dependency-->
+		<dependency>
+		   <groupId>com.github.appreciated</groupId>
+		   <artifactId>apexcharts</artifactId>
+		   <version>24.0.0</version>
+		</dependency>		
 
 <!--dependency>
    <groupId>com.flowingcode.addons</groupId>
