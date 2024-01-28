@@ -114,7 +114,12 @@ public class MainLayout extends AppLayout{
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-		String type = "1";
+        String type = "1";
+		Optional<FcAttore> maybeUser = authenticatedUser.get();
+		if (maybeUser.isPresent()) {
+			type = authenticatedUser.getType();
+		}
+		
 		if ("1".equals(type)) {
 			if (accessChecker.hasAccess(HomeView.class)) {
 				nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));	

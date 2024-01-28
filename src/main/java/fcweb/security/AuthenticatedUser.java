@@ -77,6 +77,8 @@ public class AuthenticatedUser{
 
 	@Autowired
 	private GiornataInfoRepository giornataInfoRepository;
+	
+	private String type = null; 
 
 	private boolean setSession(FcAttore attore) {
 
@@ -99,6 +101,7 @@ public class AuthenticatedUser{
 			return false;
 		}
 		LOG.info("Campionato: " + campionato.getIdCampionato());
+		type = campionato.getType();
 
 		FcPagelle currentGG = pagelleController.findCurrentGiornata();
 		FcGiornataInfo giornataInfo = null;
@@ -247,5 +250,15 @@ public class AuthenticatedUser{
 
 		return millisDiff;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	
 
 }
