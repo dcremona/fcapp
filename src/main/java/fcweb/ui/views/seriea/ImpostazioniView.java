@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
@@ -92,7 +92,7 @@ public class ImpostazioniView extends VerticalLayout
 	private Environment env;
 
 	@Autowired
-	private JavaMailSender javaMailSender;
+	private JavaMailSenderImpl javaMailSender;
 
 	@Autowired
 	private CalendarioCompetizioneService calendarioTimController;
