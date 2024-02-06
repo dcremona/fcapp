@@ -210,8 +210,6 @@ public class FormazioniView extends VerticalLayout{
 	@SuppressWarnings("unchecked")
 	private void buildTabGiornata(VerticalLayout layout, String giornata) {
 
-//		VerticalLayout container = new VerticalLayout();
-//		PagedTabs tabs = new PagedTabs(container);
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.setSizeFull();
 
@@ -274,7 +272,6 @@ public class FormazioniView extends VerticalLayout{
 			HorizontalLayout horizontalLayout0 = new HorizontalLayout();
 			horizontalLayout0.setWidth("100%");
 			horizontalLayout0.getStyle().set("border", Costants.BORDER_COLOR);
-			// horizontalLayout0.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 			horizontalLayout0.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 			horizontalLayout0.add(labelCasa);
 			horizontalLayout0.add(layoutRisultato);
@@ -298,6 +295,7 @@ public class FormazioniView extends VerticalLayout{
 
 			HorizontalLayout horizontalLayout1 = new HorizontalLayout();
 			horizontalLayout1.setWidth("100%");
+			horizontalLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 			horizontalLayout1.add(vCasa);
 			horizontalLayout1.add(vFuori);
 			// horizontalLayout1.setSizeFull();
@@ -313,12 +311,10 @@ public class FormazioniView extends VerticalLayout{
 			layoutTab.add(horizontalLayout0);
 			layoutTab.add(horizontalLayout1);
 
-			//tabs.add(attoreCasa.getDescAttore() + " [*] " + attoreFuori.getDescAttore(), layoutTab, false);
 			tabSheet.add(attoreCasa.getDescAttore() + " [*] " + attoreFuori.getDescAttore(), layoutTab);
 
 		}
 
-		//layout.add(tabs, container);
 		layout.add(tabSheet);
 		
 	}
@@ -394,23 +390,23 @@ public class FormazioniView extends VerticalLayout{
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
 
-		Column<FcGiornataDett> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
-			if (f != null && f.getFcGiocatore() != null) {
-				Image img = buildImage("classpath:images/", f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", f.getFcGiocatore().getFcRuolo().getDescRuolo());
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-		ruoloColumn.setSortable(false);
-		ruoloColumn.setResizable(false);
-		ruoloColumn.setHeader("");
-		ruoloColumn.setAutoWidth(true);
+//		Column<FcGiornataDett> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
+//			HorizontalLayout cellLayout = new HorizontalLayout();
+//			cellLayout.setMargin(false);
+//			cellLayout.setPadding(false);
+//			cellLayout.setSpacing(false);
+//			cellLayout.setAlignItems(Alignment.STRETCH);
+//			// cellLayout.setSizeFull();
+//			if (f != null && f.getFcGiocatore() != null) {
+//				Image img = buildImage("classpath:images/", f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", f.getFcGiocatore().getFcRuolo().getDescRuolo());
+//				cellLayout.add(img);
+//			}
+//			return cellLayout;
+//		}));
+//		ruoloColumn.setSortable(false);
+//		ruoloColumn.setResizable(false);
+//		ruoloColumn.setHeader("");
+//		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiornataDett> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -424,6 +420,9 @@ public class FormazioniView extends VerticalLayout{
 				cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
 			}
 			if (gd != null && gd.getFcGiocatore() != null) {
+
+				Image img = buildImage("classpath:images/",  gd.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",  gd.getFcGiocatore().getFcRuolo().getDescRuolo());
+				cellLayout.add(img);
 
 				String descGiocatore = gd.getFcGiocatore().getCognGiocatore();
 				if ("S".equals(gd.getFlagAttivo()) && (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
@@ -649,7 +648,7 @@ public class FormazioniView extends VerticalLayout{
 
 		HeaderRow headerRow = grid.prependHeaderRow();
 
-		HeaderCell headerCellStatoGiocatore = headerRow.join(ruoloColumn, cognGiocatoreColumn);
+		HeaderCell headerCellStatoGiocatore = headerRow.join(cognGiocatoreColumn,nomeSquadraColumn);
 		headerCellStatoGiocatore.setText(statoGiocatore);
 
 		HeaderCell headerCellModulo = headerRow.join(csColumn, tsColumn);
