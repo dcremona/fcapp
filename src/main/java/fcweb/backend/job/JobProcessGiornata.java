@@ -44,6 +44,8 @@ import fcweb.backend.data.entity.FcFormazione;
 import fcweb.backend.data.entity.FcGiocatore;
 import fcweb.backend.data.entity.FcGiornata;
 import fcweb.backend.data.entity.FcGiornataDett;
+import fcweb.backend.data.entity.FcGiornataGiocatore;
+import fcweb.backend.data.entity.FcGiornataGiocatoreId;
 import fcweb.backend.data.entity.FcGiornataId;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
@@ -58,6 +60,7 @@ import fcweb.backend.service.ClassificaTotalePuntiRepository;
 import fcweb.backend.service.FormazioneRepository;
 import fcweb.backend.service.GiocatoreRepository;
 import fcweb.backend.service.GiornataDettRepository;
+import fcweb.backend.service.GiornataGiocatoreRepository;
 import fcweb.backend.service.GiornataInfoRepository;
 import fcweb.backend.service.GiornataRepository;
 import fcweb.backend.service.PagelleRepository;
@@ -114,6 +117,9 @@ public class JobProcessGiornata{
 
 	@Autowired
 	private ClassificaTotalePuntiRepository classificaTotalePuntiRepository;
+	
+	@Autowired
+	private GiornataGiocatoreRepository giornataGiocatoreRepository;
 
 	public HashMap<Object, Object> initDbGiocatori(String httpUrlImg,
 			String imgPath, String fileName, boolean updateQuotazioni,
@@ -4403,4 +4409,70 @@ public class JobProcessGiornata{
 			}
 		}
 	}
+	
+	public HashMap<Object, Object> initDbGiornataGiocatore(Integer codiceGiornata,ArrayList<String> squalificati, ArrayList<String> infortunati) throws Exception {
+
+		LOG.info("START initDbGiornataGiocatore");
+
+		HashMap<Object, Object> map = new HashMap<Object, Object>();
+		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<FcGiocatore>();
+		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<FcGiocatore>();
+
+		try {
+
+			for (String g : infortunati) {
+				List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(g);
+				if (listGiocatore != null && listGiocatore.size() == 1) {
+					FcGiocatore giocatore = listGiocatore.get(0);
+					listGiocatoriAdd.add(giocatore);
+				}
+			}
+			
+			for (FcGiocatore giocatore : listGiocatoriAdd) {
+				// LOG.debug(giocatore.getCognGiocatore());
+				FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
+				FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
+				giornataGiocatorePK.setIdGiornata(codiceGiornata);
+				giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
+				giornataGiocatore.setId(giornataGiocatorePK);
+				giornataGiocatore.setInfortunato(true);
+				giornataGiocatore.setSqualificato(false);
+				this.giornataGiocatoreRepository.save(giornataGiocatore);
+			}
+
+			for (String g : squalificati) {
+				List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(g);
+				if (listGiocatore != null && listGiocatore.size() == 1) {
+					FcGiocatore giocatore = listGiocatore.get(0);
+					listGiocatoriDel.add(giocatore);
+				}
+			}
+			
+			for (FcGiocatore giocatore : listGiocatoriDel) {
+				// LOG.debug(giocatore.getCognGiocatore());
+				FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
+				FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
+				giornataGiocatorePK.setIdGiornata(codiceGiornata);
+				giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
+				giornataGiocatore.setId(giornataGiocatorePK);
+				giornataGiocatore.setInfortunato(false);
+				giornataGiocatore.setSqualificato(true);
+				this.giornataGiocatoreRepository.save(giornataGiocatore);
+			}
+			
+			LOG.info("END initDbGiornataGiocatore");
+
+			map.put("listAdd", listGiocatoriAdd);
+			map.put("listDel", listGiocatoriDel);
+
+			return map;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("Error in initDbGiornataGiocatore !!!");
+			throw e;
+		} finally {
+		}
+	}
+	
 }

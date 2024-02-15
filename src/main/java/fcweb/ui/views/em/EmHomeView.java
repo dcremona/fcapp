@@ -46,7 +46,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @Route(value = "emhome", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+//@RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("Home")
 @RolesAllowed("USER")
 public class EmHomeView extends VerticalLayout{

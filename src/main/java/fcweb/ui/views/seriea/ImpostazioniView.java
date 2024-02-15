@@ -133,6 +133,7 @@ public class ImpostazioniView extends VerticalLayout
 	private Button ultimaFormazione;
 	private Button formazione422;
 
+	private Button downloadSqualificatiInfortunati;
 	private Button downloadQuotaz;
 	private Button updateGiocatori;
 	private Checkbox chkUpdateQuotaz;
@@ -217,17 +218,20 @@ public class ImpostazioniView extends VerticalLayout
 			if (fcGiornataInfo2 != null && da1 != null && da2 != null && dg != null && dp != null) {
 				LOG.info("gioranta " + "" + fcGiornataInfo2.getCodiceGiornata());
 				if (fcGiornataInfo2.getDataAnticipo1() != null) {
+					// da.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataAnticipo()));
 					da1.setValue(fcGiornataInfo2.getDataAnticipo1());
 				}
 
 				if (fcGiornataInfo2.getDataAnticipo2() != null) {
+					// da.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataAnticipo()));
 					da2.setValue(fcGiornataInfo2.getDataAnticipo2());
 				}
-
 				if (fcGiornataInfo2.getDataGiornata() != null) {
+					// dg.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataGiornata()));
 					dg.setValue(fcGiornataInfo2.getDataGiornata());
 				}
 				if (fcGiornataInfo2.getDataPosticipo() != null) {
+					// dp.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataPosticipo()));
 					dp.setValue(fcGiornataInfo2.getDataPosticipo());
 				}
 				panelSetup.setOpened(false);
@@ -294,6 +298,10 @@ public class ImpostazioniView extends VerticalLayout
 		layoutUpdateRow1.add(ultimaFormazione);
 		layoutUpdateRow1.add(formazione422);
 
+		downloadSqualificatiInfortunati = new Button("Download Squalificati Infortunati");
+		downloadSqualificatiInfortunati.setIcon(VaadinIcon.DOWNLOAD.create());
+		downloadSqualificatiInfortunati.addClickListener(this);
+		
 		downloadQuotaz = new Button("Download Quotazioni");
 		downloadQuotaz.setIcon(VaadinIcon.DOWNLOAD.create());
 		downloadQuotaz.addClickListener(this);
@@ -314,6 +322,7 @@ public class ImpostazioniView extends VerticalLayout
 		HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
 		layoutUpdateRow2.setMargin(true);
 
+		layoutUpdateRow2.add(downloadSqualificatiInfortunati);
 		layoutUpdateRow2.add(downloadQuotaz);
 		layoutUpdateRow2.add(updateGiocatori);
 		layoutUpdateRow2.add(txtPerc);
@@ -439,6 +448,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		da2 = new DateTimePicker("Data Anticipo2");
 		if (giornataInfo.getDataAnticipo2() != null) {
+			// da.setValue(DateConvertUtils.asLocalDateTime(giornataInfo.getDataAnticipo()));
 			da2.setValue(giornataInfo.getDataAnticipo2());
 		}
 
@@ -469,7 +479,7 @@ public class ImpostazioniView extends VerticalLayout
 		HorizontalLayout layoutRow2 = new HorizontalLayout();
 		layoutRow2.add(da1);
 		layoutRow2.add(da2);
-
+		
 		HorizontalLayout layoutRow22 = new HorizontalLayout();
 		layoutRow22.add(dg);
 		layoutRow22.add(dp);
@@ -565,7 +575,7 @@ public class ImpostazioniView extends VerticalLayout
 
 			if (event.getSource() == initDb) {
 
-				List<FcAttore> attori = attoreController.findByActive(true);
+				List<FcAttore> attori = attoreController.findAll();
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 26; j++) {
@@ -574,6 +584,44 @@ public class ImpostazioniView extends VerticalLayout
 						classificaController.create(a, campionato, Double.valueOf(0));
 					}
 				}
+
+			} else if (event.getSource() == downloadSqualificatiInfortunati) {
+				
+				// **************************************
+				// DOWNLOAD FILE SQUALIFICATI
+				// **************************************
+				String urlFanta = (String) p.get("URL_FANTA");
+				String basePath = basePathData;
+				
+				String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
+				LOG.info("httpUrlSqualificati " + httpUrlSqualificati);
+				String fileName1 = "SQUALIFICATI_" + giornata;
+				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+				ArrayList<String> listSqualificati = jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
+
+				// **************************************
+				// DOWNLOAD FILE INFORTUNATI
+				// **************************************
+				String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
+				LOG.info("httpUrlInfortunati " + httpUrlInfortunati);
+				String fileName2 = "INFORTUNATI_" + giornata;
+				ArrayList<String> listInfortunati =  jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
+				
+				HashMap<Object, Object> map = jobProcessGiornata.initDbGiornataGiocatore(giornata,listSqualificati,listInfortunati);
+
+				@SuppressWarnings("unchecked")
+				ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
+				@SuppressWarnings("unchecked")
+				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
+
+				LOG.info("listGiocatoriAdd " + listGiocatoriAdd.size());
+				LOG.info("listGiocatoriDel " + listGiocatoriDel.size());
+
+				tableGiocatoreAdd.setItems(listGiocatoriAdd);
+				tableGiocatoreDel.setItems(listGiocatoriDel);
+
+				tableGiocatoreAdd.getDataProvider().refreshAll();
+				tableGiocatoreDel.getDataProvider().refreshAll();
 
 			} else if (event.getSource() == downloadQuotaz) {
 
@@ -585,6 +633,7 @@ public class ImpostazioniView extends VerticalLayout
 				String basePath = basePathData;
 				String quotaz = "Giocatori-Quotazioni-Excel";
 				String httpUrl = urlFanta + quotaz + ".asp?giornata=" + giornata;
+				
 				LOG.info("httpUrl " + httpUrl);
 				String fileName = "Q_" + giornata;
 				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
@@ -744,7 +793,9 @@ public class ImpostazioniView extends VerticalLayout
 				giornataInfo.setDataAnticipo2(da2.getValue());
 				giornataInfo.setDataGiornata(dg.getValue());
 				giornataInfo.setDataPosticipo(dp.getValue());
-				LOG.info("getDataAnticipo1 " + giornataInfo.getDataAnticipo1());
+				// giornataInfo.setDataAnticipo(DateConvertUtils.asUtilDate(da.getValue()));
+				// giornataInfo.setDataGiornata(DateConvertUtils.asUtilDate(dg.getValue()));
+				// giornataInfo.setDataPosticipo(DateConvertUtils.asUtilDate(dp.getValue()));
 				LOG.info("getDataAnticipo2 " + giornataInfo.getDataAnticipo2());
 				LOG.info("getDataGiornata " + giornataInfo.getDataGiornata());
 				LOG.info("getDataPosticipo " + giornataInfo.getDataPosticipo());
@@ -866,7 +917,7 @@ public class ImpostazioniView extends VerticalLayout
 		String email_destinatario = "";
 		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findByActive(true);
+			List<FcAttore> attori = attoreController.findAll();
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario += a.getEmail() + ";";

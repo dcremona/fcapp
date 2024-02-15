@@ -59,6 +59,7 @@ import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcFormazione;
 import fcweb.backend.data.entity.FcGiocatore;
 import fcweb.backend.data.entity.FcGiornataDett;
+import fcweb.backend.data.entity.FcGiornataGiocatore;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcSquadra;
 import fcweb.backend.data.entity.FcStatistiche;
@@ -67,6 +68,7 @@ import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.CalendarioCompetizioneService;
 import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.GiornataDettService;
+import fcweb.backend.service.GiornataGiocatoreService;
 import fcweb.backend.service.SquadraService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
@@ -138,6 +140,8 @@ public class TeamInsertView extends VerticalLayout
 	private List<FcCalendarioCompetizione> listPartiteGiocate = new ArrayList<FcCalendarioCompetizione>();
 	private List<FcCalendarioCompetizione> listPartite = new ArrayList<FcCalendarioCompetizione>();
 
+	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<FcGiornataGiocatore>();
+	
 	private AbsoluteLayout absLayout;
 
 	private Grid<FcGiocatore> tableFormazione;
@@ -199,6 +203,9 @@ public class TeamInsertView extends VerticalLayout
 
 	@Autowired
 	private SquadraService squadraController;
+	
+	@Autowired
+	private GiornataGiocatoreService giornataGiocatoreService;
 
 	@PostConstruct
 	void init() throws Exception {
@@ -230,6 +237,8 @@ public class TeamInsertView extends VerticalLayout
 		LocalDateTime now = LocalDateTime.now();
 		listPartiteGiocate = calendarioTimController.findByIdGiornataAndDataLessThanEqual(giornataInfo.getCodiceGiornata(), now);
 		listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
+		
+		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 	}
 
 	private void initLayout() throws Exception {
@@ -470,7 +479,7 @@ public class TeamInsertView extends VerticalLayout
 			CustomMessageDialog.showMessageError("Impossibile inserire la formazione, tempo scaduto!");
 		}
 	}
-	
+
 	private String getInfoPlayer(FcGiocatore bean) {
 		String info = "N.D.";
 		if (bean != null && bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
@@ -683,6 +692,11 @@ public class TeamInsertView extends VerticalLayout
 				} else if ("A".equals(ruolo)) {
 					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
 				}
+				
+				if (isGiocatoreOut(p) != null) {
+					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+				}
 
 				HorizontalLayout cellLayoutImg = new HorizontalLayout();
 				cellLayoutImg.setMargin(false);
@@ -697,6 +711,7 @@ public class TeamInsertView extends VerticalLayout
 				if (sq != null && sq.getImg() != null) {
 					try {
 						Image imgSq = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+						imgSq.setTitle(title);
 						cellLayoutImg.add(imgSq);
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -712,6 +727,7 @@ public class TeamInsertView extends VerticalLayout
 					}
 				}
 				Image imgMv = buildImage("classpath:images/", imgThink);
+				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
 
 				StreamResource resource = new StreamResource(p.getNomeImg(),() -> {
@@ -724,12 +740,12 @@ public class TeamInsertView extends VerticalLayout
 					return inputStream;
 				});
 				Image img = new Image(resource,"");
-				img.setSrc(resource);
 				img.setTitle(title);
+				img.setSrc(resource);
 
 				Span lblGiocatore = new Span(p.getCognGiocatore());
-				lblGiocatore.getStyle().set("font-size", "11px");
 				lblGiocatore.setTitle(title);
+				lblGiocatore.getStyle().set("font-size", "11px");
 
 				cellLayout.add(cellLayoutImg);
 				cellLayout.add(img);
@@ -823,59 +839,109 @@ public class TeamInsertView extends VerticalLayout
 		grid.setAllRowsVisible(true);
 		grid.setWidth("330px");
 
-		Column<FcGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
+//		Column<FcGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
+//			HorizontalLayout cellLayout = new HorizontalLayout();
+//			cellLayout.setMargin(false);
+//			cellLayout.setPadding(false);
+//			cellLayout.setSpacing(false);
+//			cellLayout.setAlignItems(Alignment.STRETCH);
+//			cellLayout.setSizeFull();
+//			if (f != null && f.getFcRuolo() != null) {
+//				Image img = buildImage("classpath:images/", f.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+//				cellLayout.add(img);
+//			}
+//			return cellLayout;
+//		}));
+//		ruoloColumn.setSortable(true);
+//		ruoloColumn.setHeader("R");
+//		ruoloColumn.setWidth("30px");
+//		ruoloColumn.setComparator((p1,p2) -> p1.getFcRuolo().getIdRuolo().compareTo(p2.getFcRuolo().getIdRuolo()));
+//		// ruoloColumn.setAutoWidth(true);
+//
+//		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "");
+//		cognGiocatoreColumn.setSortable(false);
+//		cognGiocatoreColumn.setHeader("Giocatore");
+//		cognGiocatoreColumn.setWidth("180px");
+//		// cognGiocatoreColumn.setAutoWidth(true);
+		
+		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
-			if (f != null && f.getFcRuolo() != null) {
-				Image img = buildImage("classpath:images/", f.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
-
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader("R");
-		ruoloColumn.setWidth("30px");
-		ruoloColumn.setComparator((p1,
-				p2) -> p1.getFcRuolo().getIdRuolo().compareTo(p2.getFcRuolo().getIdRuolo()));
-		// ruoloColumn.setAutoWidth(true);
-
-		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "");
-		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
-		cognGiocatoreColumn.setWidth("180px");
-		// cognGiocatoreColumn.setAutoWidth(true);
-
-		Column<FcGiocatore> squaadraColumn = grid.addColumn(new ComponentRenderer<>(p -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
-			if (p != null && p.getFcSquadra().getNomeSquadra() != null) {
-//				Image imgSq = buildImage("classpath:/img/squadre/", p.getFcSquadra().getNomeSquadra() + ".png");
-//				cellLayout.add(imgSq);
-				FcSquadra sq = p.getFcSquadra();
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+			if (g != null) {
+				String title = getInfoPlayer(g);
+				if (g.getFcRuolo() != null) {
+					Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+					img.setTitle(title);
+					cellLayout.add(img);
+				}
+				if (g.getCognGiocatore() != null) {
+					Span lblGiocatore = new Span();
+					lblGiocatore.setTitle(title);
+					lblGiocatore.setText(g.getCognGiocatore());
+					cellLayout.add(lblGiocatore);
+				}
+				FcGiornataGiocatore gg = isGiocatoreOut(g);
+				if (gg != null) {
+					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+					if (gg.isInfortunato()) {
+						Image img = buildImage("classpath:images/", "ospedale_s.png");
+						img.setTitle(title);
 						cellLayout.add(img);
-					} catch (SQLException e) {
-						e.printStackTrace();
+					} else if (gg.isSqualificato()) {
+						Image img = buildImage("classpath:images/", "esp_s.png");
+						img.setTitle(title);
+						cellLayout.add(img);
 					}
 				}
 			}
 			return cellLayout;
 		}));
-		squaadraColumn.setSortable(false);
-		// squaadraColumn.setHeader("S");
-		squaadraColumn.setWidth("30px");
-
+		cognGiocatoreColumn.setSortable(false);
+		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setWidth("180px");
+		// cognGiocatoreColumn.setAutoWidth(true);
+		
+		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setAlignItems(Alignment.STRETCH);
+			if (g != null) {
+				String title = getInfoPlayer(g);
+				if (isGiocatoreOut(g) != null) {
+					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+				}
+				if (g.getFcSquadra() != null) {
+					FcSquadra sq = g.getFcSquadra();
+					if (sq.getImg() != null) {
+						try {
+							Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+							img.setTitle(title);
+							cellLayout.add(img);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					}
+					Span lblSquadra = new Span();
+					lblSquadra.setText(sq.getNomeSquadra().substring(0, 3));
+					lblSquadra.setTitle(title);
+					cellLayout.add(lblSquadra);
+				}
+			}
+			return cellLayout;
+		}));
+		nomeSquadraColumn.setSortable(true);
+		nomeSquadraColumn.setComparator((p1,p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
+		nomeSquadraColumn.setHeader("Sq");
+		nomeSquadraColumn.setWidth("70px");
+		// nomeSquadraColumn.setAutoWidth(true);		
+		
 		Column<FcGiocatore> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -883,6 +949,10 @@ public class TeamInsertView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			if (g != null) {
 				String title = getInfoPlayer(g);
+				if (isGiocatoreOut(g) != null) {
+					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+				}
 
 				FcStatistiche s = g.getFcStatistiche();
 				String imgThink = "2.png";
@@ -903,6 +973,7 @@ public class TeamInsertView extends VerticalLayout
 				}
 				String sTotPunti = myFormatter.format(d);
 				Span lbl = new Span(sTotPunti);
+				lbl.setTitle(title);
 
 				cellLayout.add(img);
 				cellLayout.add(lbl);
@@ -910,10 +981,9 @@ public class TeamInsertView extends VerticalLayout
 			return cellLayout;
 		}));
 		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator((p1,
-				p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
+		mediaVotoColumn.setComparator((p1,p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader("Mv");
-		mediaVotoColumn.setWidth("60px");
+		mediaVotoColumn.setWidth("70px");
 		// mediaVotoColumn.setAutoWidth(true);
 
 		grid.addItemClickListener(event -> {
@@ -2052,8 +2122,6 @@ public class TeamInsertView extends VerticalLayout
 			// cellLayout.setSizeFull();
 
 			if (s != null && s.getSquadraCasa() != null) {
-//				Image img = buildImage("classpath:/img/squadre/", s.getSquadraFuori() + ".png");
-//				cellLayout.add(img);
 				FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraFuori());
 				if (sq != null && sq.getImg() != null) {
 					try {
@@ -2074,7 +2142,6 @@ public class TeamInsertView extends VerticalLayout
 		// nomeSquadraFuoriColumn.setHeader("Fuori");
 		nomeSquadraFuoriColumn.setAutoWidth(true);
 
-		//Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(Locale.ITALY))	);
 		Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataColumn.setSortable(false);
 		dataColumn.setAutoWidth(true);
@@ -2101,7 +2168,7 @@ public class TeamInsertView extends VerticalLayout
 		}
 		return false;
 	}
-	
+
 	private void impostaGiocatoriConVoto(String modulo) throws Exception {
 
 		// LOG.info("impostaGiocatoriConVoto");
@@ -2717,5 +2784,15 @@ public class TeamInsertView extends VerticalLayout
 		refreshAndSortGridFormazione();
 		CustomMessageDialog.showMessageError("Cambio modulo incorretto! Impossibile muovere il giocatore " + g.getCognGiocatore());
 	}
+	
+	private FcGiornataGiocatore isGiocatoreOut(FcGiocatore giocatore) {
+		for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
+			if (gg.getFcGiocatore().getIdGiocatore() == giocatore.getIdGiocatore()) {
+				return gg;
+			}
+		}
+		return null;
+	}
+
 
 }
