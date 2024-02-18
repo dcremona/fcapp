@@ -27,7 +27,6 @@ public class GiornataGiocatoreService{
 
 	public List<FcGiornataGiocatore> findByCustonm(FcGiornataInfo giornataInfo,
 			FcGiocatore giocatore) {
-
 		List<FcGiornataGiocatore> l = null;
 		if (giornataInfo == null && giocatore == null) {
 			l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
@@ -37,6 +36,13 @@ public class GiornataGiocatoreService{
 			l = giornataGiocatoreRepository.findByFcGiocatore(giocatore);
 		}
 		return l;
+	}
+	
+	public void deleteByCustonm(FcGiornataInfo giornataInfo) {
+		List<FcGiornataGiocatore> listSqualificatiInfortunati = this.findByCustonm(giornataInfo, null);
+		for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
+			giornataGiocatoreRepository.deleteById(gg.getId());
+		}
 	}
 
 }

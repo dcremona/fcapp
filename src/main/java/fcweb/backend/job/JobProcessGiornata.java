@@ -120,7 +120,7 @@ public class JobProcessGiornata{
 	
 	@Autowired
 	private GiornataGiocatoreRepository giornataGiocatoreRepository;
-
+	
 	public HashMap<Object, Object> initDbGiocatori(String httpUrlImg,
 			String imgPath, String fileName, boolean updateQuotazioni,
 			boolean updateImg, String percentuale) throws Exception {
@@ -3070,7 +3070,7 @@ public class JobProcessGiornata{
 		}
 		return buf;
 	}
-	
+
 	private Buffer getBufferScontro(Buffer position, int posizione, String att1,
 			String att2, int p1, int p2) {
 		if (p1 > p2) {
@@ -4410,69 +4410,69 @@ public class JobProcessGiornata{
 		}
 	}
 	
-	public HashMap<Object, Object> initDbGiornataGiocatore(Integer codiceGiornata,ArrayList<String> squalificati, ArrayList<String> infortunati) throws Exception {
+	public void initDbGiornataGiocatore(FcGiornataInfo giornataInfo,String fileName,boolean bSqualificato,boolean bInfortunato) throws Exception {
 
 		LOG.info("START initDbGiornataGiocatore");
+		
+		FileReader fileReader = null;
+		CSVParser csvFileParser = null;
 
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
-		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<FcGiocatore>();
-		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<FcGiocatore>();
-
+		// Create the CSVFormat object with the header mapping
+		@SuppressWarnings("deprecation")
+		CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
+		
 		try {
 
-			for (String g : infortunati) {
-				List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(g);
-				if (listGiocatore != null && listGiocatore.size() == 1) {
-					FcGiocatore giocatore = listGiocatore.get(0);
-					listGiocatoriAdd.add(giocatore);
-				}
-			}
-			
-			for (FcGiocatore giocatore : listGiocatoriAdd) {
-				// LOG.debug(giocatore.getCognGiocatore());
-				FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
-				FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
-				giornataGiocatorePK.setIdGiornata(codiceGiornata);
-				giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
-				giornataGiocatore.setId(giornataGiocatorePK);
-				giornataGiocatore.setInfortunato(true);
-				giornataGiocatore.setSqualificato(false);
-				this.giornataGiocatoreRepository.save(giornataGiocatore);
-			}
+			// initialize FileReader object
+			fileReader = new FileReader(fileName);
 
-			for (String g : squalificati) {
-				List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(g);
-				if (listGiocatore != null && listGiocatore.size() == 1) {
-					FcGiocatore giocatore = listGiocatore.get(0);
-					listGiocatoriDel.add(giocatore);
-				}
-			}
-			
-			for (FcGiocatore giocatore : listGiocatoriDel) {
-				// LOG.debug(giocatore.getCognGiocatore());
+			// initialize CSVParser object
+			csvFileParser = new CSVParser(fileReader,csvFileFormat);
+
+			// Get a list of CSV file records
+			List<CSVRecord> csvRecords = csvFileParser.getRecords();
+
+			//LocalDateTime now = LocalDateTime.now();
+
+			for (int i = 1; i < csvRecords.size(); i++) {
+				CSVRecord record = csvRecords.get(i);
+				
+				String cognGiocatore = record.get(0);
+				String note = record.get(1);
+				
+				List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+				FcGiocatore giocatore = listGiocatore.get(0);
+				
 				FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
 				FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
-				giornataGiocatorePK.setIdGiornata(codiceGiornata);
+				giornataGiocatorePK.setIdGiornata(giornataInfo.getCodiceGiornata());
 				giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
 				giornataGiocatore.setId(giornataGiocatorePK);
-				giornataGiocatore.setInfortunato(false);
-				giornataGiocatore.setSqualificato(true);
+				giornataGiocatore.setInfortunato(bInfortunato);
+				giornataGiocatore.setSqualificato(bSqualificato);
+				if (bInfortunato) {
+					giornataGiocatore.setNote("Infortunato: " + note);	
+				} else if (bSqualificato) { 
+					giornataGiocatore.setNote("Squalificato: " + note);
+				}
 				this.giornataGiocatoreRepository.save(giornataGiocatore);
+
 			}
 			
 			LOG.info("END initDbGiornataGiocatore");
-
-			map.put("listAdd", listGiocatoriAdd);
-			map.put("listDel", listGiocatoriDel);
-
-			return map;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error("Error in initDbGiornataGiocatore !!!");
 			throw e;
 		} finally {
+			
+			if (fileReader != null) {
+				fileReader.close();
+			}
+			if (csvFileParser != null) {
+				csvFileParser.close();
+			}
 		}
-	}
-	
+	}	
 }

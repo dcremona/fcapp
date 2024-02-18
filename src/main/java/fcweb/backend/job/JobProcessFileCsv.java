@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -98,11 +97,11 @@ public class JobProcessFileCsv{
 		}
 	}
 
-	public ArrayList<String> downloadCsvSqualificatiInfortunati(String http_url,
+	public void downloadCsvSqualificatiInfortunati(String http_url,
 			String path_csv, String fileName) throws Exception {
 
-		ArrayList<String> listGiocatori = new ArrayList<String>();
-		
+		String data = "";
+
 		LOG.info("downloadCsvSqualificatiInfortunati START");
 		File input = null;
 		try {
@@ -119,8 +118,17 @@ public class JobProcessFileCsv{
 			Elements trRows = tableRow.select("tr");
 			for (Element trRow : trRows) {
 				Elements tdRows = trRow.select("td");
+				boolean bFind = false;
+				String nomegic = null;
 				for (Element tdRow : tdRows) {
+					if (bFind) {
+						String rowData = tdRow.text();
+						data += nomegic + ";"+rowData+"\n";
+						bFind = false;
+						nomegic = null;
+					}
 					Elements children = tdRow.children();
+					
 					for (Element c : children) {
 						String href = c.attr("href");
 						if (StringUtils.isNotEmpty(href)) {
@@ -129,9 +137,9 @@ public class JobProcessFileCsv{
 								href = href.substring(idx, href.length());
 								idx = href.indexOf("=");
 								if (idx != -1) {
-									String nomegio = href.substring(idx + 1, href.length());
-									System.out.println(nomegio);
-									listGiocatori.add(nomegio);
+									nomegic = href.substring(idx + 1, href.length());
+									LOG.info(nomegic);
+									bFind = true ;
 								}
 							}
 						}
@@ -140,11 +148,6 @@ public class JobProcessFileCsv{
 			}
 		}
 		
-		String data = "";
-		for (String g : listGiocatori) {
-			data += g + ";\n";
-		}
-
 		FileOutputStream outputStream = null;
 		try {
 			// DELETE
@@ -156,8 +159,6 @@ public class JobProcessFileCsv{
 			byte[] strToBytes = data.getBytes();
 			outputStream.write(strToBytes);
 			
-			return listGiocatori;
-
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		} finally {
@@ -165,8 +166,6 @@ public class JobProcessFileCsv{
 				outputStream.close();
 			}
 		}
-		
-		return listGiocatori;
 	}
 
 	private void fileDownload(String fAddress, String localFileName,

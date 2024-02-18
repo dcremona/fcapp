@@ -92,7 +92,7 @@ public class TeamInsertView extends VerticalLayout
 
 	@Autowired
 	private Environment env;
-
+	
 	@Autowired
 	private JavaMailSenderImpl javaMailSender;
 
@@ -889,11 +889,11 @@ public class TeamInsertView extends VerticalLayout
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 					if (gg.isInfortunato()) {
 						Image img = buildImage("classpath:images/", "ospedale_s.png");
-						img.setTitle(title);
+						img.setTitle(gg.getNote());
 						cellLayout.add(img);
 					} else if (gg.isSqualificato()) {
 						Image img = buildImage("classpath:images/", "esp_s.png");
-						img.setTitle(title);
+						img.setTitle(gg.getNote());
 						cellLayout.add(img);
 					}
 				}
