@@ -347,15 +347,23 @@ public class JobProcessGiornata{
 				delete1 += " ) ";
 				jdbcTemplate.update(delete1);
 				LOG.info("delete1 " + delete1);
-				String delete2 = " delete from fc_pagelle where  id_giocatore in ( ";
+
+				String delete2 = " delete from fc_pagelle where id_giocatore in ( ";
 				delete2 += " select id_giocatore from fc_giocatore where flag_attivo=0 and id_giocatore not in (select distinct id_giocatore from fc_giornata_dett where id_giocatore is not null)";
 				delete2 += " ) ";
 				jdbcTemplate.update(delete2);
 				LOG.info("delete2 " + delete2);
-				String delete3 = " delete from fc_giocatore where flag_attivo=0 and id_giocatore not in (select distinct id_giocatore from fc_giornata_dett where id_giocatore is not null) ";
+
+				String delete3 = " delete from fc_giornata_giocatore where id_giocatore in ( ";
+				delete3 += " select id_giocatore from fc_giocatore where flag_attivo=0 and id_giocatore not in (select distinct id_giocatore from fc_giornata_dett where id_giocatore is not null)";
+				delete3 += " ) ";
 				jdbcTemplate.update(delete3);
 				LOG.info("delete3 " + delete3);
 
+				String delete4 = " delete from fc_giocatore where flag_attivo=0 and id_giocatore not in (select distinct id_giocatore from fc_giornata_dett where id_giocatore is not null) ";
+				jdbcTemplate.update(delete4);
+				LOG.info("delete4 " + delete4);
+				
 			}
 
 			LOG.info("END initDbGiocatori");
