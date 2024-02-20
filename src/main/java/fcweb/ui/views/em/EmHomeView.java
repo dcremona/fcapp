@@ -2,6 +2,7 @@ package fcweb.ui.views.em;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -14,10 +15,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,7 +30,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
@@ -233,14 +235,14 @@ public class EmHomeView extends VerticalLayout{
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 
-//		SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-//		timer.setHours(true);
-//		timer.setMinutes(true);
-//		timer.setFractions(false);
-//		timer.start();
-//		timer.isRunning();
-//		timer.addTimerEndEvent(ev -> Notification.show("Timer ended"));
-//		layoutAvviso.add(timer);
+		SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
+		timer.setHours(true);
+		timer.setMinutes(true);
+		timer.setFractions(false);
+		timer.start();
+		timer.isRunning();
+		timer.addTimerEndEvent(ev -> Notification.show("Timer ended"));
+		layoutAvviso.add(timer);
 
 		return layoutAvviso;
 	}

@@ -1,5 +1,6 @@
 package fcweb.ui.views.seriea;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.vaadin.addons.badge.Badge;
 //import org.vaadin.addons.badge.Badge.BadgeVariant;
 
+import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
@@ -213,14 +215,14 @@ public class HomeView extends VerticalLayout{
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 
-//		SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-//		timer.setHours(true);
-//		timer.setMinutes(true);
-//		timer.setFractions(false);
-//		timer.start();
-//		timer.isRunning();
-//		timer.addTimerEndEvent(ev -> Notification.show("Timer ended"));
-//		layoutAvviso.add(timer);
+		SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
+		timer.setHours(true);
+		timer.setMinutes(true);
+		timer.setFractions(false);
+		timer.start();
+		timer.isRunning();
+		timer.addTimerEndEvent(ev -> Notification.show("Timer ended"));
+		layoutAvviso.add(timer);
 
 		return layoutAvviso;
 	}

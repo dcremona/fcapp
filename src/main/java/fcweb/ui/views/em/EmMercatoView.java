@@ -2,6 +2,7 @@ package fcweb.ui.views.em;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -32,6 +33,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.vaadin.ronny.AbsoluteLayout;
 
+import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -489,14 +491,14 @@ public class EmMercatoView extends VerticalLayout
 		if (millisDiff == 0) {
 
 		} else {
-//			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-//			timer.setHours(true);
-//			timer.setMinutes(true);
-//			timer.setFractions(false);
-//			timer.start();
-//			timer.isRunning();
-//			timer.addTimerEndEvent(ev -> showMessageStopInsert());
-//			layoutAvviso.add(timer);
+			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
+			timer.setHours(true);
+			timer.setMinutes(true);
+			timer.setFractions(false);
+			timer.start();
+			timer.isRunning();
+			timer.addTimerEndEvent(ev -> showMessageStopInsert());
+			layoutAvviso.add(timer);
 		}
 
 		left = 500;

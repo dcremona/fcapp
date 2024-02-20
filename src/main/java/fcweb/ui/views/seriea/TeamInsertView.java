@@ -2,6 +2,7 @@ package fcweb.ui.views.seriea;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -29,6 +30,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.vaadin.ronny.AbsoluteLayout;
 
+import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -460,18 +462,19 @@ public class TeamInsertView extends VerticalLayout
 		if (millisDiff == 0) {
 			showMessageStopInsert();
 		} else {
-//			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-//			timer.setHours(true);
-//			timer.setMinutes(true);
-//			timer.setFractions(false);
-//			timer.start();
-//			timer.isRunning();
-//			timer.addTimerEndEvent(ev -> showMessageStopInsert());
-//			layoutAvviso.add(timer);
+			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
+			timer.setHours(true);
+			timer.setMinutes(true);
+			timer.setFractions(false);
+			timer.start();
+			timer.isRunning();
+			timer.addTimerEndEvent(ev -> showMessageStopInsert());
+			layoutAvviso.add(timer);
 		}
 	}
 
 	private void showMessageStopInsert() {
+		
 		String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
 			LOG.info("showMessageStopInsert");

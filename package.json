@@ -2,6 +2,7 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "dependencies": {
+    "@flowingcode/font-awesome-iron-iconset": "4.2.0",
     "@polymer/iron-iconset-svg": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-icon-button": "^3.0.2",
@@ -81,7 +82,7 @@
     "apexcharts": "3.45.1",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "lit": "3.1.0",
+    "lit": "^2.6.1",
     "lit-element": "^3.2.2",
     "lit-html": "2.4.0",
     "onecolor": "4.1.0",
@@ -191,10 +192,12 @@
     "lit-element": "$lit-element",
     "@polymer/paper-button": "$@polymer/paper-button",
     "apexcharts": "$apexcharts",
-    "onecolor": "$onecolor"
+    "onecolor": "$onecolor",
+    "@flowingcode/font-awesome-iron-iconset": "$@flowingcode/font-awesome-iron-iconset"
   },
   "vaadin": {
     "dependencies": {
+      "@flowingcode/font-awesome-iron-iconset": "4.2.0",
       "@polymer/iron-iconset-svg": "^3.0.1",
       "@polymer/paper-button": "^3.0.1",
       "@polymer/paper-icon-button": "^3.0.2",
@@ -274,7 +277,7 @@
       "apexcharts": "3.45.1",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
-      "lit": "3.1.0",
+      "lit": "^2.6.1",
       "lit-element": "^3.2.2",
       "lit-html": "2.4.0",
       "onecolor": "4.1.0",
@@ -299,6 +302,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "7983d1369a654bdae0052e7daa821405adc0c198b6083621f4c6947bdcc125bd"
+    "hash": "43f8f4b12d637d0862477f5ccf7325040eb5745e59426b7eee88cc8859d35ac9"
   }
 }
