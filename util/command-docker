@@ -1,0 +1,12 @@
+docker network create fcweb-mysql
+docker container run --name fcweb-mysqldb --network fcweb-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=fc2122 -d mysql:8
+
+	docker container exec -it dc9867b0d4cf7c1763a0d61670252ded97367d137abe1e1eb69a404476654c4b bash
+	mysql -u root -proot
+	show global variables like 'max_allowed_packet';
+
+docker pull phpmyadmin/phpmyadmin:latest
+docker run --name fcweb-phpmyadmin -d --link fcweb-mysqldb:db --env "UPLOAD_LIMIT=256M" -p 8001:80 --net fcweb-mysql phpmyadmin/phpmyadmin
+
+docker image build -t fcweb-test .
+docker container run --network fcweb-mysql --name fcweb-test-container -p 8080:8080 -d fcweb-test
