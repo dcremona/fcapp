@@ -1081,8 +1081,14 @@ public class TeamInsertMobileView extends VerticalLayout
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 					if (gg.isInfortunato()) {
-						Image img = buildImage("classpath:images/", "ospedale_s.png");
-						img.setTitle(gg.getNote());
+						Image img = null;
+						if ( gg.getNote().indexOf("INCERTO") != -1) {
+							img = buildImage("classpath:images/icons/16/", "help.png");
+							img.setTitle(gg.getNote());
+						} else  {
+							img = buildImage("classpath:images/", "ospedale_s.png");
+							img.setTitle(gg.getNote());
+						}
 						cellLayout.add(img);
 					} else if (gg.isSqualificato()) {
 						Image img = buildImage("classpath:images/", "esp_s.png");

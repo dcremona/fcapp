@@ -23,6 +23,7 @@ import fcweb.backend.job.JobProcessFileCsv;
 import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.job.JobProcessSendMail;
 import fcweb.backend.service.CampionatoService;
+import fcweb.backend.service.GiornataGiocatoreService;
 import fcweb.backend.service.PagelleService;
 import fcweb.backend.service.ProprietaService;
 
@@ -53,6 +54,9 @@ public class MyScheduledTasks{
 
 	@Autowired
 	private JobProcessSendMail jobProcessSendMail;
+
+	@Autowired
+	private GiornataGiocatoreService giornataGiocatoreService;
 
 	@Bean
 	public String getCronValueUfficiosi() {
@@ -195,4 +199,58 @@ public class MyScheduledTasks{
 		jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, pathOutputPdf + fileSep);
 
 	}
+	
+	//@Scheduled(cron = "*/60 * * * * *")
+	@Scheduled(cron = "0 0 6 * * *")
+	public void jobSqualificaInfortunati() throws Exception {
+
+		LOG.info("jobSqualificaInfortunati start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+
+		FcPagelle currentGG = pagelleController.findCurrentGiornata();
+		FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
+
+		LOG.info("currentGG: " + giornataInfo.getCodiceGiornata());
+
+		giornataGiocatoreService.deleteByCustonm(giornataInfo);
+		
+		List<FcProperties> lProprieta = proprietaController.findAll();
+		if (lProprieta.size() == 0) {
+			LOG.error("error lProprieta size" + lProprieta.size());
+			return;
+		}
+		Properties p = new Properties();
+		for (FcProperties prop : lProprieta) {
+			p.setProperty(prop.getKey(), prop.getValue());
+		}
+		String urlFanta = (String) p.get("URL_FANTA");
+		String basePathData = (String) p.get("PATH_TMP");
+		String basePath = basePathData;
+		LOG.info("basePathData " + basePathData);
+		
+		// **************************************
+		// DOWNLOAD FILE SQUALIFICATI
+		// **************************************
+		String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
+		LOG.info("httpUrlSqualificati " + httpUrlSqualificati);
+		String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
+		JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+		jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
+
+		String fileName = basePathData + fileName1 + ".csv";
+		jobProcessGiornata.initDbGiornataGiocatore(giornataInfo,fileName,true,false);
+		
+		// **************************************
+		// DOWNLOAD FILE INFORTUNATI
+		// **************************************
+		String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
+		LOG.info("httpUrlInfortunati " + httpUrlInfortunati);
+		String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
+		jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
+
+		fileName = basePathData + fileName2 + ".csv";
+		jobProcessGiornata.initDbGiornataGiocatore(giornataInfo,fileName,false,true);
+
+		LOG.info("jobSqualificaInfortunati end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+	}
+	
 }
