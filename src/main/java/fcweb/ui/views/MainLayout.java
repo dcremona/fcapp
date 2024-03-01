@@ -64,6 +64,7 @@ import fcweb.ui.views.seriea.MercatoView;
 import fcweb.ui.views.seriea.RegolamentoView;
 import fcweb.ui.views.seriea.SquadreAllView;
 import fcweb.ui.views.seriea.SquadreView;
+import fcweb.ui.views.seriea.SqualificatiIndisponibiliView;
 import fcweb.ui.views.seriea.StatisticheView;
 import fcweb.ui.views.seriea.TeamInsertMobileView;
 import fcweb.ui.views.seriea.TeamInsertView;
@@ -155,6 +156,10 @@ public class MainLayout extends AppLayout{
 
 			if (accessChecker.hasAccess(StatisticheView.class)) {
 				nav.addItem(new SideNavItem("Statistiche",StatisticheView.class,LineAwesomeIcon.CHART_LINE_SOLID.create()));
+			}
+
+			if (accessChecker.hasAccess(StatisticheView.class)) {
+				nav.addItem(new SideNavItem("Squalificati-Indisponibili",SqualificatiIndisponibiliView.class,LineAwesomeIcon.REDDIT_SQUARE.create()));
 			}
 
 			if (accessChecker.hasAccess(DownloadView.class)) {

@@ -1069,15 +1069,10 @@ public class ImpostazioniView extends VerticalLayout
 		grid.setItems(new ArrayList<FcGiornataGiocatore>());
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-		grid.setWidth("550px");
+		// grid.setWidth("550px");
 
 		Column<FcGiornataGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
 				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
@@ -1085,17 +1080,12 @@ public class ImpostazioniView extends VerticalLayout
 			}
 			return cellLayout;
 		}));
-		ruoloColumn.setSortable(true);
+		ruoloColumn.setSortable(false);
 		ruoloColumn.setHeader("Ruolo");
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
 				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
@@ -1109,9 +1099,8 @@ public class ImpostazioniView extends VerticalLayout
 				});
 				Image img = new Image(resource,"");
 				img.setSrc(resource);
-
-				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(img);
+				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 			}
 			return cellLayout;
@@ -1122,10 +1111,6 @@ public class ImpostazioniView extends VerticalLayout
 
 		Column<FcGiornataGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null && g.getFcSquadra() != null) {
 				FcSquadra sq = g.getFcSquadra();

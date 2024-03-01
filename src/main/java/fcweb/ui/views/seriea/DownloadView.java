@@ -249,48 +249,48 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 		for (int i = 1; i < 11; i++) {
 
-			Column<FcExpRosea> sxColumn = null;
 			Column<FcExpRosea> rxColumn = null;
+			Column<FcExpRosea> sxColumn = null;
 			Column<FcExpRosea> qxColumn = null;
 			if (i == 1) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS1());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS1());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ1());
 			} else if (i == 2) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS2());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS2());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ2());
 			} else if (i == 3) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS3());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS3());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ3());
 			} else if (i == 4) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS4());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS4());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ4());
 			} else if (i == 5) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS5());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS5());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ5());
 			} else if (i == 6) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS6());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS6());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ6());
 			} else if (i == 7) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS7());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS7());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ7());
 			} else if (i == 8) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS8());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS8());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ8());
 			} else if (i == 9) {
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS9());
 				rxColumn = getColumnR(gridRosea, i);
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ9());
 			} else if (i == 10) {
-				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS10());
 				rxColumn = getColumnR(gridRosea, i);
+				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS10());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ10());
 			}
 
@@ -393,48 +393,48 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 		for (int i = 1; i < 11; i++) {
 
-			Column<FcExpFreePl> sxColumn = null;
 			Column<FcExpFreePl> rxColumn = null;
+			Column<FcExpFreePl> sxColumn = null;
 			Column<FcExpFreePl> qxColumn = null;
 			if (i == 1) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS1());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS1());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ1());
 			} else if (i == 2) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS2());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS2());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ2());
 			} else if (i == 3) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS3());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS3());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ3());
 			} else if (i == 4) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS4());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS4());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ4());
 			} else if (i == 5) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS5());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS5());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ5());
 			} else if (i == 6) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS6());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS6());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ6());
 			} else if (i == 7) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS7());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS7());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ7());
 			} else if (i == 8) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS8());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS8());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ8());
 			} else if (i == 9) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS9());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS9());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ9());
 			} else if (i == 10) {
-				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS10());
 				rxColumn = getColumnR2(gridFreePl, i);
+				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS10());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ10());
 			}
 
