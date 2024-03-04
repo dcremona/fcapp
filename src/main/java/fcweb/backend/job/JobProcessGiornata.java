@@ -30,10 +30,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 
-import common.mail.MailClient;
 import common.util.Buffer;
 import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
@@ -57,6 +55,7 @@ import fcweb.backend.service.AttoreRepository;
 import fcweb.backend.service.CalendarioCompetizioneRepository;
 import fcweb.backend.service.CampionatoRepository;
 import fcweb.backend.service.ClassificaTotalePuntiRepository;
+import fcweb.backend.service.EmailService;
 import fcweb.backend.service.FormazioneRepository;
 import fcweb.backend.service.GiocatoreRepository;
 import fcweb.backend.service.GiornataDettRepository;
@@ -77,7 +76,7 @@ public class JobProcessGiornata{
 	private Environment env;
 
 	@Autowired
-	private JavaMailSenderImpl javaMailSender;
+	private EmailService emailService;
 
 	@Autowired
 	private CampionatoRepository campionatoRepository;
@@ -117,10 +116,10 @@ public class JobProcessGiornata{
 
 	@Autowired
 	private ClassificaTotalePuntiRepository classificaTotalePuntiRepository;
-	
+
 	@Autowired
 	private GiornataGiocatoreRepository giornataGiocatoreRepository;
-	
+
 	public HashMap<Object, Object> initDbGiocatori(String httpUrlImg,
 			String imgPath, String fileName, boolean updateQuotazioni,
 			boolean updateImg, String percentuale) throws Exception {
@@ -363,7 +362,7 @@ public class JobProcessGiornata{
 				String delete4 = " delete from fc_giocatore where flag_attivo=0 and id_giocatore not in (select distinct id_giocatore from fc_giornata_dett where id_giocatore is not null) ";
 				jdbcTemplate.update(delete4);
 				LOG.info("delete4 " + delete4);
-				
+
 			}
 
 			LOG.info("END initDbGiocatori");
@@ -959,7 +958,6 @@ public class JobProcessGiornata{
 				}
 			}
 
-			MailClient client = new MailClient(javaMailSender);
 			String email_destinatario = (String) p.getProperty("to");
 			String[] to = null;
 			if (email_destinatario != null && !email_destinatario.equals("")) {
@@ -989,10 +987,18 @@ public class JobProcessGiornata{
 			formazioneHtml += "<p>Ciao Davide</p>\n";
 			formazioneHtml += "</body>\n";
 			formazioneHtml += "<html>";
-
-			String from = (String) env.getProperty("spring.mail.username");
-
-			client.sendMail(from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+			
+			try {
+				String from = (String) env.getProperty("spring.mail.secondary.username");
+				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+			} catch (Exception e) {
+				try {
+					String from = (String) env.getProperty("spring.mail.primary.username");
+					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+				} catch (Exception e2) {
+					throw e2;
+				}
+			}
 
 			LOG.info("END aggiornamentoPFGiornata");
 
@@ -4417,18 +4423,20 @@ public class JobProcessGiornata{
 			}
 		}
 	}
-	
-	public void initDbGiornataGiocatore(FcGiornataInfo giornataInfo,String fileName,boolean bSqualificato,boolean bInfortunato) throws Exception {
+
+	public void initDbGiornataGiocatore(FcGiornataInfo giornataInfo,
+			String fileName, boolean bSqualificato, boolean bInfortunato)
+			throws Exception {
 
 		LOG.info("START initDbGiornataGiocatore");
-		
+
 		FileReader fileReader = null;
 		CSVParser csvFileParser = null;
 
 		// Create the CSVFormat object with the header mapping
 		@SuppressWarnings("deprecation")
 		CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
-		
+
 		try {
 
 			// initialize FileReader object
@@ -4440,17 +4448,17 @@ public class JobProcessGiornata{
 			// Get a list of CSV file records
 			List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-			//LocalDateTime now = LocalDateTime.now();
+			// LocalDateTime now = LocalDateTime.now();
 
 			for (int i = 1; i < csvRecords.size(); i++) {
 				CSVRecord record = csvRecords.get(i);
-				
+
 				String cognGiocatore = record.get(0);
 				String note = record.get(1);
-				
+
 				List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
 				FcGiocatore giocatore = listGiocatore.get(0);
-				
+
 				FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
 				FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
 				giornataGiocatorePK.setIdGiornata(giornataInfo.getCodiceGiornata());
@@ -4459,14 +4467,14 @@ public class JobProcessGiornata{
 				giornataGiocatore.setInfortunato(bInfortunato);
 				giornataGiocatore.setSqualificato(bSqualificato);
 				if (bInfortunato) {
-					giornataGiocatore.setNote("Infortunato: " + note);	
-				} else if (bSqualificato) { 
+					giornataGiocatore.setNote("Infortunato: " + note);
+				} else if (bSqualificato) {
 					giornataGiocatore.setNote("Squalificato: " + note);
 				}
 				this.giornataGiocatoreRepository.save(giornataGiocatore);
 
 			}
-			
+
 			LOG.info("END initDbGiornataGiocatore");
 
 		} catch (Exception e) {
@@ -4474,7 +4482,7 @@ public class JobProcessGiornata{
 			LOG.error("Error in initDbGiornataGiocatore !!!");
 			throw e;
 		} finally {
-			
+
 			if (fileReader != null) {
 				fileReader.close();
 			}
@@ -4482,5 +4490,5 @@ public class JobProcessGiornata{
 				csvFileParser.close();
 			}
 		}
-	}	
+	}
 }

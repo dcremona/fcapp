@@ -24,13 +24,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.mail.MailClient;
 import common.util.Utils;
 import fcweb.backend.data.RisultatoBean;
 import fcweb.backend.data.entity.FcAttore;
@@ -46,6 +44,7 @@ import fcweb.backend.data.entity.FcPagelle;
 import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.ClassificaService;
 import fcweb.backend.service.ClassificaTotalePuntiService;
+import fcweb.backend.service.EmailService;
 import fcweb.backend.service.GiornataDettInfoService;
 import fcweb.backend.service.GiornataDettService;
 import fcweb.backend.service.GiornataInfoService;
@@ -64,7 +63,7 @@ public class JobProcessSendMail{
 	private Environment env;
 
 	@Autowired
-	private JavaMailSenderImpl javaMailSender;
+	private EmailService emailService;
 
 	@Autowired
 	private GiornataInfoService giornataInfoController;
@@ -156,8 +155,6 @@ public class JobProcessSendMail{
 			//JasperRunManager.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
 			JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
 
-			MailClient client = new MailClient(javaMailSender);
-
 			String email_destinatario = "";
 			String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
 			if ("true".equals(ACTIVE_MAIL)) {
@@ -182,9 +179,17 @@ public class JobProcessSendMail{
 			String subject = "Risultati " + (String) p.getProperty("INFO_RESULT") + " " + giornataInfo.getDescGiornataFc();
 			String message = getBody();
 
-			String from = (String) env.getProperty("spring.mail.username");
-			
-			client.sendMail(from,to, cc, bcc, subject, message, "text/html", "3", att);
+			try {
+				String from = (String) env.getProperty("spring.mail.secondary.username");
+				emailService.sendMail(false,from,to, cc, bcc, subject, message, "text/html", "3", att);
+			} catch (Exception e) {
+				try {
+					String from = (String) env.getProperty("spring.mail.primary.username");
+					emailService.sendMail(true,from,to, cc, bcc, subject, message, "text/html", "3", att);
+				} catch (Exception e2) {
+					throw e2;
+				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -469,7 +474,7 @@ public class JobProcessSendMail{
 		b.setDesc("Totale Punteggio Rosa:");
 		b.setValue(puntiTotali);
 		dataInfo.add(b);
-		
+
 		b = new RisultatoBean();
 		b.setDesc("Totale Punteggio TvsT:");
 		b.setValue(""+totPunti.getPtTvsT());

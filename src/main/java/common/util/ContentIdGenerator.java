@@ -1,4 +1,4 @@
-package common.mail;
+package common.util;
 
 import java.net.UnknownHostException;
 import java.util.Random;

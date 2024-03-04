@@ -130,8 +130,8 @@ public class MyScheduledTasks{
 		}
 		p.setProperty("INFO_RESULT", info_result);
 
-		String springMailPassword = (String) env.getProperty("spring.mail.password");
-		p.setProperty("mail.password", springMailPassword);
+//		String springMailPassword = (String) env.getProperty("spring.mail.password");
+//		p.setProperty("mail.password", springMailPassword);
 
 		String startJob = day_of_week + "_" + info_result;
 		LOG.info("startJob " + startJob);

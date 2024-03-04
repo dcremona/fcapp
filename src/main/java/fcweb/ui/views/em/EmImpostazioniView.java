@@ -21,7 +21,6 @@ import java.util.Properties;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import javax.naming.NamingException;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -67,7 +65,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
-import common.mail.MailClient;
 import common.util.Utils;
 import fcweb.backend.data.RisultatoBean;
 import fcweb.backend.data.entity.FcAttore;
@@ -82,6 +79,7 @@ import fcweb.backend.job.EmJobProcessGiornata;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.ClassificaTotalePuntiService;
+import fcweb.backend.service.EmailService;
 import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.GiornataDettService;
 import fcweb.backend.service.GiornataInfoService;
@@ -91,8 +89,6 @@ import fcweb.utils.CustomMessageDialog;
 import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
 
 
 @PageTitle("Impostazioni")
@@ -106,7 +102,7 @@ public class EmImpostazioniView extends VerticalLayout
 	private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private JavaMailSenderImpl javaMailSender;
+	private EmailService emailService;
 
 	@Autowired
 	private Environment env;
@@ -361,7 +357,7 @@ public class EmImpostazioniView extends VerticalLayout
 		txtPerc = new NumberField();
 		txtPerc.setMin(0d);
 		txtPerc.setMax(100d);
-		txtPerc.setStepButtonsVisible(true);
+		//txtPerc.setHasControls(true);
 		txtPerc.setValue(50d);
 
 		HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
@@ -506,7 +502,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 			if (event.getSource() == initDb) {
 
-				List<FcAttore> attori = attoreController.findByActive(true);
+				List<FcAttore> attori = attoreController.findAll();
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 23; j++) {
@@ -662,11 +658,11 @@ public class EmImpostazioniView extends VerticalLayout
 				// outputStream2, params2, conn);
 				JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, params2, conn);
 
-				MailClient client = new MailClient(javaMailSender);
+				
 				String email_destinatario = "";
 
 				if (this.chkSendMail.getValue()) {
-					List<FcAttore> attori = attoreController.findByActive(true);
+					List<FcAttore> attori = attoreController.findAll();
 					for (FcAttore a : attori) {
 						if (a.isNotifiche()) {
 							email_destinatario += a.getEmail() + ";";
@@ -693,16 +689,26 @@ public class EmImpostazioniView extends VerticalLayout
 				String message = getBody();
 
 				try {
-					String from = (String) env.getProperty("spring.mail.username");
-					client.sendMail(from, to, cc, bcc, subject, message, "text/html", "3", att);
+					
+					try {
+						String from = (String) env.getProperty("spring.mail.secondary.username");
+						emailService.sendMail(false,from, to, cc, bcc, subject, message, "text/html", "3", att);
+					} catch (Exception e) {
+						try {
+							String from = (String) env.getProperty("spring.mail.primary.username");
+							emailService.sendMail(true,from, to, cc, bcc, subject, message, "text/html", "3", att);
+						} catch (Exception e2) {
+							throw e2;
+						}
+					}
+
 				} catch (Exception e) {
 					CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_MAIL_KO);
 				}
 			} else if (event.getSource() == notifica) {
 
-				MailClient client = new MailClient(javaMailSender);
 				String email_destinatario = "";
-				List<FcAttore> attori = attoreController.findByActive(true);
+				List<FcAttore> attori = attoreController.findAll();
 				for (FcAttore a : attori) {
 					email_destinatario += a.getEmail() + ";";
 				}
@@ -717,9 +723,19 @@ public class EmImpostazioniView extends VerticalLayout
 				String message = messaggio.getValue();
 
 				try {
-					String from = (String) env.getProperty("spring.mail.username");
-
-					client.sendMail(from, to, cc, bcc, subject, message, "", "3", null);
+					
+					try {
+						String from = (String) env.getProperty("spring.mail.secondary.username");
+						emailService.sendMail(false,from, to, cc, bcc, subject, message, "", "3", null);
+					} catch (Exception e) {
+						try {
+							String from = (String) env.getProperty("spring.mail.primary.username");
+							emailService.sendMail(true,from, to, cc, bcc, subject, message, "", "3", null);
+						} catch (Exception e2) {
+							throw e2;
+						}
+					}
+					
 				} catch (Exception e) {
 					CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_MAIL_KO);
 				}
@@ -752,7 +768,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(Integer.valueOf(giornata));
 
-		List<FcAttore> squadre = attoreController.findByActive(true);
+		List<FcAttore> squadre = attoreController.findAll();
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("path_img", pathImg);
@@ -836,8 +852,7 @@ public class EmImpostazioniView extends VerticalLayout
 	}
 
 	private void sendMailInfoGiornata(FcGiornataInfo ggInfo)
-			throws AddressException, IOException, MessagingException,
-			NamingException {
+			throws Exception {
 
 		String subject = "Avvio Giornata - " + ggInfo.getDescGiornataFc();
 		LOG.info("subject " + subject);
@@ -857,12 +872,12 @@ public class EmImpostazioniView extends VerticalLayout
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
 
-		MailClient client = new MailClient(javaMailSender);
+		
 		String email_destinatario = "";
 		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
 		LOG.info("ACTIVE_MAIL " + ACTIVE_MAIL);
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findByActive(true);
+			List<FcAttore> attori = attoreController.findAll();
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario += a.getEmail() + ";";
@@ -882,10 +897,17 @@ public class EmImpostazioniView extends VerticalLayout
 
 		LOG.info(formazioneHtml);
 
-		String from = (String) env.getProperty("spring.mail.username");
-
-		client.sendMail(from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
-
+		try {
+			String from = (String) env.getProperty("spring.mail.secondary.username");
+			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
+		} catch (Exception e) {
+			try {
+				String from = (String) env.getProperty("spring.mail.primary.username");
+				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
+			} catch (Exception e2) {
+				throw e2;
+			}
+		}
 	}
 
 	private Grid<FcGiocatore> getTableGiocatori() {

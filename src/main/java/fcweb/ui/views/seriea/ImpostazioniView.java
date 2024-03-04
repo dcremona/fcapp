@@ -11,15 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import javax.naming.NamingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
@@ -44,7 +41,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
-import common.mail.MailClient;
 import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCalendarioCompetizione;
@@ -62,6 +58,7 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.CalendarioCompetizioneService;
 import fcweb.backend.service.ClassificaService;
+import fcweb.backend.service.EmailService;
 import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.GiornataGiocatoreService;
 import fcweb.backend.service.GiornataInfoService;
@@ -73,8 +70,6 @@ import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
 
 @PageTitle("Impostazioni")
 @Route(value = "admin", layout = MainLayout.class)
@@ -94,8 +89,8 @@ public class ImpostazioniView extends VerticalLayout
 	private Environment env;
 
 	@Autowired
-	private JavaMailSenderImpl javaMailSender;
-
+	private EmailService emailService;
+	
 	@Autowired
 	private CalendarioCompetizioneService calendarioTimController;
 
@@ -148,6 +143,8 @@ public class ImpostazioniView extends VerticalLayout
 	private Button downloadSqualificatiInfortunati;
 	private Grid<FcGiornataGiocatore> tableSqualificati;
 	private Grid<FcGiornataGiocatore> tableInfortunati;
+	
+	private Button testMail;
 
 	private Button init;
 	private Button download;
@@ -316,7 +313,7 @@ public class ImpostazioniView extends VerticalLayout
 		txtPerc = new NumberField();
 		txtPerc.setMin(0d);
 		txtPerc.setMax(100d);
-		txtPerc.setStepButtonsVisible(true);
+		//txtPerc.setHasControls(true);
 		txtPerc.setValue(50d);
 
 		chkUpdateQuotaz = new Checkbox("Update Quotazioni");
@@ -344,7 +341,7 @@ public class ImpostazioniView extends VerticalLayout
 		downloadSqualificatiInfortunati = new Button("Download Squalificati Infortunati");
 		downloadSqualificatiInfortunati.setIcon(VaadinIcon.DOWNLOAD.create());
 		downloadSqualificatiInfortunati.addClickListener(this);
-		
+
 		HorizontalLayout layoutUpdateRow5 = new HorizontalLayout();
 		layoutUpdateRow5.setMargin(true);
 		tableSqualificati = getTableSqualificatiInfortunati();
@@ -354,6 +351,10 @@ public class ImpostazioniView extends VerticalLayout
 		layoutUpdateRow6.setMargin(true);
 		tableInfortunati = getTableSqualificatiInfortunati();
 		layoutUpdateRow6.add(tableInfortunati);
+		
+		testMail = new Button("Test Mail");
+		testMail.setIcon(VaadinIcon.MAILBOX.create());
+		testMail.addClickListener(this);
 
 		VerticalLayout layoutUpdate = new VerticalLayout();
 		layoutUpdate.setMargin(true);
@@ -366,6 +367,7 @@ public class ImpostazioniView extends VerticalLayout
 		layoutUpdate.add(downloadSqualificatiInfortunati);
 		layoutUpdate.add(layoutUpdateRow5);
 		layoutUpdate.add(layoutUpdateRow6);
+		layoutUpdate.add(testMail);
 
 		Details panelUpdate = new Details("Update",layoutUpdate);
 		panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
@@ -601,7 +603,35 @@ public class ImpostazioniView extends VerticalLayout
 						classificaController.create(a, campionato, Double.valueOf(0));
 					}
 				}
+				
+			} else if (event.getSource() == testMail) {
+				
+				try {
+					String fromPrimary = "notifiche-fclt@hostingtt.it"; 
+					String toPrimary = "davide.cremona@gmail.com";
+					String subjectPrimary = "Testing from Spring Boot sendEmailPrimary";
+					String textPrimary = "Testing from Spring Boot sendEmailPrimary";
+					
+					this.emailService.sendPrimaryEmail(fromPrimary, toPrimary, subjectPrimary, textPrimary);
+					
+				} catch (Exception e) {
 
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+					
+					try {
+
+						String fromSecondary = "davcic@libero.it"; 
+						String toSecondary = "davide.cremona@gmail.com";
+						String subjectSecondary = "Testing from Spring Boot sendEmailSecondary";
+						String textSecondary = "Testing from Spring Boot sendEmailSecondary";
+	
+						this.emailService.sendSecondaryEmail(fromSecondary, toSecondary, subjectSecondary, textSecondary);
+						
+					} catch (Exception e2) {
+						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e2.getMessage());
+					}
+				}
+				
 			} else if (event.getSource() == downloadSqualificatiInfortunati) {
 				
 				String urlFanta = (String) p.get("URL_FANTA");
@@ -899,8 +929,7 @@ public class ImpostazioniView extends VerticalLayout
 	private GiornataService giornataController;
 
 	private void sendMailInfoGiornata(FcGiornataInfo ggInfo)
-			throws AddressException, IOException, MessagingException,
-			NamingException {
+			throws Exception {
 
 		String subject = "Avvio Giornata - " + Utils.buildInfoGiornataHtml(ggInfo);
 
@@ -942,7 +971,6 @@ public class ImpostazioniView extends VerticalLayout
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
 
-		MailClient client = new MailClient(javaMailSender);
 		String email_destinatario = "";
 		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
@@ -966,10 +994,17 @@ public class ImpostazioniView extends VerticalLayout
 
 		LOG.info(formazioneHtml);
 
-		String from = (String) env.getProperty("spring.mail.username");
-
-		client.sendMail(from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
-
+		try {
+			String from = (String) env.getProperty("spring.mail.secondary.username");
+			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
+		} catch (Exception e) {
+			try {
+				String from = (String) env.getProperty("spring.mail.primary.username");
+				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
+			} catch (Exception e2) {
+				throw e2;
+			}
+		}
 	}
 
 	@Autowired

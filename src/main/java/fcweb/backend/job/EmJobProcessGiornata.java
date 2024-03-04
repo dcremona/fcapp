@@ -31,13 +31,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.mail.MailClient;
 import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
@@ -50,6 +48,7 @@ import fcweb.backend.data.entity.FcRuolo;
 import fcweb.backend.data.entity.FcSquadra;
 import fcweb.backend.data.entity.FcStatistiche;
 import fcweb.backend.service.AttoreRepository;
+import fcweb.backend.service.EmailService;
 import fcweb.backend.service.GiocatoreRepository;
 import fcweb.backend.service.GiornataDettRepository;
 import fcweb.backend.service.GiornataInfoRepository;
@@ -67,8 +66,8 @@ public class EmJobProcessGiornata{
 	private Environment env;
 
 	@Autowired
-	private JavaMailSenderImpl javaMailSender;
-
+	private EmailService emailService;
+	
 	@Autowired
 	private GiornataDettRepository giornataDettRepository;
 
@@ -565,7 +564,6 @@ public class EmJobProcessGiornata{
 				}
 			}
 
-			MailClient client = new MailClient(javaMailSender);
 			String email_destinatario = (String) p.getProperty("to");
 			String[] to = null;
 			if (email_destinatario != null && !email_destinatario.equals("")) {
@@ -596,9 +594,17 @@ public class EmJobProcessGiornata{
 			formazioneHtml += "</body>\n";
 			formazioneHtml += "<html>";
 
-			String from = (String) env.getProperty("spring.mail.username");
-
-			client.sendMail(from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+			try {
+				String from = (String) env.getProperty("spring.mail.secondary.username");
+				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+			} catch (Exception e) {
+				try {
+					String from = (String) env.getProperty("spring.mail.primary.username");
+					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+				} catch (Exception e2) {
+					throw e2;
+				}
+			}
 
 			LOG.info("END emaggiornamentoPFGiornata");
 
@@ -929,7 +935,6 @@ public class EmJobProcessGiornata{
 				}
 			}
 
-			MailClient client = new MailClient(javaMailSender);
 			String email_destinatario = (String) p.getProperty("to");
 			String[] to = null;
 			if (email_destinatario != null && !email_destinatario.equals("")) {
@@ -958,9 +963,17 @@ public class EmJobProcessGiornata{
 			formazioneHtml += "</body>\n";
 			formazioneHtml += "<html>";
 
-			String from = (String) env.getProperty("spring.mail.username");
-
-			client.sendMail(from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+			try {
+				String from = (String) env.getProperty("spring.mail.secondary.username");
+				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+			} catch (Exception e) {
+				try {
+					String from = (String) env.getProperty("spring.mail.primary.username");
+					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
+				} catch (Exception e2) {
+					throw e2;
+				}
+			}
 
 			LOG.info("END emaggiornamentoPFGiornata");
 
@@ -2086,5 +2099,6 @@ public class EmJobProcessGiornata{
 
 		return (int) new_quot;
 	}
+
 
 }
