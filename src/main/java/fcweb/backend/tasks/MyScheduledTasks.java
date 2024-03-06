@@ -205,13 +205,6 @@ public class MyScheduledTasks{
 	public void jobSqualificaInfortunati() throws Exception {
 
 		LOG.info("jobSqualificaInfortunati start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
-
-		FcPagelle currentGG = pagelleController.findCurrentGiornata();
-		FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
-
-		LOG.info("currentGG: " + giornataInfo.getCodiceGiornata());
-
-		giornataGiocatoreService.deleteByCustonm(giornataInfo);
 		
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.size() == 0) {
@@ -224,6 +217,29 @@ public class MyScheduledTasks{
 		}
 		String urlFanta = (String) p.get("URL_FANTA");
 		String basePathData = (String) p.get("PATH_TMP");
+
+		FcPagelle currentGG = pagelleController.findCurrentGiornata();
+		FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
+
+		LOG.info("currentGG: " + giornataInfo.getCodiceGiornata());
+		
+		String fusoOrario = (String) p.getProperty("FUSO_ORARIO");		
+		String nextDate = Utils.getNextDate(giornataInfo);
+		long millisDiff = 0;
+		try {
+			millisDiff = Utils.getMillisDiff(nextDate, fusoOrario);
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+		}
+		LOG.info("millisDiff : " + millisDiff);
+
+		if (millisDiff == 0) {
+			LOG.error("jobSqualificaInfortunati STOP NO PROCESS");
+			return;
+		}
+
+		giornataGiocatoreService.deleteByCustonm(giornataInfo);
+		
 		String basePath = basePathData;
 		LOG.info("basePathData " + basePathData);
 		

@@ -20,6 +20,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -519,4 +520,93 @@ public class Utils{
 	public static BigDecimal roundBigDecimal(final BigDecimal input) {
 		return input.round(new MathContext(input.toBigInteger().toString().length(),RoundingMode.HALF_UP));
 	}
+	
+	public static String getNextDate(FcGiornataInfo giornataInfo) {
+
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime currentDate = LocalDateTime.now();
+
+		LocalDateTime dataAnticipo = null;
+		LocalDateTime dataAnticipo1 = giornataInfo.getDataAnticipo1();
+		LocalDateTime dataAnticipo2 = giornataInfo.getDataAnticipo2();
+		if (dataAnticipo1 != null && dataAnticipo2 != null) {
+			if (now.isBefore(dataAnticipo1)) {
+				dataAnticipo = dataAnticipo1;
+			} else if (now.isAfter(dataAnticipo1)) {
+				dataAnticipo = dataAnticipo2;
+			}
+		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
+			dataAnticipo = dataAnticipo2;
+		}
+		LocalDateTime dataGiornata = giornataInfo.getDataGiornata();
+		LocalDateTime dataPosticipo = giornataInfo.getDataPosticipo();
+
+		if (dataGiornata != null) {
+			currentDate = dataGiornata;
+
+			if (dataAnticipo != null) {
+				currentDate = dataAnticipo;
+				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
+				LOG.info("dataGiornata.getDayOfWeek() : " + dataGiornata.getDayOfWeek());
+				if ( now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek() ) {
+					currentDate = dataGiornata;
+				}
+			}
+			
+			if (dataPosticipo != null) {
+				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
+				LOG.info("dataPosticipo.getDayOfWeek() : " + dataPosticipo.getDayOfWeek());
+				if ( now.getDayOfWeek() == dataPosticipo.getDayOfWeek() ) {
+					currentDate = dataGiornata;
+				}
+			} else {
+				if (dataAnticipo != null) {
+					currentDate = dataAnticipo;	
+				}
+			}
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		String currentDataGiornata = currentDate.format(formatter);
+
+		return currentDataGiornata;
+	}
+	
+	public static long getMillisDiff(String nextDate, String fusoOrario)
+			throws Exception {
+
+		Calendar c = Calendar.getInstance();
+		DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		String currentDataGiornata = fmt.format(c.getTime());
+		// String strDate1 = "2018/12/17 19:00:00";
+		// String strDate2 = "2018/12/17 20:00:00";
+		String strDate1 = currentDataGiornata;
+		String strDate2 = nextDate;
+
+		fmt.setLenient(false);
+		Date d1 = fmt.parse(strDate1);
+		Date d2 = fmt.parse(strDate2);
+
+		// Calculates the difference in milliseconds.
+		long millisDiff = d2.getTime() - d1.getTime();
+		int seconds = (int) (millisDiff / 1000 % 60);
+		int minutes = (int) (millisDiff / 60000 % 60);
+		int hours = (int) (millisDiff / 3600000 % 24);
+		int days = (int) (millisDiff / 86400000);
+
+		LOG.info(days + " days, ");
+		LOG.info(hours + " hours, ");
+		LOG.info(minutes + " minutes, ");
+		LOG.info(seconds + " seconds");
+
+		long diffFuso = Long.parseLong(fusoOrario) * 3600000;
+		millisDiff = millisDiff - diffFuso;
+
+		if (millisDiff < 0) {
+			millisDiff = 0;
+		}
+
+		return millisDiff;
+	}	
+	
 }
