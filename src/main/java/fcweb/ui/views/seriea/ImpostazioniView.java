@@ -616,7 +616,7 @@ public class ImpostazioniView extends VerticalLayout
 					
 				} catch (Exception e) {
 
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+					this.LOG.error(e.getMessage());
 					
 					try {
 
@@ -628,6 +628,7 @@ public class ImpostazioniView extends VerticalLayout
 						this.emailService.sendSecondaryEmail(fromSecondary, toSecondary, subjectSecondary, textSecondary);
 						
 					} catch (Exception e2) {
+						this.LOG.error(e2.getMessage());
 						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e2.getMessage());
 					}
 				}
@@ -998,10 +999,12 @@ public class ImpostazioniView extends VerticalLayout
 			String from = (String) env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
 		} catch (Exception e) {
+			this.LOG.error(e.getMessage());
 			try {
 				String from = (String) env.getProperty("spring.mail.primary.username");
 				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
 			} catch (Exception e2) {
+				this.LOG.error(e2.getMessage());
 				throw e2;
 			}
 		}

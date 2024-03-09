@@ -532,8 +532,10 @@ public class Utils{
 		if (dataAnticipo1 != null && dataAnticipo2 != null) {
 			if (now.isBefore(dataAnticipo1)) {
 				dataAnticipo = dataAnticipo1;
-			} else if (now.isAfter(dataAnticipo1)) {
+			} else if (now.isAfter(dataAnticipo1) && now.getDayOfWeek() == dataAnticipo2.getDayOfWeek() ) {
 				dataAnticipo = dataAnticipo2;
+			} else {
+				dataAnticipo = dataAnticipo1;
 			}
 		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
 			dataAnticipo = dataAnticipo2;

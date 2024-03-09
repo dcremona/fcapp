@@ -183,11 +183,12 @@ public class JobProcessSendMail{
 				String from = (String) env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from,to, cc, bcc, subject, message, "text/html", "3", att);
 			} catch (Exception e) {
+				LOG.error(e.getMessage());
 				try {
 					String from = (String) env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from,to, cc, bcc, subject, message, "text/html", "3", att);
 				} catch (Exception e2) {
-					throw e2;
+					LOG.error(e2.getMessage());
 				}
 			}
 
@@ -201,9 +202,7 @@ public class JobProcessSendMail{
 			if (outputStream2 != null) {
 				outputStream2.close();
 			}
-
 		}
-
 		LOG.info("writePdfAndSendMail END");
 	}
 

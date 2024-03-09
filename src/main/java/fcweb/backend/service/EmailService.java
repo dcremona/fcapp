@@ -68,6 +68,7 @@ public class EmailService{
 		log.info("INIZIO ESECUZIONE sendMail              ");
 		log.info("****************************************");
 
+		log.info(" bPrimary: " + bPrimary);
 		log.info(" from: " + from);
 		log.info(" subject: " + subject);
 		log.info(" message: " + messageBody);
@@ -82,7 +83,9 @@ public class EmailService{
 			msg.setFrom(from);
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-			helper.setFrom(from, "notifiche-fclt");
+			if (!bPrimary) {
+				helper.setFrom(from, "notifiche-fclt");	
+			}
 			helper.setTo(to);
 			if (cc != null) {
 				helper.setCc(cc);
@@ -121,7 +124,9 @@ public class EmailService{
 				}
 				msg.setFrom(from);
 				MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-				helper.setFrom(from, "notifiche-fclt");
+				if (!bPrimary) {
+					helper.setFrom(from, "notifiche-fclt");	
+				}
 				helper.setTo(to);
 				if (cc != null) {
 					helper.setCc(cc);
@@ -169,12 +174,13 @@ public class EmailService{
 			String[] cc, String[] bcc, String subject, String messageBody,
 			String typeMessage, String priority,
 			Map<String, InputStream> images)
-			throws IOException, MessagingException, AddressException {
+			throws Exception {
 
 		log.info("****************************************");
 		log.info("INIZIO ESECUZIONE sendMail2              ");
 		log.info("****************************************");
 
+		log.info(" bPrimary: " + bPrimary);
 		log.info(" from: " + from);
 		log.info(" subject: " + subject);
 		log.info(" message: " + messageBody);
@@ -191,7 +197,9 @@ public class EmailService{
 			msg.setFrom(from);
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-			helper.setFrom(from, "notifiche-fclt");
+			if (!bPrimary) {
+				helper.setFrom(from, "notifiche-fclt");	
+			}
 			helper.setTo(to);
 			if (cc != null) {
 				helper.setCc(cc);
@@ -244,7 +252,9 @@ public class EmailService{
 
 				msg.setFrom(from);
 				MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-				helper.setFrom(from, "notifiche-fclt");
+				if (!bPrimary) {
+					helper.setFrom(from, "notifiche-fclt");	
+				}
 				helper.setTo(to);
 				if (cc != null) {
 					helper.setCc(cc);

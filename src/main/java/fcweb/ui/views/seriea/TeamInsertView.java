@@ -1666,7 +1666,6 @@ public class TeamInsertView extends VerticalLayout
 					CustomMessageDialog.showMessageInfo("Formazione inserita, email inviata con successo!");
 
 				} catch (Exception excpt) {
-					LOG.error(excpt.getMessage());
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, excpt.getMessage());
 					return;
 				}
@@ -2054,10 +2053,12 @@ public class TeamInsertView extends VerticalLayout
 			String from = (String) env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 		} catch (Exception e) {
+			LOG.error(e.getMessage());
 			try {
 				String from = (String) env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 			} catch (Exception e2) {
+				LOG.error(e2.getMessage());
 				throw e2;
 			}
 		}

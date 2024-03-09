@@ -598,11 +598,12 @@ public class EmJobProcessGiornata{
 				String from = (String) env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 			} catch (Exception e) {
+				LOG.error(e.getMessage());
 				try {
 					String from = (String) env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 				} catch (Exception e2) {
-					throw e2;
+					LOG.error(e2.getMessage());
 				}
 			}
 
@@ -967,11 +968,12 @@ public class EmJobProcessGiornata{
 				String from = (String) env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 			} catch (Exception e) {
+				LOG.error(e.getMessage());
 				try {
 					String from = (String) env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 				} catch (Exception e2) {
-					throw e2;
+					LOG.error(e2.getMessage());
 				}
 			}
 
