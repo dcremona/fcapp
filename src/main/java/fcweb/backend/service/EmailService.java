@@ -1,7 +1,6 @@
 package fcweb.backend.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,8 +15,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
