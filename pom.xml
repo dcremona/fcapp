@@ -361,6 +361,39 @@
                 </plugins>
             </build>
         </profile>
+        
+       <profile>
+            <!-- Production mode is activated using -Pdocker -->
+            <id>docker</id>
+			<properties>
+				<activatedProperties>docker</activatedProperties>
+                <vaadin.productionMode>true</vaadin.productionMode>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+            
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.vaadin</groupId>
+                        <artifactId>vaadin-maven-plugin</artifactId>
+                        <version>${vaadin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>build-frontend</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <productionMode>true</productionMode>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>        
 
     </profiles>
 </project>
