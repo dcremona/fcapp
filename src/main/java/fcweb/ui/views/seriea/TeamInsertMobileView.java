@@ -914,6 +914,11 @@ public class TeamInsertMobileView extends VerticalLayout
 				Image imgMv = buildImage("classpath:images/", imgThink);
 				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
+				
+				FcGiornataGiocatore gg = isGiocatoreOut(p);
+				if (gg != null) {
+					cellLayoutImg.add(getImageGiocatoreOut(gg));	
+				}
 
 				StreamResource resource = new StreamResource(p.getNomeImg(),() -> {
 					InputStream inputStream = null;
@@ -1075,21 +1080,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				if (gg != null) {
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-					if (gg.isInfortunato()) {
-						Image img = null;
-						if ( gg.getNote().indexOf("INCERTO") != -1) {
-							img = buildImage("classpath:images/icons/16/", "help.png");
-							img.setTitle(gg.getNote());
-						} else  {
-							img = buildImage("classpath:images/", "ospedale_s.png");
-							img.setTitle(gg.getNote());
-						}
-						cellLayout.add(img);
-					} else if (gg.isSqualificato()) {
-						Image img = buildImage("classpath:images/", "esp_s.png");
-						img.setTitle(gg.getNote());
-						cellLayout.add(img);
-					}
+					cellLayout.add(getImageGiocatoreOut(gg));	
 				}
 			}
 			return cellLayout;
@@ -2245,7 +2236,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		String[] cc = null;
 		String[] bcc = null;
-
+		
 		try {
 			String from = (String) env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
@@ -2995,4 +2986,27 @@ public class TeamInsertMobileView extends VerticalLayout
 		}
 		return null;
 	}
+
+	private Image getImageGiocatoreOut(FcGiornataGiocatore gg) {
+		Image img = null;
+		if (gg != null) {
+			if (gg.isInfortunato()) {
+				
+				if ( gg.getNote().indexOf("INCERTO") != -1) {
+					img = buildImage("classpath:images/icons/16/", "help.png");
+					img.setTitle(gg.getNote());
+				} else  {
+					img = buildImage("classpath:images/", "ospedale_s.png");
+					img.setTitle(gg.getNote());
+				}
+
+			} else if (gg.isSqualificato()) {
+				img = buildImage("classpath:images/", "esp_s.png");
+				img.setTitle(gg.getNote());
+
+			}
+		}
+		return img;
+	}
+
 }

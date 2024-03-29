@@ -89,7 +89,7 @@ public class TeamInsertView extends VerticalLayout
 
 	@Autowired
 	private Environment env;
-	
+
 	@Autowired
 	private EmailService emailService;
 
@@ -469,7 +469,6 @@ public class TeamInsertView extends VerticalLayout
 	}
 
 	private void showMessageStopInsert() {
-		
 		String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
 			LOG.info("showMessageStopInsert");
@@ -727,6 +726,11 @@ public class TeamInsertView extends VerticalLayout
 				Image imgMv = buildImage("classpath:images/", imgThink);
 				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
+				
+				FcGiornataGiocatore gg = isGiocatoreOut(p);
+				if (gg != null) {
+					cellLayoutImg.add(getImageGiocatoreOut(gg));	
+				}
 
 				StreamResource resource = new StreamResource(p.getNomeImg(),() -> {
 					InputStream inputStream = null;
@@ -885,21 +889,7 @@ public class TeamInsertView extends VerticalLayout
 				if (gg != null) {
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-					if (gg.isInfortunato()) {
-						Image img = null;
-						if ( gg.getNote().indexOf("INCERTO") != -1) {
-							img = buildImage("classpath:images/icons/16/", "help.png");
-							img.setTitle(gg.getNote());
-						} else  {
-							img = buildImage("classpath:images/", "ospedale_s.png");
-							img.setTitle(gg.getNote());
-						}
-						cellLayout.add(img);
-					} else if (gg.isSqualificato()) {
-						Image img = buildImage("classpath:images/", "esp_s.png");
-						img.setTitle(gg.getNote());
-						cellLayout.add(img);
-					}
+					cellLayout.add(getImageGiocatoreOut(gg));	
 				}
 			}
 			return cellLayout;
@@ -2053,16 +2043,15 @@ public class TeamInsertView extends VerticalLayout
 			String from = (String) env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			this.LOG.error(e.getMessage());
 			try {
 				String from = (String) env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 			} catch (Exception e2) {
-				LOG.error(e2.getMessage());
+				this.LOG.error(e2.getMessage());
 				throw e2;
 			}
 		}
-
 	}
 
 	private Image buildImage(String path, String nomeImg) {
@@ -2802,6 +2791,28 @@ public class TeamInsertView extends VerticalLayout
 			}
 		}
 		return null;
+	}
+	
+	private Image getImageGiocatoreOut(FcGiornataGiocatore gg) {
+		Image img = null;
+		if (gg != null) {
+			if (gg.isInfortunato()) {
+				
+				if ( gg.getNote().indexOf("INCERTO") != -1) {
+					img = buildImage("classpath:images/icons/16/", "help.png");
+					img.setTitle(gg.getNote());
+				} else  {
+					img = buildImage("classpath:images/", "ospedale_s.png");
+					img.setTitle(gg.getNote());
+				}
+
+			} else if (gg.isSqualificato()) {
+				img = buildImage("classpath:images/", "esp_s.png");
+				img.setTitle(gg.getNote());
+
+			}
+		}
+		return img;
 	}
 
 
