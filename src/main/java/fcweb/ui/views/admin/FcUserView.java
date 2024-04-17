@@ -1,6 +1,7 @@
 package fcweb.ui.views.admin;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.SecureRandom;
 
@@ -15,12 +16,15 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -32,6 +36,7 @@ import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -84,7 +89,10 @@ public class FcUserView extends VerticalLayout{
 		formFactory.setVisibleProperties(CrudOperation.UPDATE, "username", "hashedPassword", "name", "roles", "profilePicture", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
 		formFactory.setVisibleProperties(CrudOperation.DELETE, "id", "username");
 
-		crud.getGrid().setColumns("id", "username", "hashedPassword", "name", "roles", "idAttore", "descAttore", "cognome", "nome", "email", "cellulare");
+		// crud.getGrid().setColumns("id", "username", "hashedPassword", "name",
+		// "roles", "idAttore", "descAttore", "cognome", "nome", "email",
+		// "cellulare");
+		crud.getGrid().setColumns("idAttore", "descAttore", "username", "name", "email", "cellulare", "roles");
 
 		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
 			Checkbox check = new Checkbox();
@@ -102,21 +110,54 @@ public class FcUserView extends VerticalLayout{
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setSizeFull();
 			if (u != null && u.getProfilePicture() != null) {
-				StreamResource resource = new StreamResource(u.getName(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = new ByteArrayInputStream(u.getProfilePicture());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-				cellLayout.add(img);
+				Avatar avatar = new Avatar(u.getName());
+				StreamResource resource = new StreamResource("profile-pic",() -> new ByteArrayInputStream(u.getProfilePicture()));
+				avatar.setImageResource(resource);
+				avatar.setThemeName("xsmall");
+				avatar.getElement().setAttribute("tabindex", "-1");
+				cellLayout.add(avatar);
+
 			}
 			return cellLayout;
 		}));
+
+		Column<FcAttore> profilePictureColumn = crud.getGrid().addColumn(new ComponentRenderer<>(u -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setSizeFull();
+
+			FileBuffer fileBuffer = new FileBuffer();
+			Upload singleFileUpload = new Upload(fileBuffer);
+			singleFileUpload.setDropAllowed(true);
+			singleFileUpload.addSucceededListener(event -> {
+				try {
+
+					// Get information about the uploaded file
+					InputStream fileData = fileBuffer.getInputStream();
+					// String fileName = event.getFileName();
+					// long contentLength = event.getContentLength();
+					// String mimeType = event.getMIMEType();
+
+					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+					int nRead;
+					byte[] data = new byte[4];
+					while ((nRead = fileData.read(data, 0, data.length)) != -1) {
+						buffer.write(data, 0, nRead);
+					}
+					buffer.flush();
+					byte[] targetArray = buffer.toByteArray();
+					u.setProfilePicture(targetArray);
+					attoreService.update(u);
+					CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+				} catch (Exception e) {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+				}
+
+			});
+			cellLayout.add(singleFileUpload);
+
+			return cellLayout;
+		}));
+		profilePictureColumn.setWidth("350px");
 
 		formFactory.setFieldType("hashedPassword", PasswordField.class);
 		formFactory.setFieldProvider("roles", user -> {
