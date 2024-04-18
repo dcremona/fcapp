@@ -3033,13 +3033,15 @@ public class JobProcessGiornata{
 		buf.setCurrentIndex(1);
 
 		int posizione = 8;
+		ArrayList<String> listAttoriProcessati = new ArrayList<String>(); 
+		
 		String appoPt = buf.getField(2);
 		Buffer appoBuf = new Buffer();
 		appoBuf.addNew(buf.getItem(1));
 
 		for (int i = 2; i <= buf.getRecordCount(); i++) {
-
 			buf.setCurrentIndex(i);
+			
 			if (appoPt.equals(buf.getField(2))) {
 				appoBuf.addNew(buf.getItem(i));
 			} else {
@@ -3049,11 +3051,19 @@ public class JobProcessGiornata{
 					// LOG.debug("SIZE "+finale.getRecordCount());
 					for (int r = 1; r <= finale.getRecordCount(); r++) {
 						finale.setCurrentIndex(r);
-						int row = buf.findFirst(finale.getField(1), 1, true);
+						String idAttore = finale.getField(1);
+						
+						if (listAttoriProcessati.indexOf(idAttore) != -1) {
+							continue;
+						}
+						
+						int row = buf.findFirst(idAttore, 1, true);
 						if (row != -1) {
 							// LOG.debug("posizione "+finale.getField(2));
 							buf.setField(row, 12, finale.getField(2));
+							listAttoriProcessati.add(idAttore);
 						}
+						
 						posizione--;
 					}
 
@@ -3068,15 +3078,24 @@ public class JobProcessGiornata{
 				appoPt = buf.getField(2);
 			}
 		}
+		
+		
 		try {
 			Buffer finale = calcolaPosizione(appoBuf, posizione, campionato);
 			// LOG.debug("SIZE "+finale.getRecordCount());
 			for (int r = 1; r <= finale.getRecordCount(); r++) {
 				finale.setCurrentIndex(r);
+				String idAttore = finale.getField(1);
+				
+				if (listAttoriProcessati.indexOf(idAttore) != -1) {
+					continue;
+				}
+				
 				int row = buf.findFirst(finale.getField(1), 1, true);
 				if (row != -1) {
 					// LOG.debug("posizione "+finale.getField(2));
 					buf.setField(row, 12, finale.getField(2));
+					listAttoriProcessati.add(idAttore);
 				}
 				posizione--;
 			}
@@ -3086,16 +3105,22 @@ public class JobProcessGiornata{
 		return buf;
 	}
 
-	private Buffer getBufferScontro(Buffer position, int posizione, String att1,
+	private Buffer getBufferScontro(int posizione, String att1,
 			String att2, int p1, int p2) {
+		
+		Buffer position = new Buffer();
 		if (p1 > p2) {
 			position.addNew("@1" + att2 + "@2" + posizione);
 			posizione--;
 			position.addNew("@1" + att1 + "@2" + posizione);
+			
+			return position;
 		} else if (p1 < p2) {
 			position.addNew("@1" + att1 + "@2" + posizione);
 			posizione--;
 			position.addNew("@1" + att2 + "@2" + posizione);
+			
+			return position;
 		}
 		return null;
 	}
@@ -3132,32 +3157,32 @@ public class JobProcessGiornata{
 			int p1 = Integer.parseInt(risAtt1[0]);
 			int p2 = Integer.parseInt(risAtt2[0]);
 			// 1) Punti negli scontri diretti
-			LOG.info(" 1) Punti negli scontri diretti ");
-			position = getBufferScontro(buffer, posizione, att1, att2, p1, p2);
+			LOG.info("1) Punti negli scontri diretti ");
+			position = getBufferScontro( posizione, att1, att2, p1, p2);
 			if (position == null) {
 				// 2) Differenza reti negli scontri diretti
 				LOG.info("2) Differenza reti negli scontri diretti ");
 				int reti1 = Integer.parseInt(risAtt1[1]);
 				int reti2 = Integer.parseInt(risAtt2[1]);
-				position = getBufferScontro(buffer, posizione, att1, att2, reti1, reti2);
+				position = getBufferScontro( posizione, att1, att2, reti1, reti2);
 				if (position == null) {
 					// 3) Differenza reti generali
 					LOG.info("3) Differenza reti generali");
 					int retiGen1 = Integer.parseInt(diffRetiGeneraliAtt1);
 					int retiGen2 = Integer.parseInt(diffRetiGeneraliAtt2);
-					position = getBufferScontro(buffer, posizione, att1, att2, retiGen1, retiGen2);
+					position = getBufferScontro( posizione, att1, att2, retiGen1, retiGen2);
 					if (position == null) {
 						// 4) Gol realizzati totali
 						LOG.info("4) Gol realizzati totali");
 						int goalTot1 = Integer.parseInt(goalTotAtt1);
 						int goalTot2 = Integer.parseInt(goalTotAtt2);
-						position = getBufferScontro(buffer, posizione, att1, att2, goalTot1, goalTot2);
+						position = getBufferScontro( posizione, att1, att2, goalTot1, goalTot2);
 						if (position == null) {
 							// 5) Punteggio totale ottenuto
 							LOG.info("5) Punteggio totale ottenuto");
 							int ptTot1 = Integer.parseInt(ptTotAtt1);
 							int ptTot2 = Integer.parseInt(ptTotAtt2);
-							position = getBufferScontro(buffer, posizione, att1, att2, ptTot1, ptTot2);
+							position = getBufferScontro( posizione, att1, att2, ptTot1, ptTot2);
 							if (position == null) {
 								// SPARATE
 								LOG.info("SPARATE!!!!!!!!!!!!!!!!1");
@@ -4492,6 +4517,4 @@ public class JobProcessGiornata{
 			}
 		}
 	}
-
-
 }
