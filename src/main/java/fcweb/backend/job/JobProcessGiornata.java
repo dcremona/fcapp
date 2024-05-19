@@ -4476,7 +4476,7 @@ public class JobProcessGiornata{
 
 			// LocalDateTime now = LocalDateTime.now();
 
-			for (int i = 1; i < csvRecords.size(); i++) {
+			for (int i = 0; i < csvRecords.size(); i++) {
 				CSVRecord record = csvRecords.get(i);
 
 				String cognGiocatore = record.get(0);
