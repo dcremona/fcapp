@@ -70,9 +70,9 @@ public class FcExpStatView extends VerticalLayout
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg,winClasTvsT");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg,winClasTvsT");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg,winClasTvsT");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ,   "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg","winClasTvsT");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD,    "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg","winClasTvsT");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE,       "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg","winClasTvsT");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id");
 
 		crud.getGrid().setColumnReorderingAllowed(true);
