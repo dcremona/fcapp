@@ -408,8 +408,11 @@ public class EmImpostazioniView extends VerticalLayout
 		radioGroupVotiExcel = new RadioButtonGroup<>();
 		radioGroupVotiExcel.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroupVotiExcel.setLabel("Voti Excel");
-		radioGroupVotiExcel.setItems("mondiale-voti-ufficiali", "mondiale-voti-ufficiali-fantacalcio");
-		radioGroupVotiExcel.setValue("mondiale-voti-ufficiali");
+		//radioGroupVotiExcel.setItems("mondiale-voti-ufficiali", "mondiale-voti-ufficiali-fantacalcio");
+		//radioGroupVotiExcel.setValue("mondiale-voti-ufficiali");
+		radioGroupVotiExcel.setItems("europei-voti-ufficiali", "europei-voti-ufficiali-fantacalcio");
+		radioGroupVotiExcel.setValue("europei-voti-ufficiali");
+		
 
 		calcola = new Button("Calcola (Yes Algoritmo + Statistiche)");
 		calcola.setIcon(VaadinIcon.PIN.create());
@@ -551,7 +554,8 @@ public class EmImpostazioniView extends VerticalLayout
 				// **************************************
 				String urlFanta = (String) p.get("URL_FANTA");
 				String basePath = basePathData;
-				String quotaz = "mondiale-giocatori-quotazioni-excel";
+				//String quotaz = "mondiale-giocatori-quotazioni-excel";
+				String quotaz = "europei-giocatori-quotazioni-excel";
 				// https://www.pianetafanta.it/mondiale-giocatori-quotazioni-excel.asp?giornata=0&Nome=&Squadre=&Ruolo=&Ruolo2=&Quota=&Quota1=
 				String httpUrl = urlFanta + quotaz + ".asp?giornata=" + giornata;
 				LOG.info("httpUrl " + httpUrl);
