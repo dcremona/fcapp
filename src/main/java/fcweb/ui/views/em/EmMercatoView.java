@@ -726,9 +726,9 @@ public class EmMercatoView extends VerticalLayout
 		if ("0".equals((String) p.getProperty("ABILITA_MERCATO"))) {
 			showMessageStopInsert();
 		} else {
-			if (millisDiff == 0) {
-				showMessageStopInsert();
-			}
+//			if (millisDiff == 0) {
+//				showMessageStopInsert();
+//			}
 		}
 	}
 
