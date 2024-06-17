@@ -320,10 +320,12 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 					String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
 					String urlFanta = (String) p.get("URL_FANTA");
 					String basePath = basePathData;
-					String quotaz = "Mondiale-Calendario";
+					//String quotaz = "Mondiale-Calendario";
+					String quotaz = "europei-calendario";
 					String httpUrl = urlFanta + quotaz + ".asp?GiornataAM=" + giornata + "&Tipolink=0";
 					LOG.info("httpUrl " + httpUrl);
-					String fileName = "MONDIALE_" + giornata;
+					//String fileName = "MONDIALE_" + giornata;
+					String fileName = "EUROPEI_" + giornata;
 					JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 					jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
 
