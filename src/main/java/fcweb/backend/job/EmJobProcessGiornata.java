@@ -725,16 +725,6 @@ public class EmJobProcessGiornata{
 				String TS = "0";
 				String M3 = "0";
 
-				if ("ROMERO C.".equals(cognGiocatore)) {
-					ruolo = "D";
-				}
-				if ("PERISIC I.".equals(cognGiocatore)) {
-					ruolo = "C";
-				}
-				if ("GOODWIN C.".equals(cognGiocatore)) {
-					ruolo = "A";
-				}
-
 				FcGiocatore giocatore = null;
 				// if (StringUtils.isNotEmpty(idGiocatore)) {
 				// giocatore =
@@ -1671,20 +1661,19 @@ public class EmJobProcessGiornata{
 			List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
 			// giocatoreRepository.deleteAll();
-			List<FcGiocatore> listG = (List<FcGiocatore>) giocatoreRepository.findAll();
-
-			int count = listG.size();
-			int lastIdGiocatore = 1;
-			if (count > 0) {
-				FcGiocatore lastG = listG.get(count - 1);
-				lastIdGiocatore = lastG.getIdGiocatore();
-			}
+//			List<FcGiocatore> listG = (List<FcGiocatore>) giocatoreRepository.findAll();
+//			int count = listG.size();
+//			int lastIdGiocatore = 1;
+//			if (count > 0) {
+//				FcGiocatore lastG = listG.get(count - 1);
+//				lastIdGiocatore = lastG.getIdGiocatore();
+//			}
 
 			for (int i = 1; i < csvRecords.size(); i++) {
 				CSVRecord record = csvRecords.get(i);
 
 				FcGiocatore giocatore = null;
-				// String idGiocatore = record.get(0);
+				String idGiocatore = record.get(0);
 				String cognGiocatore = record.get(1).trim();
 				String idRuolo = record.get(2);
 				String nomeSquadra = record.get(4).trim();
@@ -1692,14 +1681,8 @@ public class EmJobProcessGiornata{
 				String quotazioneAttuale = record.get(6);
 				LOG.debug("giocatore " + cognGiocatore + " qI " + quotazioneIniziale + " qA " + quotazioneAttuale);
 
-				if ("ROMERO C.".equals(cognGiocatore)) {
-					idRuolo = "D";
-				}
-				if ("PERISIC I.".equals(cognGiocatore)) {
-					idRuolo = "C";
-				}
-				if ("GOODWIN C.".equals(cognGiocatore)) {
-					idRuolo = "A";
+				if ("704".equals(idGiocatore)) {
+					cognGiocatore = "ZARE-EMERY";
 				}
 
 				FcRuolo ruolo = new FcRuolo();
@@ -1739,11 +1722,11 @@ public class EmJobProcessGiornata{
 				// squadra);
 				giocatore = this.giocatoreRepository.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, squadra, ruolo);
 				if (giocatore == null) {
-					lastIdGiocatore++;
+					//lastIdGiocatore++;
 					giocatore = new FcGiocatore();
-					giocatore.setIdGiocatore(lastIdGiocatore);
+					giocatore.setIdGiocatore(Integer.parseInt(idGiocatore));
 					giocatore.setQuotazione(5);
-					LOG.info("NEW GIOCATORE " + lastIdGiocatore + " " + cognGiocatore + " " + idRuolo + " " + nomeSquadra + " " + quotazioneAttuale);
+					LOG.info("NEW GIOCATORE " + idGiocatore + " " + cognGiocatore + " " + idRuolo + " " + nomeSquadra + " " + quotazioneAttuale);
 					listGiocatoriAdd.add(giocatore);
 				}
 
