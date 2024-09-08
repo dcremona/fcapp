@@ -184,15 +184,15 @@
     "print-js": "$print-js",
     "@polymer/iron-iconset-svg": "$@polymer/iron-iconset-svg",
     "proj4": "$proj4",
+    "apexcharts": "$apexcharts",
     "lit-html": "$lit-html",
+    "onecolor": "$onecolor",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "date-fns": "$date-fns",
     "@polymer/paper-icon-button": "$@polymer/paper-icon-button",
     "@vaadin-component-factory/vcf-svg": "$@vaadin-component-factory/vcf-svg",
     "lit-element": "$lit-element",
     "@polymer/paper-button": "$@polymer/paper-button",
-    "apexcharts": "$apexcharts",
-    "onecolor": "$onecolor",
     "@flowingcode/font-awesome-iron-iconset": "$@flowingcode/font-awesome-iron-iconset"
   },
   "vaadin": {
