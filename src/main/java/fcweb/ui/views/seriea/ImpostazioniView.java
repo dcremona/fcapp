@@ -313,7 +313,7 @@ public class ImpostazioniView extends VerticalLayout
 		txtPerc = new NumberField();
 		txtPerc.setMin(0d);
 		txtPerc.setMax(100d);
-		//txtPerc.setHasControls(true);
+		txtPerc.setStepButtonsVisible(true);
 		txtPerc.setValue(50d);
 
 		chkUpdateQuotaz = new Checkbox("Update Quotazioni");

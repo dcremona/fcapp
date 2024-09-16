@@ -173,6 +173,7 @@ public class SquadreView extends VerticalLayout{
 			}
 		}
 //		this.add(tabs, container);
+		tabSheet.setSizeFull();
 		this.add(tabSheet);
 	}
 
