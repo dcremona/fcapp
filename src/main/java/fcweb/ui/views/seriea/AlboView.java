@@ -3,6 +3,7 @@ package fcweb.ui.views.seriea;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -369,48 +370,147 @@ public class AlboView extends VerticalLayout {
 		annoColumn.setSortable(true);
 		annoColumn.setHeader("Squadra");
 
-		Column<FcExpStat> scudettoColumn = grid.addColumn(s -> s.getScudetto());
+		//Column<FcExpStat> scudettoColumn = grid.addColumn(s -> s.getScudetto());
+		Column<FcExpStat> scudettoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getScudetto())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getScudetto()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		scudettoColumn.setSortable(true);
+		scudettoColumn.setComparator((p1,p2) -> p1.getScudetto().compareTo(p2.getScudetto()));
 		scudettoColumn.setHeader("Scudetto");
 
-		Column<FcExpStat> p2Column = grid.addColumn(s -> s.getP2());
+		//Column<FcExpStat> p2Column = grid.addColumn(s -> s.getP2());
+		Column<FcExpStat> p2Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP2())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP2()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p2Column.setSortable(true);
+		p2Column.setComparator((p1,p2) -> p1.getP2().compareTo(p2.getP2()));
 		p2Column.setHeader("Finalista");
 
-		Column<FcExpStat> p3Column = grid.addColumn(s -> s.getP3());
+		//Column<FcExpStat> p3Column = grid.addColumn(s -> s.getP3());
+		Column<FcExpStat> p3Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP3())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP3()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p3Column.setSortable(true);
+		p3Column.setComparator((p1,p2) -> p1.getP3().compareTo(p2.getP3()));
 		p3Column.setHeader("3 Posto");
 
-		Column<FcExpStat> p4Column = grid.addColumn(s -> s.getP4());
+		//Column<FcExpStat> p4Column = grid.addColumn(s -> s.getP4());
+		Column<FcExpStat> p4Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP4())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP4()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p4Column.setSortable(true);
+		p4Column.setComparator((p1,p2) -> p1.getP4().compareTo(p2.getP4()));
 		p4Column.setHeader("4 Posto");
 
-		Column<FcExpStat> p5Column = grid.addColumn(s -> s.getP5());
+		//Column<FcExpStat> p5Column = grid.addColumn(s -> s.getP5());
+		Column<FcExpStat> p5Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP5())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP5()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p5Column.setSortable(true);
+		p5Column.setComparator((p1,p2) -> p1.getP5().compareTo(p2.getP5()));
 		p5Column.setHeader("5 Posto");
 
-		Column<FcExpStat> p6Column = grid.addColumn(s -> s.getP6());
+		//Column<FcExpStat> p6Column = grid.addColumn(s -> s.getP6());
+		Column<FcExpStat> p6Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP6())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP6()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p6Column.setSortable(true);
+		p6Column.setComparator((p1,p2) -> p1.getP6().compareTo(p2.getP6()));
 		p6Column.setHeader("6 Posto");
 
-		Column<FcExpStat> p7Column = grid.addColumn(s -> s.getP7());
+		//Column<FcExpStat> p7Column = grid.addColumn(s -> s.getP7());
+		Column<FcExpStat> p7Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP7())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP7()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p7Column.setSortable(true);
+		p7Column.setComparator((p1,p2) -> p1.getP7().compareTo(p2.getP7()));
 		p7Column.setHeader("7 Posto");
 
-		Column<FcExpStat> p8Column = grid.addColumn(s -> s.getP8());
+		//Column<FcExpStat> p8Column = grid.addColumn(s -> s.getP8());
+		Column<FcExpStat> p8Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP8())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getP8()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		p8Column.setSortable(true);
+		p8Column.setComparator((p1,p2) -> p1.getP8().compareTo(p2.getP8()));
 		p8Column.setHeader("8 Posto");
 
-		Column<FcExpStat> winClasPtColumn = grid.addColumn(s -> s.getWinClasPt());
+		// Column<FcExpStat> winClasPtColumn = grid.addColumn(s -> s.getWinClasPt());
+		Column<FcExpStat> winClasPtColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getWinClasPt())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getWinClasPt()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		winClasPtColumn.setSortable(true);
+		winClasPtColumn.setComparator((p1,p2) -> p1.getWinClasPt().compareTo(p2.getWinClasPt()));
 		winClasPtColumn.setHeader("Clas Punti");
 
-		Column<FcExpStat> winClasRegColumn = grid.addColumn(s -> s.getWinClasReg());
+		// Column<FcExpStat> winClasRegColumn = grid.addColumn(s -> s.getWinClasReg());
+		Column<FcExpStat> winClasRegColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getWinClasReg())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getWinClasReg()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		winClasRegColumn.setSortable(true);
+		winClasRegColumn.setComparator((p1,p2) -> p1.getWinClasReg().compareTo(p2.getWinClasReg()));
 		winClasRegColumn.setHeader("Clas Regolare");
 
-		Column<FcExpStat> winClasTvsTColumn = grid.addColumn(s -> s.getWinClasTvsT());
+		//Column<FcExpStat> winClasTvsTColumn = grid.addColumn(s -> s.getWinClasTvsT());
+		Column<FcExpStat> winClasTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getWinClasTvsT())) {
+				Span lbl = new Span(""+Integer.parseInt(s.getWinClasTvsT()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
 		winClasTvsTColumn.setSortable(true);
+		winClasTvsTColumn.setComparator((p1,p2) -> p1.getWinClasTvsT().compareTo(p2.getWinClasTvsT()));
 		winClasTvsTColumn.setHeader("Clas TvsT");
 
 		return grid;
