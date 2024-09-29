@@ -3,6 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@flowingcode/font-awesome-iron-iconset": "5.2.0",
     "@polymer/iron-iconset-svg": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-icon-button": "^3.0.2",
@@ -82,10 +83,12 @@
     "@polymer/paper-button": "$@polymer/paper-button",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
-    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles"
+    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
+    "@flowingcode/font-awesome-iron-iconset": "$@flowingcode/font-awesome-iron-iconset"
   },
   "vaadin": {
     "dependencies": {
+      "@flowingcode/font-awesome-iron-iconset": "5.2.0",
       "@polymer/iron-iconset-svg": "^3.0.1",
       "@polymer/paper-button": "^3.0.1",
       "@polymer/paper-icon-button": "^3.0.2",
@@ -136,6 +139,6 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "3be6cf820ec55b4f1cf96e3ad0bdd3820300f776889d42625765ba2ce318b6cc"
+    "hash": "e5f71c252bebf789f1ec10864fa2fcc1a61862023c85ac82ecb44e251b9d417f"
   }
 }
