@@ -9,7 +9,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -58,21 +57,21 @@ public class MyScheduledTasks{
 	@Autowired
 	private GiornataGiocatoreService giornataGiocatoreService;
 
-	@Bean
-	public String getCronValueUfficiosi() {
-		FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
-		if (p != null) {
-			LOG.info("Ufficiosi cron " + p.getValue());
-			return p.getValue();
-		} else {
-			return "0 30 16 * * *";
-		}
-	}
+//	@Bean
+//	public String getCronValueUfficiosi() {
+//		FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
+//		if (p != null) {
+//			LOG.info("Ufficiosi cron " + p.getValue());
+//			return p.getValue();
+//		} else {
+//			return "0 30 16 * * *";
+//		}
+//	}
 
 	@Scheduled(cron = "#{@getCronValueUfficiosi}")
 	// @Scheduled(cron = "${ufficiosi.cron.expression}")
 	// @Scheduled(fixedRate = 6000)
-	// @Scheduled(cron = "0 30 8 * * *")
+	// @Scheduled(cron = "0 59 12 * * *")
 	public void jobUfficiosi() throws Exception {
 
 		LOG.info("jobUfficiosi start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
@@ -82,16 +81,16 @@ public class MyScheduledTasks{
 		LOG.info("jobUfficiosi end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 	}
 
-	@Bean
-	public String getCronValueUfficiali() {
-		FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
-		if (p != null) {
-			LOG.info("Ufficiali cron " + p.getValue());
-			return p.getValue();
-		} else {
-			return "0 30 16 * * *";
-		}
-	}
+//	@Bean
+//	public String getCronValueUfficiali() {
+//		FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
+//		if (p != null) {
+//			LOG.info("Ufficiali cron " + p.getValue());
+//			return p.getValue();
+//		} else {
+//			return "0 30 16 * * *";
+//		}
+//	}
 
 	@Scheduled(cron = "#{@getCronValueUfficiali}")
 	// @Scheduled(cron = "${ufficiali.cron.expression}")

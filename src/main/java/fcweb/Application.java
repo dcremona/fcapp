@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
@@ -22,6 +23,7 @@ import fcweb.backend.service.AttoreRepository;
  */
 @SpringBootApplication
 @Theme(value = "fcapp-v24")
+@EnableScheduling
 public class Application implements AppShellConfigurator {
 
 	private static final long serialVersionUID = 1L;
