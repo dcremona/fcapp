@@ -12,3 +12,6 @@ keytool -genkeypair -alias springboot -keyalg RSA -keysize 4096 -storetype PKCS1
 keytool -list -v -keystore springboot.jks
 
 
+sudo /opt/lampp/lampp start
+sudo /opt/lampp/lampp stop
+nohup ./run_fcapp.sh &
