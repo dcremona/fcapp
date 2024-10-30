@@ -613,7 +613,8 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == testMailPrimary) {
 
 				try {
-					String fromPrimary = "notifiche-fclt@hostingtt.it"; 
+					//String fromPrimary = "notifiche-fclt@hostingtt.it"; 
+					String fromPrimary = (String) env.getProperty("spring.mail.primary.username");
 					String toPrimary = "davide.cremona@gmail.com";
 					String subjectPrimary = "Testing from Spring Boot sendEmailPrimary";
 					String textPrimary = "Testing from Spring Boot sendEmailPrimary";
@@ -627,7 +628,8 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == testMailSecondary) {				
 					
 				try {
-					String fromSecondary = "notifichefclt@gmail.com"; 
+					//String fromSecondary = "notifichefclt@gmail.com";
+					String fromSecondary = (String) env.getProperty("spring.mail.secondary.username");
 					String toSecondary = "davide.cremona@gmail.com";
 					String subjectSecondary = "Testing from Spring Boot sendEmailSecondary";
 					String textSecondary = "Testing from Spring Boot sendEmailSecondary";
