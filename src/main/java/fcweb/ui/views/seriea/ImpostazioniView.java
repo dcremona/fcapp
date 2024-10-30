@@ -144,7 +144,8 @@ public class ImpostazioniView extends VerticalLayout
 	private Grid<FcGiornataGiocatore> tableSqualificati;
 	private Grid<FcGiornataGiocatore> tableInfortunati;
 	
-	private Button testMail;
+	private Button testMailPrimary;
+	private Button testMailSecondary;
 
 	private Button init;
 	private Button download;
@@ -352,9 +353,13 @@ public class ImpostazioniView extends VerticalLayout
 		tableInfortunati = getTableSqualificatiInfortunati();
 		layoutUpdateRow6.add(tableInfortunati);
 		
-		testMail = new Button("Test Mail");
-		testMail.setIcon(VaadinIcon.MAILBOX.create());
-		testMail.addClickListener(this);
+		testMailPrimary = new Button("Test Mail Primary");
+		testMailPrimary.setIcon(VaadinIcon.MAILBOX.create());
+		testMailPrimary.addClickListener(this);
+
+		testMailSecondary = new Button("Test Mail Secondary");
+		testMailSecondary.setIcon(VaadinIcon.MAILBOX.create());
+		testMailSecondary.addClickListener(this);
 
 		VerticalLayout layoutUpdate = new VerticalLayout();
 		layoutUpdate.setMargin(true);
@@ -367,8 +372,9 @@ public class ImpostazioniView extends VerticalLayout
 		layoutUpdate.add(downloadSqualificatiInfortunati);
 		layoutUpdate.add(layoutUpdateRow5);
 		layoutUpdate.add(layoutUpdateRow6);
-		layoutUpdate.add(testMail);
-
+		layoutUpdate.add(testMailPrimary);
+		layoutUpdate.add(testMailSecondary);
+		
 		Details panelUpdate = new Details("Update",layoutUpdate);
 		panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
 		panelUpdate.setOpened(true);
@@ -604,33 +610,32 @@ public class ImpostazioniView extends VerticalLayout
 					}
 				}
 				
-			} else if (event.getSource() == testMail) {
-				
+			} else if (event.getSource() == testMailPrimary) {
+
 				try {
 					String fromPrimary = "notifiche-fclt@hostingtt.it"; 
 					String toPrimary = "davide.cremona@gmail.com";
 					String subjectPrimary = "Testing from Spring Boot sendEmailPrimary";
 					String textPrimary = "Testing from Spring Boot sendEmailPrimary";
-					
 					this.emailService.sendPrimaryEmail(fromPrimary, toPrimary, subjectPrimary, textPrimary);
-					
 				} catch (Exception e) {
-
 					this.LOG.error(e.getMessage());
-					
-					try {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+					return;
+				}
 
-						String fromSecondary = "davcic@libero.it"; 
-						String toSecondary = "davide.cremona@gmail.com";
-						String subjectSecondary = "Testing from Spring Boot sendEmailSecondary";
-						String textSecondary = "Testing from Spring Boot sendEmailSecondary";
-	
-						this.emailService.sendSecondaryEmail(fromSecondary, toSecondary, subjectSecondary, textSecondary);
-						
-					} catch (Exception e2) {
-						this.LOG.error(e2.getMessage());
-						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e2.getMessage());
-					}
+			} else if (event.getSource() == testMailSecondary) {				
+					
+				try {
+					String fromSecondary = "notifichefclt@gmail.com"; 
+					String toSecondary = "davide.cremona@gmail.com";
+					String subjectSecondary = "Testing from Spring Boot sendEmailSecondary";
+					String textSecondary = "Testing from Spring Boot sendEmailSecondary";
+					this.emailService.sendSecondaryEmail(fromSecondary, toSecondary, subjectSecondary, textSecondary);
+				} catch (Exception e2) {
+					this.LOG.error(e2.getMessage());
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e2.getMessage());
+					return;
 				}
 				
 			} else if (event.getSource() == downloadSqualificatiInfortunati) {
