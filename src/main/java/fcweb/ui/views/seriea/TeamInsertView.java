@@ -2077,7 +2077,7 @@ public class TeamInsertView extends VerticalLayout
 		grid.setItems(listPartite);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-		grid.setWidth("300px");
+		grid.setWidth("350px");
 
 		Column<FcCalendarioCompetizione> nomeSquadraCasaColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 
