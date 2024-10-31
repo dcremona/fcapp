@@ -204,7 +204,7 @@ public class StatisticheView extends VerticalLayout
 		});
 
 		comboPunti = new ComboBox<>();
-		comboPunti.setItems("PUNTI", "TOTALE_PUNTI");
+		comboPunti.setItems("PUNTI", "TOTALE_PUNTI","PT_TVST");
 		comboPunti.setValue("PUNTI");
 		comboPunti.setPlaceholder("Claasifica per");
 		comboPunti.addValueChangeListener(event -> {
@@ -244,6 +244,7 @@ public class StatisticheView extends VerticalLayout
 			String gg = c.getGiornata();
 			double punti = c.getPunti();
 			double totPunti = c.getTotPunti();
+			double ptTvst = c.getPtTvst();
 
 			giornate.add(gg);
 
@@ -252,6 +253,8 @@ public class StatisticheView extends VerticalLayout
 					dataA.add(punti);
 				} else if (sPunti.equals("TOTALE_PUNTI")) {
 					dataA.add(totPunti);
+				} else if (sPunti.equals("PT_TVST")) {
+					dataA.add(ptTvst);
 				}
 
 			} else if (squadra.equals(descAttoreB)) {
@@ -259,6 +262,8 @@ public class StatisticheView extends VerticalLayout
 					dataB.add(punti);
 				} else if (sPunti.equals("TOTALE_PUNTI")) {
 					dataB.add(totPunti);
+				} else if (sPunti.equals("PT_TVST")) {
+					dataB.add(ptTvst);
 				}
 			}
 		}

@@ -145,11 +145,14 @@ public class ClassificaTotalePuntiService{
 		query += " att.desc_attore, ";
 		query += " gi.id_giornata_fc,  ";
 		query += " ris.somma as punti,  ";
-		query += " ris.somma2 / " + Costants.DIVISORE_100 + " as tot_pt  ";
+		query += " ris.somma2 / " + Costants.DIVISORE_100 + " as tot_pt,  ";
+		query += " ris.somma3 as pt_tvst  ";
 		query += " FROM  ";
 		query += " (  ";
-		query += " select t.id_giornata, t.id_attore,  t.punti, (select  sum(u.punti) from fc_giornata_ris u where u.id_giornata <= t.id_giornata and u.id_attore = t.id_attore and u.id_giornata >=" + start + "  and u.id_giornata<=" + endClas + " )  as SOMMA,  ";
-		query += " (select  sum(v.tot_pt_rosa) from  fc_classifica_tot_pt v where v.id_giornata <= t.id_giornata and v.id_attore = t.id_attore and v.id_giornata >=" + start + "  and v.id_giornata<=" + end + " )  as SOMMA2  ";
+		query += " select t.id_giornata, t.id_attore,  t.punti, ";
+		query += " (select  sum(u.punti) from fc_giornata_ris u where u.id_giornata <= t.id_giornata and u.id_attore = t.id_attore and u.id_giornata >=" + start + "  and u.id_giornata<=" + endClas + " )  as SOMMA,  ";
+		query += " (select  sum(v.tot_pt_rosa) from  fc_classifica_tot_pt v where v.id_giornata <= t.id_giornata and v.id_attore = t.id_attore and v.id_giornata >=" + start + "  and v.id_giornata<=" + end + " )  as SOMMA2,  ";
+		query += " (select  sum(v.pt_tvst) from  fc_classifica_tot_pt v where v.id_giornata <= t.id_giornata and v.id_attore = t.id_attore and v.id_giornata >=" + start + "  and v.id_giornata<=" + end + " )  as SOMMA3  ";
 		query += " from fc_giornata_ris t ";
 		query += " ) ";
 		query += " ris, ";
@@ -172,12 +175,14 @@ public class ClassificaTotalePuntiService{
 				String giornata = rs.getString(2);
 				Double punti = rs.getDouble(3);
 				Double totPunti = rs.getDouble(4);
+				Double ptTvst = rs.getDouble(5);
 
 				ClassificaBean bean = new ClassificaBean();
 				bean.setSquadra(squadra);
 				bean.setGiornata(giornata);
 				bean.setPunti(punti);
 				bean.setTotPunti(totPunti);
+				bean.setPtTvst(ptTvst);;
 
 				return bean;
 			}
