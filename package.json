@@ -3,13 +3,12 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
-    "@flowingcode/font-awesome-iron-iconset": "5.2.0",
     "@polymer/iron-iconset-svg": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-icon-button": "^3.0.2",
     "@polymer/polymer": "3.5.1",
     "@vaadin-component-factory/vcf-pdf-viewer": "2.1.0",
-    "@vaadin-component-factory/vcf-svg": "24.0.1",
+    "@vaadin-component-factory/vcf-svg": "24.1.0",
     "@vaadin/bundles": "24.4.9",
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/polymer-legacy-adapter": "24.4.9",
@@ -83,18 +82,16 @@
     "@polymer/paper-button": "$@polymer/paper-button",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
-    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
-    "@flowingcode/font-awesome-iron-iconset": "$@flowingcode/font-awesome-iron-iconset"
+    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles"
   },
   "vaadin": {
     "dependencies": {
-      "@flowingcode/font-awesome-iron-iconset": "5.2.0",
       "@polymer/iron-iconset-svg": "^3.0.1",
       "@polymer/paper-button": "^3.0.1",
       "@polymer/paper-icon-button": "^3.0.2",
       "@polymer/polymer": "3.5.1",
       "@vaadin-component-factory/vcf-pdf-viewer": "2.1.0",
-      "@vaadin-component-factory/vcf-svg": "24.0.1",
+      "@vaadin-component-factory/vcf-svg": "24.1.0",
       "@vaadin/bundles": "24.4.9",
       "@vaadin/common-frontend": "0.0.19",
       "@vaadin/polymer-legacy-adapter": "24.4.9",
@@ -139,6 +136,6 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "e5f71c252bebf789f1ec10864fa2fcc1a61862023c85ac82ecb44e251b9d417f"
+    "hash": "2e3852bcdd7b389be77a93b73f5a220aab0712dbe64c55b68fd820e6b22a896f"
   }
 }
