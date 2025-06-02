@@ -120,102 +120,99 @@ public class MainLayout extends AppLayout{
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        String type = "1";
 		Optional<FcAttore> maybeUser = authenticatedUser.get();
 		if (maybeUser.isPresent()) {
-			type = authenticatedUser.getType();
-		}
-		
-		if ("1".equals(type)) {
-			if (accessChecker.hasAccess(HomeView.class)) {
-				nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));	
-			}
-	        
-			if (accessChecker.hasAccess(TeamInsertView.class)) {
-				nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));	
-			}
-			
-			if (accessChecker.hasAccess(TeamInsertMobileView.class)) {
-				nav.addItem(new SideNavItem("Mobile",TeamInsertMobileView.class,LineAwesomeIcon.MOBILE_SOLID.create()));
-			}
+			String type = authenticatedUser.getType();
+			if ("1".equals(type)) {
+				if (accessChecker.hasAccess(HomeView.class)) {
+					nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));	
+				}
+		        
+				if (accessChecker.hasAccess(TeamInsertView.class)) {
+					nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));	
+				}
+				
+				if (accessChecker.hasAccess(TeamInsertMobileView.class)) {
+					nav.addItem(new SideNavItem("Mobile",TeamInsertMobileView.class,LineAwesomeIcon.MOBILE_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(SquadreView.class)) {
-				nav.addItem(new SideNavItem("Rose",SquadreView.class,LineAwesomeIcon.USER_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(SquadreView.class)) {
+					nav.addItem(new SideNavItem("Rose",SquadreView.class,LineAwesomeIcon.USER_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(SquadreAllView.class)) {
-				nav.addItem(new SideNavItem("Tutte le Rose",SquadreAllView.class,LineAwesomeIcon.USER_FRIENDS_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(SquadreAllView.class)) {
+					nav.addItem(new SideNavItem("Tutte le Rose",SquadreAllView.class,LineAwesomeIcon.USER_FRIENDS_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(CalendarioView.class)) {
-				nav.addItem(new SideNavItem("Calendario",CalendarioView.class,LineAwesomeIcon.CALENDAR_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(CalendarioView.class)) {
+					nav.addItem(new SideNavItem("Calendario",CalendarioView.class,LineAwesomeIcon.CALENDAR_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(ClassificaView.class)) {
-				nav.addItem(new SideNavItem("Classifica",ClassificaView.class,LineAwesomeIcon.TABLE_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(ClassificaView.class)) {
+					nav.addItem(new SideNavItem("Classifica",ClassificaView.class,LineAwesomeIcon.TABLE_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(FormazioniView.class)) {
-				nav.addItem(new SideNavItem("Formazioni",FormazioniView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(FormazioniView.class)) {
+					nav.addItem(new SideNavItem("Formazioni",FormazioniView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(StatisticheView.class)) {
-				nav.addItem(new SideNavItem("Statistiche",StatisticheView.class,LineAwesomeIcon.CHART_LINE_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(StatisticheView.class)) {
+					nav.addItem(new SideNavItem("Statistiche",StatisticheView.class,LineAwesomeIcon.CHART_LINE_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(StatisticheView.class)) {
-				nav.addItem(new SideNavItem("Squalificati-Indisponibili",SqualificatiIndisponibiliView.class,LineAwesomeIcon.REDDIT_SQUARE.create()));
-			}
+				if (accessChecker.hasAccess(StatisticheView.class)) {
+					nav.addItem(new SideNavItem("Squalificati-Indisponibili",SqualificatiIndisponibiliView.class,LineAwesomeIcon.REDDIT_SQUARE.create()));
+				}
 
-			if (accessChecker.hasAccess(DownloadView.class)) {
-				nav.addItem(new SideNavItem("Download",DownloadView.class,LineAwesomeIcon.FILE_DOWNLOAD_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(DownloadView.class)) {
+					nav.addItem(new SideNavItem("Download",DownloadView.class,LineAwesomeIcon.FILE_DOWNLOAD_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(AlboView.class)) {
-				nav.addItem(new SideNavItem("Albo",AlboView.class,LineAwesomeIcon.HISTORY_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(AlboView.class)) {
+					nav.addItem(new SideNavItem("Albo",AlboView.class,LineAwesomeIcon.HISTORY_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(RegolamentoView.class)) {
-				nav.addItem(new SideNavItem("Regolamento",RegolamentoView.class,LineAwesomeIcon.COMMENT_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(RegolamentoView.class)) {
+					nav.addItem(new SideNavItem("Regolamento",RegolamentoView.class,LineAwesomeIcon.COMMENT_SOLID.create()));
+				}
 
-			
-		} else {
+			} else {
 
-			if (accessChecker.hasAccess(EmHomeView.class)) {
-				nav.addItem(new SideNavItem("Home",EmHomeView.class,LineAwesomeIcon.HOME_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmHomeView.class)) {
+					nav.addItem(new SideNavItem("Home",EmHomeView.class,LineAwesomeIcon.HOME_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmMercatoView.class)) {
-				nav.addItem(new SideNavItem("Mercato",EmMercatoView.class,LineAwesomeIcon.SEARCH_DOLLAR_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmMercatoView.class)) {
+					nav.addItem(new SideNavItem("Mercato",EmMercatoView.class,LineAwesomeIcon.SEARCH_DOLLAR_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmTeamInsertView.class)) {
-				nav.addItem(new SideNavItem("Schera Formazione",EmTeamInsertView.class,LineAwesomeIcon.FUTBOL_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmTeamInsertView.class)) {
+					nav.addItem(new SideNavItem("Schera Formazione",EmTeamInsertView.class,LineAwesomeIcon.FUTBOL_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmSquadreView.class)) {
-				nav.addItem(new SideNavItem("Rose",EmSquadreView.class,LineAwesomeIcon.USER_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmSquadreView.class)) {
+					nav.addItem(new SideNavItem("Rose",EmSquadreView.class,LineAwesomeIcon.USER_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmClassificaView.class)) {
-				nav.addItem(new SideNavItem("Classifica",EmClassificaView.class,LineAwesomeIcon.TABLE_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmClassificaView.class)) {
+					nav.addItem(new SideNavItem("Classifica",EmClassificaView.class,LineAwesomeIcon.TABLE_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmFormazioniView.class)) {
-				nav.addItem(new SideNavItem("Formazioni",EmFormazioniView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmFormazioniView.class)) {
+					nav.addItem(new SideNavItem("Formazioni",EmFormazioniView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmStatisticheView.class)) {
-				nav.addItem(new SideNavItem("Statistiche",EmStatisticheView.class,LineAwesomeIcon.CHART_LINE_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmStatisticheView.class)) {
+					nav.addItem(new SideNavItem("Statistiche",EmStatisticheView.class,LineAwesomeIcon.CHART_LINE_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmDownloadView.class)) {
-				nav.addItem(new SideNavItem("Download",EmDownloadView.class,LineAwesomeIcon.FILE_DOWNLOAD_SOLID.create()));
-			}
+				if (accessChecker.hasAccess(EmDownloadView.class)) {
+					nav.addItem(new SideNavItem("Download",EmDownloadView.class,LineAwesomeIcon.FILE_DOWNLOAD_SOLID.create()));
+				}
 
-			if (accessChecker.hasAccess(EmRegolamentoView.class)) {
-				nav.addItem(new SideNavItem("Regolamento",EmRegolamentoView.class,LineAwesomeIcon.COMMENT_SOLID.create()));
+				if (accessChecker.hasAccess(EmRegolamentoView.class)) {
+					nav.addItem(new SideNavItem("Regolamento",EmRegolamentoView.class,LineAwesomeIcon.COMMENT_SOLID.create()));
+				}
 			}
 		}
 
@@ -228,148 +225,147 @@ public class MainLayout extends AppLayout{
 		adminNav.setLabel("Admin");
 		adminNav.setCollapsible(true);
 		adminNav.setExpanded(false);
-		
-        String type = "1";
+
 		Optional<FcAttore> maybeUser = authenticatedUser.get();
 		if (maybeUser.isPresent()) {
-			type = authenticatedUser.getType();
+			String type = authenticatedUser.getType();
+			
+			if ("1".equals(type)) {
+
+				// ADMIN
+				if (accessChecker.hasAccess(ImpostazioniView.class)) {
+					adminNav.addItem(new SideNavItem("Impostazioni",ImpostazioniView.class,LineAwesomeIcon.TOOLS_SOLID.create()));
+				} else {
+					return null;
+				}
+				
+				if (accessChecker.hasAccess(MercatoView.class)) {
+					adminNav.addItem(new SideNavItem("Mercato",MercatoView.class,LineAwesomeIcon.SEARCH_DOLLAR_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FreePlayersView.class)) {
+					adminNav.addItem(new SideNavItem("Free Players",FreePlayersView.class,LineAwesomeIcon.FREE_CODE_CAMP.create()));
+				}
+
+				if (accessChecker.hasAccess(FcPropertiesView.class)) {
+					adminNav.addItem(new SideNavItem("Proprieta",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcUserView.class)) {
+					adminNav.addItem(new SideNavItem("Utenti",FcUserView.class,LineAwesomeIcon.USER_EDIT_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiocatoreView.class)) {
+					adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
+					adminNav.addItem(new SideNavItem("GiornataInfo",FcGiornataInfoView.class,LineAwesomeIcon.INFO_CIRCLE_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiornataView.class)) {
+					adminNav.addItem(new SideNavItem("Giornata",FcGiornataView.class,LineAwesomeIcon.CALENDAR_DAY_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiornataDettView.class)) {
+					adminNav.addItem(new SideNavItem("GiornataDett",FcGiornataDettView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcFormazioneView.class)) {
+					adminNav.addItem(new SideNavItem("Formazione",FcFormazioneView.class,LineAwesomeIcon.USERS_COG_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcClassificaView.class)) {
+					adminNav.addItem(new SideNavItem("Classifica",FcClassificaView.class,LineAwesomeIcon.TABLET_ALT_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcMercatoDettView.class)) {
+					adminNav.addItem(new SideNavItem("MercatoDett",FcMercatoDettView.class,LineAwesomeIcon.BORDER_ALL_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcPagelleView.class)) {
+					adminNav.addItem(new SideNavItem("Pagelle",FcPagelleView.class,LineAwesomeIcon.POLL_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcExpStatView.class)) {
+					adminNav.addItem(new SideNavItem("ExpStat",FcExpStatView.class,LineAwesomeIcon.KEYBOARD_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcCampionatoView.class)) {
+					adminNav.addItem(new SideNavItem("Campionato",FcCampionatoView.class,LineAwesomeIcon.BRUSH_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcSquadraView.class)) {
+					adminNav.addItem(new SideNavItem("Squadre Serie A",FcSquadraView.class,LineAwesomeIcon.STEAM_SQUARE.create()));
+				}
+
+				if (accessChecker.hasAccess(FcCalendarioCompetizioneView.class)) {
+					adminNav.addItem(new SideNavItem("Calendario Serie A",FcCalendarioCompetizioneView.class,LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcAccessoView.class)) {
+					adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
+				}
+				
+			} else {
+
+				// ADMIN
+				if (accessChecker.hasAccess(EmImpostazioniView.class)) {
+					adminNav.addItem(new SideNavItem("Impostazioni",EmImpostazioniView.class,LineAwesomeIcon.TOOLS_SOLID.create()));
+				} else {
+					return null;
+				}
+
+				if (accessChecker.hasAccess(FcPropertiesView.class)) {
+					adminNav.addItem(new SideNavItem("Proprieta",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcUserView.class)) {
+					adminNav.addItem(new SideNavItem("Utenti",FcUserView.class,LineAwesomeIcon.USER_EDIT_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiocatoreView.class)) {
+					adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
+					adminNav.addItem(new SideNavItem("GiornataInfo",FcGiornataInfoView.class,LineAwesomeIcon.INFO_CIRCLE_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcGiornataDettView.class)) {
+					adminNav.addItem(new SideNavItem("GiornataDett",FcGiornataDettView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcFormazioneView.class)) {
+					adminNav.addItem(new SideNavItem("Formazione",FcFormazioneView.class,LineAwesomeIcon.USERS_COG_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcMercatoDettView.class)) {
+					adminNav.addItem(new SideNavItem("MercatoDett",FcMercatoDettView.class,LineAwesomeIcon.BORDER_ALL_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcPagelleView.class)) {
+					adminNav.addItem(new SideNavItem("Pagelle",FcPagelleView.class,LineAwesomeIcon.POLL_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcCampionatoView.class)) {
+					adminNav.addItem(new SideNavItem("Campionato",FcCampionatoView.class,LineAwesomeIcon.BRUSH_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcSquadraView.class)) {
+					adminNav.addItem(new SideNavItem("Squadre EM",FcSquadraView.class,LineAwesomeIcon.STEAM_SQUARE.create()));
+				}
+
+				if (accessChecker.hasAccess(FcCalendarioCompetizioneView.class)) {
+					adminNav.addItem(new SideNavItem("Calendario EM",FcCalendarioCompetizioneView.class,LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
+				}
+
+				if (accessChecker.hasAccess(FcAccessoView.class)) {
+					adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
+				}
+			}
 		}
 		
-		if ("1".equals(type)) {
-
-			// ADMIN
-			if (accessChecker.hasAccess(ImpostazioniView.class)) {
-				adminNav.addItem(new SideNavItem("Impostazioni",ImpostazioniView.class,LineAwesomeIcon.TOOLS_SOLID.create()));
-			} else {
-				return null;
-			}
-			
-			if (accessChecker.hasAccess(MercatoView.class)) {
-				adminNav.addItem(new SideNavItem("Mercato",MercatoView.class,LineAwesomeIcon.SEARCH_DOLLAR_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FreePlayersView.class)) {
-				adminNav.addItem(new SideNavItem("Free Players",FreePlayersView.class,LineAwesomeIcon.FREE_CODE_CAMP.create()));
-			}
-
-			if (accessChecker.hasAccess(FcPropertiesView.class)) {
-				adminNav.addItem(new SideNavItem("Proprieta",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcUserView.class)) {
-				adminNav.addItem(new SideNavItem("Utenti",FcUserView.class,LineAwesomeIcon.USER_EDIT_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiocatoreView.class)) {
-				adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
-				adminNav.addItem(new SideNavItem("GiornataInfo",FcGiornataInfoView.class,LineAwesomeIcon.INFO_CIRCLE_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiornataView.class)) {
-				adminNav.addItem(new SideNavItem("Giornata",FcGiornataView.class,LineAwesomeIcon.CALENDAR_DAY_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiornataDettView.class)) {
-				adminNav.addItem(new SideNavItem("GiornataDett",FcGiornataDettView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcFormazioneView.class)) {
-				adminNav.addItem(new SideNavItem("Formazione",FcFormazioneView.class,LineAwesomeIcon.USERS_COG_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcClassificaView.class)) {
-				adminNav.addItem(new SideNavItem("Classifica",FcClassificaView.class,LineAwesomeIcon.TABLET_ALT_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcMercatoDettView.class)) {
-				adminNav.addItem(new SideNavItem("MercatoDett",FcMercatoDettView.class,LineAwesomeIcon.BORDER_ALL_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcPagelleView.class)) {
-				adminNav.addItem(new SideNavItem("Pagelle",FcPagelleView.class,LineAwesomeIcon.POLL_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcExpStatView.class)) {
-				adminNav.addItem(new SideNavItem("ExpStat",FcExpStatView.class,LineAwesomeIcon.KEYBOARD_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcCampionatoView.class)) {
-				adminNav.addItem(new SideNavItem("Campionato",FcCampionatoView.class,LineAwesomeIcon.BRUSH_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcSquadraView.class)) {
-				adminNav.addItem(new SideNavItem("Squadre Serie A",FcSquadraView.class,LineAwesomeIcon.STEAM_SQUARE.create()));
-			}
-
-			if (accessChecker.hasAccess(FcCalendarioCompetizioneView.class)) {
-				adminNav.addItem(new SideNavItem("Calendario Serie A",FcCalendarioCompetizioneView.class,LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcAccessoView.class)) {
-				adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
-			}
-			
-		} else {
-
-			// ADMIN
-			if (accessChecker.hasAccess(EmImpostazioniView.class)) {
-				adminNav.addItem(new SideNavItem("Impostazioni",EmImpostazioniView.class,LineAwesomeIcon.TOOLS_SOLID.create()));
-			} else {
-				return null;
-			}
-
-			if (accessChecker.hasAccess(FcPropertiesView.class)) {
-				adminNav.addItem(new SideNavItem("Proprieta",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcUserView.class)) {
-				adminNav.addItem(new SideNavItem("Utenti",FcUserView.class,LineAwesomeIcon.USER_EDIT_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiocatoreView.class)) {
-				adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
-				adminNav.addItem(new SideNavItem("GiornataInfo",FcGiornataInfoView.class,LineAwesomeIcon.INFO_CIRCLE_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcGiornataDettView.class)) {
-				adminNav.addItem(new SideNavItem("GiornataDett",FcGiornataDettView.class,LineAwesomeIcon.CALENDAR_CHECK_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcFormazioneView.class)) {
-				adminNav.addItem(new SideNavItem("Formazione",FcFormazioneView.class,LineAwesomeIcon.USERS_COG_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcMercatoDettView.class)) {
-				adminNav.addItem(new SideNavItem("MercatoDett",FcMercatoDettView.class,LineAwesomeIcon.BORDER_ALL_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcPagelleView.class)) {
-				adminNav.addItem(new SideNavItem("Pagelle",FcPagelleView.class,LineAwesomeIcon.POLL_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcCampionatoView.class)) {
-				adminNav.addItem(new SideNavItem("Campionato",FcCampionatoView.class,LineAwesomeIcon.BRUSH_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcSquadraView.class)) {
-				adminNav.addItem(new SideNavItem("Squadre EM",FcSquadraView.class,LineAwesomeIcon.STEAM_SQUARE.create()));
-			}
-
-			if (accessChecker.hasAccess(FcCalendarioCompetizioneView.class)) {
-				adminNav.addItem(new SideNavItem("Calendario EM",FcCalendarioCompetizioneView.class,LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
-			}
-
-			if (accessChecker.hasAccess(FcAccessoView.class)) {
-				adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
-			}
-		}
-
         return adminNav;
     }
 

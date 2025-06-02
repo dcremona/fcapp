@@ -43,15 +43,11 @@ public class AuthenticatedUser{
 	}
 
 	public Optional<FcAttore> get() {
-		// return
-		// authenticationContext.getAuthenticatedUser(UserDetails.class).map(userDetails
-		// -> userRepository.findByUsername(userDetails.getUsername()));
-
 		Optional<FcAttore> maybeUser = authenticationContext.getAuthenticatedUser(UserDetails.class).map(userDetails -> userRepository.findByUsername(userDetails.getUsername()));
 		if (maybeUser.isPresent()) {
 			FcAttore user = maybeUser.get();
 			if (!user.isActive()) {
-				return null;
+				return maybeUser;
 			}
 			setSession(user);
 		}
