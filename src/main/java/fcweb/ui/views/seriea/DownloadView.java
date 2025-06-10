@@ -14,8 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.vaadin.filesystemdataprovider.FileSelect;
 
 import com.flowingcode.vaadin.addons.gridexporter.GridExporter;
@@ -29,14 +27,12 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
@@ -57,8 +53,6 @@ import fcweb.ui.views.MainLayout;
 import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
-
-
 
 @PageTitle("Download")
 @Route(value = "downnload", layout = MainLayout.class)
@@ -84,8 +78,8 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
 
-	@Autowired
-	private ResourceLoader resourceLoader;
+//	@Autowired
+//	private ResourceLoader resourceLoader;
 
 	public List<FcAttore> squadre = new ArrayList<FcAttore>();
 
@@ -136,7 +130,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 		for (Role r : att.getRoles()) {
 			if (r.equals(Role.ADMIN)) {
-				layout1.add(salvaRoseA);	
+				layout1.add(salvaRoseA);
 			}
 		}
 
@@ -145,7 +139,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 		final VerticalLayout layout2 = new VerticalLayout();
 		for (Role r : att.getRoles()) {
 			if (r.equals(Role.ADMIN)) {
-				layout2.add(salvaFreePl);	
+				layout2.add(salvaFreePl);
 			}
 		}
 		setFreePlayer(layout2);
@@ -163,10 +157,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 			File file = fileSelect.getValue();
 			Date date = new Date(file.lastModified());
 			if (!file.isDirectory()) {
-				// UI.getCurrent().navigate(PdfView.class,file.getPath());
-
 				Dialog dialog = new Dialog();
-				// dialog.getElement().setAttribute("aria-label", "System maintenance hint");
 				VerticalLayout dialogLayout = createDialogLayout(dialog, file);
 				dialog.add(dialogLayout);
 				dialog.open();
@@ -181,16 +172,9 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 		fileSelect.setHeight(resY + "px");
 		fileSelect.setLabel("Select file");
 
-//		VerticalLayout container = new VerticalLayout();
-//		PagedTabs tabs = new PagedTabs(container);
-//		tabs.add("Rose A", layout1, false);
-//		tabs.add("Free Players", layout2, false);
-//		tabs.add("Pdf", fileSelect, false);
-//		add(tabs, container);
-		
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Rose A", layout1);
-		tabSheet.add("Free Players",layout2);
+		tabSheet.add("Free Players", layout2);
 		tabSheet.add("Pdf", fileSelect);
 		tabSheet.setSizeFull();
 		this.add(tabSheet);
@@ -201,12 +185,6 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 		try {
 
-//			H2 headline = new H2("System maintenance");
-//			headline.getStyle().set("margin", "var(--lumo-space-m) 0").set("font-size", "1.5em").set("font-weight", "bold");
-//
-//			Paragraph paragraph = new Paragraph(
-//					"System maintenance will begin at 3 PM. It is schedule to conclude at 5PM. We apologize for any inconvenience.");
-//
 			int resX2 = resX - 200;
 			int resY2 = resY - 200;
 
@@ -225,7 +203,6 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 			dialogLayout.getStyle().set("width", resX2 + "px").set("max-width", "100%");
 			dialogLayout.getStyle().set("height", resY2 + "px").set("max-height", "100%");
 			dialogLayout.setAlignSelf(FlexComponent.Alignment.END, closeButton);
-			// dialogLayout.setSizeFull();
 
 		} catch (IOException e) {
 
@@ -238,10 +215,6 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 		List<FcExpRosea> items = expRoseAController.findAll();
 
-//		gridRosea.setSelectionMode(Grid.SelectionMode.NONE);
-//		gridRosea.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,GridVariant.LUMO_ROW_STRIPES);
-//		gridRosea.setAllRowsVisible(true);
-//		gridRosea.getStyle().set("fontSize", "smaller");
 		gridRosea.setItems(items);
 		gridRosea.setSelectionMode(Grid.SelectionMode.SINGLE);
 		gridRosea.setAllRowsVisible(true);
@@ -253,72 +226,63 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 			Column<FcExpRosea> sxColumn = null;
 			Column<FcExpRosea> qxColumn = null;
 			if (i == 1) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR1());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS1());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ1());
 			} else if (i == 2) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR2());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS2());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ2());
 			} else if (i == 3) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR3());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS3());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ3());
 			} else if (i == 4) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR4());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS4());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ4());
 			} else if (i == 5) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR5());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS5());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ5());
 			} else if (i == 6) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR6());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS6());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ6());
 			} else if (i == 7) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR7());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS7());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ7());
 			} else if (i == 8) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR8());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS8());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ8());
 			} else if (i == 9) {
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR9());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS9());
-				rxColumn = getColumnR(gridRosea, i);
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ9());
 			} else if (i == 10) {
-				rxColumn = getColumnR(gridRosea, i);
+				// rxColumn = getColumnR(gridRosea, i);
+				rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR10());
 				sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS10());
 				qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ10());
 			}
 
-			sxColumn.setKey("s" + i);
-			// s1Column.setHeader("s1");
-			// sxColumn.setFlexGrow(0);
-			// sxColumn.setWidth("110px");
-			// sxColumn.setResizable(false);
-			sxColumn.setAutoWidth(true);
-
 			rxColumn.setKey("r" + i);
-			// r1Column.setHeader("r1");
-			 rxColumn.setFlexGrow(0);
-			// rxColumn.setWidth("60px");
-			// rxColumn.setResizable(false);
-			// rxColumn.setAutoWidth(true);
-
+			sxColumn.setKey("s" + i);
+			sxColumn.setAutoWidth(true);
 			qxColumn.setKey("q" + i);
-			// q1Column.setHeader("r1");
-			 qxColumn.setFlexGrow(0);
-			// qxColumn.setWidth("30px");
-			// qxColumn.setResizable(false);
-			// qxColumn.setAutoWidth(true);
-
 		}
 
-//		Anchor downloadAsExcel = new Anchor(new StreamResource("roseA.xlsx", Exporter.exportAsExcel(gridRosea)),"Download As Excel");
-//		layout.add(new HorizontalLayout(downloadAsExcel));
 		GridExporter<FcExpRosea> exporter = GridExporter.createFor(gridRosea);
 		exporter.setAutoAttachExportButtons(false);
 		exporter.setTitle("roseA");
@@ -331,61 +295,49 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 		layout.add(gridRosea);
 	}
 
-	private Column<FcExpRosea> getColumnR(Grid<FcExpRosea> grid, int i) {
-
-		Column<FcExpRosea> rxColumn = grid.addColumn(new ComponentRenderer<>(f -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			// cellLayout.setMargin(false);
-			// cellLayout.setPadding(false);
-			// cellLayout.setSpacing(false);
-			// cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
-
-			String ruolo = null;
-			if (f != null) {
-				if (i == 1) {
-					ruolo = f.getR1();
-				} else if (i == 2) {
-					ruolo = f.getR2();
-				} else if (i == 3) {
-					ruolo = f.getR3();
-				} else if (i == 4) {
-					ruolo = f.getR4();
-				} else if (i == 5) {
-					ruolo = f.getR5();
-				} else if (i == 6) {
-					ruolo = f.getR6();
-				} else if (i == 7) {
-					ruolo = f.getR7();
-				} else if (i == 8) {
-					ruolo = f.getR8();
-				} else if (i == 9) {
-					ruolo = f.getR9();
-				} else if (i == 10) {
-					ruolo = f.getR10();
-				}
-			}
-
-			if (ruolo != null && ("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
-				Image img = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-
-		return rxColumn;
-
-	}
+//	private Column<FcExpRosea> getColumnR(Grid<FcExpRosea> grid, int i) {
+//
+//		Column<FcExpRosea> rxColumn = grid.addColumn(new ComponentRenderer<>(f -> {
+//			HorizontalLayout cellLayout = new HorizontalLayout();
+//			String ruolo = null;
+//			if (f != null) {
+//				if (i == 1) {
+//					ruolo = f.getR1();
+//				} else if (i == 2) {
+//					ruolo = f.getR2();
+//				} else if (i == 3) {
+//					ruolo = f.getR3();
+//				} else if (i == 4) {
+//					ruolo = f.getR4();
+//				} else if (i == 5) {
+//					ruolo = f.getR5();
+//				} else if (i == 6) {
+//					ruolo = f.getR6();
+//				} else if (i == 7) {
+//					ruolo = f.getR7();
+//				} else if (i == 8) {
+//					ruolo = f.getR8();
+//				} else if (i == 9) {
+//					ruolo = f.getR9();
+//				} else if (i == 10) {
+//					ruolo = f.getR10();
+//				}
+//			}
+//
+//			if (ruolo != null && ("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
+//				Image img = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+//				cellLayout.add(img);
+//			}
+//			return cellLayout;
+//		}));
+//
+//		return rxColumn;
+//
+//	}
 
 	private void setFreePlayer(VerticalLayout layout) {
 
 		List<FcExpFreePl> items = expFreePlController.findAll();
-//		gridFreePl.setItems(items);
-//		gridFreePl.setSelectionMode(Grid.SelectionMode.NONE);
-//		gridFreePl.setAllRowsVisible(true);
-//		gridFreePl.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,GridVariant.LUMO_ROW_STRIPES);
-//		gridFreePl.getStyle().set("fontSize", "smaller");
-//		
 		gridFreePl.setItems(items);
 		gridFreePl.setSelectionMode(Grid.SelectionMode.SINGLE);
 		gridFreePl.setAllRowsVisible(true);
@@ -397,71 +349,63 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 			Column<FcExpFreePl> sxColumn = null;
 			Column<FcExpFreePl> qxColumn = null;
 			if (i == 1) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR1());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS1());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ1());
 			} else if (i == 2) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR2());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS2());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ2());
 			} else if (i == 3) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR3());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS3());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ3());
 			} else if (i == 4) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR4());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS4());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ4());
 			} else if (i == 5) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR5());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS5());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ5());
 			} else if (i == 6) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR6());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS6());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ6());
 			} else if (i == 7) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR7());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS7());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ7());
 			} else if (i == 8) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR8());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS8());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ8());
 			} else if (i == 9) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR9());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS9());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ9());
 			} else if (i == 10) {
-				rxColumn = getColumnR2(gridFreePl, i);
+				// rxColumn = getColumnR2(gridFreePl, i);
+				rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR10());
 				sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS10());
 				qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ10());
 			}
 
-			sxColumn.setKey("s" + i);
-			// s1Column.setHeader("s1");
-			// sxColumn.setFlexGrow(0);
-			// sxColumn.setWidth("110px");
-			// sxColumn.setResizable(false);
-			sxColumn.setAutoWidth(true);
-
 			rxColumn.setKey("r" + i);
-			// r1Column.setHeader("r1");
-			// rxColumn.setFlexGrow(0);
-			// rxColumn.setWidth("60px");
-			// rxColumn.setResizable(false);
-			// rxColumn.setAutoWidth(true);
-
+			sxColumn.setKey("s" + i);
+			sxColumn.setAutoWidth(true);
 			qxColumn.setKey("q" + i);
-			// q1Column.setHeader("r1");
-			// qxColumn.setFlexGrow(0);
-			// qxColumn.setWidth("30px");
-			// qxColumn.setResizable(false);
-			// qxColumn.setAutoWidth(true);
 		}
 
-//		Anchor downloadAsExcel = new Anchor(new StreamResource("freePlayers.xlsx", Exporter.exportAsExcel(gridFreePl)),"Download As Excel");
-//		layout.add(new HorizontalLayout(downloadAsExcel));
 		GridExporter<FcExpFreePl> exporter = GridExporter.createFor(gridFreePl);
 		exporter.setAutoAttachExportButtons(false);
 		exporter.setTitle("freePlayers");
@@ -475,50 +419,45 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 	}
 
-	private Column<FcExpFreePl> getColumnR2(Grid<FcExpFreePl> grid, int i) {
-
-		Column<FcExpFreePl> rxColumn = grid.addColumn(new ComponentRenderer<>(f -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			// cellLayout.setMargin(false);
-			// cellLayout.setPadding(false);
-			// cellLayout.setSpacing(false);
-			// cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
-			String ruolo = null;
-			if (f != null) {
-				if (i == 1) {
-					ruolo = f.getR1();
-				} else if (i == 2) {
-					ruolo = f.getR2();
-				} else if (i == 3) {
-					ruolo = f.getR3();
-				} else if (i == 4) {
-					ruolo = f.getR4();
-				} else if (i == 5) {
-					ruolo = f.getR5();
-				} else if (i == 6) {
-					ruolo = f.getR6();
-				} else if (i == 7) {
-					ruolo = f.getR7();
-				} else if (i == 8) {
-					ruolo = f.getR8();
-				} else if (i == 9) {
-					ruolo = f.getR9();
-				} else if (i == 10) {
-					ruolo = f.getR10();
-				}
-			}
-
-			if (ruolo != null && ("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
-				Image img = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-
-		return rxColumn;
-
-	}
+//	private Column<FcExpFreePl> getColumnR2(Grid<FcExpFreePl> grid, int i) {
+//
+//		Column<FcExpFreePl> rxColumn = grid.addColumn(new ComponentRenderer<>(f -> {
+//			HorizontalLayout cellLayout = new HorizontalLayout();
+//			String ruolo = null;
+//			if (f != null) {
+//				if (i == 1) {
+//					ruolo = f.getR1();
+//				} else if (i == 2) {
+//					ruolo = f.getR2();
+//				} else if (i == 3) {
+//					ruolo = f.getR3();
+//				} else if (i == 4) {
+//					ruolo = f.getR4();
+//				} else if (i == 5) {
+//					ruolo = f.getR5();
+//				} else if (i == 6) {
+//					ruolo = f.getR6();
+//				} else if (i == 7) {
+//					ruolo = f.getR7();
+//				} else if (i == 8) {
+//					ruolo = f.getR8();
+//				} else if (i == 9) {
+//					ruolo = f.getR9();
+//				} else if (i == 10) {
+//					ruolo = f.getR10();
+//				}
+//			}
+//
+//			if (ruolo != null && ("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
+//				Image img = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+//				cellLayout.add(img);
+//			}
+//			return cellLayout;
+//		}));
+//
+//		return rxColumn;
+//
+//	}
 
 	@Override
 	public void onComponentEvent(ClickEvent<Button> event) {
@@ -546,20 +485,20 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 		}
 	}
 
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg, () -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource, "");
-		return img;
-	}
+//	private Image buildImage(String path, String nomeImg) {
+//		StreamResource resource = new StreamResource(nomeImg, () -> {
+//			Resource r = resourceLoader.getResource(path + nomeImg);
+//			InputStream inputStream = null;
+//			try {
+//				inputStream = r.getInputStream();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return inputStream;
+//		});
+//
+//		Image img = new Image(resource, "");
+//		return img;
+//	}
 
 }
