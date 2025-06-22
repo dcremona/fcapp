@@ -153,7 +153,7 @@
 		<dependency>
 		   <groupId>org.vaadin.addons.componentfactory</groupId>
 		   <artifactId>vcf-pdf-viewer</artifactId>
-		   <version>3.0.0</version>
+		   <version>4.1.0</version>
 		</dependency>
 		<dependency>
 		   <groupId>org.vaadin.crudui</groupId>
@@ -168,7 +168,7 @@
 		<dependency>
 		   <groupId>com.github.appreciated</groupId>
 		   <artifactId>apexcharts</artifactId>
-		   <version>24.0.0</version>
+		   <version>24.0.2</version>
 		</dependency>		
 		<dependency>
 		   <groupId>com.flowingcode.addons</groupId>
