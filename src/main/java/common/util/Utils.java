@@ -388,6 +388,14 @@ public class Utils{
 		return null;
 	}
 
+	public static String buildInfoGiornataRight(FcGiornataInfo giornataInfo) {
+
+		if (giornataInfo != null) {
+			return  " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+		}
+		return "ND";
+	}
+
 	public static String buildInfoGiornata(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {

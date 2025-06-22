@@ -107,11 +107,14 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			
+			Span lblAttore = new Span(s.getScudetto());
 			if (att.getDescAttore().equals(s.getScudetto())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");	
 			}
-			Span lblAttore = new Span(s.getScudetto());
-			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
 		}));
@@ -128,11 +131,13 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getP2());
 			if (att.getDescAttore().equals(s.getP2())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge pill");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");	
 			}
-			Span lblAttore = new Span(s.getP2());
-			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
 		}));
@@ -254,11 +259,13 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getP8());
 			if (att.getDescAttore().equals(s.getP8())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge error");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");	
 			}
-			Span lblAttore = new Span(s.getP8());
-			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
 		}));
@@ -276,11 +283,13 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getWinClasPt());
 			if (att.getDescAttore().equals(s.getWinClasPt())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");	
 			}
-			Span lblAttore = new Span(s.getWinClasPt());
-			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
 		}));
@@ -298,11 +307,13 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getWinClasReg());
 			if (att.getDescAttore().equals(s.getWinClasReg())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");	
 			}
-			Span lblAttore = new Span(s.getWinClasReg());
-			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
 		}));
@@ -317,11 +328,13 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getWinClasTvsT());
 			if (att.getDescAttore().equals(s.getWinClasTvsT())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");	
 			}
-			Span lblAttore = new Span(s.getWinClasTvsT());
-			lblAttore.getStyle().set("fontSize", "smaller");
 			cellLayout.add(lblAttore);
 			return cellLayout;
 		}));
@@ -334,8 +347,9 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
+			Span lblAttore = null;
 			if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
-				Span lblAttore = new Span(s.getScudetto());
+				lblAttore = new Span(s.getScudetto());
 				lblAttore.getStyle().set("fontSize", "smaller");
 				cellLayout.add(lblAttore);
 			}
@@ -344,6 +358,7 @@ public class AlboView extends VerticalLayout {
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt())
 					&& att.getDescAttore().equals(s.getWinClasReg())) {
+				lblAttore.getElement().getThemeList().add("badge contrast pill");
 				cellLayout.getStyle().set("color", Costants.GRAY);
 			}
 

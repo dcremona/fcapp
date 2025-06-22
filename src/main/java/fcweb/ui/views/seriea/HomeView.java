@@ -2,7 +2,6 @@ package fcweb.ui.views.seriea;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.vaadin.addons.badge.Badge.BadgeVariant;
 
 import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
+import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
@@ -22,9 +22,6 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.svg.Svg;
-import com.vaadin.flow.component.svg.elements.Circle;
-import com.vaadin.flow.component.svg.elements.Text;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -34,12 +31,10 @@ import common.util.Utils;
 import fcweb.backend.data.Calendario;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
-import fcweb.backend.data.entity.FcClassificaTotPt;
 import fcweb.backend.data.entity.FcGiornata;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcGiornataRis;
 import fcweb.backend.service.AccessoService;
-import fcweb.backend.service.ClassificaTotalePuntiService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.GiornataRisService;
 import fcweb.backend.service.GiornataService;
@@ -52,7 +47,7 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "home", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class HomeView extends VerticalLayout{
+public class HomeView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -69,9 +64,6 @@ public class HomeView extends VerticalLayout{
 
 	@Autowired
 	private AccessoService accessoController;
-
-	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
 
 	public HomeView() {
 		LOG.info("HomeView()");
@@ -112,7 +104,8 @@ public class HomeView extends VerticalLayout{
 
 			String title = null;
 			if (giornataInfoCurr.getCodiceGiornata() > 1) {
-				FcGiornataInfo giornataInfoPrev = giornataInfoController.findByCodiceGiornata(giornataInfoCurr.getCodiceGiornata() - 1);
+				FcGiornataInfo giornataInfoPrev = giornataInfoController
+						.findByCodiceGiornata(giornataInfoCurr.getCodiceGiornata() - 1);
 
 				final VerticalLayout layoutSx = new VerticalLayout();
 				title = "Ultima Giornata - " + Utils.buildInfoGiornata(giornataInfoPrev);
@@ -182,7 +175,8 @@ public class HomeView extends VerticalLayout{
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
+				GridVariant.LUMO_ROW_STRIPES);
 		// grid.setSizeFull();
 
 		grid.addColumn(c -> c.getAttoreCasa()).setAutoWidth(true);
@@ -206,7 +200,7 @@ public class HomeView extends VerticalLayout{
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
 
-		Span lblInfo = new Span	("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
+		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
 		cssLayout.add(lblInfo);
 		layoutAvviso.add(cssLayout);
 
@@ -231,7 +225,8 @@ public class HomeView extends VerticalLayout{
 
 		FormLayout layout = new FormLayout();
 		layout.getStyle().set("border", Costants.BORDER_COLOR);
-		layout.setResponsiveSteps(new ResponsiveStep("1px",1), new ResponsiveStep("500px",2), new ResponsiveStep("600px",3), new ResponsiveStep("700px",4), new ResponsiveStep("800px",5));
+		layout.setResponsiveSteps(new ResponsiveStep("1px", 1), new ResponsiveStep("500px", 2),
+				new ResponsiveStep("600px", 3), new ResponsiveStep("700px", 4), new ResponsiveStep("800px", 5));
 
 		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 		List<FcGiornataRis> l = giornataRisController.findByFcAttoreOrderByFcGiornataInfoAsc(attore);
@@ -246,195 +241,70 @@ public class HomeView extends VerticalLayout{
 			int cg = fcGiornataRis.getFcGiornataInfo().getCodiceGiornata();
 			if (cg >= from) {
 				FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(cg);
-				FcClassificaTotPt totPunti = classificaTotalePuntiController.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
-				Svg svg = getSvg(giornataInfo, attore, fcGiornataRis, totPunti);
-				layout.add(svg);
-
-//				Badge badge = getBadge(giornataInfo, attore, fcGiornataRis);
-//				layout.add(badge);
-
+				Card card = getCard(giornataInfo, attore, fcGiornataRis);
+				layout.add(card);
 			}
 		}
 
 		final VerticalLayout layoutRis = new VerticalLayout();
-		layoutRis.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutRis.getStyle().set("background", Costants.GREEN);
-
-		Span lblInfoRisSx = new Span("Ultime Partite");
-		lblInfoRisSx.getStyle().set("font-size", "14px");
-		layoutRis.add(lblInfoRisSx);
-
 		layoutRis.add(layout);
 
 		return layoutRis;
 	}
-	
-//	private Badge getBadge(FcGiornataInfo giornataInfo, FcAttore attore,FcGiornataRis fcGiornataRis) {
-//		
-//		String text = ""+giornataInfo.getIdGiornataFc();
-//		
-//		Badge badge = new Badge(text);
-//		
-//		if (fcGiornataRis.getIdRisPartita() == 0) {
-//			// nomeImg = "pareggio.png";
-//			badge.setVariant(BadgeVariant.NORMAL);
-//		} else if (fcGiornataRis.getIdRisPartita() == 1) {
-//			// "vinta.png";
-//			badge.setVariant(BadgeVariant.SUCCESS);
-//		} else if (fcGiornataRis.getIdRisPartita() == 2) {
-//			// "persa.png";
-//			badge.setVariant(BadgeVariant.ERROR);
-//		}
-//		//badge.setIcon(VaadinIcon.VAADIN_H.create());
-//		badge.setPill(true);
-//		badge.setPrimary(true);
-//
-//		
-//		Calendario c = getInfoPartita(giornataInfo,attore);
-//		
-//		String p = c.getAttoreCasa() + " - " + c.getAttoreFuori() ;
-//		String ris = c.getPunteggio();
-//		badge.setTooltipText(p + " " + ris);
-//		
-//		return badge;
-//	}
-	
-//	private Calendario getInfoPartita(FcGiornataInfo ggInfo,FcAttore attore) {
-//
-//		List<FcGiornata> all = giornataController.findByFcGiornataInfo(ggInfo);
-//		int id = 1;
-//		for (FcGiornata g : all) {
-//
-//			DecimalFormat myFormatter = new DecimalFormat("#0.00");
-//			Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
-//			String sTotCasa = myFormatter.format(dTotCasa);
-//			Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
-//			String sTotFuori = myFormatter.format(dTotFuori);
-//			Calendario calendario = new Calendario();
-//			calendario.setId(id);
-//			calendario.setAttoreCasa(g.getFcAttoreByIdAttoreCasa().getDescAttore());
-//			calendario.setRisultato(sTotCasa + " - " + sTotFuori);
-//			calendario.setAttoreFuori(g.getFcAttoreByIdAttoreFuori().getDescAttore());
-//			calendario.setPunteggio(g.getGolCasa() != null ? g.getGolCasa() + " - " + g.getGolFuori() : "-");
-//			
-//			int idAttore = attore.getIdAttore(); 
-//			int idAttoreCasa = g.getFcAttoreByIdAttoreCasa().getIdAttore();
-//			int idAttoreFuori = g.getFcAttoreByIdAttoreFuori().getIdAttore();
-//			
-//			if (idAttore == idAttoreCasa || idAttore == idAttoreFuori) {
-//				return calendario;	
-//			}
-//			id++;
-//		}
-//
-//		return null;
-//	}
-	
 
-	private Svg getSvg(FcGiornataInfo giornataInfo, FcAttore attore,
-			FcGiornataRis fcGiornataRis, FcClassificaTotPt totPunti) {
+	private Card getCard(FcGiornataInfo giornataInfo, FcAttore attore, FcGiornataRis fcGiornataRis) {
 
-		Svg draw = new Svg();
+		Card card = new Card();
 
-		String fillColor = "";
+		String badgeText = "";
+		String badgeTheme = "";
 		if (fcGiornataRis.getIdRisPartita() == 0) {
-			// nomeImg = "pareggio.png";
-			fillColor = "#e6e600";
+			badgeText = "Pareggio";
+			badgeTheme = "badge pill";
 		} else if (fcGiornataRis.getIdRisPartita() == 1) {
-			// "vinta.png";
-			fillColor = "#008000";
+			badgeText = "Vinta";
+			badgeTheme = "badge success";
 		} else if (fcGiornataRis.getIdRisPartita() == 2) {
-			// "persa.png";
-			fillColor = "#ff5050";
+			badgeText = "Persa";
+			badgeTheme = "badge error";
 		}
 
-		int x = 45;
-		int y = 40;
-		int codiceGiornata = giornataInfo.getCodiceGiornata();
-		if (codiceGiornata > 9) {
-			x = 40;
-		}
+		String descPartita = "";
+		String punteggio = "";
+		String totPunteggio = "";
 
-		String ris = "";
-		if (fcGiornataRis.getCasaFuori() == null) {
+		List<FcGiornata> all = giornataController.findByFcGiornataInfo(giornataInfo);
+		for (FcGiornata g : all) {
+			if (attore.getIdAttore() == g.getFcAttoreByIdAttoreCasa().getIdAttore()
+					|| attore.getIdAttore() == g.getFcAttoreByIdAttoreFuori().getIdAttore()) {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
+				String sTotCasa = myFormatter.format(dTotCasa);
+				Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
+				String sTotFuori = myFormatter.format(dTotFuori);
+				descPartita = g.getFcAttoreByIdAttoreCasa().getDescAttore() + " "
+						+ g.getFcAttoreByIdAttoreFuori().getDescAttore();
+				punteggio = g.getGolCasa() != null ? g.getGolCasa() + " - " + g.getGolFuori() : "-";
+				totPunteggio = sTotCasa + " - " + sTotFuori;
 
-		} else {
-			if (fcGiornataRis.getCasaFuori() == 1) {
-				ris = fcGiornataRis.getGf() + " - " + fcGiornataRis.getGs();
-			} else {
-				ris = fcGiornataRis.getGs() + " - " + fcGiornataRis.getGf();
+				break;
 			}
 		}
 
-		NumberFormat formatter = new DecimalFormat("#0.00");
-		String totPuntiRosa = "0";
-		try {
-			if (totPunti != null && totPunti.getTotPtOld() != null) {
-				totPuntiRosa = formatter.format(totPunti.getTotPtOld() == 0 ? "0" : totPunti.getTotPtOld() / Costants.DIVISORE_100);
-			}
-		} catch (Exception e) {
-			totPuntiRosa = "0";
-		}
-		
-		Circle circle = new Circle("circle",50);
+		card.setTitle(new Div(giornataInfo.getDescGiornataFc()));
+		card.setSubtitle(new Div(Utils.buildInfoGiornataRight(giornataInfo)));
 
-		circle.center(50, 50);
-		circle.setRadius(25);
-		circle.setFillColor(fillColor);
+		Span badge = new Span(badgeText);
+		badge.getElement().getThemeList().add(badgeTheme);
+		card.setHeaderSuffix(badge);
 
-		// Text Giornata
-		Text textGiornata = new Text("text","" + codiceGiornata);
-		textGiornata.setFontFamily("'Roboto', 'Noto', sans-serif");
-		textGiornata.setFillColor("#ffffff");
-		textGiornata.move(x, y);
+		card.add(descPartita + " " + punteggio);
 
-		// Text Risultato
-		Text textRis = new Text("text",ris);
-		textRis.setFontFamily("'Roboto', 'Noto', sans-serif");
-		textRis.setFillColor("#000000");
-		textRis.move(35, 85);
+		Span footer = new Span(totPunteggio);
+		footer.getElement().getThemeList().add("badge contrast pill");
+		card.addToFooter(footer);
 
-		// Text Punteggio
-		Text textPt = new Text("text",totPuntiRosa);
-		textPt.setFontFamily("'Roboto', 'Noto', sans-serif");
-		textPt.setFillColor("#808080");
-		textPt.move(35, 115);
-
-		draw.add(circle);
-		draw.add(textGiornata);
-		draw.add(textRis);
-		draw.add(textPt);
-
-		draw.addClickListener(e -> {
-			if (e.getElement() != null) {
-
-				List<FcGiornata> all = giornataController.findByFcGiornataInfo(giornataInfo);
-
-				for (FcGiornata g : all) {
-
-					if (attore.getIdAttore() == g.getFcAttoreByIdAttoreCasa().getIdAttore() || attore.getIdAttore() == g.getFcAttoreByIdAttoreFuori().getIdAttore()) {
-						DecimalFormat myFormatter = new DecimalFormat("#0.00");
-						Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
-						String sTotCasa = myFormatter.format(dTotCasa);
-						Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
-						String sTotFuori = myFormatter.format(dTotFuori);
-
-						String descPartita = g.getFcAttoreByIdAttoreCasa().getDescAttore() + " " + g.getFcAttoreByIdAttoreFuori().getDescAttore();
-						String punteggio = g.getGolCasa() != null ? g.getGolCasa() + " - " + g.getGolFuori() : "-";
-						String totPunteggio = sTotCasa + " - " + sTotFuori;
-						Notification.show(descPartita + " " + punteggio + " " + totPunteggio);
-						break;
-					}
-				}
-
-			} else {
-				Notification.show("Mo Element clicked");
-			}
-		});
-
-		return draw;
+		return card;
 	}
-	
-
 
 }
