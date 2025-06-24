@@ -109,8 +109,8 @@ public class EmStatisticheView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public List<FcAttore> squadreA = new ArrayList<FcAttore>();
-	public List<FcAttore> squadreB = new ArrayList<FcAttore>();
+	public List<FcAttore> squadreA = new ArrayList<>();
+	public List<FcAttore> squadreB = new ArrayList<>();
 	private ComboBox<FcAttore> comboAttoreA;
 	private ComboBox<FcAttore> comboAttoreB;
 	private ComboBox<String> comboPunti;
@@ -171,7 +171,7 @@ public class EmStatisticheView extends VerticalLayout
 		tabSheet.add("Statistiche", layoutStat);
 		tabSheet.add("Confronti", layoutConfornti);
 		add(tabSheet);
-		
+
 
 	}
 
@@ -290,7 +290,7 @@ public class EmStatisticheView extends VerticalLayout
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		for (Role r : att.getRoles()) {
 			if (r.equals(Role.ADMIN)) {
 				salvaStat = new Button("Aggiorna Statistiche");
@@ -301,7 +301,7 @@ public class EmStatisticheView extends VerticalLayout
 				break;
 			}
 		}
-		
+
 		layout.add(hlayout1);
 
 		HorizontalLayout hlayoutFilter = new HorizontalLayout();

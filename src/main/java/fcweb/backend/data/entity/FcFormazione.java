@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class FcFormazione implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private FcFormazioneId id;

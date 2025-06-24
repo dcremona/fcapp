@@ -45,7 +45,7 @@ public class FcAttore extends AbstractEntity {
 	private boolean notifiche;
 	@Column(name = "active", nullable = false)
 	private boolean active;
-	
+
     public int getIdAttore() {
 		return idAttore;
 	}
@@ -125,6 +125,6 @@ public class FcAttore extends AbstractEntity {
 		this.active = active;
 	}
 
-    
-    
+
+
 }

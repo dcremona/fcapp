@@ -143,8 +143,8 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 		try {
 
 			List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-			ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<FcGiornataGiocatore>();
-			ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<FcGiornataGiocatore>();
+			ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<>();
+			ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<>();
 
 			for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
 				if (gg.isSqualificato()) {
@@ -206,8 +206,8 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
 
 				List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-				ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<FcGiornataGiocatore>();
-				ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<FcGiornataGiocatore>();
+				ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<>();
+				ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<>();
 
 				for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
 					if (gg.isSqualificato()) {
@@ -234,7 +234,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	private Grid<FcGiornataGiocatore> getTableSqualificatiInfortunati() {
 
 		Grid<FcGiornataGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<FcGiornataGiocatore>());
+		grid.setItems(new ArrayList<>());
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
 		// grid.setWidth("550px");

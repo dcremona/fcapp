@@ -68,8 +68,8 @@ public class FcGiornataDettView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcAttore> attoreFilter = new ComboBox<FcAttore>();
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<FcGiornataInfo>();
+	private ComboBox<FcAttore> attoreFilter = new ComboBox<>();
+	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 	private TextField flagAttivoFilter = new TextField();
 
 	public FcGiornataDettView() {

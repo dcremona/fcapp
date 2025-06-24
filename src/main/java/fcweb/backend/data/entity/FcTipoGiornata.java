@@ -19,12 +19,12 @@ import jakarta.persistence.Table;
 public class FcTipoGiornata implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idTipoGiornata;
 	private String descTipoGiornata;
-	private Set<FcGiornata> fcGiornatas = new HashSet<FcGiornata>(0);
+	private Set<FcGiornata> fcGiornatas = new HashSet<>(0);
 
 	public FcTipoGiornata() {
 	}

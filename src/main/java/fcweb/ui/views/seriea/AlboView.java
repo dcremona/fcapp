@@ -107,13 +107,13 @@ public class AlboView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-			
+
 			Span lblAttore = new Span(s.getScudetto());
 			if (att.getDescAttore().equals(s.getScudetto())) {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 				lblAttore.getElement().getThemeList().add("badge success");
 			} else {
-				lblAttore.getStyle().set("fontSize", "smaller");	
+				lblAttore.getStyle().set("fontSize", "smaller");
 			}
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -136,7 +136,7 @@ public class AlboView extends VerticalLayout {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 				lblAttore.getElement().getThemeList().add("badge pill");
 			} else {
-				lblAttore.getStyle().set("fontSize", "smaller");	
+				lblAttore.getStyle().set("fontSize", "smaller");
 			}
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -264,7 +264,7 @@ public class AlboView extends VerticalLayout {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 				lblAttore.getElement().getThemeList().add("badge error");
 			} else {
-				lblAttore.getStyle().set("fontSize", "smaller");	
+				lblAttore.getStyle().set("fontSize", "smaller");
 			}
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -288,7 +288,7 @@ public class AlboView extends VerticalLayout {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 				lblAttore.getElement().getThemeList().add("badge success");
 			} else {
-				lblAttore.getStyle().set("fontSize", "smaller");	
+				lblAttore.getStyle().set("fontSize", "smaller");
 			}
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -312,7 +312,7 @@ public class AlboView extends VerticalLayout {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 				lblAttore.getElement().getThemeList().add("badge success");
 			} else {
-				lblAttore.getStyle().set("fontSize", "smaller");	
+				lblAttore.getStyle().set("fontSize", "smaller");
 			}
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -333,7 +333,7 @@ public class AlboView extends VerticalLayout {
 				cellLayout.getStyle().set("color", Costants.GRAY);
 				lblAttore.getElement().getThemeList().add("badge success");
 			} else {
-				lblAttore.getStyle().set("fontSize", "smaller");	
+				lblAttore.getStyle().set("fontSize", "smaller");
 			}
 			cellLayout.add(lblAttore);
 			return cellLayout;
@@ -341,7 +341,7 @@ public class AlboView extends VerticalLayout {
 		winTvsTColumn.setSortable(false);
 		winTvsTColumn.setResizable(false);
 		winTvsTColumn.setHeader("Clas TvsT");
-		
+
 		Column<FcExpStat> tripleteColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -534,7 +534,7 @@ public class AlboView extends VerticalLayout {
 
 	private List<FcExpStat> getModelCrosstab(List<FcExpStat> all) {
 
-		List<FcExpStat> beans = new ArrayList<FcExpStat>();
+		List<FcExpStat> beans = new ArrayList<>();
 
 		List<FcAttore> squadre = attoreController.findAll();
 
@@ -593,7 +593,7 @@ public class AlboView extends VerticalLayout {
 					if (bean.getWinClasTvsT().equals(squadra)) {
 						count_win_clas_tvst++;
 					}
-					
+
 				} catch (Exception e) {
 					continue;
 				}

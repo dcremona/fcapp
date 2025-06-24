@@ -195,7 +195,7 @@ public class FormazioniView extends VerticalLayout{
 			}
 		});
 		comboGiornata.setWidthFull();
-		
+
 		mainLayout.setSizeFull();
 
 		add(comboGiornata);
@@ -316,7 +316,7 @@ public class FormazioniView extends VerticalLayout{
 		}
 
 		layout.add(tabSheet);
-		
+
 	}
 
 	private HashMap<String, Object> buildData(FcAttore attore,
@@ -327,7 +327,7 @@ public class FormazioniView extends VerticalLayout{
 		HashMap<String, Object> map = new HashMap<>();
 
 		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
-		List<FcGiornataDett> items = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> items = new ArrayList<>();
 
 		int countD = 0;
 		int countC = 0;
@@ -358,9 +358,9 @@ public class FormazioniView extends VerticalLayout{
 
 		String schema = countD + "-" + countC + "-" + countA;
 
-		List<FcGiornataDett> itemsTitolari = new ArrayList<FcGiornataDett>();
-		List<FcGiornataDett> itemsPanchina = new ArrayList<FcGiornataDett>();
-		List<FcGiornataDett> itemsTribuna = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> itemsTitolari = new ArrayList<>();
+		List<FcGiornataDett> itemsPanchina = new ArrayList<>();
+		List<FcGiornataDett> itemsTribuna = new ArrayList<>();
 		for (FcGiornataDett gd2 : items) {
 			if (gd2.getOrdinamento() < 12) {
 				itemsTitolari.add(gd2);
@@ -663,7 +663,7 @@ public class FormazioniView extends VerticalLayout{
 			FcAttore attore, FcGiornataInfo giornataInfo, boolean fc, String md,
 			List<FcGiornataDett> itemsPanchina) {
 
-		List<FcProperties> items = new ArrayList<FcProperties>();
+		List<FcProperties> items = new ArrayList<>();
 		FcProperties b = null;
 
 		NumberFormat formatter = new DecimalFormat("#0.00");

@@ -76,10 +76,10 @@ public class FreePlayersView extends VerticalLayout
 
 	private RadioButtonGroup<String> radioGroup = null;
 	private TabSheet tabs = null;
-	private Grid<FcGiocatore> gridP = new Grid<FcGiocatore>();
-	private Grid<FcGiocatore> gridD = new Grid<FcGiocatore>();
-	private Grid<FcGiocatore> gridC = new Grid<FcGiocatore>();
-	private Grid<FcGiocatore> gridA = new Grid<FcGiocatore>();
+	private Grid<FcGiocatore> gridP = new Grid<>();
+	private Grid<FcGiocatore> gridD = new Grid<>();
+	private Grid<FcGiocatore> gridC = new Grid<>();
+	private Grid<FcGiocatore> gridA = new Grid<>();
 
 	@Autowired
 	private AccessoService accessoController;
@@ -207,7 +207,7 @@ public class FreePlayersView extends VerticalLayout
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		List<FcFormazione> allFormaz = formazioneController.findByFcCampionato(campionato);
-		List<Integer> listNotIn = new ArrayList<Integer>();
+		List<Integer> listNotIn = new ArrayList<>();
 		for (FcFormazione f : allFormaz) {
 			if (f.getFcGiocatore() != null) {
 				listNotIn.add(f.getFcGiocatore().getIdGiocatore());

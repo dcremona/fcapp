@@ -74,11 +74,11 @@ public class SquadreAllView extends VerticalLayout{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	private List<FcAttore> squadre = new ArrayList<FcAttore>();
+	private List<FcAttore> squadre = new ArrayList<>();
 
 	@Autowired
 	private AccessoService accessoController;
-	
+
 	public SquadreAllView() {
 		LOG.info("SquadreAllView()");
 	}
@@ -90,7 +90,7 @@ public class SquadreAllView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		
+
 		accessoController.insertAccesso(this.getClass().getName());
 
 		initData();
@@ -216,7 +216,7 @@ public class SquadreAllView extends VerticalLayout{
 		Column<FcFormazione> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(f -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (f != null && f.getFcGiocatore() != null && !StringUtils.isEmpty(f.getFcGiocatore().getNomeImg())) {
-				
+
 				if (f.getFcGiocatore().getImgSmall() != null) {
 					StreamResource resource = new StreamResource(f.getFcGiocatore().getNomeImg(),() -> {
 						InputStream inputStream = null;
@@ -333,9 +333,9 @@ public class SquadreAllView extends VerticalLayout{
 	}
 
 	private Map<String, Object> getMapRoseFcAll(FcCampionato campionato) {
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<>();
 		for (FcAttore attore : squadre) {
-			Collection<FormazioneJasper> lSq = new ArrayList<FormazioneJasper>();
+			Collection<FormazioneJasper> lSq = new ArrayList<>();
 			List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
 			Double somma = Double.valueOf(0);
 			FormazioneJasper fj = null;

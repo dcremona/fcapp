@@ -30,7 +30,7 @@ public class ClassificaTotalePuntiService{
 
 	public List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(
 			FcCampionato campionato,FcGiornataInfo giornataInfo) {
-		List<FcClassificaTotPt> l = (List<FcClassificaTotPt>) classificaTotalePuntiRepository.findByFcCampionatoAndFcGiornataInfo(campionato,giornataInfo);
+		List<FcClassificaTotPt> l = classificaTotalePuntiRepository.findByFcCampionatoAndFcGiornataInfo(campionato,giornataInfo);
 		return l;
 	}
 	public List<FcClassificaTotPt> findAll() {
@@ -47,7 +47,7 @@ public class ClassificaTotalePuntiService{
 
 	public FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
-		FcClassificaTotPt l = (FcClassificaTotPt) classificaTotalePuntiRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
+		FcClassificaTotPt l = classificaTotalePuntiRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
 		return l;
 	}
 
@@ -101,6 +101,7 @@ public class ClassificaTotalePuntiService{
 		query += " 2 DESC ";
 
 		List<ClassificaBean> cList = jdbcTemplate.query(query, new RowMapper<ClassificaBean>(){
+			@Override
 			public ClassificaBean mapRow(ResultSet rs, int rownumber)
 					throws SQLException {
 
@@ -168,6 +169,7 @@ public class ClassificaTotalePuntiService{
 		query += " order by p.id_attore,p.id_giornata ";
 		// System.out.println(query);
 		List<ClassificaBean> cList = jdbcTemplate.query(query, new RowMapper<ClassificaBean>(){
+			@Override
 			public ClassificaBean mapRow(ResultSet rs, int rownumber)
 					throws SQLException {
 
@@ -182,7 +184,7 @@ public class ClassificaTotalePuntiService{
 				bean.setGiornata(giornata);
 				bean.setPunti(punti);
 				bean.setTotPunti(totPunti);
-				bean.setPtTvst(ptTvst);;
+				bean.setPtTvst(ptTvst);
 
 				return bean;
 			}
@@ -221,6 +223,7 @@ public class ClassificaTotalePuntiService{
 		query += " order by p.id_attore,p.id_giornata ";
 
 		List<ClassificaBean> cList = jdbcTemplate.query(query, new RowMapper<ClassificaBean>(){
+			@Override
 			public ClassificaBean mapRow(ResultSet rs, int rownumber)
 					throws SQLException {
 

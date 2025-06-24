@@ -81,7 +81,7 @@ public class EmailService{
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg,true);
 //			if (!bPrimary) {
-//				helper.setFrom(from, "notifiche-fclt");	
+//				helper.setFrom(from, "notifiche-fclt");
 //			}
 			helper.setTo(to);
 			if (cc != null) {
@@ -122,7 +122,7 @@ public class EmailService{
 				msg.setFrom(from);
 				MimeMessageHelper helper = new MimeMessageHelper(msg,true);
 //				if (!bPrimary) {
-//					helper.setFrom(from, "notifiche-fclt");	
+//					helper.setFrom(from, "notifiche-fclt");
 //				}
 				helper.setTo(to);
 				if (cc != null) {
@@ -195,7 +195,7 @@ public class EmailService{
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg,true);
 //			if (!bPrimary) {
-//				helper.setFrom(from, "notifiche-fclt");	
+//				helper.setFrom(from, "notifiche-fclt");
 //			}
 			helper.setTo(to);
 			if (cc != null) {
@@ -250,7 +250,7 @@ public class EmailService{
 				msg.setFrom(from);
 				MimeMessageHelper helper = new MimeMessageHelper(msg,true);
 //				if (!bPrimary) {
-//					helper.setFrom(from, "notifiche-fclt");	
+//					helper.setFrom(from, "notifiche-fclt");
 //				}
 				helper.setTo(to);
 				if (cc != null) {

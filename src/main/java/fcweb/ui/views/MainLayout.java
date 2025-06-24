@@ -111,7 +111,7 @@ public class MainLayout extends AppLayout{
 
 		SideNav navAdmin = createNavigationAdmin();
 		if (navAdmin != null) {
-			addToDrawer(header, scroller, navAdmin, createFooter());	
+			addToDrawer(header, scroller, navAdmin, createFooter());
 		} else {
 			addToDrawer(header, scroller, createFooter());
 		}
@@ -125,13 +125,13 @@ public class MainLayout extends AppLayout{
 			String type = authenticatedUser.getType();
 			if ("1".equals(type)) {
 				if (accessChecker.hasAccess(HomeView.class)) {
-					nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));	
+					nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
 				}
-		        
+
 				if (accessChecker.hasAccess(TeamInsertView.class)) {
-					nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));	
+					nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));
 				}
-				
+
 				if (accessChecker.hasAccess(TeamInsertMobileView.class)) {
 					nav.addItem(new SideNavItem("Mobile",TeamInsertMobileView.class,LineAwesomeIcon.MOBILE_SOLID.create()));
 				}
@@ -218,9 +218,9 @@ public class MainLayout extends AppLayout{
 
 		return nav;
     }
-    
+
     private SideNav createNavigationAdmin() {
-		
+
     	SideNav adminNav = new SideNav();
 		adminNav.setLabel("Admin");
 		adminNav.setCollapsible(true);
@@ -229,7 +229,7 @@ public class MainLayout extends AppLayout{
 		Optional<FcAttore> maybeUser = authenticatedUser.get();
 		if (maybeUser.isPresent()) {
 			String type = authenticatedUser.getType();
-			
+
 			if ("1".equals(type)) {
 
 				// ADMIN
@@ -238,7 +238,7 @@ public class MainLayout extends AppLayout{
 				} else {
 					return null;
 				}
-				
+
 				if (accessChecker.hasAccess(MercatoView.class)) {
 					adminNav.addItem(new SideNavItem("Mercato",MercatoView.class,LineAwesomeIcon.SEARCH_DOLLAR_SOLID.create()));
 				}
@@ -306,7 +306,7 @@ public class MainLayout extends AppLayout{
 				if (accessChecker.hasAccess(FcAccessoView.class)) {
 					adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
 				}
-				
+
 			} else {
 
 				// ADMIN
@@ -365,7 +365,7 @@ public class MainLayout extends AppLayout{
 				}
 			}
 		}
-		
+
         return adminNav;
     }
 

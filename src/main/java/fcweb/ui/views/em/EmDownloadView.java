@@ -57,7 +57,7 @@ public class EmDownloadView extends VerticalLayout
 
 	private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-	private Grid<FcExpRosea> gridRosea = new Grid<FcExpRosea>();
+	private Grid<FcExpRosea> gridRosea = new Grid<>();
 
 	@Autowired
 	private ExpRoseAService expRoseAController;
@@ -77,7 +77,7 @@ public class EmDownloadView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
+	public List<FcAttore> squadre = new ArrayList<>();
 
 	private Button salvaRoseA = null;
 	private Button salvaStat = null;
@@ -133,12 +133,12 @@ public class EmDownloadView extends VerticalLayout
 //		PagedTabs tabs = new PagedTabs(container);
 //		tabs.add("Rose Nazionali", layout1, false);
 //		add(tabs, container);
-		
+
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Rose Nazionali", layout1);
 		tabSheet.setSizeFull();
 		add(tabSheet);
-		
+
 	}
 
 	private void setRoseA(VerticalLayout layout) {
@@ -520,7 +520,7 @@ public class EmDownloadView extends VerticalLayout
 			} else if (event.getSource() == salvaStat) {
 				jobProcessGiornata.statistiche(campionato);
 			}
-			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);	
+			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC,e.getMessage());
 		}

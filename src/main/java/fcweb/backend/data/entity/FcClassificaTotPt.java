@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class FcClassificaTotPt implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private FcClassificaTotPtId id;
@@ -179,6 +179,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.ptTvsT = ptTvsT;
 	}
 
-	
+
 
 }

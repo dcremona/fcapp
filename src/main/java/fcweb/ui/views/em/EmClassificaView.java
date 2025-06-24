@@ -176,7 +176,7 @@ public class EmClassificaView extends VerticalLayout{
 		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
 			try {
-				String imgLog = (String) env.getProperty("img.logo");
+				String imgLog = env.getProperty("img.logo");
 				Map<String, Object> hm = new HashMap<String, Object>();
 				hm.put("DIVISORE", "" + Costants.DIVISORE_10);
 				hm.put("PATH_IMG", "images/" + imgLog);

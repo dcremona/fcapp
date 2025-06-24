@@ -2,7 +2,7 @@ package fcweb.backend.data;
 
 import java.io.Serializable;
 
-//Here is a bean 
+//Here is a bean
 public class RisultatoBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;

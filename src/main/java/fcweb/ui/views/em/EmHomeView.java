@@ -88,7 +88,7 @@ public class EmHomeView extends VerticalLayout{
 			}
 			accessoController.insertAccesso(this.getClass().getName());
 
-			Image img = buildImage("classpath:images/", (String) env.getProperty("img.logo"));
+			Image img = buildImage("classpath:images/", env.getProperty("img.logo"));
 			this.add(img);
 			setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, img);
 

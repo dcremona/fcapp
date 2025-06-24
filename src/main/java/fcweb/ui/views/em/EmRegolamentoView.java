@@ -138,7 +138,7 @@ public class EmRegolamentoView extends VerticalLayout
 				break;
 			}
 		}
-		salvaDb.setVisible(isAdmin);	
+		salvaDb.setVisible(isAdmin);
 
 		this.add(salvaDb);
 

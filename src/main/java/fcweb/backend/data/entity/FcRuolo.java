@@ -19,12 +19,12 @@ import jakarta.persistence.Table;
 public class FcRuolo implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private String idRuolo;
 	private String descRuolo;
-	private Set<FcGiocatore> fcGiocatores = new HashSet<FcGiocatore>(0);
+	private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
 
 	public FcRuolo() {
 	}

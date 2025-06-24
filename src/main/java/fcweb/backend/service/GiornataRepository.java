@@ -19,7 +19,7 @@ public interface GiornataRepository
 	Iterable<FcGiornata> findAll(Sort sort);
 
 	public List<FcGiornata> findByFcGiornataInfo(FcGiornataInfo giornataInfo);
-	
+
 	public List<FcGiornata> findByFcGiornataInfoOrderByFcTipoGiornata(FcGiornataInfo giornataInfo);
 
 	public List<FcGiornata> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(

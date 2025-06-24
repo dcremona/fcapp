@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 
-//Here is a bean 
+//Here is a bean
 public class Domanda implements Serializable{
 
 	private static final long serialVersionUID = 1L;

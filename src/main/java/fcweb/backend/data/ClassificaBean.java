@@ -2,7 +2,7 @@ package fcweb.backend.data;
 
 import java.io.Serializable;
 
-//Here is a bean 
+//Here is a bean
 public class ClassificaBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -124,6 +124,6 @@ public class ClassificaBean implements Serializable{
 	public void setPtTvst(Double ptTvst) {
 		this.ptTvst = ptTvst;
 	}
-	
+
 
 }

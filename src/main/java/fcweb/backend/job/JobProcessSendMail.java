@@ -97,7 +97,7 @@ public class JobProcessSendMail{
 		byte[] b = null;
 		try {
 			Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, p, campionato);
-			Collection<RisultatoBean> collection = new ArrayList<RisultatoBean>();
+			Collection<RisultatoBean> collection = new ArrayList<>();
 			collection.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
 			Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 			InputStream inputStream = resource.getInputStream();
@@ -120,7 +120,7 @@ public class JobProcessSendMail{
 		LOG.info("writePdfAndSendMail START");
 
 		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, p, campionato);
-		Collection<RisultatoBean> l = new ArrayList<RisultatoBean>();
+		Collection<RisultatoBean> l = new ArrayList<>();
 		l.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
 		String destFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
 
@@ -143,7 +143,7 @@ public class JobProcessSendMail{
 		Connection conn = null;
 		FileOutputStream outputStream2 = null;
 		try {
-			Map<String, Object> parameters = new HashMap<String, Object>();
+			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			parameters.put("DIVISORE", "" + Costants.DIVISORE_100);
 			String destFileName2 = pathOutputPdf + "Classifica.pdf";
@@ -156,7 +156,7 @@ public class JobProcessSendMail{
 			JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
 
 			String email_destinatario = "";
-			String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+			String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 			if ("true".equals(ACTIVE_MAIL)) {
 				List<FcAttore> attori = attoreController.findByActive(true);
 				for (FcAttore a : attori) {
@@ -165,7 +165,7 @@ public class JobProcessSendMail{
 					}
 				}
 			} else {
-				email_destinatario = (String) p.getProperty("to");
+				email_destinatario = p.getProperty("to");
 			}
 
 			String[] to = null;
@@ -176,16 +176,16 @@ public class JobProcessSendMail{
 			String[] cc = null;
 			String[] bcc = null;
 			String[] att = new String[] { destFileName1, destFileName2 };
-			String subject = "Risultati " + (String) p.getProperty("INFO_RESULT") + " " + giornataInfo.getDescGiornataFc();
+			String subject = "Risultati " + p.getProperty("INFO_RESULT") + " " + giornataInfo.getDescGiornataFc();
 			String message = getBody();
 
 			try {
-				String from = (String) env.getProperty("spring.mail.secondary.username");
+				String from = env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from,to, cc, bcc, subject, message, "text/html", "3", att);
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				try {
-					String from = (String) env.getProperty("spring.mail.primary.username");
+					String from = env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from,to, cc, bcc, subject, message, "text/html", "3", att);
 				} catch (Exception e2) {
 					LOG.error(e2.getMessage());
@@ -226,7 +226,7 @@ public class JobProcessSendMail{
 
 		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(Integer.valueOf(giornata));
 
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("path_img", pathImg);
 		parameters.put("titolo", giornataInfo.getDescGiornataFc());
 
@@ -277,7 +277,7 @@ public class JobProcessSendMail{
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 
-		final Collection<RisultatoBean> data = new ArrayList<RisultatoBean>();
+		final Collection<RisultatoBean> data = new ArrayList<>();
 
 		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 		int countD = 0;
@@ -356,7 +356,7 @@ public class JobProcessSendMail{
 			}
 		}
 
-		final Collection<RisultatoBean> newData = new ArrayList<RisultatoBean>();
+		final Collection<RisultatoBean> newData = new ArrayList<>();
 		RisultatoBean r = new RisultatoBean();
 		r.setCalciatore("TITOLARI");
 		r.setFlag_attivo("TIT");
@@ -394,7 +394,7 @@ public class JobProcessSendMail{
 		String schema = countD + "-" + countC + "-" + countA;
 		String md = getModificatoreDifesa(schema);
 
-		final Collection<RisultatoBean> dataInfo = new ArrayList<RisultatoBean>();
+		final Collection<RisultatoBean> dataInfo = new ArrayList<>();
 
 		RisultatoBean b = new RisultatoBean();
 		b.setDesc("Modulo:");
@@ -486,7 +486,7 @@ public class JobProcessSendMail{
 		b.setValue((info == null ? "" : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss")));
 		dataInfo.add(b);
 
-		HashMap<String, Collection<RisultatoBean>> result = new HashMap<String, Collection<RisultatoBean>>();
+		HashMap<String, Collection<RisultatoBean>> result = new HashMap<>();
 		result.put("data", newData);
 		result.put("dataInfo", dataInfo);
 

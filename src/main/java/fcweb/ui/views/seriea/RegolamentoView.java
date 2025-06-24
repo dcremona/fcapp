@@ -152,7 +152,7 @@ public class RegolamentoView extends VerticalLayout
 		}).createVaadinCKEditor();
 		decoupledEditor.setVisible(isAdmin);
 		decoupledEditor.setValue(html);
-		
+
 		this.add(decoupledEditor);
 
 		VerticalLayout previewHtml = new VerticalLayout();

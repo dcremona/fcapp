@@ -64,8 +64,8 @@ public class CalendarioView extends VerticalLayout{
 
 	@Autowired
 	private AccessoService accessoController;
-	
-	private List<FcGiornata> model = new ArrayList<FcGiornata>();
+
+	private List<FcGiornata> model = new ArrayList<>();
 
 	public CalendarioView() {
 		LOG.info("CalendarioView()");
@@ -86,8 +86,8 @@ public class CalendarioView extends VerticalLayout{
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-		List<FcGiornata> model1 = new ArrayList<FcGiornata>();
-		List<FcGiornata> model2 = new ArrayList<FcGiornata>();
+		List<FcGiornata> model1 = new ArrayList<>();
+		List<FcGiornata> model2 = new ArrayList<>();
 
 		List<FcGiornata> all = giornataController.findAll();
 		for (FcGiornata g : all) {
@@ -132,7 +132,7 @@ public class CalendarioView extends VerticalLayout{
 		gridFinali.getStyle().set("border", Costants.BORDER_COLOR);
 		gridFinali.getStyle().set("background", Costants.POWDERBLUE);
 
-		List<FcGiornata> beanContainer = new ArrayList<FcGiornata>();
+		List<FcGiornata> beanContainer = new ArrayList<>();
 		int conta = 1;
 		int partite = 4;
 		for (int i = 0; i < model.size(); i++) {
@@ -150,7 +150,7 @@ public class CalendarioView extends VerticalLayout{
 
 				String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(), "dd/MM/yyyy HH:mm");
 				//String dataG = Utils.formatDate(bean.getFcGiornataInfo().getDataGiornata(), "dd/MM/yyyy HH:mm");
-				
+
 				String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
 				if (gg > 16) {
 					descG = bean.getFcTipoGiornata().getDescTipoGiornata() + " - " + bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
@@ -176,13 +176,13 @@ public class CalendarioView extends VerticalLayout{
 				}
 
 				conta = 1;
-				beanContainer = new ArrayList<FcGiornata>();
+				beanContainer = new ArrayList<>();
 
 			} else {
 				conta++;
 			}
 		}
-		
+
 		try {
 			this.add(buildButtonCalendarioPdf(campionato));
 		} catch (Exception e) {
@@ -234,7 +234,7 @@ public class CalendarioView extends VerticalLayout{
 
 	private HorizontalLayout buildButtonCalendarioPdf(FcCampionato campionato) {
 
-//		LazyDownloadButton stampapdf = new LazyDownloadButton("Calendario pdf",() -> "Calendario.pdf",() -> {			
+//		LazyDownloadButton stampapdf = new LazyDownloadButton("Calendario pdf",() -> "Calendario.pdf",() -> {
 //			byte[] b = null;
 //			try {
 //				String START = campionato.getStart().toString();

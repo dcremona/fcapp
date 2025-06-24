@@ -67,7 +67,7 @@ public class EmJobProcessGiornata{
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private GiornataDettRepository giornataDettRepository;
 
@@ -393,9 +393,10 @@ public class EmJobProcessGiornata{
 					G = Utils.replaceString(G, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,"))
+						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,")) {
 							G = "6";
 						// LOG.debug("PORTIERE s.v.: "+Giocatore);
+						}
 					} else {
 						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,")) {
 							G = "0";
@@ -410,8 +411,9 @@ public class EmJobProcessGiornata{
 					CS = Utils.replaceString(CS, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,"))
+						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,")) {
 							CS = "6";
+						}
 					} else {
 						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,")) {
 							CS = "0";
@@ -427,8 +429,9 @@ public class EmJobProcessGiornata{
 					TS = Utils.replaceString(TS, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,"))
+						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,")) {
 							TS = "6";
+						}
 					} else {
 						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,")) {
 							TS = "0";
@@ -564,7 +567,7 @@ public class EmJobProcessGiornata{
 				}
 			}
 
-			String email_destinatario = (String) p.getProperty("to");
+			String email_destinatario = p.getProperty("to");
 			String[] to = null;
 			if (email_destinatario != null && !email_destinatario.equals("")) {
 				to = Utils.tornaArrayString(email_destinatario, ";");
@@ -595,12 +598,12 @@ public class EmJobProcessGiornata{
 			formazioneHtml += "<html>";
 
 			try {
-				String from = (String) env.getProperty("spring.mail.secondary.username");
+				String from = env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				try {
-					String from = (String) env.getProperty("spring.mail.primary.username");
+					String from = env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 				} catch (Exception e2) {
 					LOG.error(e2.getMessage());
@@ -682,10 +685,7 @@ public class EmJobProcessGiornata{
 			formazioneHtml += "</td>";
 			formazioneHtml += "</tr>";
 
-			for (int i = 0; i < csvRecords.size(); i++) {
-				CSVRecord record = csvRecords.get(i);
-				// LOG.info("" + record.size());
-
+			for (CSVRecord record : csvRecords) {
 				String idGiocatore = "";
 				String minGiocati = "";
 
@@ -760,9 +760,10 @@ public class EmJobProcessGiornata{
 					G = Utils.replaceString(G, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,"))
+						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,")) {
 							G = "6";
 						// LOG.debug("PORTIERE s.v.: "+Giocatore);
+						}
 					} else {
 						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,")) {
 							G = "0";
@@ -777,8 +778,9 @@ public class EmJobProcessGiornata{
 					CS = Utils.replaceString(CS, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,"))
+						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,")) {
 							CS = "6";
+						}
 					} else {
 						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,")) {
 							CS = "0";
@@ -794,8 +796,9 @@ public class EmJobProcessGiornata{
 					TS = Utils.replaceString(TS, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,"))
+						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,")) {
 							TS = "6";
+						}
 					} else {
 						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,")) {
 							TS = "0";
@@ -926,7 +929,7 @@ public class EmJobProcessGiornata{
 				}
 			}
 
-			String email_destinatario = (String) p.getProperty("to");
+			String email_destinatario = p.getProperty("to");
 			String[] to = null;
 			if (email_destinatario != null && !email_destinatario.equals("")) {
 				to = Utils.tornaArrayString(email_destinatario, ";");
@@ -955,12 +958,12 @@ public class EmJobProcessGiornata{
 			formazioneHtml += "<html>";
 
 			try {
-				String from = (String) env.getProperty("spring.mail.secondary.username");
+				String from = env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				try {
-					String from = (String) env.getProperty("spring.mail.primary.username");
+					String from = env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 				} catch (Exception e2) {
 					LOG.error(e2.getMessage());
@@ -992,7 +995,7 @@ public class EmJobProcessGiornata{
 
 		LOG.info("giornata " + giornata);
 
-		List<String> schemi = new ArrayList<String>();
+		List<String> schemi = new ArrayList<>();
 		schemi.add("1-5-4-1");
 		schemi.add("1-5-3-2");
 		schemi.add("1-4-5-1");
@@ -1004,15 +1007,15 @@ public class EmJobProcessGiornata{
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
 
-		List<FcAttore> l = (List<FcAttore>) attoreRepository.findAll();
+		List<FcAttore> l = attoreRepository.findAll();
 
 		for (FcAttore attore : l) {
 			LOG.info("attore " + attore.getDescAttore());
 			List<FcGiornataDett> lGiocatori = giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
-			ArrayList<FcGiornataDett> titolari = new ArrayList<FcGiornataDett>();
-			ArrayList<FcGiornataDett> riserve = new ArrayList<FcGiornataDett>();
-			ArrayList<FcGiornataDett> novoto = new ArrayList<FcGiornataDett>();
+			ArrayList<FcGiornataDett> titolari = new ArrayList<>();
+			ArrayList<FcGiornataDett> riserve = new ArrayList<>();
+			ArrayList<FcGiornataDett> novoto = new ArrayList<>();
 
 			int totPunti = 0;
 			for (FcGiornataDett gd : lGiocatori) {
@@ -1051,7 +1054,7 @@ public class EmJobProcessGiornata{
 			}
 
 			int countCambi = 0;
-			ArrayList<FcGiornataDett> novotoProcess = new ArrayList<FcGiornataDett>();
+			ArrayList<FcGiornataDett> novotoProcess = new ArrayList<>();
 
 			for (FcGiornataDett ris : riserve) {
 
@@ -1224,7 +1227,7 @@ public class EmJobProcessGiornata{
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
 
-		List<FcAttore> l = (List<FcAttore>) attoreRepository.findAll();
+		List<FcAttore> l = attoreRepository.findAll();
 		for (FcAttore attore : l) {
 			String sql = " select sum(voto) from fc_giornata_dett";
 			sql += " where id_attore=" + attore.getIdAttore();
@@ -1239,13 +1242,13 @@ public class EmJobProcessGiornata{
 					while (rs.next()) {
 						totPunti = rs.getInt(1);
 						LOG.debug(attore.getDescAttore() + " " + totPunti);
-						
+
 						String query = "DELETE FROM fc_classifica_tot_pt WHERE ID_CAMPIONATO=" + campionato.getIdCampionato() + " AND ID_ATTORE=" + attore.getIdAttore() + " AND ID_GIORNATA=" + giornata + "";
 						jdbcTemplate.update(query);
 
 						query = "INSERT INTO fc_classifica_tot_pt (ID_CAMPIONATO,ID_ATTORE,ID_GIORNATA,TOT_PT) VALUES (" + campionato.getIdCampionato() + "," + attore.getIdAttore() + "," + giornata + "," + totPunti + ")";
 						jdbcTemplate.update(query);
-						
+
 					}
 					return "1";
 				}
@@ -1635,9 +1638,9 @@ public class EmJobProcessGiornata{
 
 		LOG.info("START initDbGiocatori");
 
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
-		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<FcGiocatore>();
-		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<FcGiocatore>();
+		HashMap<Object, Object> map = new HashMap<>();
+		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<>();
+		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<>();
 
 		FileReader fileReader = null;
 		CSVParser csvFileParser = null;
@@ -1649,7 +1652,7 @@ public class EmJobProcessGiornata{
 		try {
 
 			// Create a new list of student to be filled by CSV file data
-			List<FcGiocatore> giocatores = new ArrayList<FcGiocatore>();
+			List<FcGiocatore> giocatores = new ArrayList<>();
 
 			// initialize FileReader object
 			fileReader = new FileReader(fileName);
@@ -1863,14 +1866,14 @@ public class EmJobProcessGiornata{
 
 		LOG.info("START initDbGiocatoriExcel");
 
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
-		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<FcGiocatore>();
-		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<FcGiocatore>();
+		HashMap<Object, Object> map = new HashMap<>();
+		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<>();
+		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<>();
 
 		try {
 
 			// Create a new list of student to be filled by CSV file data
-			List<FcGiocatore> giocatores = new ArrayList<FcGiocatore>();
+			List<FcGiocatore> giocatores = new ArrayList<>();
 
 			// giocatoreRepository.deleteAll();
 			List<FcGiocatore> listG = (List<FcGiocatore>) giocatoreRepository.findAll();

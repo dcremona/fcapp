@@ -210,7 +210,7 @@ public class ClassificaView extends VerticalLayout{
 			throws Exception {
 
 		String[] att = new String[8];
-		ArrayList<Integer> data = new ArrayList<Integer>();
+		ArrayList<Integer> data = new ArrayList<>();
 
 		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
 
@@ -383,7 +383,7 @@ public class ClassificaView extends VerticalLayout{
 		sql += " group by a.desc_attore ";
 		sql += " order by 3 desc ";
 
-		List<FcClassificaTotPt> dm = new ArrayList<FcClassificaTotPt>();
+		List<FcClassificaTotPt> dm = new ArrayList<>();
 
 		jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
 			@Override

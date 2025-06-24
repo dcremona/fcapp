@@ -102,7 +102,7 @@ public class EmFormazioniView extends VerticalLayout{
 	@Autowired
 	private AttoreService attoreController;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
+	public List<FcAttore> squadre = new ArrayList<>();
 
 	@Autowired
 	private AccessoService accessoController;
@@ -249,7 +249,7 @@ public class EmFormazioniView extends VerticalLayout{
 		HashMap<String, Object> map = new HashMap<>();
 
 		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
-		List<FcGiornataDett> items = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> items = new ArrayList<>();
 
 		int countD = 0;
 		int countC = 0;
@@ -269,8 +269,8 @@ public class EmFormazioniView extends VerticalLayout{
 
 		String schema = countD + "-" + countC + "-" + countA;
 
-		List<FcGiornataDett> itemsTitolari = new ArrayList<FcGiornataDett>();
-		List<FcGiornataDett> itemsPanchina = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> itemsTitolari = new ArrayList<>();
+		List<FcGiornataDett> itemsPanchina = new ArrayList<>();
 		for (FcGiornataDett gd2 : items) {
 			if (gd2.getOrdinamento() < 12) {
 				itemsTitolari.add(gd2);

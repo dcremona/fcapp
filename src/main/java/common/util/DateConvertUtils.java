@@ -22,13 +22,15 @@ public class DateConvertUtils{
 	 * Null-safe.
 	 */
 	public static LocalDate asLocalDate(java.util.Date date, ZoneId zone) {
-		if (date == null)
+		if (date == null) {
 			return null;
+		}
 
-		if (date instanceof java.sql.Date)
+		if (date instanceof java.sql.Date) {
 			return ((java.sql.Date) date).toLocalDate();
-		else
+		} else {
 			return Instant.ofEpochMilli(date.getTime()).atZone(zone).toLocalDate();
+		}
 	}
 
 	/**
@@ -44,13 +46,15 @@ public class DateConvertUtils{
 	 * subclasses. Null-safe.
 	 */
 	public static LocalDateTime asLocalDateTime(java.util.Date date, ZoneId zone) {
-		if (date == null)
+		if (date == null) {
 			return null;
+		}
 
-		if (date instanceof java.sql.Timestamp)
+		if (date instanceof java.sql.Timestamp) {
 			return ((java.sql.Timestamp) date).toLocalDateTime();
-		else
+		} else {
 			return Instant.ofEpochMilli(date.getTime()).atZone(zone).toLocalDateTime();
+		}
 	}
 
 	/**
@@ -73,30 +77,37 @@ public class DateConvertUtils{
 	 * <li>{@link java.time.ZonedDateTime}
 	 * <li>{@link java.time.Instant}
 	 * </ul>
-	 * 
+	 *
 	 * @param zone
 	 *            Time zone, used only if the input object is LocalDate or
 	 *            LocalDateTime.
-	 * 
+	 *
 	 * @return {@link java.util.Date} (exactly this class, not a subclass, such
 	 *         as java.sql.Date)
 	 */
 	public static java.util.Date asUtilDate(Object date, ZoneId zone) {
-		if (date == null)
+		if (date == null) {
 			return null;
+		}
 
-		if (date instanceof java.sql.Date || date instanceof java.sql.Timestamp)
+		if (date instanceof java.sql.Date || date instanceof java.sql.Timestamp) {
 			return new java.util.Date(((java.util.Date) date).getTime());
-		if (date instanceof java.util.Date)
+		}
+		if (date instanceof java.util.Date) {
 			return (java.util.Date) date;
-		if (date instanceof LocalDate)
+		}
+		if (date instanceof LocalDate) {
 			return java.util.Date.from(((LocalDate) date).atStartOfDay(zone).toInstant());
-		if (date instanceof LocalDateTime)
+		}
+		if (date instanceof LocalDateTime) {
 			return java.util.Date.from(((LocalDateTime) date).atZone(zone).toInstant());
-		if (date instanceof ZonedDateTime)
+		}
+		if (date instanceof ZonedDateTime) {
 			return java.util.Date.from(((ZonedDateTime) date).toInstant());
-		if (date instanceof Instant)
+		}
+		if (date instanceof Instant) {
 			return java.util.Date.from((Instant) date);
+		}
 
 		throw new UnsupportedOperationException("Don't know hot to convert " + date.getClass().getName() + " to java.util.Date");
 	}
@@ -106,10 +117,11 @@ public class DateConvertUtils{
 	 * subclasses. Null-safe.
 	 */
 	public static Instant asInstant(Date date) {
-		if (date == null)
+		if (date == null) {
 			return null;
-		else
+		} else {
 			return Instant.ofEpochMilli(date.getTime());
+		}
 	}
 
 	/**
@@ -125,10 +137,11 @@ public class DateConvertUtils{
 	 * subclasses. Null-safe.
 	 */
 	public static ZonedDateTime asZonedDateTime(Date date, ZoneId zone) {
-		if (date == null)
+		if (date == null) {
 			return null;
-		else
+		} else {
 			return asInstant(date).atZone(zone);
+		}
 	}
 
 }

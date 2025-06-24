@@ -149,7 +149,7 @@ public class MyScheduledTasks{
 
 		String rootPathOutputPdf = (String) p.get("PATH_OUTPUT_PDF");
 		String idCampionato = "" + campionato.getIdCampionato();
-		String pathCampionato = (String) env.getProperty("spring.datasource.username");
+		String pathCampionato = env.getProperty("spring.datasource.username");
 		String pathOutput = rootPathOutputPdf + pathCampionato + fileSep + "Campionato" + idCampionato;
 
 		int ggFc = giornataInfo.getCodiceGiornata();
@@ -198,13 +198,13 @@ public class MyScheduledTasks{
 		jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, pathOutputPdf + fileSep);
 
 	}
-	
+
 	//@Scheduled(cron = "*/60 * * * * *")
 	@Scheduled(cron = "0 0 6 * * *")
 	public void jobSqualificaInfortunati() throws Exception {
 
 		LOG.info("jobSqualificaInfortunati start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
-		
+
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.size() == 0) {
 			LOG.error("error lProprieta size" + lProprieta.size());
@@ -221,8 +221,8 @@ public class MyScheduledTasks{
 		FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
 
 		LOG.info("currentGG: " + giornataInfo.getCodiceGiornata());
-		
-		String fusoOrario = (String) p.getProperty("FUSO_ORARIO");		
+
+		String fusoOrario = p.getProperty("FUSO_ORARIO");
 		String nextDate = Utils.getNextDate(giornataInfo);
 		long millisDiff = 0;
 		try {
@@ -238,10 +238,10 @@ public class MyScheduledTasks{
 		}
 
 		giornataGiocatoreService.deleteByCustonm(giornataInfo);
-		
+
 		String basePath = basePathData;
 		LOG.info("basePathData " + basePathData);
-		
+
 		// **************************************
 		// DOWNLOAD FILE SQUALIFICATI
 		// **************************************
@@ -253,7 +253,7 @@ public class MyScheduledTasks{
 
 		String fileName = basePathData + fileName1 + ".csv";
 		jobProcessGiornata.initDbGiornataGiocatore(giornataInfo,fileName,true,false);
-		
+
 		// **************************************
 		// DOWNLOAD FILE INFORTUNATI
 		// **************************************
@@ -267,5 +267,5 @@ public class MyScheduledTasks{
 
 		LOG.info("jobSqualificaInfortunati end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 	}
-	
+
 }

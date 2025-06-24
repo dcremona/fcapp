@@ -50,7 +50,7 @@ public class FcPropertiesView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());		
+		accessoController.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -61,20 +61,20 @@ public class FcPropertiesView extends VerticalLayout{
 		this.setSizeFull();
 
 		GridCrud<FcProperties> crud = new GridCrud<>(FcProperties.class,new HorizontalSplitCrudLayout());
-		
+
 		DefaultCrudFormFactory<FcProperties> formFactory = new DefaultCrudFormFactory<>(FcProperties.class);
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
-		
+
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "key", "value");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "key", "value");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "key", "value");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "key");
 
 		crud.getGrid().setColumns("key", "value");
-		
+
 		crud.getGrid().setColumnReorderingAllowed(true);
-		
+
 		crud.setRowCountCaption("%d property(s) found");
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);

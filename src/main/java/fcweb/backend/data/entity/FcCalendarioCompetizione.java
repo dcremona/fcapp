@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 public class FcCalendarioCompetizione implements Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class FcCalendarioCompetizione implements Serializable{
 
 	@Column(name = "codice_giornata")
 	private int idGiornata;
-	
+
 	@Column(name = "data")
     private LocalDateTime data;
 
@@ -109,7 +109,7 @@ public class FcCalendarioCompetizione implements Serializable{
 		this.risultato = risultato;
 	}
 
-	
-	
+
+
 
 }

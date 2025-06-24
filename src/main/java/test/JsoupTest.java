@@ -18,7 +18,7 @@ public class JsoupTest{
 		Document doc = Jsoup.connect(url).get();
 		String title = doc.title();
 		System.out.println(title);
-		
+
 //		String html = doc.html();
 //        System.out.println(html);
 
@@ -50,9 +50,10 @@ public class JsoupTest{
 	}
 
 	private static String trim(String s, int width) {
-		if (s.length() > width)
+		if (s.length() > width) {
 			return s.substring(0, width - 1) + ".";
-		else
+		} else {
 			return s;
+		}
 	}
 }

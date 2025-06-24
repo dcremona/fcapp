@@ -76,7 +76,7 @@ public class Utils{
 
 	/**
 	 * Method getColorFromProperties.
-	 * 
+	 *
 	 * @param color
 	 * @return Color
 	 */
@@ -91,34 +91,35 @@ public class Utils{
 				conta++;
 			}
 			return new Color(rgb[0],rgb[1],rgb[2]);
-		} else if (color.equals("black"))
+		} else if (color.equals("black")) {
 			return Color.black;
-		else if (color.equals("white"))
+		} else if (color.equals("white")) {
 			return Color.white;
-		else if (color.equals("lightGray"))
+		} else if (color.equals("lightGray")) {
 			return Color.lightGray;
-		else if (color.equals("gray"))
+		} else if (color.equals("gray")) {
 			return Color.gray;
-		else if (color.equals("darkGray"))
+		} else if (color.equals("darkGray")) {
 			return Color.darkGray;
-		else if (color.equals("red"))
+		} else if (color.equals("red")) {
 			return Color.red;
-		else if (color.equals("pink"))
+		} else if (color.equals("pink")) {
 			return Color.pink;
-		else if (color.equals("orange"))
+		} else if (color.equals("orange")) {
 			return Color.orange;
-		else if (color.equals("yellow"))
+		} else if (color.equals("yellow")) {
 			return Color.yellow;
-		else if (color.equals("green"))
+		} else if (color.equals("green")) {
 			return Color.green;
-		else if (color.equals("magenta"))
+		} else if (color.equals("magenta")) {
 			return Color.magenta;
-		else if (color.equals("cyan"))
+		} else if (color.equals("cyan")) {
 			return Color.cyan;
-		else if (color.equals("blue"))
+		} else if (color.equals("blue")) {
 			return Color.blue;
-		else
+		} else {
 			return Color.black;
+		}
 	}
 
 	/**
@@ -528,7 +529,7 @@ public class Utils{
 	public static BigDecimal roundBigDecimal(final BigDecimal input) {
 		return input.round(new MathContext(input.toBigInteger().toString().length(),RoundingMode.HALF_UP));
 	}
-	
+
 	public static String getNextDate(FcGiornataInfo giornataInfo) {
 
 		LocalDateTime now = LocalDateTime.now();
@@ -562,7 +563,7 @@ public class Utils{
 					currentDate = dataGiornata;
 				}
 			}
-			
+
 			if (dataPosticipo != null) {
 				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
 				LOG.info("dataPosticipo.getDayOfWeek() : " + dataPosticipo.getDayOfWeek());
@@ -571,7 +572,7 @@ public class Utils{
 				}
 			} else {
 				if (dataAnticipo != null) {
-					currentDate = dataAnticipo;	
+					currentDate = dataAnticipo;
 				}
 			}
 		}
@@ -581,7 +582,7 @@ public class Utils{
 
 		return currentDataGiornata;
 	}
-	
+
 	public static long getMillisDiff(String nextDate, String fusoOrario)
 			throws Exception {
 
@@ -617,6 +618,6 @@ public class Utils{
 		}
 
 		return millisDiff;
-	}	
-	
+	}
+
 }

@@ -30,8 +30,8 @@ public interface ClassificaRepository
 
 	public FcClassifica findByFcCampionatoAndFcAttore(FcCampionato campionato,
 			FcAttore attore);
-	
+
 	public List<FcClassifica> findByFcCampionatoOrderByPuntiDescIdPosizAsc(
 			FcCampionato campionato);
-	
+
 }

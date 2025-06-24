@@ -75,7 +75,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 	@Autowired
 	private GiornataInfoService giornataInfoController;
 
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<FcGiornataInfo>();
+	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 
 	@Autowired
 	private AccessoService accessoController;
@@ -268,7 +268,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 				} else {
 
 					jobProcessGiornata.initDbCalendarioCompetizione(basePathData + "calendarioMondiale2022.csv");
-					
+
 //					jobProcessGiornata.deleteAllCalendarioTim();
 //					for (int g = 1; g <= 7; g++) {
 //						// **************************************

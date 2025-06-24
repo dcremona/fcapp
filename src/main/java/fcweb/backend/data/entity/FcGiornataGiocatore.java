@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class FcGiornataGiocatore implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private FcGiornataGiocatoreId id;
@@ -28,7 +28,7 @@ public class FcGiornataGiocatore implements java.io.Serializable{
 	private boolean infortunato;
 	private boolean squalificato;
 	private String note;
-	
+
 	public FcGiornataGiocatore() {
 	}
 

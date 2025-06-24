@@ -412,7 +412,7 @@ public class EmImpostazioniView extends VerticalLayout
 		//radioGroupVotiExcel.setValue("mondiale-voti-ufficiali");
 		radioGroupVotiExcel.setItems("europei-voti-ufficiali", "europei-voti-ufficiali-fantacalcio");
 		radioGroupVotiExcel.setValue("europei-voti-ufficiali");
-		
+
 
 		calcola = new Button("Calcola (Yes Algoritmo + Statistiche)");
 		calcola.setIcon(VaadinIcon.PIN.create());
@@ -490,7 +490,7 @@ public class EmImpostazioniView extends VerticalLayout
 			FcGiornataInfo giornataInfo = null;
 			int giornata = 0;
 			if (!comboGiornata.isEmpty()) {
-				giornataInfo = (FcGiornataInfo) comboGiornata.getValue();
+				giornataInfo = comboGiornata.getValue();
 				giornata = giornataInfo.getCodiceGiornata();
 			}
 			LOG.info("giornata " + giornata);
@@ -522,7 +522,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == initDbAttore) {
 
-				FcAttore attore = (FcAttore) comboAttore.getValue();
+				FcAttore attore = comboAttore.getValue();
 				LOG.info("attore " + attore.getDescAttore());
 
 				for (int j = 1; j <= 23; j++) {
@@ -532,7 +532,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == ultimaFormazione) {
 
-				FcAttore attore = (FcAttore) comboAttore.getValue();
+				FcAttore attore = comboAttore.getValue();
 				LOG.info("attore " + attore.getDescAttore());
 
 				emjobProcessGiornata.eminserisciUltimaFormazione(attore.getIdAttore(), giornata);
@@ -636,13 +636,13 @@ public class EmImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == pdfAndMail) {
 
-				String imgLog = (String) env.getProperty("img.logo");
+				String imgLog = env.getProperty("img.logo");
 				String pathImg = "images/";
 
 				Resource resource = resourceLoader.getResource("classpath:reports/em/risultati.jasper");
 				InputStream inputStream = resource.getInputStream();
 				Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg);
-				Collection<RisultatoBean> collection = new ArrayList<RisultatoBean>();
+				Collection<RisultatoBean> collection = new ArrayList<>();
 				collection.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
 				String destFileName1 = basePathData + giornataInfo.getDescGiornataFc() + ".pdf";
 				FileOutputStream outputStream = new FileOutputStream(new File(destFileName1));
@@ -652,7 +652,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 				Resource resource2 = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
 				InputStream inputStream2 = resource2.getInputStream();
-				Map<String, Object> params2 = new HashMap<String, Object>();
+				Map<String, Object> params2 = new HashMap<>();
 				params2.put("DIVISORE", "" + Costants.DIVISORE_10);
 				params2.put("PATH_IMG", pathImg + imgLog);
 				String destFileName2 = basePathData + "Classifica.pdf";
@@ -662,7 +662,7 @@ public class EmImpostazioniView extends VerticalLayout
 				// outputStream2, params2, conn);
 				JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, params2, conn);
 
-				
+
 				String email_destinatario = "";
 
 				if (this.chkSendMail.getValue()) {
@@ -673,7 +673,7 @@ public class EmImpostazioniView extends VerticalLayout
 						}
 					}
 				} else {
-					email_destinatario = (String) p.getProperty("to");
+					email_destinatario = p.getProperty("to");
 				}
 
 				String[] to = null;
@@ -693,13 +693,13 @@ public class EmImpostazioniView extends VerticalLayout
 				String message = getBody();
 
 				try {
-					
+
 					try {
-						String from = (String) env.getProperty("spring.mail.secondary.username");
+						String from = env.getProperty("spring.mail.secondary.username");
 						emailService.sendMail(false,from, to, cc, bcc, subject, message, "text/html", "3", att);
 					} catch (Exception e) {
 						try {
-							String from = (String) env.getProperty("spring.mail.primary.username");
+							String from = env.getProperty("spring.mail.primary.username");
 							emailService.sendMail(true,from, to, cc, bcc, subject, message, "text/html", "3", att);
 						} catch (Exception e2) {
 							throw e2;
@@ -727,19 +727,19 @@ public class EmImpostazioniView extends VerticalLayout
 				String message = messaggio.getValue();
 
 				try {
-					
+
 					try {
-						String from = (String) env.getProperty("spring.mail.secondary.username");
+						String from = env.getProperty("spring.mail.secondary.username");
 						emailService.sendMail(false,from, to, cc, bcc, subject, message, "", "3", null);
 					} catch (Exception e) {
 						try {
-							String from = (String) env.getProperty("spring.mail.primary.username");
+							String from = env.getProperty("spring.mail.primary.username");
 							emailService.sendMail(true,from, to, cc, bcc, subject, message, "", "3", null);
 						} catch (Exception e2) {
 							throw e2;
 						}
 					}
-					
+
 				} catch (Exception e) {
 					CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_MAIL_KO);
 				}
@@ -774,7 +774,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		List<FcAttore> squadre = attoreController.findAll();
 
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("path_img", pathImg);
 		parameters.put("titolo", giornataInfo.getDescGiornataFc());
 		int conta = 1;
@@ -786,7 +786,7 @@ public class EmImpostazioniView extends VerticalLayout
 			int countD = 0;
 			int countC = 0;
 			int countA = 0;
-			Collection<RisultatoBean> dm = new ArrayList<RisultatoBean>();
+			Collection<RisultatoBean> dm = new ArrayList<>();
 			for (FcGiornataDett gd : lGiocatori) {
 				if ("S".equals(gd.getFlagAttivo())) {
 					if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("D")) {
@@ -876,9 +876,9 @@ public class EmImpostazioniView extends VerticalLayout
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
 
-		
+
 		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		LOG.info("ACTIVE_MAIL " + ACTIVE_MAIL);
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findAll();
@@ -888,7 +888,7 @@ public class EmImpostazioniView extends VerticalLayout
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			email_destinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
@@ -902,11 +902,11 @@ public class EmImpostazioniView extends VerticalLayout
 		LOG.info(formazioneHtml);
 
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
+			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
 		} catch (Exception e) {
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
+				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
 			} catch (Exception e2) {
 				throw e2;
@@ -917,7 +917,7 @@ public class EmImpostazioniView extends VerticalLayout
 	private Grid<FcGiocatore> getTableGiocatori() {
 
 		Grid<FcGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<FcGiocatore>());
+		grid.setItems(new ArrayList<>());
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
 		grid.setWidth("600px");

@@ -2,7 +2,7 @@ package fcweb.backend.data;
 
 import java.io.Serializable;
 
-//Here is a bean 
+//Here is a bean
 public class Calendario implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -14,6 +14,7 @@ public class Calendario implements Serializable{
 	private String risultato;
 
 	public Calendario() {
+		// TODO document why this constructor is empty
 	}
 
 	public int getId() {

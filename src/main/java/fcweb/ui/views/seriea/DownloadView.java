@@ -64,7 +64,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 	private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	private Grid<FcExpFreePl> gridFreePl = new Grid<>();
-	private Grid<FcExpRosea> gridRosea = new Grid<FcExpRosea>();
+	private Grid<FcExpRosea> gridRosea = new Grid<>();
 
 	@Autowired
 	private ExpRoseAService expRoseAController;
@@ -81,7 +81,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 //	@Autowired
 //	private ResourceLoader resourceLoader;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
+	public List<FcAttore> squadre = new ArrayList<>();
 
 	private Button salvaRoseA = null;
 	private Button salvaFreePl = null;

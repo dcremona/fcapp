@@ -53,7 +53,7 @@ public class FcClassificaView extends VerticalLayout{
 	public Environment env;
 
 //	private ComboBox<FcAttore> attoreFilter = new ComboBox<FcAttore>();
-	private ComboBox<FcCampionato> campionatoFilter = new ComboBox<FcCampionato>();
+	private ComboBox<FcCampionato> campionatoFilter = new ComboBox<>();
 
 	@Autowired
 	private AccessoService accessoController;

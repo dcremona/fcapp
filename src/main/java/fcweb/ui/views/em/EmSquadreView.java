@@ -86,7 +86,7 @@ public class EmSquadreView extends VerticalLayout {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	private List<FcAttore> squadre = new ArrayList<FcAttore>();
+	private List<FcAttore> squadre = new ArrayList<>();
 
 	public EmSquadreView() {
 		LOG.info("EmSquadreView()");

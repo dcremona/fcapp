@@ -162,7 +162,7 @@ public class EmMercatoView extends VerticalLayout
 	private Grid<FcGiocatore> tablePlayer23;
 
 	private Grid<FcProperties> tableContaPlayer;
-	private List<FcProperties> modelContaPlayer = new ArrayList<FcProperties>();
+	private List<FcProperties> modelContaPlayer = new ArrayList<>();
 
 	private List<FcAttore> attori = null;
 	private List<FcRuolo> ruoli = null;
@@ -171,45 +171,45 @@ public class EmMercatoView extends VerticalLayout
 	private long millisDiff = 0;
 	private Properties p = null;
 
-	private List<FcGiocatore> modelFormazione = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelFormazione = new ArrayList<>();
 
 	private boolean activeFilter = true;
 
 	private Grid<FcGiocatore> tableGiocatori;
-	private List<FcGiocatore> modelPlayerG = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelPlayerG = new ArrayList<>();
 
 	private Grid<FcGiocatore> tablePlayerP;
 	private Grid<FcGiocatore> tablePlayerD;
 	private Grid<FcGiocatore> tablePlayerC;
 	private Grid<FcGiocatore> tablePlayerA;
-	private List<FcGiocatore> modelPlayerP = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayerD = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayerC = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayerA = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelPlayerP = new ArrayList<>();
+	private List<FcGiocatore> modelPlayerD = new ArrayList<>();
+	private List<FcGiocatore> modelPlayerC = new ArrayList<>();
+	private List<FcGiocatore> modelPlayerA = new ArrayList<>();
 
-	private List<FcGiocatore> modelPlayer1 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer2 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer3 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer4 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer5 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer6 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer7 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer8 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer9 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer10 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer11 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer12 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer13 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer14 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer15 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer16 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer17 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer18 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer19 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer20 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer21 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer22 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer23 = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelPlayer1 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer2 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer3 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer4 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer5 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer6 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer7 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer8 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer9 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer10 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer11 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer12 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer13 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer14 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer15 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer16 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer17 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer18 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer19 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer20 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer21 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer22 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -455,15 +455,15 @@ public class EmMercatoView extends VerticalLayout
 //			absLayout.add(tabsRuoli, 10, 170);
 //			absLayout.add(container, 10, 200);
 //			add(tabSheet);
-			
+
 			TabSheet tabSheet = new TabSheet();
 			tabSheet.add("P", tablePlayerP);
 			tabSheet.add("D", tablePlayerD);
 			tabSheet.add("C", tablePlayerC);
 			tabSheet.add("A", tablePlayerA);
 			absLayout.add(tabSheet, 10, 170);
-			
-			
+
+
 		} else {
 			absLayout.add(tableGiocatori, 10, 250);
 		}
@@ -723,7 +723,7 @@ public class EmMercatoView extends VerticalLayout
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
 
-		if ("0".equals((String) p.getProperty("ABILITA_MERCATO"))) {
+		if ("0".equals(p.getProperty("ABILITA_MERCATO"))) {
 			showMessageStopInsert();
 		} else {
 //			if (millisDiff == 0) {
@@ -932,7 +932,7 @@ public class EmMercatoView extends VerticalLayout
 		int countC = 0;
 		int countA = 0;
 
-		HashMap<String, String> map = new HashMap<String, String>();
+		HashMap<String, String> map = new HashMap<>();
 
 		if (modelPlayer1.size() != 0) {
 			FcGiocatore bean = modelPlayer1.get(0);
@@ -1264,7 +1264,7 @@ public class EmMercatoView extends VerticalLayout
 		lblInfoC.setText("" + countC);
 		lblInfoA.setText("" + countA);
 
-		List<FcProperties> list = new ArrayList<FcProperties>();
+		List<FcProperties> list = new ArrayList<>();
 		if (!map.isEmpty()) {
 			Iterator<?> it = map.entrySet().iterator();
 			while (it.hasNext()) {
@@ -1604,8 +1604,8 @@ public class EmMercatoView extends VerticalLayout
 //
 //				}).closeOnClick();
 //				messageDialog.open();
-				
-				
+
+
 				ConfirmDialog dialog = new ConfirmDialog();
 				dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
 				dialog.setText(msg);
@@ -1620,7 +1620,7 @@ public class EmMercatoView extends VerticalLayout
 
 				dialog.setConfirmText("Conferma");
 				dialog.addConfirmListener(e -> {
-					
+
 					try {
 
 						int totCambi = 0;
@@ -1672,11 +1672,11 @@ public class EmMercatoView extends VerticalLayout
 						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
 					}
 				});
-				
-				
+
+
 				dialog.open();
 
-				
+
 			}
 		}
 	}
@@ -2050,8 +2050,8 @@ public class EmMercatoView extends VerticalLayout
 
 	private int insertCambi() throws Exception {
 
-		ArrayList<FcGiocatore> listAcquisti = new ArrayList<FcGiocatore>();
-		ArrayList<FcGiocatore> listCessioni = new ArrayList<FcGiocatore>();
+		ArrayList<FcGiocatore> listAcquisti = new ArrayList<>();
+		ArrayList<FcGiocatore> listCessioni = new ArrayList<>();
 
 		for (int i = 0; i < modelFormazione.size(); i++) {
 			FcGiocatore beanPlayer = modelFormazione.get(i);
@@ -2411,58 +2411,58 @@ public class EmMercatoView extends VerticalLayout
 		String Q = "";
 
 		int ord = 1;
-		Map<String, InputStream> listImg = new HashMap<String, InputStream>();
+		Map<String, InputStream> listImg = new HashMap<>();
 		for (int i = 0; i < NUM_GIOCATORI; i++) {
 
 			ORDINAMENTO = "" + ord;
 			FcGiocatore bean = null;
 
 			if (i == 0) {
-				bean = (FcGiocatore) modelPlayer1.get(0);
+				bean = modelPlayer1.get(0);
 			} else if (i == 1) {
-				bean = (FcGiocatore) modelPlayer2.get(0);
+				bean = modelPlayer2.get(0);
 			} else if (i == 2) {
-				bean = (FcGiocatore) modelPlayer3.get(0);
+				bean = modelPlayer3.get(0);
 			} else if (i == 3) {
-				bean = (FcGiocatore) modelPlayer4.get(0);
+				bean = modelPlayer4.get(0);
 			} else if (i == 4) {
-				bean = (FcGiocatore) modelPlayer5.get(0);
+				bean = modelPlayer5.get(0);
 			} else if (i == 5) {
-				bean = (FcGiocatore) modelPlayer6.get(0);
+				bean = modelPlayer6.get(0);
 			} else if (i == 6) {
-				bean = (FcGiocatore) modelPlayer7.get(0);
+				bean = modelPlayer7.get(0);
 			} else if (i == 7) {
-				bean = (FcGiocatore) modelPlayer8.get(0);
+				bean = modelPlayer8.get(0);
 			} else if (i == 8) {
-				bean = (FcGiocatore) modelPlayer9.get(0);
+				bean = modelPlayer9.get(0);
 			} else if (i == 9) {
-				bean = (FcGiocatore) modelPlayer10.get(0);
+				bean = modelPlayer10.get(0);
 			} else if (i == 10) {
-				bean = (FcGiocatore) modelPlayer11.get(0);
+				bean = modelPlayer11.get(0);
 			} else if (i == 11) {
-				bean = (FcGiocatore) modelPlayer12.get(0);
+				bean = modelPlayer12.get(0);
 			} else if (i == 12) {
-				bean = (FcGiocatore) modelPlayer13.get(0);
+				bean = modelPlayer13.get(0);
 			} else if (i == 13) {
-				bean = (FcGiocatore) modelPlayer14.get(0);
+				bean = modelPlayer14.get(0);
 			} else if (i == 14) {
-				bean = (FcGiocatore) modelPlayer15.get(0);
+				bean = modelPlayer15.get(0);
 			} else if (i == 15) {
-				bean = (FcGiocatore) modelPlayer16.get(0);
+				bean = modelPlayer16.get(0);
 			} else if (i == 16) {
-				bean = (FcGiocatore) modelPlayer17.get(0);
+				bean = modelPlayer17.get(0);
 			} else if (i == 17) {
-				bean = (FcGiocatore) modelPlayer18.get(0);
+				bean = modelPlayer18.get(0);
 			} else if (i == 18) {
-				bean = (FcGiocatore) modelPlayer19.get(0);
+				bean = modelPlayer19.get(0);
 			} else if (i == 19) {
-				bean = (FcGiocatore) modelPlayer20.get(0);
+				bean = modelPlayer20.get(0);
 			} else if (i == 20) {
-				bean = (FcGiocatore) modelPlayer21.get(0);
+				bean = modelPlayer21.get(0);
 			} else if (i == 21) {
-				bean = (FcGiocatore) modelPlayer22.get(0);
+				bean = modelPlayer22.get(0);
 			} else if (i == 22) {
-				bean = (FcGiocatore) modelPlayer23.get(0);
+				bean = modelPlayer23.get(0);
 			}
 
 			RUOLO = bean.getFcRuolo().getDescRuolo();
@@ -2640,7 +2640,7 @@ public class EmMercatoView extends VerticalLayout
 		formazioneHtml += "<HTML>";
 
 		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
@@ -2649,7 +2649,7 @@ public class EmMercatoView extends VerticalLayout
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			email_destinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
@@ -2661,12 +2661,12 @@ public class EmMercatoView extends VerticalLayout
 		String[] bcc = null;
 
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
+			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
+				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 			} catch (Exception e2) {
 				LOG.error(e2.getMessage());
@@ -2760,7 +2760,7 @@ public class EmMercatoView extends VerticalLayout
 
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
-					FcGiocatore bean = (FcGiocatore) g;
+					FcGiocatore bean = g;
 					if (CHECK_TOT_CAMBI_EFFETTUATI > 0) {
 						LOG.info("click " + bean.getCognGiocatore());
 
@@ -2923,7 +2923,7 @@ public class EmMercatoView extends VerticalLayout
 		} else {
 			LOG.info("attore " + att.getDescAttore());
 			List<FcFormazione> listFormazione = formazioneController.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(att);
-			Collection<Integer> notIn = new ArrayList<Integer>();
+			Collection<Integer> notIn = new ArrayList<>();
 			for (FcFormazione f : listFormazione) {
 				if (f.getFcGiocatore() != null) {
 					notIn.add(f.getFcGiocatore().getIdGiocatore());
@@ -3484,7 +3484,7 @@ public class EmMercatoView extends VerticalLayout
 	@SuppressWarnings("unchecked")
 	private void ordinaMercato() throws Exception {
 
-		List<FcGiocatore> modelMercatoGiocatori = new ArrayList<FcGiocatore>();
+		List<FcGiocatore> modelMercatoGiocatori = new ArrayList<>();
 		if (modelPlayer1.size() != 0) {
 			modelMercatoGiocatori.add(modelPlayer1.get(0));
 		}

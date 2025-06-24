@@ -97,9 +97,9 @@ public class MercatoView extends VerticalLayout
 	private Span[] lblRuoliPlayer;
 	private Grid<FcProperties>[] tableContaPlayer;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
-	public List<FcGiocatore> giocatori = new ArrayList<FcGiocatore>();
-	public List<FcClassifica> creditiFm = new ArrayList<FcClassifica>();
+	public List<FcAttore> squadre = new ArrayList<>();
+	public List<FcGiocatore> giocatori = new ArrayList<>();
+	public List<FcClassifica> creditiFm = new ArrayList<>();
 
 	@Autowired
 	private AccessoService accessoController;
@@ -114,10 +114,10 @@ public class MercatoView extends VerticalLayout
 	public void randomFormazioni() {
 		Random rand = new Random();
 
-		List<Integer> p = new ArrayList<Integer>();
-		List<Integer> d = new ArrayList<Integer>();
-		List<Integer> c = new ArrayList<Integer>();
-		List<Integer> a = new ArrayList<Integer>();
+		List<Integer> p = new ArrayList<>();
+		List<Integer> d = new ArrayList<>();
+		List<Integer> c = new ArrayList<>();
+		List<Integer> a = new ArrayList<>();
 
 		for (FcGiocatore g : giocatori) {
 
@@ -138,7 +138,7 @@ public class MercatoView extends VerticalLayout
 
 		for (FcAttore attore : squadre) {
 
-			List<Integer> list = new ArrayList<Integer>();
+			List<Integer> list = new ArrayList<>();
 
 			int numberOfElementsP = 1;
 			while (numberOfElementsP <= 3) {
@@ -401,7 +401,7 @@ public class MercatoView extends VerticalLayout
 			int countC = 0;
 			int countA = 0;
 
-			HashMap<String, String> map = new HashMap<String, String>();
+			HashMap<String, String> map = new HashMap<>();
 			List<FcFormazione> data = tablePlayer[i].getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
 
 			Double totCrediti = null;
@@ -411,7 +411,7 @@ public class MercatoView extends VerticalLayout
 				}
 			}
 
-			Double somma = Double.valueOf(0);
+			double somma = 0;
 			String descAttore = "";
 			for (FcFormazione f : data) {
 				FcGiocatore bean = f.getFcGiocatore();
@@ -430,9 +430,9 @@ public class MercatoView extends VerticalLayout
 					refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 				}
 			}
-			Double residuo = totCrediti - somma;
+			double residuo = totCrediti - somma;
 
-			List<FcProperties> list = new ArrayList<FcProperties>();
+			List<FcProperties> list = new ArrayList<>();
 			if (!map.isEmpty()) {
 				Iterator<?> it = map.entrySet().iterator();
 				while (it.hasNext()) {
@@ -689,7 +689,7 @@ public class MercatoView extends VerticalLayout
 						e.printStackTrace();
 					}
 				}
-				
+
 				Span lblSquadra = new Span(f.getKey());
 				cellLayout.add(lblSquadra);
 			}

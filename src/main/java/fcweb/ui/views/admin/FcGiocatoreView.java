@@ -69,8 +69,8 @@ public class FcGiocatoreView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcRuolo> ruoloFilter = new ComboBox<FcRuolo>();
-	private ComboBox<FcSquadra> squadraFilter = new ComboBox<FcSquadra>();
+	private ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
+	private ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
 
 	public FcGiocatoreView() {
 		LOG.info("FcGiocatoreView()");
@@ -104,7 +104,7 @@ public class FcGiocatoreView extends VerticalLayout{
 		formFactory.setVisibleProperties(CrudOperation.DELETE, "idGiocatore", "cognGiocatore");
 
 		crud.getGrid().removeAllColumns();
-		
+
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		if ("1".equals(campionato.getType())) {
 			Column<FcGiocatore> giocatreColumn = crud.getGrid().addColumn(new ComponentRenderer<>(g -> {

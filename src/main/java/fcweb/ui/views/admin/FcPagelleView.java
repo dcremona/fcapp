@@ -59,8 +59,8 @@ public class FcPagelleView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<FcGiornataInfo>();
-	private ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<FcGiocatore>();
+	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+	private ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<>();
 
 	public FcPagelleView() {
 		LOG.info("FcPagelleView()");

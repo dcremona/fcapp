@@ -13,9 +13,9 @@ import fcweb.backend.data.entity.FcMercatoDettInfo;
 public interface MercatoInfoRepository extends CrudRepository<FcMercatoDettInfo, Long>{
 
 	Page<FcMercatoDettInfo> findAll(Pageable pageable);
-	
+
 	Iterable<FcMercatoDettInfo> findAll(Sort sort);
-	
+
 	public List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(FcAttore attore);
 
 

@@ -145,10 +145,10 @@ public class TeamInsertMobileView extends VerticalLayout
 
 	private Dialog dialogPartite = null;
 	private Grid<FcCalendarioCompetizione> tablePartite;
-	private List<FcCalendarioCompetizione> listPartiteGiocate = new ArrayList<FcCalendarioCompetizione>();
-	private List<FcCalendarioCompetizione> listPartite = new ArrayList<FcCalendarioCompetizione>();
-	
-	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<FcGiornataGiocatore>();
+	private List<FcCalendarioCompetizione> listPartiteGiocate = new ArrayList<>();
+	private List<FcCalendarioCompetizione> listPartite = new ArrayList<>();
+
+	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<>();
 
 	private AbsoluteLayout absLayout;
 
@@ -173,25 +173,25 @@ public class TeamInsertMobileView extends VerticalLayout
 
 	// DATA
 	private static final String[] schemi = new String[] { "5-4-1", "5-3-2", "4-5-1", "4-4-2", "4-3-3", "3-5-2", "3-4-3" };
-	private List<FcGiocatore> modelFormazione = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer1 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer2 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer3 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer4 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer5 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer6 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer7 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer8 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer9 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer10 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer11 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer12 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer13 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer14 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer15 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer16 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer17 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer18 = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelFormazione = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer1 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer2 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer3 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer4 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer5 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer6 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer7 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer8 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer9 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer10 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer11 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer12 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer13 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer14 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer15 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer16 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer17 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer18 = new ArrayList<>();
 
 	@Autowired
 	private FormazioneService formazioneController;
@@ -207,7 +207,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 	@Autowired
 	private AccessoService accessoController;
-	
+
 	@Autowired
 	private SquadraService squadraController;
 
@@ -245,7 +245,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		LocalDateTime now = LocalDateTime.now();
 		listPartiteGiocate = calendarioTimController.findByIdGiornataAndDataLessThanEqual(giornataInfo.getCodiceGiornata(), now);
 		listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
-		
+
 		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 	}
 
@@ -384,7 +384,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 			if (evt.getValue() != null) {
 
-				String modulo = (String) evt.getValue();
+				String modulo = evt.getValue();
 
 				absLayout.add(tablePlayer1, _160px, _P);
 
@@ -503,7 +503,7 @@ public class TeamInsertMobileView extends VerticalLayout
 					absLayout.add(tablePlayer11, _250px, _A);
 				}
 
-				String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+				String ACTIVE_CHECK_FORMAZIONE = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 				if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
 					try {
 						impostaGiocatoriConVoto(modulo);
@@ -629,7 +629,7 @@ public class TeamInsertMobileView extends VerticalLayout
 	}
 
 	private void showMessageStopInsert() {
-		String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+		String ACTIVE_CHECK_FORMAZIONE = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
 			LOG.info("showMessageStopInsert");
 			enabledComponent(false);
@@ -697,109 +697,109 @@ public class TeamInsertMobileView extends VerticalLayout
 	private void removeAllElementsList() {
 
 		if (modelPlayer1.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer1.get(0);
+			FcGiocatore bean = modelPlayer1.get(0);
 			modelFormazione.add(bean);
 			modelPlayer1.clear();
 			tablePlayer1.getDataProvider().refreshAll();
 		}
 		if (modelPlayer2.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer2.get(0);
+			FcGiocatore bean = modelPlayer2.get(0);
 			modelFormazione.add(bean);
 			modelPlayer2.clear();
 			tablePlayer2.getDataProvider().refreshAll();
 		}
 		if (modelPlayer3.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer3.get(0);
+			FcGiocatore bean = modelPlayer3.get(0);
 			modelFormazione.add(bean);
 			modelPlayer3.clear();
 			tablePlayer3.getDataProvider().refreshAll();
 		}
 		if (modelPlayer4.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer4.get(0);
+			FcGiocatore bean = modelPlayer4.get(0);
 			modelFormazione.add(bean);
 			modelPlayer4.clear();
 			tablePlayer4.getDataProvider().refreshAll();
 		}
 		if (modelPlayer5.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer5.get(0);
+			FcGiocatore bean = modelPlayer5.get(0);
 			modelFormazione.add(bean);
 			modelPlayer5.clear();
 			tablePlayer5.getDataProvider().refreshAll();
 		}
 		if (modelPlayer6.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer6.get(0);
+			FcGiocatore bean = modelPlayer6.get(0);
 			modelFormazione.add(bean);
 			modelPlayer6.clear();
 			tablePlayer6.getDataProvider().refreshAll();
 		}
 		if (modelPlayer7.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer7.get(0);
+			FcGiocatore bean = modelPlayer7.get(0);
 			modelFormazione.add(bean);
 			modelPlayer7.clear();
 			tablePlayer7.getDataProvider().refreshAll();
 		}
 		if (modelPlayer8.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer8.get(0);
+			FcGiocatore bean = modelPlayer8.get(0);
 			modelFormazione.add(bean);
 			modelPlayer8.clear();
 			tablePlayer8.getDataProvider().refreshAll();
 		}
 		if (modelPlayer9.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer9.get(0);
+			FcGiocatore bean = modelPlayer9.get(0);
 			modelFormazione.add(bean);
 			modelPlayer9.clear();
 			tablePlayer9.getDataProvider().refreshAll();
 		}
 		if (modelPlayer10.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer10.get(0);
+			FcGiocatore bean = modelPlayer10.get(0);
 			modelFormazione.add(bean);
 			modelPlayer10.clear();
 			tablePlayer10.getDataProvider().refreshAll();
 		}
 		if (modelPlayer11.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer11.get(0);
+			FcGiocatore bean = modelPlayer11.get(0);
 			modelFormazione.add(bean);
 			modelPlayer11.clear();
 			tablePlayer11.getDataProvider().refreshAll();
 		}
 		if (modelPlayer12.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer12.get(0);
+			FcGiocatore bean = modelPlayer12.get(0);
 			modelFormazione.add(bean);
 			modelPlayer12.clear();
 			tablePlayer12.getDataProvider().refreshAll();
 		}
 		if (modelPlayer13.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer13.get(0);
+			FcGiocatore bean = modelPlayer13.get(0);
 			modelFormazione.add(bean);
 			modelPlayer13.clear();
 			tablePlayer13.getDataProvider().refreshAll();
 		}
 		if (modelPlayer14.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer14.get(0);
+			FcGiocatore bean = modelPlayer14.get(0);
 			modelFormazione.add(bean);
 			modelPlayer14.clear();
 			tablePlayer14.getDataProvider().refreshAll();
 		}
 		if (modelPlayer15.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer15.get(0);
+			FcGiocatore bean = modelPlayer15.get(0);
 			modelFormazione.add(bean);
 			modelPlayer15.clear();
 			tablePlayer15.getDataProvider().refreshAll();
 		}
 		if (modelPlayer16.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer16.get(0);
+			FcGiocatore bean = modelPlayer16.get(0);
 			modelFormazione.add(bean);
 			modelPlayer16.clear();
 			tablePlayer16.getDataProvider().refreshAll();
 		}
 		if (modelPlayer17.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer17.get(0);
+			FcGiocatore bean = modelPlayer17.get(0);
 			modelFormazione.add(bean);
 			modelPlayer17.clear();
 			tablePlayer17.getDataProvider().refreshAll();
 		}
 		if (modelPlayer18.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer18.get(0);
+			FcGiocatore bean = modelPlayer18.get(0);
 			modelFormazione.add(bean);
 			modelPlayer18.clear();
 			tablePlayer18.getDataProvider().refreshAll();
@@ -831,7 +831,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
 
-		ArrayList<FcGiocatore> beans = new ArrayList<FcGiocatore>();
+		ArrayList<FcGiocatore> beans = new ArrayList<>();
 		for (FcFormazione f : listFormazione) {
 			if (f.getFcGiocatore() != null) {
 				beans.add(f.getFcGiocatore());
@@ -875,7 +875,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				} else if ("A".equals(ruolo)) {
 					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
 				}
-				
+
 				if (isGiocatoreOut(p) != null) {
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
@@ -914,10 +914,10 @@ public class TeamInsertMobileView extends VerticalLayout
 				Image imgMv = buildImage("classpath:images/", imgThink);
 				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
-				
+
 				FcGiornataGiocatore gg = isGiocatoreOut(p);
 				if (gg != null) {
-					cellLayoutImg.add(getImageGiocatoreOut(gg));	
+					cellLayoutImg.add(getImageGiocatoreOut(gg));
 				}
 
 				StreamResource resource = new StreamResource(p.getNomeImg(),() -> {
@@ -932,7 +932,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				Image img = new Image(resource,"");
 				img.setTitle(title);
 				img.setSrc(resource);
-				
+
 				Span lblGiocatore = new Span(p.getCognGiocatore());
 				lblGiocatore.getStyle().set("font-size", "9px");
 				lblGiocatore.setTitle(title);
@@ -945,7 +945,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
 
-					FcGiocatore bean = (FcGiocatore) p;
+					FcGiocatore bean = p;
 
 					if (isGiocatorePartitaGiocata(bean)) {
 						CustomMessageDialog.showMessageError("Impossibile muovere il giocatore!");
@@ -1056,7 +1056,7 @@ public class TeamInsertMobileView extends VerticalLayout
 //		cognGiocatoreColumn.setHeader("Giocatore");
 //		cognGiocatoreColumn.setWidth("150px");
 //		// cognGiocatoreColumn.setAutoWidth(true);
-		
+
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -1080,7 +1080,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				if (gg != null) {
 					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-					cellLayout.add(getImageGiocatoreOut(gg));	
+					cellLayout.add(getImageGiocatoreOut(gg));
 				}
 			}
 			return cellLayout;
@@ -1089,7 +1089,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		cognGiocatoreColumn.setHeader("Giocatore");
 		cognGiocatoreColumn.setWidth("160px");
 		// cognGiocatoreColumn.setAutoWidth(true);
-		
+
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -1125,7 +1125,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		nomeSquadraColumn.setComparator((p1,p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setHeader("Sq");
 		nomeSquadraColumn.setWidth("70px");
-		// nomeSquadraColumn.setAutoWidth(true);		
+		// nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -1177,13 +1177,13 @@ public class TeamInsertMobileView extends VerticalLayout
 				LOG.info("valModulo null");
 				return;
 			}
-			String valModulo = (String) comboModulo.getValue();
+			String valModulo = comboModulo.getValue();
 			if (valModulo == null) {
 				LOG.info("valModulo null");
 				return;
 			}
 
-			FcGiocatore bean = (FcGiocatore) event.getItem();
+			FcGiocatore bean = event.getItem();
 
 			if (bean != null) {
 
@@ -1909,75 +1909,75 @@ public class TeamInsertMobileView extends VerticalLayout
 				ORDINAMENTO = "" + ord;
 				ord++;
 				if (i == 0) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer1.get(0);
+					FcGiocatore bean = modelPlayer1.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 1) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer2.get(0);
+					FcGiocatore bean = modelPlayer2.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 2) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer3.get(0);
+					FcGiocatore bean = modelPlayer3.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 3) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer4.get(0);
+					FcGiocatore bean = modelPlayer4.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 4) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer5.get(0);
+					FcGiocatore bean = modelPlayer5.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 5) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer6.get(0);
+					FcGiocatore bean = modelPlayer6.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 6) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer7.get(0);
+					FcGiocatore bean = modelPlayer7.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 7) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer8.get(0);
+					FcGiocatore bean = modelPlayer8.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 8) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer9.get(0);
+					FcGiocatore bean = modelPlayer9.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 9) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer10.get(0);
+					FcGiocatore bean = modelPlayer10.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 10) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer11.get(0);
+					FcGiocatore bean = modelPlayer11.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 11) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer12.get(0);
+					FcGiocatore bean = modelPlayer12.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 12) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer13.get(0);
+					FcGiocatore bean = modelPlayer13.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 13) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer14.get(0);
+					FcGiocatore bean = modelPlayer14.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 14) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer15.get(0);
+					FcGiocatore bean = modelPlayer15.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 15) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer16.get(0);
+					FcGiocatore bean = modelPlayer16.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 16) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer17.get(0);
+					FcGiocatore bean = modelPlayer17.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 17) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer18.get(0);
+					FcGiocatore bean = modelPlayer18.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				}
@@ -1987,10 +1987,10 @@ public class TeamInsertMobileView extends VerticalLayout
 				jdbcTemplate.update(query);
 			}
 
-			for (int i = 0; i < modelFormazione.size(); i++) {
+			for (FcGiocatore element : modelFormazione) {
 				ORDINAMENTO = "" + ord;
 				ord++;
-				FcGiocatore bean = (FcGiocatore) modelFormazione.get(i);
+				FcGiocatore bean = element;
 				ID_GIOCATORE = "" + bean.getIdGiocatore();
 				ID_STATO_GIOCATORE = "N";
 
@@ -2046,48 +2046,48 @@ public class TeamInsertMobileView extends VerticalLayout
 		String ORDINAMENTO = "";
 		String SQUADRA = "";
 		int ord = 1;
-		Map<String, InputStream> listImg = new HashMap<String, InputStream>();
+		Map<String, InputStream> listImg = new HashMap<>();
 		for (int i = 0; i < 18; i++) {
 
 			ORDINAMENTO = "" + ord;
 			FcGiocatore bean = null;
 
 			if (i == 0) {
-				bean = (FcGiocatore) modelPlayer1.get(0);
+				bean = modelPlayer1.get(0);
 			} else if (i == 1) {
-				bean = (FcGiocatore) modelPlayer2.get(0);
+				bean = modelPlayer2.get(0);
 			} else if (i == 2) {
-				bean = (FcGiocatore) modelPlayer3.get(0);
+				bean = modelPlayer3.get(0);
 			} else if (i == 3) {
-				bean = (FcGiocatore) modelPlayer4.get(0);
+				bean = modelPlayer4.get(0);
 			} else if (i == 4) {
-				bean = (FcGiocatore) modelPlayer5.get(0);
+				bean = modelPlayer5.get(0);
 			} else if (i == 5) {
-				bean = (FcGiocatore) modelPlayer6.get(0);
+				bean = modelPlayer6.get(0);
 			} else if (i == 6) {
-				bean = (FcGiocatore) modelPlayer7.get(0);
+				bean = modelPlayer7.get(0);
 			} else if (i == 7) {
-				bean = (FcGiocatore) modelPlayer8.get(0);
+				bean = modelPlayer8.get(0);
 			} else if (i == 8) {
-				bean = (FcGiocatore) modelPlayer9.get(0);
+				bean = modelPlayer9.get(0);
 			} else if (i == 9) {
-				bean = (FcGiocatore) modelPlayer10.get(0);
+				bean = modelPlayer10.get(0);
 			} else if (i == 10) {
-				bean = (FcGiocatore) modelPlayer11.get(0);
+				bean = modelPlayer11.get(0);
 			} else if (i == 11) {
-				bean = (FcGiocatore) modelPlayer12.get(0);
+				bean = modelPlayer12.get(0);
 			} else if (i == 12) {
-				bean = (FcGiocatore) modelPlayer13.get(0);
+				bean = modelPlayer13.get(0);
 			} else if (i == 13) {
-				bean = (FcGiocatore) modelPlayer14.get(0);
+				bean = modelPlayer14.get(0);
 			} else if (i == 14) {
-				bean = (FcGiocatore) modelPlayer15.get(0);
+				bean = modelPlayer15.get(0);
 			} else if (i == 15) {
-				bean = (FcGiocatore) modelPlayer16.get(0);
+				bean = modelPlayer16.get(0);
 			} else if (i == 16) {
-				bean = (FcGiocatore) modelPlayer17.get(0);
+				bean = modelPlayer17.get(0);
 			} else if (i == 17) {
-				bean = (FcGiocatore) modelPlayer18.get(0);
+				bean = modelPlayer18.get(0);
 			}
 
 			NOME_GIOCATORE = bean.getCognGiocatore();
@@ -2096,7 +2096,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 			//Resource resourceNomeSq = resourceLoader.getResource("classpath:img/squadre/" + bean.getFcSquadra().getNomeSquadra() + ".png");
 //			listImg.put(cidNomeSq, resourceNomeSq.getInputStream());
-			
+
 			String cidNomeImg = ContentIdGenerator.getContentId();
 			InputStream inputStream = null;
 			try {
@@ -2105,7 +2105,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			String cidNomeSq = ContentIdGenerator.getContentId();
 			FcSquadra sq = bean.getFcSquadra();
 			if (sq.getImg() != null) {
@@ -2149,15 +2149,15 @@ public class TeamInsertMobileView extends VerticalLayout
 			ord++;
 		}
 
-		for (int i = 0; i < modelFormazione.size(); i++) {
+		for (FcGiocatore element : modelFormazione) {
 			ORDINAMENTO = "" + ord;
-			FcGiocatore bean = (FcGiocatore) modelFormazione.get(i);
+			FcGiocatore bean = element;
 
 			NOME_GIOCATORE = bean.getCognGiocatore();
 			RUOLO = bean.getFcRuolo().getDescRuolo();
 			SQUADRA = bean.getFcSquadra().getNomeSquadra();
 			STATO = "Non Convocato";
-			
+
 //			Resource resourceNomeSq = resourceLoader.getResource("classpath:img/squadre/" + bean.getFcSquadra().getNomeSquadra() + ".png");
 //			listImg.put(cidNomeSq, resourceNomeSq.getInputStream());
 
@@ -2169,7 +2169,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			String cidNomeSq = ContentIdGenerator.getContentId();
 			FcSquadra sq = bean.getFcSquadra();
 			if (sq.getImg() != null) {
@@ -2217,7 +2217,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		formazioneHtml += "<html>";
 
 		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
@@ -2226,7 +2226,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			email_destinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
@@ -2236,14 +2236,14 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		String[] cc = null;
 		String[] bcc = null;
-		
+
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
+			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
+				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 			} catch (Exception e2) {
 				LOG.error(e2.getMessage());
@@ -2346,7 +2346,7 @@ public class TeamInsertMobileView extends VerticalLayout
 	}
 
 	private boolean isGiocatorePartitaGiocata(FcGiocatore giocatore) {
-		String ACTIVE_CHECK_FORMAZIONE = (String) p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+		String ACTIVE_CHECK_FORMAZIONE = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(ACTIVE_CHECK_FORMAZIONE)) {
 			// LOG.debug("isGiocatorePartitaGiocata");
 			String squadra = giocatore.getFcSquadra().getNomeSquadra();
@@ -2377,9 +2377,9 @@ public class TeamInsertMobileView extends VerticalLayout
 			modelFormazione.clear();
 			refreshAndSortGridFormazione();
 
-			List<FcGiocatore> lGiocatoriD = new ArrayList<FcGiocatore>();
-			List<FcGiocatore> lGiocatoriC = new ArrayList<FcGiocatore>();
-			List<FcGiocatore> lGiocatoriA = new ArrayList<FcGiocatore>();
+			List<FcGiocatore> lGiocatoriD = new ArrayList<>();
+			List<FcGiocatore> lGiocatoriC = new ArrayList<>();
+			List<FcGiocatore> lGiocatoriA = new ArrayList<>();
 
 			for (FcGiornataDett gd : lGiocatori) {
 
@@ -2977,7 +2977,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		refreshAndSortGridFormazione();
 		CustomMessageDialog.showMessageError("Cambio modulo incorretto! Impossibile muovere il giocatore " + g.getCognGiocatore());
 	}
-	
+
 	private FcGiornataGiocatore isGiocatoreOut(FcGiocatore giocatore) {
 		for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
 			if (gg.getFcGiocatore().getIdGiocatore() == giocatore.getIdGiocatore()) {
@@ -2991,7 +2991,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		Image img = null;
 		if (gg != null) {
 			if (gg.isInfortunato()) {
-				
+
 				if ( gg.getNote().indexOf("INCERTO") != -1) {
 					img = buildImage("classpath:images/icons/16/", "help.png");
 					img.setTitle(gg.getNote());

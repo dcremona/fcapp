@@ -86,7 +86,7 @@ public class SquadreView extends VerticalLayout{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	private List<FcAttore> squadre = new ArrayList<FcAttore>();
+	private List<FcAttore> squadre = new ArrayList<>();
 
 	@Autowired
 	private AccessoService accessoController;

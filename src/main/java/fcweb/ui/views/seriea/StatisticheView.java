@@ -108,13 +108,13 @@ public class StatisticheView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	private List<FcAttore> squadreA = new ArrayList<FcAttore>();
-	private List<FcAttore> squadreB = new ArrayList<FcAttore>();
+	private List<FcAttore> squadreA = new ArrayList<>();
+	private List<FcAttore> squadreB = new ArrayList<>();
 	private ComboBox<FcAttore> comboAttoreA;
 	private ComboBox<FcAttore> comboAttoreB;
 	private ComboBox<String> comboPunti;
 
-	private List<FcAttore> propretari = new ArrayList<FcAttore>();
+	private List<FcAttore> propretari = new ArrayList<>();
 	private List<FcSquadra> squadreSerieA = null;
 	private Button salvaStat = null;
 
@@ -168,13 +168,13 @@ public class StatisticheView extends VerticalLayout
 //		tabs.add("Statistiche", layoutStat, false);
 //		tabs.add("Confronti", layoutConfornti, false);
 //		add(tabs, container);
-		
+
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Statistiche", layoutStat);
 		tabSheet.add("Confronti", layoutConfornti);
 		tabSheet.setSizeFull();
 		add(tabSheet);
-		
+
 	}
 
 	private void setConfronti(VerticalLayout layout, FcCampionato campionato,
@@ -334,7 +334,7 @@ public class StatisticheView extends VerticalLayout
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		boolean isAdmin = false;
 		for (Role r : att.getRoles()) {
 			if (r.equals(Role.ADMIN)) {
@@ -342,7 +342,7 @@ public class StatisticheView extends VerticalLayout
 				break;
 			}
 		}
-		
+
 		if (isAdmin) {
 			salvaStat = new Button("Aggiorna Statistiche");
 			salvaStat.setIcon(VaadinIcon.DATABASE.create());

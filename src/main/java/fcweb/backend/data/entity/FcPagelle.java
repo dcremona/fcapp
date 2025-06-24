@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 public class FcPagelle implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private FcPagelleId id;
@@ -43,8 +43,8 @@ public class FcPagelle implements java.io.Serializable{
 	private Double ts;
 	private int votoGiocatore;
 	private int gdv;
-	
-	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<FcGiornataDett>(0);
+
+	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
 
 	public FcPagelle() {
 	}

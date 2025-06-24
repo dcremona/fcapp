@@ -15,9 +15,9 @@ import com.vaadin.flow.dom.Style;
  */
 @Tag("absolute-layout")
 public class AbsoluteLayout extends Component implements HasSize, HasOrderedComponents, ThemableLayout {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -28,11 +28,11 @@ public class AbsoluteLayout extends Component implements HasSize, HasOrderedComp
 		setSizeFull();
 		getElement().setAttribute("position", "relative");
 	}
-	
+
 	/**
 	 * Creates a new instance of the AbsoluteLayout with the given width and height. Everything outside
 	 * this rectangle with <i>not</i> be displayed (it will be rendered though).
-	 * 
+	 *
 	 * @param width A nonnegative width
 	 * @param height A nonnegative height
 	 */
@@ -91,7 +91,7 @@ public class AbsoluteLayout extends Component implements HasSize, HasOrderedComp
 		style.set("left", ""+left+"px");
 		style.set("top", ""+top+"px");
 	}
-	
+
 //	/**
 //	 * Adds a given text as {@link Text} at the top left position (0,0) of the layout.
 //	 * It is recommended to use {@link #add(Component, int, int)} with an instance of {@link Text} (or similar) instead
@@ -101,7 +101,7 @@ public class AbsoluteLayout extends Component implements HasSize, HasOrderedComp
 //	public void add(String text) {
 //		HasOrderedComponents.super.add(text);
 //	}
-	
+
 	/**
 	 * Replaces a component and moves the new component to the replacee's old position.
 	 */
