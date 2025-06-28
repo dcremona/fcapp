@@ -1,6 +1,6 @@
 package fcweb.utils;
 
-public class Costants{
+public class Costants {
 
 	public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/small/";
 	public static final String HTTP_URL_IMG_CARD = "https://content.fantacalcio.it/web/campioncini/card/";
@@ -71,5 +71,9 @@ public class Costants{
 	public static final int DIV_1_5 = 150;
 	public static final int DIV_2_0 = 200;
 	public static final int DIV_3_0 = 300;
+
+	public static final String CLASSPATH_IMAGES = "classpath:images/";
+	public static final String TYPE_IMAGE_PNG = "image/png";
+	public static final String TYPE_IMAGE_JPG = "image/jpg";
 
 }

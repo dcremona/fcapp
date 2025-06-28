@@ -1,7 +1,6 @@
 package common.util;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -43,16 +42,17 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
 import fcweb.utils.Costants;
 
-public class Utils{
+public class Utils {
 
-	private static Logger LOG = LoggerFactory.getLogger(Utils.class);
+	private static Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static boolean isValidVaadinSession() {
-		if (VaadinSession.getCurrent().getAttribute("CAMPIONATO") == null || VaadinSession.getCurrent().getAttribute("ATTORE") == null) {
-			LOG.info("isValidVaadinSession = false ");
+		if (VaadinSession.getCurrent().getAttribute("CAMPIONATO") == null
+				|| VaadinSession.getCurrent().getAttribute("ATTORE") == null) {
+			log.info("isValidVaadinSession = false ");
 			return false;
 		}
-		LOG.info("isValidVaadinSession = true ");
+		log.info("isValidVaadinSession = true ");
 		return true;
 	}
 
@@ -62,72 +62,23 @@ public class Utils{
 
 		int lunOld = Old.length();
 
-		int P = sText.indexOf(Old);
+		int p = sText.indexOf(Old);
 
-		while (P != -1) {
-			x1 = sText.substring(0, P);
-			x2 = sText.substring(P + lunOld);
+		while (p != -1) {
+			x1 = sText.substring(0, p);
+			x2 = sText.substring(p + lunOld);
 			sText = x1 + New + x2;
-			P = sText.indexOf(Old, (x1 + New).length());
+			p = sText.indexOf(Old, (x1 + New).length());
 		}
 
 		return sText;
 	}
 
 	/**
-	 * Method getColorFromProperties.
-	 *
-	 * @param color
-	 * @return Color
-	 */
-	public static Color getColorFromProperties(String color) {
-
-		StringTokenizer st = new StringTokenizer(color,"|");
-		if (st.countTokens() == 3) {
-			int[] rgb = new int[3];
-			int conta = 0;
-			while (st.hasMoreTokens()) {
-				rgb[conta] = Integer.parseInt(st.nextToken().trim());
-				conta++;
-			}
-			return new Color(rgb[0],rgb[1],rgb[2]);
-		} else if (color.equals("black")) {
-			return Color.black;
-		} else if (color.equals("white")) {
-			return Color.white;
-		} else if (color.equals("lightGray")) {
-			return Color.lightGray;
-		} else if (color.equals("gray")) {
-			return Color.gray;
-		} else if (color.equals("darkGray")) {
-			return Color.darkGray;
-		} else if (color.equals("red")) {
-			return Color.red;
-		} else if (color.equals("pink")) {
-			return Color.pink;
-		} else if (color.equals("orange")) {
-			return Color.orange;
-		} else if (color.equals("yellow")) {
-			return Color.yellow;
-		} else if (color.equals("green")) {
-			return Color.green;
-		} else if (color.equals("magenta")) {
-			return Color.magenta;
-		} else if (color.equals("cyan")) {
-			return Color.cyan;
-		} else if (color.equals("blue")) {
-			return Color.blue;
-		} else {
-			return Color.black;
-		}
-	}
-
-	/**
 	 * @param filePath
 	 * @return
 	 */
-	public static Properties readFileProperties(String filePath)
-			throws IOException {
+	public static Properties readFileProperties(String filePath) throws IOException {
 		Properties props = new Properties();
 		BufferedInputStream bufferedInputStream = null;
 		bufferedInputStream = new BufferedInputStream(new FileInputStream(filePath));
@@ -136,8 +87,7 @@ public class Utils{
 		return props;
 	}
 
-	public static void writeConfigFile(String filePath, String header)
-			throws IOException {
+	public static void writeConfigFile(String filePath, String header) throws IOException {
 
 		Properties props = new Properties();
 		OutputStream outputStream = new FileOutputStream(filePath);
@@ -157,13 +107,11 @@ public class Utils{
 		try {
 			iHour = Integer.parseInt(sTime1.substring(0, 2)) + 1;
 			iMin = Integer.parseInt(sTime1.substring(3, 5));
-			if (sTime1.length() == 8) {
-				iSec = Integer.parseInt(sTime1.substring(6, 8));
-			} else if (sTime1.length() > 8) {
+			if (sTime1.length() >= 8) {
 				iSec = Integer.parseInt(sTime1.substring(6, 8));
 			}
 		} catch (NumberFormatException exNum) {
-			LOG.error(exNum.getMessage());
+			log.error(exNum.getMessage());
 			return -1;
 		}
 		Calendar cldTime1 = Calendar.getInstance();
@@ -172,61 +120,7 @@ public class Utils{
 		cldTime1.set(Calendar.MINUTE, iMin);
 		cldTime1.set(Calendar.SECOND, iSec);
 
-		long second = cldTime1.getTimeInMillis() / 1000;
-
-		return second;
-	}
-
-	public static boolean isValidDate(int giorno, int mese, int anno) {
-		boolean dataValida = false;
-
-		if (anno > 1900) {
-
-			int nGiorniMese[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-			boolean annoBisestile;
-
-			annoBisestile = (anno % 4 == 0 && anno % 100 != 0) || anno % 400 == 0;
-			if (mese < 13 && mese > 0) {
-				if (giorno <= nGiorniMese[mese - 1] && giorno > 0) {
-					dataValida = true;
-				} else {
-					if (mese == 2 && annoBisestile && giorno == 29) {
-						dataValida = true;
-					} else {
-						dataValida = false;
-					}
-				}
-			} else {
-				dataValida = false;
-			}
-		}
-
-		return dataValida;
-	}
-
-	public static int isValidDate(String text) {
-
-		if (text == null || text.trim().equals("") || text.trim().equals("  /  /    ")) {
-			return 0; // data vuota
-		}
-
-		if (text.charAt(2) != '/' || text.charAt(5) != '/') {
-			return 1; // data incompleta
-		}
-
-		int m = 0,d = 0,y = 0;
-		try {
-			m = Integer.parseInt(text.substring(3, 5));
-			d = Integer.parseInt(text.substring(0, 2));
-			y = Integer.parseInt(text.substring(6, 10));
-		} catch (NumberFormatException e) {
-			LOG.error(e.getMessage());
-			return 1; // data incompleta
-		}
-		if (!isValidDate(d, m, y)) {
-			return 2; // data completa ma errata
-		}
-		return 3; // data esistente
+		return cldTime1.getTimeInMillis() / 1000;
 	}
 
 	public static String formatDate(Date d, String newFormat) {
@@ -239,44 +133,29 @@ public class Utils{
 				item = formatter.format(d);
 			}
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			item = "";
 		}
 		return item;
 	}
 
-	public static String formatLocalDateTime(LocalDateTime d,
-			String newFormat) {
-
+	public static String formatLocalDateTime(LocalDateTime d, String newFormat) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(newFormat);
-		String currentDataGiornata = d.format(formatter);
-		return currentDataGiornata;
+		return d.format(formatter);
 	}
 
-	// public static boolean[] tornaArrayBoolean(String sArray, String div) {
-	// StringTokenizer st = new StringTokenizer(sArray,div);
-	// boolean[] vet = new boolean[st.countTokens()];
-	// int conta = 0;
-	// while (st.hasMoreTokens()) {
-	// vet[conta] = new Boolean(st.nextToken().trim()).booleanValue();
-	// conta++;
-	// }
-	// return vet;
-	// }
-
 	public static String[] tornaArrayString(String sArray, String div) {
-		StringTokenizer st = new StringTokenizer(sArray,div);
+		StringTokenizer st = new StringTokenizer(sArray, div);
 		String[] vet = new String[st.countTokens()];
 		int conta = 0;
 		while (st.hasMoreTokens()) {
-			vet[conta] = st.nextToken().toString();
+			vet[conta] = st.nextToken();
 			conta++;
 		}
 		return vet;
 	}
 
-	public static boolean downloadFile(String fAddress, String filePath)
-			throws Exception {
+	public static boolean downloadFile(String fAddress, String filePath) throws Exception {
 
 		int size = 1024;
 
@@ -285,23 +164,23 @@ public class Utils{
 
 		InputStream is = null;
 		try {
-			URL Url;
+			URL url = null;
 			byte[] buf;
-			int ByteRead = 0;
-			Url = new URL(fAddress);
+			int byteRead = 0;
+			url = new URL(fAddress);
 
-			uCon = Url.openConnection();
+			uCon = url.openConnection();
 			is = uCon.getInputStream();
 			buf = new byte[size];
 			outStream = new BufferedOutputStream(new FileOutputStream(filePath));
-			while ((ByteRead = is.read(buf)) != -1) {
-				outStream.write(buf, 0, ByteRead);
+			while ((byteRead = is.read(buf)) != -1) {
+				outStream.write(buf, 0, byteRead);
 			}
 
 			return true;
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			return false;
 		} finally {
 			if (is != null) {
@@ -313,27 +192,18 @@ public class Utils{
 		}
 	}
 
-	public static boolean buildFileSmall(String filePathInput,
-			String filePathOutput) throws Exception {
+	public static boolean buildFileSmall(String filePathInput, String filePathOutput) throws Exception {
 
 		InputStream is = null;
 		try {
 			File initialFile = new File(filePathInput);
 			is = new FileInputStream(initialFile);
 
-			// Image image = ImageIO.read(is);
-			// Image originalImage = image.getScaledInstance(40, 60,
-			// Image.SCALE_DEFAULT);
-			// BufferedImage bi = createResizedCopy(originalImage, 40, 60,
-			// true);
-			// ImageIO.write(bi, "png", new File(filePathOutput));
-
 			resizeImage(is, filePathOutput, 40, 60);
-
 			return true;
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			return false;
 		} finally {
 			if (is != null) {
@@ -342,15 +212,14 @@ public class Utils{
 		}
 	}
 
-	private static InputStream resizeImage(InputStream uploadedInputStream,
-			String fileName, int width, int height) {
+	private static InputStream resizeImage(InputStream uploadedInputStream, String fileName, int width, int height) {
 
 		try {
 			BufferedImage image = ImageIO.read(uploadedInputStream);
 			java.awt.Image originalImage = image.getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT);
 
 			int type = ((image.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : image.getType());
-			BufferedImage resizedImage = new BufferedImage(width,height,type);
+			BufferedImage resizedImage = new BufferedImage(width, height, type);
 
 			Graphics2D g2d = resizedImage.createGraphics();
 			g2d.drawImage(originalImage, 0, 0, width, height, null);
@@ -362,14 +231,11 @@ public class Utils{
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-			// ImageIO.write(resizedImage, fileName.split("\\.")[1],
-			// byteArrayOutputStream);
 			ImageIO.write(resizedImage, "png", new File(fileName));
 
 			return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
-			// Something is going wrong while resizing image
+			log.error(e.getMessage());
 			return uploadedInputStream;
 		}
 	}
@@ -383,16 +249,17 @@ public class Utils{
 				ImageIO.write(bufferedImage, "png", byteOutStream);
 				return byteOutStream.toByteArray();
 			} catch (IOException e) {
-				LOG.error(e.getMessage());
+				log.error(e.getMessage());
 			}
 		}
-		return null;
+		return new byte[0];
 	}
 
 	public static String buildInfoGiornataRight(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return  " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+			return " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata()
+					+ "° Serie A) ";
 		}
 		return "ND";
 	}
@@ -400,7 +267,8 @@ public class Utils{
 	public static String buildInfoGiornata(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
+					+ giornataInfo.getCodiceGiornata() + "° Serie A) ";
 		}
 		return "ND";
 	}
@@ -416,100 +284,93 @@ public class Utils{
 	public static String buildInfoGiornataHtml(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - " + giornataInfo.getCodiceGiornata() + " Serie A) ";
+			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - "
+					+ giornataInfo.getCodiceGiornata() + " Serie A) ";
 		}
 		return "ND";
 	}
 
-	public static String buildInfoGiornataEm(FcGiornataInfo giornataInfo,
-			FcCampionato campionato) {
+	public static String buildInfoGiornataEm(FcGiornataInfo giornataInfo, FcCampionato campionato) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
+			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
+					+ giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
 		}
 		return "ND";
-	}
-
-	public static Image getImage(String nomeImg, InputStream inputStream) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			return inputStream;
-		});
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 	public static int buildVoto(FcPagelle pagelle, boolean bRoundVoto) {
 
-		String ID_RUOLO = pagelle.getFcGiocatore().getFcRuolo().getIdRuolo();
-		int VOTO_GIOCATORE = pagelle.getVotoGiocatore();
+		String idRuolo = pagelle.getFcGiocatore().getFcRuolo().getIdRuolo();
+		int votoGiocatore = pagelle.getVotoGiocatore();
 
-		int GOAL_REALIZZATO = pagelle.getGoalRealizzato();
-		int GOAL_SUBITO = pagelle.getGoalSubito();
+		int goalRealizzato = pagelle.getGoalRealizzato();
+		int goalSubito = pagelle.getGoalSubito();
 
-		int AMMONIZIONE = pagelle.getAmmonizione();
-		int ESPULSO = pagelle.getEspulsione();
+		int ammonizione = pagelle.getAmmonizione();
+		int espulso = pagelle.getEspulsione();
 
-		int RF = pagelle.getRigoreFallito();
-		int RP = pagelle.getRigoreParato();
-		int AUT = pagelle.getAutorete();
-		int ASSIST = pagelle.getAssist();
+		int rf = pagelle.getRigoreFallito();
+		int rp = pagelle.getRigoreParato();
+		int aut = pagelle.getAutorete();
+		int assist = pagelle.getAssist();
 
-		int G = 0;
-		int CS = 0;
-		int TS = 0;
+		int g = 0;
+		int cs = 0;
+		int ts = 0;
 		if (pagelle.getG() != null) {
-			G = pagelle.getG().intValue();
+			g = pagelle.getG().intValue();
 		}
 		if (pagelle.getCs() != null) {
-			CS = pagelle.getCs().intValue();
+			cs = pagelle.getCs().intValue();
 		}
 		if (pagelle.getTs() != null) {
-			TS = pagelle.getTs().intValue();
+			ts = pagelle.getTs().intValue();
 		}
 
-		if (GOAL_REALIZZATO != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE + (GOAL_REALIZZATO * Costants.DIV_3_0);
+		if (goalRealizzato != 0) {
+			votoGiocatore = votoGiocatore + (goalRealizzato * Costants.DIV_3_0);
 		}
-		if (GOAL_SUBITO != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE - (GOAL_SUBITO * Costants.DIV_1_0);
+		if (goalSubito != 0) {
+			votoGiocatore = votoGiocatore - (goalSubito * Costants.DIV_1_0);
 		}
-		if (AMMONIZIONE != 0 && VOTO_GIOCATORE != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE - Costants.DIV_0_5;
+		if (ammonizione != 0 && votoGiocatore != 0) {
+			votoGiocatore = votoGiocatore - Costants.DIV_0_5;
 		}
-		if (ESPULSO != 0) {
-			if (AMMONIZIONE != 0) {
-				VOTO_GIOCATORE = VOTO_GIOCATORE + Costants.DIV_0_5;
+		if (espulso != 0) {
+			if (ammonizione != 0) {
+				votoGiocatore = votoGiocatore + Costants.DIV_0_5;
 			}
-			VOTO_GIOCATORE = VOTO_GIOCATORE - Costants.DIV_1_0;
+			votoGiocatore = votoGiocatore - Costants.DIV_1_0;
 		}
 		/*
 		 * if (RS!=0) { VOTO_GIOCATORE = VOTO_GIOCATORE - (RS*DIV_10); }
 		 */
-		if (RF != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE - (RF * Costants.DIV_3_0);
+		if (rf != 0) {
+			votoGiocatore = votoGiocatore - (rf * Costants.DIV_3_0);
 		}
-		if (RP != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE + (RP * Costants.DIV_3_0);
+		if (rp != 0) {
+			votoGiocatore = votoGiocatore + (rp * Costants.DIV_3_0);
 		}
-		if (AUT != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE - (AUT * Costants.DIV_2_0);
+		if (aut != 0) {
+			votoGiocatore = votoGiocatore - (aut * Costants.DIV_2_0);
 		}
-		if (ASSIST != 0) {
-			VOTO_GIOCATORE = VOTO_GIOCATORE + (ASSIST * Costants.DIV_1_0);
+		if (assist != 0) {
+			votoGiocatore = votoGiocatore + (assist * Costants.DIV_1_0);
 		}
-		if (ID_RUOLO.equals("P") && GOAL_SUBITO == 0 && ESPULSO == 0 && VOTO_GIOCATORE != 0) {
-			if (G != 0 && CS != 0 && TS != 0) {
-				VOTO_GIOCATORE = VOTO_GIOCATORE + Costants.DIVISORE_100;
+		if (idRuolo.equals("P") && goalSubito == 0 && espulso == 0 && votoGiocatore != 0) {
+			if (g != 0 && cs != 0 && ts != 0) {
+				votoGiocatore = votoGiocatore + Costants.DIVISORE_100;
 			}
 		}
-		LOG.debug("bRoundVoto          -----> " + bRoundVoto);
-		LOG.debug("VOTO_GIOCATORE      -----> " + VOTO_GIOCATORE);
+		log.debug("bRoundVoto          -----> " + bRoundVoto);
+		log.debug("VOTO_GIOCATORE      -----> " + votoGiocatore);
 		if (bRoundVoto) {
-			int roundVotoGiocatore = Utils.arrotonda(VOTO_GIOCATORE);
-			LOG.debug("roundVotoGiocatore      -----> " + roundVotoGiocatore);
+			int roundVotoGiocatore = Utils.arrotonda(votoGiocatore);
+			log.debug("roundVotoGiocatore      -----> " + roundVotoGiocatore);
 			return roundVotoGiocatore;
 		} else {
-			return VOTO_GIOCATORE;
+			return votoGiocatore;
 		}
 	}
 
@@ -518,16 +379,16 @@ public class Utils{
 		BigDecimal bdInput = new BigDecimal(input);
 		BigDecimal bd10 = new BigDecimal(Costants.DIVISORE_10);
 		BigDecimal bd = bdInput.divide(bd10);
-		LOG.debug(bd.toString());
+		// log.debug(bd.toString());
 		BigDecimal bd2 = Utils.roundBigDecimal(bd);
-		LOG.debug(bd2.toPlainString());
+		// log.debug(bd2.toPlainString());
 		BigDecimal bd3 = bd2.multiply(bd10);
-		LOG.debug("" + bd3.intValue());
+		// log.debug("" + bd3.intValue());
 		return bd3.intValue();
 	}
 
 	public static BigDecimal roundBigDecimal(final BigDecimal input) {
-		return input.round(new MathContext(input.toBigInteger().toString().length(),RoundingMode.HALF_UP));
+		return input.round(new MathContext(input.toBigInteger().toString().length(), RoundingMode.HALF_UP));
 	}
 
 	public static String getNextDate(FcGiornataInfo giornataInfo) {
@@ -541,7 +402,7 @@ public class Utils{
 		if (dataAnticipo1 != null && dataAnticipo2 != null) {
 			if (now.isBefore(dataAnticipo1)) {
 				dataAnticipo = dataAnticipo1;
-			} else if (now.isAfter(dataAnticipo1) && now.getDayOfWeek() == dataAnticipo2.getDayOfWeek() ) {
+			} else if (now.isAfter(dataAnticipo1) && now.getDayOfWeek() == dataAnticipo2.getDayOfWeek()) {
 				dataAnticipo = dataAnticipo2;
 			} else {
 				dataAnticipo = dataAnticipo1;
@@ -557,17 +418,17 @@ public class Utils{
 
 			if (dataAnticipo != null) {
 				currentDate = dataAnticipo;
-				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
-				LOG.info("dataGiornata.getDayOfWeek() : " + dataGiornata.getDayOfWeek());
-				if ( now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek() ) {
+				log.info("now.getDayOfWeek() : " + now.getDayOfWeek());
+				log.info("dataGiornata.getDayOfWeek() : " + dataGiornata.getDayOfWeek());
+				if (now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
 					currentDate = dataGiornata;
 				}
 			}
 
 			if (dataPosticipo != null) {
-				LOG.info("now.getDayOfWeek() : " + now.getDayOfWeek());
-				LOG.info("dataPosticipo.getDayOfWeek() : " + dataPosticipo.getDayOfWeek());
-				if ( now.getDayOfWeek() == dataPosticipo.getDayOfWeek() ) {
+				log.info("now.getDayOfWeek() : " + now.getDayOfWeek());
+				log.info("dataPosticipo.getDayOfWeek() : " + dataPosticipo.getDayOfWeek());
+				if (now.getDayOfWeek() == dataPosticipo.getDayOfWeek()) {
 					currentDate = dataGiornata;
 				}
 			} else {
@@ -578,13 +439,10 @@ public class Utils{
 		}
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		String currentDataGiornata = currentDate.format(formatter);
-
-		return currentDataGiornata;
+		return currentDate.format(formatter);
 	}
 
-	public static long getMillisDiff(String nextDate, String fusoOrario)
-			throws Exception {
+	public static long getMillisDiff(String nextDate, String fusoOrario) throws Exception {
 
 		Calendar c = Calendar.getInstance();
 		DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -605,10 +463,10 @@ public class Utils{
 		int hours = (int) (millisDiff / 3600000 % 24);
 		int days = (int) (millisDiff / 86400000);
 
-		LOG.info(days + " days, ");
-		LOG.info(hours + " hours, ");
-		LOG.info(minutes + " minutes, ");
-		LOG.info(seconds + " seconds");
+		log.info(days + " days, ");
+		log.info(hours + " hours, ");
+		log.info(minutes + " minutes, ");
+		log.info(seconds + " seconds");
 
 		long diffFuso = Long.parseLong(fusoOrario) * 3600000;
 		millisDiff = millisDiff - diffFuso;
@@ -619,5 +477,40 @@ public class Utils{
 
 		return millisDiff;
 	}
+
+	public static Image getImage(String nomeImg, InputStream inputStream) {
+		StreamResource resource = new StreamResource(nomeImg, () -> {
+			return inputStream;
+		});
+		Image img = new Image(resource, "");
+		return img;
+	}
+
+//	public static Image getImage(String nomeImg, InputStream inputStream) {
+//		return buildImage(inputStream, nomeImg, Costants.TYPE_IMAGE_PNG);
+//	}
+//
+//	public static Image buildImage(InputStream inputStream, String filename, String contentType) {
+//		InputStreamDownloadHandler inputStreamDownloadHandler = DownloadHandler
+//				.fromInputStream(event -> new DownloadResponse(inputStream, filename, contentType, -1));
+//		return new Image(inputStreamDownloadHandler, "");
+//	}
+
+//	public static Image buildImageFromFile(String classPath,String filename) {
+//		FileDownloadHandler fileDownloadHandler;
+//		try {
+//			fileDownloadHandler = DownloadHandler.forFile(getFile(classPath,filename));
+//			Image img = new Image(fileDownloadHandler,"");
+//			return img;
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+//
+//	public static File getFile(String classPath,String filename) 
+//	  throws FileNotFoundException {
+//	    return ResourceUtils.getFile(classPath + filename);
+//	}
 
 }
