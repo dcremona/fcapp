@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -53,7 +52,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -72,7 +70,6 @@ import fcweb.backend.service.StatisticheService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -265,23 +262,41 @@ public class EmStatisticheView extends VerticalLayout
 		HorizontalLayout hlayout1 = new HorizontalLayout();
 		hlayout1.setSpacing(true);
 
+//		try {
+//
+//			Button stampaPdf = new Button("Statistiche Voti pdf");
+//			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("StatisticheVoti.pdf",() -> {
+//				try {
+//					Connection conn = jdbcTemplate.getDataSource().getConnection();
+//					Map<String, Object> hm = new HashMap<String, Object>();
+//					hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+//					hm.put("DIVISORE", "" + Costants.DIVISORE_100);
+//					Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
+//					InputStream inputStream = resource.getInputStream();
+//					return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+//				} catch (Exception ex2) {
+//					LOG.error(ex2.toString());
+//				}
+//				return null;
+//			}));
+//			button1Wrapper.wrapComponent(stampaPdf);
+//			hlayout1.add(button1Wrapper);
+//
+//		} catch (Exception e) {
+//			LOG.error(e.getMessage());
+//			e.printStackTrace();
+//		}
+		
 		try {
 
 			Button stampaPdf = new Button("Statistiche Voti pdf");
-			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("StatisticheVoti.pdf",() -> {
-				try {
-					Connection conn = jdbcTemplate.getDataSource().getConnection();
-					Map<String, Object> hm = new HashMap<String, Object>();
-					hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-					hm.put("DIVISORE", "" + Costants.DIVISORE_100);
-					Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
-					InputStream inputStream = resource.getInputStream();
-					return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-				} catch (Exception ex2) {
-					LOG.error(ex2.toString());
-				}
-				return null;
-			}));
+			Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<String, Object>();
+			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
+
 			button1Wrapper.wrapComponent(stampaPdf);
 			hlayout1.add(button1Wrapper);
 
@@ -289,7 +304,7 @@ public class EmStatisticheView extends VerticalLayout
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
-
+		
 		for (Role r : att.getRoles()) {
 			if (r.equals(Role.ADMIN)) {
 				salvaStat = new Button("Aggiorna Statistiche");

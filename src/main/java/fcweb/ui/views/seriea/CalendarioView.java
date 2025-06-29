@@ -1,6 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -38,7 +36,6 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.GiornataService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -234,8 +231,9 @@ public class CalendarioView extends VerticalLayout{
 
 	private HorizontalLayout buildButtonCalendarioPdf(FcCampionato campionato) {
 
-//		LazyDownloadButton stampapdf = new LazyDownloadButton("Calendario pdf",() -> "Calendario.pdf",() -> {
-//			byte[] b = null;
+//		Button stampapdf = new Button("Calendario pdf");
+//		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+//		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Calendario.pdf",() -> {
 //			try {
 //				String START = campionato.getStart().toString();
 //				String END = campionato.getEnd().toString();
@@ -245,41 +243,37 @@ public class CalendarioView extends VerticalLayout{
 //				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
 //				InputStream inputStream = resource.getInputStream();
 //				Connection conn = jdbcTemplate.getDataSource().getConnection();
-//				b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
-//			} catch (JRException ex) {
-//				ex.printStackTrace();
+//				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
 //			} catch (Exception ex2) {
-//				ex2.printStackTrace();
 //			}
-//			return new ByteArrayInputStream(b);
-//		});
-//		HorizontalLayout horLayout = new HorizontalLayout();
-//		horLayout.setSpacing(true);
-//		horLayout.add(stampapdf);
-
-		Button stampapdf = new Button("Calendario pdf");
-		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Calendario.pdf",() -> {
-			try {
-				String START = campionato.getStart().toString();
-				String END = campionato.getEnd().toString();
-				Map<String, Object> hm = new HashMap<String, Object>();
-				hm.put("START", START);
-				hm.put("END", END);
-				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
-				InputStream inputStream = resource.getInputStream();
-				Connection conn = jdbcTemplate.getDataSource().getConnection();
-				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-			} catch (Exception ex2) {
-			}
-			return null;
-		}));
-		button1Wrapper.wrapComponent(stampapdf);
+//			return null;
+//		}));
+//		button1Wrapper.wrapComponent(stampapdf);
 
 		HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
-		horLayout.add(button1Wrapper);
+		
+		try {
+			Button stampapdf = new Button("Calendario pdf");
+			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
+			Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<String, Object>();
+			String start = campionato.getStart().toString();
+			String end = campionato.getEnd().toString();
+			hm.put("START", start);
+			hm.put("END", end);
+			Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
+					Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
+
+			button1Wrapper.wrapComponent(stampapdf);
+			horLayout.add(button1Wrapper);
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 
 		return horLayout;
 	}

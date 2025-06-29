@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -39,7 +38,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -57,10 +55,8 @@ import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.MercatoService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
-
 
 @PageTitle("Rose")
 @Route(value = "emsquadre", layout = MainLayout.class)
@@ -115,22 +111,27 @@ public class EmSquadreView extends VerticalLayout {
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
-//		VerticalLayout container = new VerticalLayout();
-//		PagedTabs tabs = new PagedTabs(container);
+		Connection conn = null;
+		try {
+			conn = jdbcTemplate.getDataSource().getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		TabSheet tabSheet = new TabSheet();
 		for (FcAttore attore : squadre) {
 
 			final HorizontalLayout layoutBtn = new HorizontalLayout();
 
 			try {
-				layoutBtn.add(buildButtonRosa(campionato, attore));
+				layoutBtn.add(buildButtonRosa(conn, campionato, attore));
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				e.printStackTrace();
 			}
 
 			try {
-				layoutBtn.add(buildButtonVotiRosa(campionato, attore, giornataInfo));
+				layoutBtn.add(buildButtonVotiRosa(conn, campionato, attore, giornataInfo));
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				e.printStackTrace();
@@ -184,70 +185,76 @@ public class EmSquadreView extends VerticalLayout {
 		this.add(tabSheet);
 	}
 
-	private FileDownloadWrapper buildButtonRosa(FcCampionato campionato, FcAttore attore) {
+	private FileDownloadWrapper buildButtonRosa(Connection conn, FcCampionato campionato, FcAttore attore) {
 
-		String idAttore = "" + attore.getIdAttore();
-		String descAttore = attore.getDescAttore();
+		try {
 
-		Button stampaPdfRosa = new Button("Rosa pdf");
-		stampaPdfRosa.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
-				new StreamResource("Rosa_" + descAttore + ".pdf", () -> {
-					try {
-						Connection conn = jdbcTemplate.getDataSource().getConnection();
-						Map<String, Object> hm = new HashMap<String, Object>();
-						hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-						hm.put("ATTORE", idAttore);
-						hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-						hm.put("PATH_IMG", "img/");
-						Resource resource = resourceLoader.getResource("classpath:reports/roseFc.jasper");
-						InputStream inputStream = resource.getInputStream();
-						return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-					} catch (Exception ex2) {
-						LOG.error(ex2.toString());
-					}
-					return null;
-				}));
-		button1Wrapper.wrapComponent(stampaPdfRosa);
+			String idAttore = "" + attore.getIdAttore();
+			String descAttore = attore.getDescAttore();
 
-		return button1Wrapper;
+			Button stampaPdfRosa = new Button("Rosa pdf");
+			stampaPdfRosa.setIcon(VaadinIcon.DOWNLOAD.create());
+
+			Map<String, Object> hm = new HashMap<String, Object>();
+			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+			hm.put("ATTORE", idAttore);
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			hm.put("PATH_IMG", "img/");
+			Resource resource = resourceLoader.getResource("classpath:reports/roseFc.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
+					Utils.getStreamResource("Rosa_" + descAttore + ".pdf", conn, hm, resource.getInputStream()));
+
+			button1Wrapper.wrapComponent(stampaPdfRosa);
+
+			return button1Wrapper;
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return null;
+
 	}
 
-	private FileDownloadWrapper buildButtonVotiRosa(FcCampionato campionato, FcAttore attore,
+	private FileDownloadWrapper buildButtonVotiRosa(Connection conn, FcCampionato campionato, FcAttore attore,
 			FcGiornataInfo giornataInfo) {
 
-		String idAttore = "" + attore.getIdAttore();
-		String descAttore = attore.getDescAttore();
+		try {
 
-		Button stampaVotiRosa = new Button("Voti Rosa pdf");
-		stampaVotiRosa.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button2Wrapper = new FileDownloadWrapper(
-				new StreamResource("Voti_Rosa_" + descAttore + ".pdf", () -> {
-					try {
-						String START = campionato.getStart().toString();
-						String CURRENT_GIORNATA = "" + giornataInfo.getCodiceGiornata();
-						LOG.info("START " + START);
-						LOG.info("END " + CURRENT_GIORNATA);
-						LOG.info("ID_ATTORE " + idAttore);
-						Connection conn = jdbcTemplate.getDataSource().getConnection();
-						final Map<String, Object> hm = new HashMap<String, Object>();
-						hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-						hm.put("START", START);
-						hm.put("END", CURRENT_GIORNATA);
-						hm.put("ID_ATTORE", idAttore);
-						hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-						final Resource resource = resourceLoader.getResource("classpath:reports/statistica.jasper");
-						final InputStream inputStream = resource.getInputStream();
+			String idAttore = "" + attore.getIdAttore();
+			String descAttore = attore.getDescAttore();
 
-						return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-					} catch (Exception ex2) {
-						LOG.error(ex2.toString());
-					}
-					return null;
-				}));
-		button2Wrapper.wrapComponent(stampaVotiRosa);
+			Button stampaVotiRosa = new Button("Voti Rosa pdf");
+			stampaVotiRosa.setIcon(VaadinIcon.DOWNLOAD.create());
 
-		return button2Wrapper;
+			String start = campionato.getStart().toString();
+			String currentGiornata = "" + giornataInfo.getCodiceGiornata();
+			LOG.info("START " + start);
+			LOG.info("END " + currentGiornata);
+			LOG.info("ID_ATTORE " + idAttore);
+			final Map<String, Object> hm = new HashMap<String, Object>();
+			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+			hm.put("START", start);
+			hm.put("END", currentGiornata);
+			hm.put("ID_ATTORE", idAttore);
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			final Resource resource = resourceLoader.getResource("classpath:reports/statistica.jasper");
+
+			FileDownloadWrapper button2Wrapper = new FileDownloadWrapper(
+					Utils.getStreamResource("Voti_Rosa_" + descAttore + ".pdf", conn, hm, resource.getInputStream()));
+
+			button2Wrapper.wrapComponent(stampaVotiRosa);
+
+			return button2Wrapper;
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return null;
+
 	}
 
 	private Grid<FcFormazione> getTableFormazione(List<FcFormazione> items, Integer somma) {
@@ -266,9 +273,12 @@ public class EmSquadreView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
-			
-			if (f != null && f.getFcGiocatore() != null && !StringUtils.isEmpty(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
-				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+
+			if (f != null && f.getFcGiocatore() != null
+					&& !StringUtils.isEmpty(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
+				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+						resourceLoader.getResource("classpath:images/"
+								+ f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 
@@ -369,7 +379,7 @@ public class EmSquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -407,7 +417,7 @@ public class EmSquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -488,8 +498,12 @@ public class EmSquadreView extends VerticalLayout {
 		giornataColumn.setHeader("Giornata");
 		giornataColumn.setAutoWidth(true);
 
-		//Column<FcMercatoDett> dataCambioColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM).withLocale(Locale.ITALY)));
-		Column<FcMercatoDett> dataCambioColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+		// Column<FcMercatoDett> dataCambioColumn = grid.addColumn(new
+		// LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM,
+		// FormatStyle.MEDIUM).withLocale(Locale.ITALY)));
+		Column<FcMercatoDett> dataCambioColumn = grid
+				.addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,
+						() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataCambioColumn.setSortable(false);
 		dataCambioColumn.setHeader("Data");
 		dataCambioColumn.setAutoWidth(true);
@@ -497,7 +511,11 @@ public class EmSquadreView extends VerticalLayout {
 		Column<FcMercatoDett> ruoloAcqColumn = grid.addColumn(new ComponentRenderer<>(m -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (m != null && m.getFcGiocatoreByIdGiocAcq() != null) {
-				Image imgR = Utils.buildImage(m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+				Image imgR = Utils
+						.buildImage(m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+								resourceLoader.getResource("classpath:images/"
+										+ m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase()
+										+ ".png"));
 				cellLayout.add(imgR);
 			}
 			return cellLayout;
@@ -513,7 +531,8 @@ public class EmSquadreView extends VerticalLayout {
 
 				if (m.getFcGiocatoreByIdGiocAcq().getImgSmall() != null) {
 					try {
-						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocAcq().getNomeImg(), m.getFcGiocatoreByIdGiocAcq().getImgSmall().getBinaryStream());
+						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocAcq().getNomeImg(),
+								m.getFcGiocatoreByIdGiocAcq().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -538,7 +557,11 @@ public class EmSquadreView extends VerticalLayout {
 		Column<FcMercatoDett> ruoloVenColumn = grid.addColumn(new ComponentRenderer<>(m -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (m != null && m.getFcGiocatoreByIdGiocVen() != null) {
-				Image imgR = Utils.buildImage(m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+				Image imgR = Utils
+						.buildImage(m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+								resourceLoader.getResource("classpath:images/"
+										+ m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase()
+										+ ".png"));
 				cellLayout.add(imgR);
 			}
 			return cellLayout;
@@ -554,13 +577,14 @@ public class EmSquadreView extends VerticalLayout {
 
 				if (m.getFcGiocatoreByIdGiocVen().getImgSmall() != null) {
 					try {
-						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocVen().getNomeImg(), m.getFcGiocatoreByIdGiocVen().getImgSmall().getBinaryStream());
+						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocVen().getNomeImg(),
+								m.getFcGiocatoreByIdGiocVen().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
 				}
-				
+
 				Span lblGiocatore = new Span(m.getFcGiocatoreByIdGiocVen().getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 

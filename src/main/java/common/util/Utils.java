@@ -19,12 +19,15 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -42,6 +45,7 @@ import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
 import fcweb.utils.Costants;
+import fcweb.utils.JasperReporUtils;
 
 public class Utils {
 
@@ -483,8 +487,7 @@ public class Utils {
 		StreamResource resource = new StreamResource(nomeImg, () -> {
 			return inputStream;
 		});
-		Image img = new Image(resource, "");
-		return img;
+		return new Image(resource, "");
 	}
 
 //	public static StreamResource getStreamResource(String nomeImg, java.sql.Blob blob) {
@@ -507,14 +510,37 @@ public class Utils {
 			try {
 				inputStream = r.getInputStream();
 			} catch (IOException e) {
+				log.error(e.getMessage());
 				e.printStackTrace();
 			}
 			return inputStream;
 		});
 
-		Image img = new Image(resource, "");
-		return img;
+		return new Image(resource, "");
 	}
+	
+	public static StreamResource getStreamResource(String fiileName,Connection conn,Map<String, Object> hm,InputStream inputStream) {
+		return new StreamResource(fiileName,() -> {
+			try {
+				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+			} catch (Exception ex2) {
+				log.error(ex2.getMessage());
+			}
+			return null;
+		});
+	}
+
+	public static StreamResource getStreamResource(String fiileName,Collection coll,Map<String, Object> hm,InputStream inputStream) {
+		return new StreamResource(fiileName,() -> {
+			try {
+				return JasperReporUtils.runReportToPdf(inputStream, hm, coll);
+			} catch (Exception ex2) {
+				log.error(ex2.getMessage());
+			}
+			return null;
+		});
+	}
+
 
 //	public static Image getImage(String nomeImg, InputStream inputStream) {
 //		return buildImage(inputStream, nomeImg, Costants.TYPE_IMAGE_PNG);

@@ -1,7 +1,6 @@
 
 package fcweb.ui.views.seriea;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +46,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -59,14 +57,13 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.ClassificaService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Classifica")
 @Route(value = "classifica", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class ClassificaView extends VerticalLayout{
+public class ClassificaView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
@@ -180,13 +177,16 @@ public class ClassificaView extends VerticalLayout{
 
 		if (all.size() > 0) {
 
-			Series series = new Series("Tot Pt Rosa",data.get(0),data.get(1),data.get(2),data.get(3),data.get(4),data.get(5),data.get(6),data.get(7));
+			Series series = new Series("Tot Pt Rosa", data.get(0), data.get(1), data.get(2), data.get(3), data.get(4),
+					data.get(5), data.get(6), data.get(7));
 
 			ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
 
-					.withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
+					.withPlotOptions(
+							PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
 
-					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Rosa").withAlign(Align.LEFT).build())
+					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Rosa")
+							.withAlign(Align.LEFT).build())
 
 					.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
 
@@ -206,8 +206,7 @@ public class ClassificaView extends VerticalLayout{
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Component buildGraficoTuttiVsTutti(FcCampionato campionato)
-			throws Exception {
+	public Component buildGraficoTuttiVsTutti(FcCampionato campionato) throws Exception {
 
 		String[] att = new String[8];
 		ArrayList<Integer> data = new ArrayList<>();
@@ -225,13 +224,16 @@ public class ClassificaView extends VerticalLayout{
 
 		if (all.size() > 0) {
 
-			Series series = new Series("Tot Pt TvsT",data.get(0),data.get(1),data.get(2),data.get(3),data.get(4),data.get(5),data.get(6),data.get(7));
+			Series series = new Series("Tot Pt TvsT", data.get(0), data.get(1), data.get(2), data.get(3), data.get(4),
+					data.get(5), data.get(6), data.get(7));
 
 			ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
 
-					.withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
+					.withPlotOptions(
+							PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
 
-					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Tutti vs Tutti").withAlign(Align.LEFT).build())
+					.withTitle(TitleSubtitleBuilder.get().withText("Classifica per Totale Punti Tutti vs Tutti")
+							.withAlign(Align.LEFT).build())
 
 					.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
 
@@ -250,42 +252,57 @@ public class ClassificaView extends VerticalLayout{
 
 	}
 
-	private HorizontalLayout buildButtonPdf(FcCampionato campionato,
-			Properties p) throws Exception {
+	private HorizontalLayout buildButtonPdf(FcCampionato campionato, Properties p) throws Exception {
 
-		Button stampapdf = new Button("Classifica pdf");
-		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
-			try {
-				Map<String, Object> hm = new HashMap<String, Object>();
-				hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-				hm.put("DIVISORE", "" + Costants.DIVISORE_100);
-				Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
-				InputStream inputStream = resource.getInputStream();
-				Connection conn = jdbcTemplate.getDataSource().getConnection();
-				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-			} catch (Exception ex2) {
-			}
-			return null;
-		}));
-		button1Wrapper.wrapComponent(stampapdf);
+//		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
+//			try {
+//				Map<String, Object> hm = new HashMap<String, Object>();
+//				hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+//				hm.put("DIVISORE", "" + Costants.DIVISORE_100);
+//				Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
+//				InputStream inputStream = resource.getInputStream();
+//				Connection conn = jdbcTemplate.getDataSource().getConnection();
+//				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+//			} catch (Exception ex2) {
+//			}
+//			return null;
+//		}));
 
 		HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
-		horLayout.add(button1Wrapper);
+
+		try {
+			Button stampapdf = new Button("Classifica pdf");
+			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+
+			Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<String, Object>();
+			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
+					Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
+
+			button1Wrapper.wrapComponent(stampapdf);
+			horLayout.add(button1Wrapper);
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 
 		return horLayout;
 	}
 
-	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato)
-			throws Exception {
+	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato) throws Exception {
 
 		List<FcClassifica> items = classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 
 		Grid<FcClassifica> grid = new Grid<>();
 		grid.setItems(items);
 		// grid.setWidth("70%");
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
+				GridVariant.LUMO_ROW_STRIPES);
 		grid.setAllRowsVisible(true);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setMultiSort(true);
@@ -335,13 +352,14 @@ public class ClassificaView extends VerticalLayout{
 
 		Column<FcClassifica> totPuntiRosaColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
-			Double dTotPunti = classifica.getTotPuntiRosa() != null ? classifica.getTotPuntiRosa() / Costants.DIVISORE_100 : 0;
+			Double dTotPunti = classifica.getTotPuntiRosa() != null
+					? classifica.getTotPuntiRosa() / Costants.DIVISORE_100
+					: 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
 			return new Span(sTotPunti);
 		})).setHeader("Tot Pt Rosa");
 		totPuntiRosaColumn.setSortable(true);
-		totPuntiRosaColumn.setComparator((p1,
-				p2) -> p1.getTotPuntiRosa().compareTo(p2.getTotPuntiRosa()));
+		totPuntiRosaColumn.setComparator((p1, p2) -> p1.getTotPuntiRosa().compareTo(p2.getTotPuntiRosa()));
 		totPuntiRosaColumn.setAutoWidth(true);
 
 		Column<FcClassifica> totPuntiTVsTColumn = grid.addColumn(classifica -> classifica.getTotPuntiTvsT());
@@ -359,14 +377,14 @@ public class ClassificaView extends VerticalLayout{
 		// mercatofmColumn.setHeader("Mercato FM");
 
 		HeaderRow headerRow = grid.prependHeaderRow();
-		HeaderCell headerCell = headerRow.join(squadraColumn, puntiColumn, vinteColumn, pariColumn, perseColumn, gfColumn, gsColumn, drColumn, totPuntiRosaColumn, totPuntiTVsTColumn, totfmColumn);
+		HeaderCell headerCell = headerRow.join(squadraColumn, puntiColumn, vinteColumn, pariColumn, perseColumn,
+				gfColumn, gsColumn, drColumn, totPuntiRosaColumn, totPuntiTVsTColumn, totfmColumn);
 		headerCell.setText("Classifica Prima Fase");
 
 		return grid;
 	}
 
-	private Grid<FcClassificaTotPt> buildTableInfoClassifica(
-			FcCampionato campionato) throws Exception {
+	private Grid<FcClassificaTotPt> buildTableInfoClassifica(FcCampionato campionato) throws Exception {
 
 		String sql = " select a.desc_attore, ";
 		sql += " sum(pt.tot_pt) as tot18, ";
@@ -385,10 +403,9 @@ public class ClassificaView extends VerticalLayout{
 
 		List<FcClassificaTotPt> dm = new ArrayList<>();
 
-		jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
+		jdbcTemplate.query(sql, new ResultSetExtractor<String>() {
 			@Override
-			public String extractData(ResultSet rs)
-					throws SQLException, DataAccessException {
+			public String extractData(ResultSet rs) throws SQLException, DataAccessException {
 				String descAttore = "";
 				double tot18 = 0;
 				double tot11 = 0;
@@ -428,25 +445,27 @@ public class ClassificaView extends VerticalLayout{
 
 		Grid<FcClassificaTotPt> grid = new Grid<>();
 		grid.setItems(dm);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
+				GridVariant.LUMO_ROW_STRIPES);
 		grid.setAllRowsVisible(true);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setMultiSort(true);
 
-		Column<FcClassificaTotPt> squadraColumn = grid.addColumn(classifica -> classifica.getFcAttore().getDescAttore());
+		Column<FcClassificaTotPt> squadraColumn = grid
+				.addColumn(classifica -> classifica.getFcAttore().getDescAttore());
 		squadraColumn.setSortable(false);
 		squadraColumn.setHeader("Squadra");
 
 		Column<FcClassificaTotPt> totPtRosaColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
-			Double dTotPunti = classifica.getTotPtRosa() != null ? classifica.getTotPtRosa() / Costants.DIVISORE_100 : 0;
+			Double dTotPunti = classifica.getTotPtRosa() != null ? classifica.getTotPtRosa() / Costants.DIVISORE_100
+					: 0;
 			String sTotPunti = myFormatter.format(dTotPunti);
 			return new Span(sTotPunti);
 		}));
 		totPtRosaColumn.setHeader("Tot Pt Rosa");
 		totPtRosaColumn.setSortable(true);
-		totPtRosaColumn.setComparator((p1,
-				p2) -> p1.getTotPtRosa().compareTo(p2.getTotPtRosa()));
+		totPtRosaColumn.setComparator((p1, p2) -> p1.getTotPtRosa().compareTo(p2.getTotPtRosa()));
 
 		Column<FcClassificaTotPt> ptTvsTColumn = grid.addColumn(classifica -> classifica.getPtTvsT());
 		ptTvsTColumn.setHeader("Tot Pt TvsT");
@@ -460,8 +479,7 @@ public class ClassificaView extends VerticalLayout{
 		}));
 		totpuntiColumn.setHeader("Tot Pt 18");
 		totpuntiColumn.setSortable(true);
-		totpuntiColumn.setComparator((p1,
-				p2) -> p1.getTotPt().compareTo(p2.getTotPt()));
+		totpuntiColumn.setComparator((p1, p2) -> p1.getTotPt().compareTo(p2.getTotPt()));
 
 		Column<FcClassificaTotPt> totpuntioldColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -471,8 +489,7 @@ public class ClassificaView extends VerticalLayout{
 		}));
 		totpuntioldColumn.setHeader("Tot Pt 11");
 		totpuntioldColumn.setSortable(true);
-		totpuntioldColumn.setComparator((p1,
-				p2) -> p1.getTotPtOld().compareTo(p2.getTotPtOld()));
+		totpuntioldColumn.setComparator((p1, p2) -> p1.getTotPtOld().compareTo(p2.getTotPtOld()));
 
 		Column<FcClassificaTotPt> scoreColumn = grid.addColumn(classifica -> classifica.getScore());
 		scoreColumn.setHeader("GrandPrix G18");
@@ -487,7 +504,8 @@ public class ClassificaView extends VerticalLayout{
 		scoreGrandPrixColumn.setSortable(true);
 
 		HeaderRow headerRow = grid.prependHeaderRow();
-		HeaderCell headerCell = headerRow.join(squadraColumn, totpuntiColumn, totpuntioldColumn, totPtRosaColumn, ptTvsTColumn, scoreColumn, scoreoldColumn, scoreGrandPrixColumn);
+		HeaderCell headerCell = headerRow.join(squadraColumn, totpuntiColumn, totpuntioldColumn, totPtRosaColumn,
+				ptTvsTColumn, scoreColumn, scoreoldColumn, scoreGrandPrixColumn);
 		headerCell.setText("Info Classifiche Generali");
 
 		return grid;

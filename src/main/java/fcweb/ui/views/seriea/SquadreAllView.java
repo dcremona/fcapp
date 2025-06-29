@@ -1,6 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -49,7 +47,6 @@ import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.FormazioneService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -170,25 +167,45 @@ public class SquadreAllView extends VerticalLayout{
 
 	private FileDownloadWrapper buildButtonRose(FcCampionato campionato) {
 
-		Button stampapdfRose = new Button("Tutte le Rose pdf");
-		stampapdfRose.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(new StreamResource("RoseFcAll.pdf",() -> {
-			try {
-				Map<String, Object> hm = getMapRoseFcAll(campionato);
-				hm.put("titolo", "Rose Fc");
-				Collection<FormazioneJasper> collection = new ArrayList<FormazioneJasper>();
-				collection.add(new FormazioneJasper("P","G","Sq",0,0));
-				Resource resource = resourceLoader.getResource("classpath:reports/roseFcAll.jasper");
-				InputStream inputStream = resource.getInputStream();
-				return JasperReporUtils.runReportToPdf(inputStream, hm, collection);
-			} catch (Exception ex2) {
-				LOG.error(ex2.toString());
-			}
-			return null;
-		}));
-		buttonWrapper.wrapComponent(stampapdfRose);
+//		FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(new StreamResource("RoseFcAll.pdf",() -> {
+//			try {
+//				Map<String, Object> hm = getMapRoseFcAll(campionato);
+//				hm.put("titolo", "Rose Fc");
+//				Collection<FormazioneJasper> collection = new ArrayList<FormazioneJasper>();
+//				collection.add(new FormazioneJasper("P","G","Sq",0,0));
+//				Resource resource = resourceLoader.getResource("classpath:reports/roseFcAll.jasper");
+//				InputStream inputStream = resource.getInputStream();
+//				return JasperReporUtils.runReportToPdf(inputStream, hm, collection);
+//			} catch (Exception ex2) {
+//				LOG.error(ex2.toString());
+//			}
+//			return null;
+//		}));
 
-		return buttonWrapper;
+		
+		try {
+			Button stampapdfRose = new Button("Tutte le Rose pdf");
+			stampapdfRose.setIcon(VaadinIcon.DOWNLOAD.create());
+
+			Map<String, Object> hm = getMapRoseFcAll(campionato);
+			hm.put("titolo", "Rose Fc");
+			Collection<FormazioneJasper> collection = new ArrayList<FormazioneJasper>();
+			collection.add(new FormazioneJasper("P","G","Sq",0,0));
+			Resource resource = resourceLoader.getResource("classpath:reports/roseFcAll.jasper");
+
+			FileDownloadWrapper button1Wrapper =   new FileDownloadWrapper(Utils.getStreamResource("RoseFcAll.pdf", collection, hm, resource.getInputStream()));
+
+			button1Wrapper.wrapComponent(stampapdfRose);
+			
+			return button1Wrapper;
+			
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return null;
+		
 	}
 
 	private Grid<FcFormazione> getTableFormazione(List<FcFormazione> items,
