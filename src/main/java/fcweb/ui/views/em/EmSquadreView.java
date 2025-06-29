@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -266,12 +266,12 @@ public class EmSquadreView extends VerticalLayout {
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
-			if (f != null && f.getFcGiocatore() != null) {
-				Image img = buildImage("classpath:images/",
-						f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png");
-
+			
+			if (f != null && f.getFcGiocatore() != null && !StringUtils.isEmpty(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
+				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
+
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(true);
@@ -369,7 +369,7 @@ public class EmSquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -407,7 +407,7 @@ public class EmSquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -497,8 +497,7 @@ public class EmSquadreView extends VerticalLayout {
 		Column<FcMercatoDett> ruoloAcqColumn = grid.addColumn(new ComponentRenderer<>(m -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (m != null && m.getFcGiocatoreByIdGiocAcq() != null) {
-				Image imgR = buildImage("classpath:images/",
-						m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(imgR);
 			}
 			return cellLayout;
@@ -512,19 +511,13 @@ public class EmSquadreView extends VerticalLayout {
 
 			if (m != null && m.getFcGiocatoreByIdGiocAcq() != null) {
 
-				if (m.getFcGiocatoreByIdGiocAcq().getNomeImg() != null) {
-					StreamResource resource = new StreamResource(m.getFcGiocatoreByIdGiocAcq().getNomeImg(), () -> {
-						InputStream inputStream = null;
-						try {
-							inputStream = m.getFcGiocatoreByIdGiocAcq().getImgSmall().getBinaryStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return inputStream;
-					});
-					Image img = new Image(resource, "");
-					img.setSrc(resource);
-					cellLayout.add(img);
+				if (m.getFcGiocatoreByIdGiocAcq().getImgSmall() != null) {
+					try {
+						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocAcq().getNomeImg(), m.getFcGiocatoreByIdGiocAcq().getImgSmall().getBinaryStream());
+						cellLayout.add(img);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 
 				Span lblGiocatore = new Span(m.getFcGiocatoreByIdGiocAcq().getCognGiocatore());
@@ -545,8 +538,7 @@ public class EmSquadreView extends VerticalLayout {
 		Column<FcMercatoDett> ruoloVenColumn = grid.addColumn(new ComponentRenderer<>(m -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (m != null && m.getFcGiocatoreByIdGiocVen() != null) {
-				Image imgR = buildImage("classpath:images/",
-						m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(imgR);
 			}
 			return cellLayout;
@@ -560,22 +552,15 @@ public class EmSquadreView extends VerticalLayout {
 
 			if (m != null && m.getFcGiocatoreByIdGiocVen() != null) {
 
-				if (m.getFcGiocatoreByIdGiocVen().getNomeImg() != null) {
-					StreamResource resource = new StreamResource(m.getFcGiocatoreByIdGiocVen().getNomeImg(), () -> {
-						InputStream inputStream = null;
-						try {
-							inputStream = m.getFcGiocatoreByIdGiocVen().getImgSmall().getBinaryStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return inputStream;
-					});
-					Image img = new Image(resource, "");
-					img.setSrc(resource);
-
-					cellLayout.add(img);
+				if (m.getFcGiocatoreByIdGiocVen().getImgSmall() != null) {
+					try {
+						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocVen().getNomeImg(), m.getFcGiocatoreByIdGiocVen().getImgSmall().getBinaryStream());
+						cellLayout.add(img);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
-
+				
 				Span lblGiocatore = new Span(m.getFcGiocatoreByIdGiocVen().getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 
@@ -609,22 +594,6 @@ public class EmSquadreView extends VerticalLayout {
 
 		return grid;
 
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg, () -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource, "");
-		return img;
 	}
 
 }

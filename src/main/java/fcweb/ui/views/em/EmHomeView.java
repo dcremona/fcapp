@@ -1,7 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
@@ -30,7 +27,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -88,7 +84,7 @@ public class EmHomeView extends VerticalLayout{
 			}
 			accessoController.insertAccesso(this.getClass().getName());
 
-			Image img = buildImage("classpath:images/", env.getProperty("img.logo"));
+			Image img = Utils.buildImage(env.getProperty("img.logo"), resourceLoader.getResource("classpath:images/"+env.getProperty("img.logo")));
 			this.add(img);
 			setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, img);
 
@@ -245,22 +241,6 @@ public class EmHomeView extends VerticalLayout{
 		layoutAvviso.add(timer);
 
 		return layoutAvviso;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

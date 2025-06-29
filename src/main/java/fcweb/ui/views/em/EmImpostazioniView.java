@@ -930,7 +930,7 @@ public class EmImpostazioniView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -999,22 +999,6 @@ public class EmImpostazioniView extends VerticalLayout
 		quotazioneColumn.setAutoWidth(true);
 
 		return grid;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

@@ -1,6 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -204,7 +203,7 @@ public class SquadreAllView extends VerticalLayout{
 		Column<FcFormazione> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (f != null && f.getFcGiocatore() != null && !StringUtils.isEmpty(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
-				Image img = buildImage("classpath:images/", f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -218,18 +217,12 @@ public class SquadreAllView extends VerticalLayout{
 			if (f != null && f.getFcGiocatore() != null && !StringUtils.isEmpty(f.getFcGiocatore().getNomeImg())) {
 
 				if (f.getFcGiocatore().getImgSmall() != null) {
-					StreamResource resource = new StreamResource(f.getFcGiocatore().getNomeImg(),() -> {
-						InputStream inputStream = null;
-						try {
-							inputStream = f.getFcGiocatore().getImgSmall().getBinaryStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return inputStream;
-					});
-					Image img = new Image(resource,"");
-					img.setSrc(resource);
-					cellLayout.add(img);
+					try {
+						Image img = Utils.getImage(f.getFcGiocatore().getNomeImg(), f.getFcGiocatore().getImgSmall().getBinaryStream());
+						cellLayout.add(img);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 				Span lblGiocatore = new Span(f.getFcGiocatore().getCognGiocatore());
 				cellLayout.add(lblGiocatore);
@@ -278,7 +271,7 @@ public class SquadreAllView extends VerticalLayout{
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -356,22 +349,6 @@ public class SquadreAllView extends VerticalLayout{
 			parameters.put("tot" + attore.getIdAttore(), somma.toString());
 		}
 		return parameters;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

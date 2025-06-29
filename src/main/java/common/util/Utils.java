@@ -32,6 +32,7 @@ import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
@@ -482,6 +483,35 @@ public class Utils {
 		StreamResource resource = new StreamResource(nomeImg, () -> {
 			return inputStream;
 		});
+		Image img = new Image(resource, "");
+		return img;
+	}
+
+//	public static StreamResource getStreamResource(String nomeImg, java.sql.Blob blob) {
+//
+//		StreamResource resource = new StreamResource(nomeImg,() -> {
+//			InputStream inputStream = null;
+//			try {
+//				inputStream = blob.getBinaryStream();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			return inputStream;
+//		});
+//		return resource;
+//	}
+
+	public static Image buildImage(String nomeImg, Resource r) {
+		StreamResource resource = new StreamResource(nomeImg, () -> {
+			InputStream inputStream = null;
+			try {
+				inputStream = r.getInputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return inputStream;
+		});
+
 		Image img = new Image(resource, "");
 		return img;
 	}

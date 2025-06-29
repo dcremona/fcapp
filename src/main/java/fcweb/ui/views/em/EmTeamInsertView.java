@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -19,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -45,7 +43,6 @@ import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.ContentIdGenerator;
@@ -415,7 +412,7 @@ public class EmTeamInsertView extends VerticalLayout
 		List<FcCalendarioCompetizione> listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
 		tablePartite = getTablePartite(listPartite);
 
-		Image panchina = buildImage("classpath:images/", "panchina.jpg");
+		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource("classpath:images/panchina.jpg"));
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
@@ -442,7 +439,7 @@ public class EmTeamInsertView extends VerticalLayout
 		absLayout.add(comboModulo, 20, 50);
 
 		absLayout.add(tableFormazione, 10, 150);
-		Image campo = buildImage("classpath:images/", "campo.jpg");
+		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource("classpath:images/campo.jpg"));
 		absLayout.add(campo, _350px, 150);
 
 		this.add(absLayout);
@@ -732,7 +729,7 @@ public class EmTeamInsertView extends VerticalLayout
 				cellLayout.add(lblOrdinamento);
 				cellLayout.setAlignSelf(Alignment.CENTER, lblOrdinamento);
 
-				Image imgR = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+ruolo.toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayout.add(imgR);
 
@@ -875,7 +872,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -976,7 +973,8 @@ public class EmTeamInsertView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 				img.setTitle(title);
 				cellLayout.add(img);
 
@@ -2090,22 +2088,6 @@ public class EmTeamInsertView extends VerticalLayout
 				throw e2;
 			}
 		}
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 	private Grid<FcCalendarioCompetizione> getTablePartite(

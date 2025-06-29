@@ -1,7 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -12,7 +10,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -35,7 +32,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -270,7 +266,7 @@ public class FreePlayersView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null && g.getFcRuolo() != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -344,7 +340,7 @@ public class FreePlayersView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -382,7 +378,7 @@ public class FreePlayersView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -490,22 +486,6 @@ public class FreePlayersView extends VerticalLayout
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

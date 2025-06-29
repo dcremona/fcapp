@@ -1,7 +1,7 @@
 package fcweb.ui.views.admin;
 
 import java.io.File;
-import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hibernate.engine.jdbc.BlobProxy;
@@ -26,7 +26,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -111,18 +110,12 @@ public class FcGiocatoreView extends VerticalLayout{
 				HorizontalLayout cellLayout = new HorizontalLayout();
 				cellLayout.setSizeFull();
 				if (g != null && g.getNomeImg() != null) {
-					StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-						InputStream inputStream = null;
-						try {
-							inputStream = g.getImg().getBinaryStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return inputStream;
-					});
-					Image img = new Image(resource,"");
-					img.setSrc(resource);
-					cellLayout.add(img);
+					try {
+						Image img = Utils.getImage(g.getNomeImg(), g.getImg().getBinaryStream());
+						cellLayout.add(img);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 
 					Image imgOnline = new Image(Costants.HTTP_URL_IMG + g.getNomeImg(),g.getNomeImg());
 					cellLayout.add(imgOnline);

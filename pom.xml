@@ -11,7 +11,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <vaadin.version>24.8.0.rc2</vaadin.version>
+        <vaadin.version>24.8.0</vaadin.version>
     </properties>
 
     <parent>
@@ -142,11 +142,11 @@
 		   <artifactId>togglebutton</artifactId>
 		   <version>3.0.0</version>
 		</dependency>	
-		<dependency>
+		<!--dependency>
 		   <groupId>com.vaadin.componentfactory</groupId>
 		   <artifactId>svg</artifactId>
 		   <version>2.0.0</version>
-		</dependency>
+		</dependency-->
 		<!--dependency>
 		   <groupId>org.vaadin.addons.mycompany</groupId>
 		   <artifactId>badge</artifactId>

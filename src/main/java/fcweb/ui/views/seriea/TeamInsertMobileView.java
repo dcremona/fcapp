@@ -1,6 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,7 +47,6 @@ import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.ContentIdGenerator;
@@ -248,60 +245,6 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 	}
-
-	// private void initLayoutNew() throws Exception {
-	//
-	// FormLayout layout = new FormLayout();
-	// layout.getStyle().set("border", Costants.BORDER_COLOR);
-	// // layout.setResponsiveSteps(new ResponsiveStep("1px",1), new
-	// // ResponsiveStep("800px",2), new ResponsiveStep("1200px",3), new
-	// // ResponsiveStep("1600px",4));
-	//
-	// // TRIBUNA
-	// // VerticalLayout layoutTribuna = new VerticalLayout();
-	// // layoutTribuna.getStyle().set("border", Costants.BORDER_COLOR);
-	// // tableFormazione = getTableFormazione(modelFormazione);
-	// // layoutTribuna.add(tableFormazione);
-	// // layout.add(layoutTribuna);
-	//
-	// // TITOLARE
-	// VerticalLayout layoutTitolare = new VerticalLayout();
-	// layoutTitolare.getStyle().set("border", Costants.BORDER_COLOR);
-	//
-	// HorizontalLayout layoutTitolareNorth = new HorizontalLayout();
-	// save = new Button("Save");
-	// save.setIcon(VaadinIcon.DATABASE.create());
-	// save.addClickListener(this);
-	// checkMail = new ToggleButton();
-	// checkMail.setLabel("Invia Email");
-	// checkMail.setValue(true);
-	// comboModulo = new ComboBox<>("Inserisci il modulo");
-	// comboModulo.setItems(schemi);
-	// comboModulo.setClearButtonVisible(true);
-	// layoutTitolareNorth.add(comboModulo);
-	// layoutTitolareNorth.add(save);
-	// layoutTitolareNorth.add(checkMail);
-	// layoutTitolare.add(layoutTitolareNorth);
-	//
-	// Image campo = buildImage("classpath:images/", "campo.jpg");
-	// layoutTitolare.add(campo);
-	// layout.add(layoutTitolare);
-	//
-	// // PANCHINA
-	// VerticalLayout layoutPanchina = new VerticalLayout();
-	// layoutPanchina.getStyle().set("border", Costants.BORDER_COLOR);
-	// Image panchina = buildImage("classpath:images/", "panchina.jpg");
-	// layoutPanchina.add(panchina);
-	// layout.add(layoutPanchina);
-	//
-	// // VerticalLayout layoutPartite = new VerticalLayout();
-	// // layoutPartite.getStyle().set("border", Costants.BORDER_COLOR);
-	// // tablePartite = getTablePartite(listPartite);
-	// // layoutPartite.add(tablePartite);
-	// // layout.add(layoutPartite);
-	//
-	// this.add(layout);
-	// }
 
 	private void initLayout() throws Exception {
 
@@ -587,8 +530,10 @@ public class TeamInsertMobileView extends VerticalLayout
 		layoutAvviso.setSpacing(false);
 		layoutAvviso.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-		Image campo = buildImage("classpath:images/", "small-campo.jpg");
-		Image panchina = buildImage("classpath:images/", "small-panchina.png");
+		//Image campo = buildImage("classpath:images/", "small-campo.jpg");
+		//Image panchina = buildImage("classpath:images/", "small-panchina.png");
+		Image campo = Utils.buildImage("small-campo.jpg", resourceLoader.getResource("classpath:images/small-campo.jpg"));
+		Image panchina = Utils.buildImage("small-panchina.png", resourceLoader.getResource("classpath:images/small-panchina.png")); 
 
 		absLayout.add(comboModulo, 0, 0);
 		absLayout.add(rosa, 180, 0);
@@ -888,7 +833,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				cellLayoutImg.setSizeUndefined();
 				cellLayoutImg.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
 
-				Image imgR = buildImage("classpath:images/", p.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayoutImg.add(imgR);
 
@@ -911,7 +856,7 @@ public class TeamInsertMobileView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image imgMv = buildImage("classpath:images/", imgThink);
+				Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
 
@@ -920,26 +865,19 @@ public class TeamInsertMobileView extends VerticalLayout
 					cellLayoutImg.add(getImageGiocatoreOut(gg));
 				}
 
-				StreamResource resource = new StreamResource(p.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = p.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setTitle(title);
-				img.setSrc(resource);
-
 				Span lblGiocatore = new Span(p.getCognGiocatore());
 				lblGiocatore.getStyle().set("font-size", "9px");
 				lblGiocatore.setTitle(title);
 				lblGiocatore.setWidth("60px");
 
 				cellLayout.add(cellLayoutImg);
-				cellLayout.add(img);
+				try {
+					Image img = Utils.getImage(p.getNomeImg(), p.getImgSmall().getBinaryStream());
+					img.setTitle(title);
+					cellLayout.add(img);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				cellLayout.add(lblGiocatore);
 
 				Element element = cellLayout.getElement(); // DOM element
@@ -1031,32 +969,6 @@ public class TeamInsertMobileView extends VerticalLayout
 		grid.setAllRowsVisible(true);
 		grid.setWidth("300px");
 
-//		Column<FcGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
-//			HorizontalLayout cellLayout = new HorizontalLayout();
-//			cellLayout.setMargin(false);
-//			cellLayout.setPadding(false);
-//			cellLayout.setSpacing(false);
-//			cellLayout.setAlignItems(Alignment.STRETCH);
-//			cellLayout.setSizeFull();
-//			if (f != null && f.getFcRuolo() != null) {
-//				Image img = buildImage("classpath:images/", f.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
-//				cellLayout.add(img);
-//			}
-//			return cellLayout;
-//		}));
-//		ruoloColumn.setSortable(true);
-//		ruoloColumn.setHeader("R");
-//		ruoloColumn.setWidth("30px");
-//		ruoloColumn.setComparator((p1,
-//				p2) -> p1.getFcRuolo().getIdRuolo().compareTo(p2.getFcRuolo().getIdRuolo()));
-//		// ruoloColumn.setAutoWidth(true);
-//
-//		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "");
-//		cognGiocatoreColumn.setSortable(false);
-//		cognGiocatoreColumn.setHeader("Giocatore");
-//		cognGiocatoreColumn.setWidth("150px");
-//		// cognGiocatoreColumn.setAutoWidth(true);
-
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -1066,7 +978,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -1148,7 +1060,7 @@ public class TeamInsertMobileView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 				img.setTitle(title);
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -2252,22 +2164,6 @@ public class TeamInsertMobileView extends VerticalLayout
 		}
 	}
 
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
-	}
-
 	private Grid<FcCalendarioCompetizione> getTablePartite(
 			List<FcCalendarioCompetizione> listPartite) {
 
@@ -2991,17 +2887,19 @@ public class TeamInsertMobileView extends VerticalLayout
 		Image img = null;
 		if (gg != null) {
 			if (gg.isInfortunato()) {
-
 				if ( gg.getNote().indexOf("INCERTO") != -1) {
-					img = buildImage("classpath:images/icons/16/", "help.png");
+					//img = buildImage("classpath:images/icons/16/", "help.png");
+					img = Utils.buildImage("help.png", resourceLoader.getResource("classpath:images/icons/16/"+"help.png"));
 					img.setTitle(gg.getNote());
 				} else  {
-					img = buildImage("classpath:images/", "ospedale_s.png");
+					//img = buildImage("classpath:images/", "ospedale_s.png");
+					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource("classpath:images/"+"ospedale_s.png"));
 					img.setTitle(gg.getNote());
 				}
 
 			} else if (gg.isSqualificato()) {
-				img = buildImage("classpath:images/", "esp_s.png");
+				//img = buildImage("classpath:images/", "esp_s.png");
+				img = Utils.buildImage("esp_s.png", resourceLoader.getResource("classpath:images/"+"esp_s.png"));
 				img.setTitle(gg.getNote());
 
 			}

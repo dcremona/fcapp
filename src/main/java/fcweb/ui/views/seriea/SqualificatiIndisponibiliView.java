@@ -1,7 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -28,7 +25,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -243,7 +239,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -256,18 +252,12 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
-				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = g.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-				cellLayout.add(img);
+				try {
+					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+					cellLayout.add(img);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 			}
@@ -306,22 +296,6 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 		noteColumn.setAutoWidth(true);
 
 		return grid;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

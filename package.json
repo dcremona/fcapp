@@ -8,7 +8,6 @@
     "@polymer/paper-icon-button": "^3.0.2",
     "@polymer/polymer": "3.5.2",
     "@vaadin-component-factory/vcf-pdf-viewer": "3.1.0",
-    "@vaadin-component-factory/vcf-svg": "24.1.0",
     "@vaadin/bundles": "24.8.0",
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/polymer-legacy-adapter": "24.8.0",
@@ -22,7 +21,7 @@
     "apexcharts": "3.49.0",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "lit": "3.3.0",
+    "lit": "^2.6.1",
     "lit-element": "^3.2.2",
     "lit-html": "2.4.0",
     "onecolor": "4.1.0",
@@ -75,7 +74,6 @@
     "lit-html": "$lit-html",
     "onecolor": "$onecolor",
     "@polymer/paper-icon-button": "$@polymer/paper-icon-button",
-    "@vaadin-component-factory/vcf-svg": "$@vaadin-component-factory/vcf-svg",
     "print-js": "$print-js",
     "lit-element": "$lit-element",
     "@polymer/paper-button": "$@polymer/paper-button",
@@ -91,7 +89,6 @@
       "@polymer/paper-icon-button": "^3.0.2",
       "@polymer/polymer": "3.5.2",
       "@vaadin-component-factory/vcf-pdf-viewer": "3.1.0",
-      "@vaadin-component-factory/vcf-svg": "24.1.0",
       "@vaadin/bundles": "24.8.0",
       "@vaadin/common-frontend": "0.0.19",
       "@vaadin/polymer-legacy-adapter": "24.8.0",
@@ -105,7 +102,7 @@
       "apexcharts": "3.49.0",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
-      "lit": "3.3.0",
+      "lit": "^2.6.1",
       "lit-element": "^3.2.2",
       "lit-html": "2.4.0",
       "onecolor": "4.1.0",
@@ -137,6 +134,6 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "feb3dbef3e68a880f8262cc458ba2a983de795ef9999bd06ab179edee843c633"
+    "hash": "36cfdb0367e15632a9f704f6318b0810adfc39716f7a2fa435cc3699f20db07c"
   }
 }

@@ -1,8 +1,6 @@
 package fcweb.ui.views.seriea;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.componentfactory.ToggleButton;
@@ -38,7 +35,6 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -1036,7 +1032,7 @@ public class ImpostazioniView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -1053,20 +1049,13 @@ public class ImpostazioniView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null) {
-				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = g.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-
+				try {
+					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+					cellLayout.add(img);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
-				cellLayout.add(img);
 				cellLayout.add(lblGiocatore);
 			}
 			return cellLayout;
@@ -1120,7 +1109,7 @@ public class ImpostazioniView extends VerticalLayout
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -1133,18 +1122,12 @@ public class ImpostazioniView extends VerticalLayout
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
-				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = g.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-				cellLayout.add(img);
+				try {
+					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+					cellLayout.add(img);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 			}
@@ -1183,22 +1166,6 @@ public class ImpostazioniView extends VerticalLayout
 		noteColumn.setAutoWidth(true);
 
 		return grid;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

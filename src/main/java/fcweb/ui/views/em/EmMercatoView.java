@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -25,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.ronny.AbsoluteLayout;
@@ -54,7 +52,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.ContentIdGenerator;
@@ -357,7 +354,7 @@ public class EmMercatoView extends VerticalLayout
 		comboRuolo.setPlaceholder("Ruolo");
 		comboRuolo.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
-			Image imgR = buildImage("classpath:images/", item.getIdRuolo().toLowerCase() + ".png");
+			Image imgR = Utils.buildImage(item.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+item.getIdRuolo().toLowerCase() + ".png"));
 			container.add(imgR);
 			return container;
 		}));
@@ -573,10 +570,11 @@ public class EmMercatoView extends VerticalLayout
 		// layoutInfoRuolo.getStyle().set("background", Costants.LIGHT_BLUE);
 		layoutInfoRuolo.setAlignItems(FlexComponent.Alignment.END);
 
-		Image imgP = buildImage("classpath:images/", "p.png");
-		Image imgD = buildImage("classpath:images/", "d.png");
-		Image imgC = buildImage("classpath:images/", "c.png");
-		Image imgA = buildImage("classpath:images/", "a.png");
+		Image imgP = Utils.buildImage("p.png", resourceLoader.getResource("classpath:images/"+"p.png"));
+		Image imgD = Utils.buildImage("d.png", resourceLoader.getResource("classpath:images/"+"d.png"));
+		Image imgC = Utils.buildImage("c.png", resourceLoader.getResource("classpath:images/"+"c.png"));
+		Image imgA = Utils.buildImage("a.png", resourceLoader.getResource("classpath:images/"+"a.png"));
+		
 		lblInfoP = new Span();
 		lblInfoD = new Span();
 		lblInfoC = new Span();
@@ -2714,7 +2712,7 @@ public class EmMercatoView extends VerticalLayout
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
-				Image imgR = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+ruolo.toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayout.add(imgR);
 				cellLayout.setAlignSelf(Alignment.CENTER, imgR);
@@ -3016,7 +3014,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -3300,22 +3298,6 @@ public class EmMercatoView extends VerticalLayout
 		}
 
 		return info;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 	private Grid<FcProperties> buildTableContaPlayer(List<FcProperties> items) {

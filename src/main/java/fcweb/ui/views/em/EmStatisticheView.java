@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -404,7 +403,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getIdRuolo() != null) {
-				Image img = buildImage("classpath:images/", s.getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(s.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+s.getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -541,7 +540,8 @@ public class EmStatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
 				if (s != null) {
@@ -580,7 +580,9 @@ public class EmStatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
 				if (s != null) {
@@ -795,22 +797,6 @@ public class EmStatisticheView extends VerticalLayout
 		} else if ("Non Attivi".equals(radioGroup.getValue())) {
 			dataProvider.addFilter(s -> !s.isFlagAttivo());
 		}
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

@@ -1,6 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -472,7 +471,7 @@ public class StatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null && g.getIdRuolo() != null) {
-				Image img = buildImage("classpath:images/", g.getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -497,19 +496,7 @@ public class StatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			// cellLayout.setSizeFull();
 			if (s != null && s.getNomeSquadra() != null) {
-				StreamResource resource = new StreamResource(s.getNomeSquadra(),() -> {
-					Resource r = resourceLoader.getResource("classpath:" + "/img/squadre/" + s.getNomeSquadra() + ".png");
-					InputStream inputStream = null;
-					try {
-						inputStream = r.getInputStream();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
+				Image img = Utils.buildImage(s.getNomeSquadra() + ".png", resourceLoader.getResource("classpath:/img/squadre/"+s.getNomeSquadra() + ".png"));
 
 				Span lblSquadra = new Span(s.getNomeSquadra());
 				// lblSquadra.getStyle().set("font-size", "11px");
@@ -557,7 +544,7 @@ public class StatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -593,7 +580,7 @@ public class StatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -722,22 +709,6 @@ public class StatisticheView extends VerticalLayout
 			dataProvider.addFilter(s -> comboProprietario.getValue().getDescAttore().equals(s.getProprietario()));
 		}
 
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }
