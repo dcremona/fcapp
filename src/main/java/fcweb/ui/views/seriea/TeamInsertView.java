@@ -202,7 +202,7 @@ public class TeamInsertView extends VerticalLayout
 	private GiornataGiocatoreService giornataGiocatoreService;
 
 	@PostConstruct
-	void init() throws Exception {
+	void init() {
 		LOG.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
@@ -214,7 +214,7 @@ public class TeamInsertView extends VerticalLayout
 		initLayout();
 	}
 
-	private void initData() throws Exception {
+	private void initData() {
 
 		p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
@@ -235,7 +235,7 @@ public class TeamInsertView extends VerticalLayout
 		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 	}
 
-	private void initLayout() throws Exception {
+	private void initLayout() {
 
 		absLayout = new AbsoluteLayout(1500,1200);
 		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
@@ -255,7 +255,6 @@ public class TeamInsertView extends VerticalLayout
 		comboModulo.setPlaceholder("Modulo");
 		comboModulo.addValueChangeListener(evt -> {
 
-			// LOG.info(" addValueChangeListener " + evt.getValue());
 			removeAllElementsList();
 
 			if (evt.getValue() != null) {
@@ -490,7 +489,7 @@ public class TeamInsertView extends VerticalLayout
 			info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
 			info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
 			info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-			if ("P".equals(bean.getFcRuolo().getIdRuolo().toUpperCase())) {
+			if ("P".equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
 				info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
 			}
 		}
@@ -499,7 +498,6 @@ public class TeamInsertView extends VerticalLayout
 	}
 
 	private void refreshAndSortGridFormazione() {
-		// LOG.debug("refreshAndSortGridFormazione");
 		modelFormazione.sort((p1,
 				p2) -> p2.getFcRuolo().getIdRuolo().compareToIgnoreCase(p1.getFcRuolo().getIdRuolo()));
 		tableFormazione.getDataProvider().refreshAll();
@@ -507,109 +505,109 @@ public class TeamInsertView extends VerticalLayout
 
 	private void removeAllElementsList() {
 
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			FcGiocatore bean = modelPlayer1.get(0);
 			modelFormazione.add(bean);
 			modelPlayer1.clear();
 			tablePlayer1.getDataProvider().refreshAll();
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			FcGiocatore bean = modelPlayer2.get(0);
 			modelFormazione.add(bean);
 			modelPlayer2.clear();
 			tablePlayer2.getDataProvider().refreshAll();
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			FcGiocatore bean = modelPlayer3.get(0);
 			modelFormazione.add(bean);
 			modelPlayer3.clear();
 			tablePlayer3.getDataProvider().refreshAll();
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			FcGiocatore bean = modelPlayer4.get(0);
 			modelFormazione.add(bean);
 			modelPlayer4.clear();
 			tablePlayer4.getDataProvider().refreshAll();
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			FcGiocatore bean = modelPlayer5.get(0);
 			modelFormazione.add(bean);
 			modelPlayer5.clear();
 			tablePlayer5.getDataProvider().refreshAll();
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			FcGiocatore bean = modelPlayer6.get(0);
 			modelFormazione.add(bean);
 			modelPlayer6.clear();
 			tablePlayer6.getDataProvider().refreshAll();
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			FcGiocatore bean = modelPlayer7.get(0);
 			modelFormazione.add(bean);
 			modelPlayer7.clear();
 			tablePlayer7.getDataProvider().refreshAll();
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			FcGiocatore bean = modelPlayer8.get(0);
 			modelFormazione.add(bean);
 			modelPlayer8.clear();
 			tablePlayer8.getDataProvider().refreshAll();
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			FcGiocatore bean = modelPlayer9.get(0);
 			modelFormazione.add(bean);
 			modelPlayer9.clear();
 			tablePlayer9.getDataProvider().refreshAll();
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			FcGiocatore bean = modelPlayer10.get(0);
 			modelFormazione.add(bean);
 			modelPlayer10.clear();
 			tablePlayer10.getDataProvider().refreshAll();
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			FcGiocatore bean = modelPlayer11.get(0);
 			modelFormazione.add(bean);
 			modelPlayer11.clear();
 			tablePlayer11.getDataProvider().refreshAll();
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			FcGiocatore bean = modelPlayer12.get(0);
 			modelFormazione.add(bean);
 			modelPlayer12.clear();
 			tablePlayer12.getDataProvider().refreshAll();
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			FcGiocatore bean = modelPlayer13.get(0);
 			modelFormazione.add(bean);
 			modelPlayer13.clear();
 			tablePlayer13.getDataProvider().refreshAll();
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			FcGiocatore bean = modelPlayer14.get(0);
 			modelFormazione.add(bean);
 			modelPlayer14.clear();
 			tablePlayer14.getDataProvider().refreshAll();
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			FcGiocatore bean = modelPlayer15.get(0);
 			modelFormazione.add(bean);
 			modelPlayer15.clear();
 			tablePlayer15.getDataProvider().refreshAll();
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			FcGiocatore bean = modelPlayer16.get(0);
 			modelFormazione.add(bean);
 			modelPlayer16.clear();
 			tablePlayer16.getDataProvider().refreshAll();
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			FcGiocatore bean = modelPlayer17.get(0);
 			modelFormazione.add(bean);
 			modelPlayer17.clear();
 			tablePlayer17.getDataProvider().refreshAll();
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			FcGiocatore bean = modelPlayer18.get(0);
 			modelFormazione.add(bean);
 			modelPlayer18.clear();
@@ -658,7 +656,6 @@ public class TeamInsertView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		// grid.getStyle().set("border", Costants.BORDER_COLOR);
 		grid.setAllRowsVisible(true);
 		grid.setWidth(WIDTH);
 		grid.setHeight(HEIGHT);
@@ -864,7 +861,6 @@ public class TeamInsertView extends VerticalLayout
 		cognGiocatoreColumn.setSortable(false);
 		cognGiocatoreColumn.setHeader("Giocatore");
 		cognGiocatoreColumn.setWidth("180px");
-		// cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -901,7 +897,6 @@ public class TeamInsertView extends VerticalLayout
 		nomeSquadraColumn.setComparator((p1,p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setHeader("Sq");
 		nomeSquadraColumn.setWidth("70px");
-		// nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -945,11 +940,8 @@ public class TeamInsertView extends VerticalLayout
 		mediaVotoColumn.setComparator((p1,p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader("Mv");
 		mediaVotoColumn.setWidth("70px");
-		// mediaVotoColumn.setAutoWidth(true);
 
 		grid.addItemClickListener(event -> {
-
-			// LOG.info("addItemClickListener");
 
 			if (comboModulo.getValue() == null) {
 				LOG.info("valModulo null");
@@ -977,12 +969,12 @@ public class TeamInsertView extends VerticalLayout
 
 				boolean bDel = false;
 				if (bean.getFcRuolo().getIdRuolo().equals("P")) {
-					if (modelPlayer1.size() == 0) {
+					if (modelPlayer1.isEmpty()) {
 						modelPlayer1.add(bean);
 						tablePlayer1.getDataProvider().refreshAll();
 						bDel = true;
 					} else {
-						if (modelPlayer12.size() == 0) {
+						if (modelPlayer12.isEmpty()) {
 							modelPlayer12.add(bean);
 							tablePlayer12.getDataProvider().refreshAll();
 							bDel = true;
@@ -993,32 +985,32 @@ public class TeamInsertView extends VerticalLayout
 
 					if (valModulo.equals("5-4-1") || valModulo.equals("5-3-2")) {
 
-						if (modelPlayer2.size() == 0) {
+						if (modelPlayer2.isEmpty()) {
 							modelPlayer2.add(bean);
 							tablePlayer2.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer3.size() == 0) {
+						} else if (modelPlayer3.isEmpty()) {
 							modelPlayer3.add(bean);
 							tablePlayer3.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer4.size() == 0) {
+						} else if (modelPlayer4.isEmpty()) {
 							modelPlayer4.add(bean);
 							tablePlayer4.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer5.size() == 0) {
+						} else if (modelPlayer5.isEmpty()) {
 							modelPlayer5.add(bean);
 							tablePlayer5.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer6.size() == 0) {
+						} else if (modelPlayer6.isEmpty()) {
 							modelPlayer6.add(bean);
 							tablePlayer6.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer13.size() == 0) {
+							if (modelPlayer13.isEmpty()) {
 								modelPlayer13.add(bean);
 								tablePlayer13.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer14.size() == 0) {
+							} else if (modelPlayer14.isEmpty()) {
 								modelPlayer14.add(bean);
 								tablePlayer14.getDataProvider().refreshAll();
 								bDel = true;
@@ -1027,28 +1019,28 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("4-5-1") || valModulo.equals("4-4-2") || valModulo.equals("4-3-3")) {
 
-						if (modelPlayer2.size() == 0) {
+						if (modelPlayer2.isEmpty()) {
 							modelPlayer2.add(bean);
 							tablePlayer2.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer3.size() == 0) {
+						} else if (modelPlayer3.isEmpty()) {
 							modelPlayer3.add(bean);
 							tablePlayer3.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer4.size() == 0) {
+						} else if (modelPlayer4.isEmpty()) {
 							modelPlayer4.add(bean);
 							tablePlayer4.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer5.size() == 0) {
+						} else if (modelPlayer5.isEmpty()) {
 							modelPlayer5.add(bean);
 							tablePlayer5.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer13.size() == 0) {
+							if (modelPlayer13.isEmpty()) {
 								modelPlayer13.add(bean);
 								tablePlayer13.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer14.size() == 0) {
+							} else if (modelPlayer14.isEmpty()) {
 								modelPlayer14.add(bean);
 								tablePlayer14.getDataProvider().refreshAll();
 								bDel = true;
@@ -1057,24 +1049,24 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("3-5-2") || valModulo.equals("3-4-3")) {
 
-						if (modelPlayer2.size() == 0) {
+						if (modelPlayer2.isEmpty()) {
 							modelPlayer2.add(bean);
 							tablePlayer2.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer3.size() == 0) {
+						} else if (modelPlayer3.isEmpty()) {
 							modelPlayer3.add(bean);
 							tablePlayer3.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer4.size() == 0) {
+						} else if (modelPlayer4.isEmpty()) {
 							modelPlayer4.add(bean);
 							tablePlayer4.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer13.size() == 0) {
+							if (modelPlayer13.isEmpty()) {
 								modelPlayer13.add(bean);
 								tablePlayer13.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer14.size() == 0) {
+							} else if (modelPlayer14.isEmpty()) {
 								modelPlayer14.add(bean);
 								tablePlayer14.getDataProvider().refreshAll();
 								bDel = true;
@@ -1086,32 +1078,32 @@ public class TeamInsertView extends VerticalLayout
 
 					if (valModulo.equals("4-5-1")) {
 
-						if (modelPlayer6.size() == 0) {
+						if (modelPlayer6.isEmpty()) {
 							modelPlayer6.add(bean);
 							tablePlayer6.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
+						} else if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
+						} else if (modelPlayer9.isEmpty()) {
 							modelPlayer9.add(bean);
 							tablePlayer9.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer10.size() == 0) {
+						} else if (modelPlayer10.isEmpty()) {
 							modelPlayer10.add(bean);
 							tablePlayer10.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1120,32 +1112,32 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("3-5-2")) {
 
-						if (modelPlayer5.size() == 0) {
+						if (modelPlayer5.isEmpty()) {
 							modelPlayer5.add(bean);
 							tablePlayer5.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer6.size() == 0) {
+						} else if (modelPlayer6.isEmpty()) {
 							modelPlayer6.add(bean);
 							tablePlayer6.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
+						} else if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
+						} else if (modelPlayer9.isEmpty()) {
 							modelPlayer9.add(bean);
 							tablePlayer9.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1154,28 +1146,28 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("5-4-1")) {
 
-						if (modelPlayer7.size() == 0) {
+						if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
+						} else if (modelPlayer9.isEmpty()) {
 							modelPlayer9.add(bean);
 							tablePlayer9.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer10.size() == 0) {
+						} else if (modelPlayer10.isEmpty()) {
 							modelPlayer10.add(bean);
 							tablePlayer10.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1184,28 +1176,28 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("4-4-2")) {
 
-						if (modelPlayer6.size() == 0) {
+						if (modelPlayer6.isEmpty()) {
 							modelPlayer6.add(bean);
 							tablePlayer6.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
+						} else if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
+						} else if (modelPlayer9.isEmpty()) {
 							modelPlayer9.add(bean);
 							tablePlayer9.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1214,28 +1206,28 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("3-4-3")) {
 
-						if (modelPlayer5.size() == 0) {
+						if (modelPlayer5.isEmpty()) {
 							modelPlayer5.add(bean);
 							tablePlayer5.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer6.size() == 0) {
+						} else if (modelPlayer6.isEmpty()) {
 							modelPlayer6.add(bean);
 							tablePlayer6.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
+						} else if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1244,24 +1236,24 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("5-3-2")) {
 
-						if (modelPlayer7.size() == 0) {
+						if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
+						} else if (modelPlayer9.isEmpty()) {
 							modelPlayer9.add(bean);
 							tablePlayer9.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1269,24 +1261,24 @@ public class TeamInsertView extends VerticalLayout
 						}
 
 					} else if (valModulo.equals("4-3-3")) {
-						if (modelPlayer6.size() == 0) {
+						if (modelPlayer6.isEmpty()) {
 							modelPlayer6.add(bean);
 							tablePlayer6.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
+						} else if (modelPlayer7.isEmpty()) {
 							modelPlayer7.add(bean);
 							tablePlayer7.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
+						} else if (modelPlayer8.isEmpty()) {
 							modelPlayer8.add(bean);
 							tablePlayer8.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer15.size() == 0) {
+							if (modelPlayer15.isEmpty()) {
 								modelPlayer15.add(bean);
 								tablePlayer15.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer16.size() == 0) {
+							} else if (modelPlayer16.isEmpty()) {
 								modelPlayer16.add(bean);
 								tablePlayer16.getDataProvider().refreshAll();
 								bDel = true;
@@ -1298,16 +1290,16 @@ public class TeamInsertView extends VerticalLayout
 
 					if (valModulo.equals("4-5-1") || valModulo.equals("5-4-1")) {
 
-						if (modelPlayer11.size() == 0) {
+						if (modelPlayer11.isEmpty()) {
 							modelPlayer11.add(bean);
 							tablePlayer11.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer17.size() == 0) {
+							if (modelPlayer17.isEmpty()) {
 								modelPlayer17.add(bean);
 								tablePlayer17.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer18.size() == 0) {
+							} else if (modelPlayer18.isEmpty()) {
 								modelPlayer18.add(bean);
 								tablePlayer18.getDataProvider().refreshAll();
 								bDel = true;
@@ -1316,20 +1308,20 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("3-5-2") || valModulo.equals("4-4-2") || valModulo.equals("5-3-2")) {
 
-						if (modelPlayer10.size() == 0) {
+						if (modelPlayer10.isEmpty()) {
 							modelPlayer10.add(bean);
 							tablePlayer10.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer11.size() == 0) {
+						} else if (modelPlayer11.isEmpty()) {
 							modelPlayer11.add(bean);
 							tablePlayer11.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer17.size() == 0) {
+							if (modelPlayer17.isEmpty()) {
 								modelPlayer17.add(bean);
 								tablePlayer17.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer18.size() == 0) {
+							} else if (modelPlayer18.isEmpty()) {
 								modelPlayer18.add(bean);
 								tablePlayer18.getDataProvider().refreshAll();
 								bDel = true;
@@ -1338,24 +1330,24 @@ public class TeamInsertView extends VerticalLayout
 
 					} else if (valModulo.equals("3-4-3") || valModulo.equals("4-3-3")) {
 
-						if (modelPlayer9.size() == 0) {
+						if (modelPlayer9.isEmpty()) {
 							modelPlayer9.add(bean);
 							tablePlayer9.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer10.size() == 0) {
+						} else if (modelPlayer10.isEmpty()) {
 							modelPlayer10.add(bean);
 							tablePlayer10.getDataProvider().refreshAll();
 							bDel = true;
-						} else if (modelPlayer11.size() == 0) {
+						} else if (modelPlayer11.isEmpty()) {
 							modelPlayer11.add(bean);
 							tablePlayer11.getDataProvider().refreshAll();
 							bDel = true;
 						} else {
-							if (modelPlayer17.size() == 0) {
+							if (modelPlayer17.isEmpty()) {
 								modelPlayer17.add(bean);
 								tablePlayer17.getDataProvider().refreshAll();
 								bDel = true;
-							} else if (modelPlayer18.size() == 0) {
+							} else if (modelPlayer18.isEmpty()) {
 								modelPlayer18.add(bean);
 								tablePlayer18.getDataProvider().refreshAll();
 								bDel = true;
@@ -1376,100 +1368,47 @@ public class TeamInsertView extends VerticalLayout
 
 	private boolean existGiocatore(FcGiocatore g) {
 
-		if (modelPlayer1.size() != 0) {
-			if (modelPlayer1.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer2.size() != 0) {
-			if (modelPlayer2.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer3.size() != 0) {
-			if (modelPlayer3.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer4.size() != 0) {
-			if (modelPlayer4.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer5.size() != 0) {
-			if (modelPlayer5.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer6.size() != 0) {
-			if (modelPlayer6.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer7.size() != 0) {
-			if (modelPlayer7.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer8.size() != 0) {
-			if (modelPlayer8.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer9.size() != 0) {
-			if (modelPlayer9.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer10.size() != 0) {
-			if (modelPlayer10.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer11.size() != 0) {
-			if (modelPlayer11.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer12.size() != 0) {
-			if (modelPlayer12.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer13.size() != 0) {
-			if (modelPlayer13.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer14.size() != 0) {
-			if (modelPlayer14.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer15.size() != 0) {
-			if (modelPlayer15.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer16.size() != 0) {
-			if (modelPlayer16.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer17.size() != 0) {
-			if (modelPlayer17.indexOf(g) != -1) {
-				return true;
-			}
-		}
-		if (modelPlayer18.size() != 0) {
-			if (modelPlayer18.indexOf(g) != -1) {
-				return true;
-			}
+		if (!modelPlayer1.isEmpty() && modelPlayer1.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer2.isEmpty() && modelPlayer2.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer3.isEmpty() && modelPlayer3.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer4.isEmpty() && modelPlayer4.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer5.isEmpty() && modelPlayer5.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer6.isEmpty() && modelPlayer6.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer7.isEmpty() && modelPlayer7.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer8.isEmpty() && modelPlayer8.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer9.isEmpty() && modelPlayer9.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer10.isEmpty() && modelPlayer10.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer11.isEmpty() && modelPlayer11.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer12.isEmpty() && modelPlayer12.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer13.isEmpty() && modelPlayer13.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer14.isEmpty() && modelPlayer14.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer15.isEmpty() && modelPlayer15.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer16.isEmpty() && modelPlayer16.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer17.isEmpty() && modelPlayer17.indexOf(g) != -1) {
+			return true;
+		} else if (!modelPlayer18.isEmpty() && modelPlayer18.indexOf(g) != -1) {
+			return true;
 		}
 		return false;
 	}
 
-	private void loadFcGiornatadett() throws Exception {
+	private void loadFcGiornatadett() {
 
 		LOG.info("loadFcGiornatadett");
 
@@ -1592,28 +1531,26 @@ public class TeamInsertView extends VerticalLayout
 
 		if (check()) {
 
-			int GIORNATA_SERIEA = giornataInfo.getCodiceGiornata();
-			String DESC_GIORNATA = giornataInfo.getDescGiornataFc();
+			int giornataSerieA = giornataInfo.getCodiceGiornata();
+			String descGiornata = giornataInfo.getDescGiornataFc();
 
-			boolean bError = false;
 			try {
-				insert(GIORNATA_SERIEA);
+				insert(giornataSerieA);
 			} catch (Exception exi) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exi.getMessage());
-				bError = true;
 				return;
 			}
 
-			if (!bError && checkMail.getValue()) {
+			if (checkMail.getValue().booleanValue()) {
 				try {
 					String dataora = getSysdate();
 
-					sendNewMail(DESC_GIORNATA);
+					sendNewMail(descGiornata);
 
 					LOG.info("send_mail OK");
 
 					try {
-						insert_dett_info(GIORNATA_SERIEA, dataora);
+						insertDettInfo(giornataSerieA, dataora);
 						LOG.info("insert_dett_info OK");
 					} catch (Exception exd) {
 						LOG.error(exd.getMessage());
@@ -1640,9 +1577,7 @@ public class TeamInsertView extends VerticalLayout
 			public String extractData(ResultSet rs)
 					throws SQLException, DataAccessException {
 				if (rs.next()) {
-
-					String dataora = rs.getString(1);
-					return dataora;
+					return rs.getString(1);
 				}
 				return null;
 			}
@@ -1651,7 +1586,7 @@ public class TeamInsertView extends VerticalLayout
 
 	private boolean check() {
 
-		if (modelPlayer1.size() == 0 || modelPlayer2.size() == 0 || modelPlayer3.size() == 0 || modelPlayer4.size() == 0 || modelPlayer5.size() == 0 || modelPlayer6.size() == 0 || modelPlayer7.size() == 0 || modelPlayer8.size() == 0 || modelPlayer9.size() == 0 || modelPlayer10.size() == 0 || modelPlayer11.size() == 0 || modelPlayer12.size() == 0 || modelPlayer13.size() == 0 || modelPlayer14.size() == 0 || modelPlayer15.size() == 0 || modelPlayer16.size() == 0 || modelPlayer17.size() == 0 || modelPlayer18.size() == 0) {
+		if (modelPlayer1.isEmpty() || modelPlayer2.isEmpty() || modelPlayer3.isEmpty() || modelPlayer4.isEmpty() || modelPlayer5.isEmpty() || modelPlayer6.isEmpty() || modelPlayer7.isEmpty() || modelPlayer8.isEmpty() || modelPlayer9.isEmpty() || modelPlayer10.isEmpty() || modelPlayer11.isEmpty() || modelPlayer12.isEmpty() || modelPlayer13.isEmpty() || modelPlayer14.isEmpty() || modelPlayer15.isEmpty() || modelPlayer16.isEmpty() || modelPlayer17.isEmpty() || modelPlayer18.isEmpty()) {
 			CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_ERROR_INSERT_GIOCATORI);
 			return false;
 		}
@@ -1770,7 +1705,7 @@ public class TeamInsertView extends VerticalLayout
 		}
 	}
 
-	private void insert_dett_info(int giornata, String dataora)
+	private void insertDettInfo(int giornata, String dataora)
 			throws Exception {
 
 		String query = "";
@@ -1778,8 +1713,7 @@ public class TeamInsertView extends VerticalLayout
 			query = " DELETE FROM fc_giornata_dett_info WHERE ID_GIORNATA=" + giornata + " AND ID_ATTORE=" + idAttore;
 			jdbcTemplate.update(query);
 
-			String ID_GIORNATA = "" + giornata;
-			query = " INSERT INTO fc_giornata_dett_info (ID_GIORNATA,ID_ATTORE, FLAG_INVIO,DATA_INVIO) VALUES (" + ID_GIORNATA + ",";
+			query = " INSERT INTO fc_giornata_dett_info (ID_GIORNATA,ID_ATTORE, FLAG_INVIO,DATA_INVIO) VALUES (" + giornata + ",";
 			query += idAttore + ",1, '" + dataora + "')";
 
 			jdbcTemplate.update(query);
@@ -1859,10 +1793,6 @@ public class TeamInsertView extends VerticalLayout
 			ruolo = bean.getFcRuolo().getDescRuolo();
 			squadra = bean.getFcSquadra().getNomeSquadra();
 
-//			Resource resourceNomeSq = resourceLoader.getResource("classpath:img/squadre/" + bean.getFcSquadra().getNomeSquadra() + ".png");
-//			String cidNomeSq = ContentIdGenerator.getContentId();
-//			listImg.put(cidNomeSq, resourceNomeSq.getInputStream());
-
 			String cidNomeSq = ContentIdGenerator.getContentId();
 			FcSquadra sq = bean.getFcSquadra();
 			if (sq.getImg() != null) {
@@ -1921,10 +1851,6 @@ public class TeamInsertView extends VerticalLayout
 			ruolo = bean.getFcRuolo().getDescRuolo();
 			squadra = bean.getFcSquadra().getNomeSquadra();
 			stato = "Non Convocato";
-
-//			Resource resourceNomeSq = resourceLoader.getResource("classpath:img/squadre/" + bean.getFcSquadra().getNomeSquadra() + ".png");
-//			String cidNomeSq = ContentIdGenerator.getContentId();
-//			listImg.put(cidNomeSq, resourceNomeSq.getInputStream());
 
 			String cidNomeSq = ContentIdGenerator.getContentId();
 			FcSquadra sq = bean.getFcSquadra();
@@ -2033,11 +1959,8 @@ public class TeamInsertView extends VerticalLayout
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 
 			if (s != null && s.getSquadraCasa() != null) {
-//				Image img = buildImage("classpath:/img/squadre/", s.getSquadraCasa() + ".png");
-//				cellLayout.add(img);
 				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraCasa());
 				if (sq.getImg() != null) {
 					try {
@@ -2055,7 +1978,6 @@ public class TeamInsertView extends VerticalLayout
 
 		}));
 		nomeSquadraCasaColumn.setSortable(false);
-		// nomeSquadraCasaColumn.setHeader("Casa");
 		nomeSquadraCasaColumn.setAutoWidth(true);
 
 		Column<FcCalendarioCompetizione> nomeSquadraFuoriColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -2065,7 +1987,6 @@ public class TeamInsertView extends VerticalLayout
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 
 			if (s != null && s.getSquadraCasa() != null) {
 				FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraFuori());
@@ -2085,7 +2006,6 @@ public class TeamInsertView extends VerticalLayout
 
 		}));
 		nomeSquadraFuoriColumn.setSortable(false);
-		// nomeSquadraFuoriColumn.setHeader("Fuori");
 		nomeSquadraFuoriColumn.setAutoWidth(true);
 
 		Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)));
@@ -2099,14 +2019,10 @@ public class TeamInsertView extends VerticalLayout
 	private boolean isGiocatorePartitaGiocata(FcGiocatore giocatore) {
 		String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(activeCheckFormazione)) {
-			// LOG.debug("isGiocatorePartitaGiocata");
 			String squadra = giocatore.getFcSquadra().getNomeSquadra();
-			// LOG.info("squadra " + squadra);
 			for (FcCalendarioCompetizione partita : listPartiteGiocate) {
 				String sqCasa = partita.getSquadraCasa();
 				String sqFuori = partita.getSquadraFuori();
-				// LOG.info("sqCasa " + sqCasa);
-				// LOG.info("sqFuori " + sqFuori);
 				if (squadra.equals(sqCasa) || squadra.equals(sqFuori)) {
 					return true;
 				}
@@ -2115,11 +2031,9 @@ public class TeamInsertView extends VerticalLayout
 		return false;
 	}
 
-	private void impostaGiocatoriConVoto(String modulo) throws Exception {
+	private void impostaGiocatoriConVoto(String modulo) {
 
-		// LOG.info("impostaGiocatoriConVoto");
-
-		if (listPartiteGiocate != null && listPartiteGiocate.size() > 0) {
+		if (listPartiteGiocate != null && !listPartiteGiocate.isEmpty()) {
 
 			save.setEnabled(true);
 			checkMail.setEnabled(true);
@@ -2745,17 +2659,14 @@ public class TeamInsertView extends VerticalLayout
 		if (gg != null) {
 			if (gg.isInfortunato()) {
 				if ( gg.getNote().indexOf("INCERTO") != -1) {
-					//img = buildImage("classpath:images/icons/16/", "help.png");
 					img = Utils.buildImage("help.png", resourceLoader.getResource("classpath:images/icons/16/"+"help.png"));
 					img.setTitle(gg.getNote());
 				} else  {
-					//img = buildImage("classpath:images/", "ospedale_s.png");
 					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource("classpath:images/"+"ospedale_s.png"));
 					img.setTitle(gg.getNote());
 				}
 
 			} else if (gg.isSqualificato()) {
-				//img = buildImage("classpath:images/", "esp_s.png");
 				img = Utils.buildImage("esp_s.png", resourceLoader.getResource("classpath:images/"+"esp_s.png"));
 				img.setTitle(gg.getNote());
 
