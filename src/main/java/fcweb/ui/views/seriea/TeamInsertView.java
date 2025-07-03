@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class TeamInsertView extends VerticalLayout
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Environment env;
@@ -203,7 +204,7 @@ public class TeamInsertView extends VerticalLayout
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -386,7 +387,7 @@ public class TeamInsertView extends VerticalLayout
 					try {
 						impostaGiocatoriConVoto(modulo);
 					} catch (Exception e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 			}
@@ -447,7 +448,7 @@ public class TeamInsertView extends VerticalLayout
 		try {
 			loadFcGiornatadett();
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		if (millisDiff == 0) {
@@ -467,7 +468,7 @@ public class TeamInsertView extends VerticalLayout
 	private void showMessageStopInsert() {
 		String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(activeCheckFormazione)) {
-			LOG.info("showMessageStopInsert");
+			log.info("showMessageStopInsert");
 			setEnabled(false);
 			CustomMessageDialog.showMessageError("Impossibile inserire la formazione, tempo scaduto!");
 		}
@@ -944,12 +945,12 @@ public class TeamInsertView extends VerticalLayout
 		grid.addItemClickListener(event -> {
 
 			if (comboModulo.getValue() == null) {
-				LOG.info("valModulo null");
+				log.info("valModulo null");
 				return;
 			}
 			String valModulo = comboModulo.getValue();
 			if (valModulo == null) {
-				LOG.info("valModulo null");
+				log.info("valModulo null");
 				return;
 			}
 
@@ -963,7 +964,7 @@ public class TeamInsertView extends VerticalLayout
 				}
 
 				if (existGiocatore(bean)) {
-					LOG.info("existGiocatore true");
+					log.info("existGiocatore true");
 					return;
 				}
 
@@ -1410,7 +1411,7 @@ public class TeamInsertView extends VerticalLayout
 
 	private void loadFcGiornatadett() {
 
-		LOG.info("loadFcGiornatadett");
+		log.info("loadFcGiornatadett");
 
 		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
@@ -1547,13 +1548,13 @@ public class TeamInsertView extends VerticalLayout
 
 					sendNewMail(descGiornata);
 
-					LOG.info("send_mail OK");
+					log.info("send_mail OK");
 
 					try {
 						insertDettInfo(giornataSerieA, dataora);
-						LOG.info("insert_dett_info OK");
+						log.info("insert_dett_info OK");
 					} catch (Exception exd) {
-						LOG.error(exd.getMessage());
+						log.error(exd.getMessage());
 						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exd.getMessage());
 					}
 
@@ -1729,15 +1730,15 @@ public class TeamInsertView extends VerticalLayout
 
 		String modulo = this.comboModulo.getValue();
 
-		String formazioneHtml = "";
-		formazioneHtml += "<html><head><title>FC</title></head>\n";
-		formazioneHtml += "<body>\n";
-		formazioneHtml += "<p>" + descGiornata + "</p>\n";
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<p>" + modulo + "</p>\n";
-		formazioneHtml += "<br>\n";
+		StringBuilder formazioneHtml = new StringBuilder();
+		formazioneHtml.append("<html><head><title>FC</title></head>\n");
+		formazioneHtml.append("<body>\n");
+		formazioneHtml.append("<p>" + descGiornata + "</p>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<p>" + modulo + "</p>\n");
+		formazioneHtml.append("<br>\n");
 
-		formazioneHtml += "<table>";
+		formazioneHtml.append("<table>");
 
 		String nomeGiocatore = "";
 		String ruolo = "";
@@ -1824,23 +1825,25 @@ public class TeamInsertView extends VerticalLayout
 				color = "BGCOLOR=\"" + Costants.BG_R + "\"";
 			}
 
-			formazioneHtml += "<tr " + color + ">";
-			formazioneHtml += "<td>";
-			formazioneHtml += ordinamento;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td><img src=\"cid:" + cidNomeImg + "\" />";
-			formazioneHtml += nomeGiocatore;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td>";
-			formazioneHtml += ruolo;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td><img src=\"cid:" + cidNomeSq + "\" />";
-			formazioneHtml += squadra;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td>";
-			formazioneHtml += stato;
-			formazioneHtml += "</td>";
-			formazioneHtml += "</tr>";
+			formazioneHtml.append("<tr " + color + ">");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ordinamento);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:");
+			formazioneHtml.append(cidNomeImg + "\" />");
+			formazioneHtml.append(nomeGiocatore);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ruolo);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:");
+			formazioneHtml.append(cidNomeSq + "\" />");
+			formazioneHtml.append(squadra);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(stato);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("</tr>");
 
 			ord++;
 		}
@@ -1878,51 +1881,51 @@ public class TeamInsertView extends VerticalLayout
 				color = "BGCOLOR=\"" + Costants.BG_R + "\"";
 			}
 
-			formazioneHtml += "<tr " + color + ">";
-			formazioneHtml += "<td>";
-			formazioneHtml += ordinamento;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td><img src=\"cid:" + cidNomeImg + "\" />";
-			formazioneHtml += nomeGiocatore;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td>";
-			formazioneHtml += ruolo;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td><img src=\"cid:" + cidNomeSq + "\" />";
-			formazioneHtml += squadra;
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td>";
-			formazioneHtml += stato;
-			formazioneHtml += "</td>";
-			formazioneHtml += "</tr>";
+			formazioneHtml.append("<tr " + color + ">");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ordinamento);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:" + cidNomeImg + "\" />");
+			formazioneHtml.append(nomeGiocatore);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ruolo);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:" + cidNomeSq + "\" />");
+			formazioneHtml.append(squadra);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(stato);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("</tr>");
 
 			ord++;
 		}
 
-		formazioneHtml += "</table>\n";
+		formazioneHtml.append("</table>\n");
 
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<p>Ciao " + descAttore + "</p>\n";
-		formazioneHtml += "</body>\n";
-		formazioneHtml += "<html>";
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<p>Ciao " + descAttore + "</p>\n");
+		formazioneHtml.append("</body>\n");
+		formazioneHtml.append("<html");
 
-		String emailDestinatario = "";
+		StringBuilder emailDestinatario = new StringBuilder();
 		String activeMail = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(activeMail)) {
 			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
-					emailDestinatario += a.getEmail() + ";";
+					emailDestinatario.append(a.getEmail() + ";");
 				}
 			}
 		} else {
-			emailDestinatario = p.getProperty("to");
+			emailDestinatario.append(p.getProperty("to"));
 		}
 
 		String[] to = null;
-		if (emailDestinatario != null && !emailDestinatario.equals("")) {
-			to = Utils.tornaArrayString(emailDestinatario, ";");
+		if (StringUtils.isNotEmpty(emailDestinatario.toString()) ) {
+			to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
 		}
 
 		String[] cc = null;
@@ -1930,14 +1933,14 @@ public class TeamInsertView extends VerticalLayout
 
 		try {
 			String from =  env.getProperty("spring.mail.secondary.username");
-			emailService.sendMail2(false,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
+			emailService.sendMail2(false,from,to, cc, bcc, subject, formazioneHtml.toString(), "text/html", "3", listImg);
 		} catch (Exception e) {
-			this.LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			try {
 				String from = env.getProperty("spring.mail.primary.username");
-				emailService.sendMail2(true,from,to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
+				emailService.sendMail2(true,from,to, cc, bcc, subject, formazioneHtml.toString(), "text/html", "3", listImg);
 			} catch (Exception e2) {
-				this.LOG.error(e2.getMessage());
+				log.error(e2.getMessage());
 				throw e2;
 			}
 		}

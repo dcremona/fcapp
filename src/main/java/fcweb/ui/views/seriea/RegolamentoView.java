@@ -35,17 +35,14 @@ import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-
-
 @PageTitle("Regolamento")
 @Route(value = "regolamento", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class RegolamentoView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class RegolamentoView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AccessoService accessoController;
@@ -63,12 +60,11 @@ public class RegolamentoView extends VerticalLayout
 	private Button salvaDb;
 
 	public RegolamentoView() {
-		LOG.info("RegolamentoView()");
+		log.info("RegolamentoView()");
 	}
 
 	@PostConstruct
 	void init() {
-		// LOG.debug("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -83,7 +79,7 @@ public class RegolamentoView extends VerticalLayout
 
 			BufferedReader br = null;
 			BufferedReader br2 = null;
-			if (l != null && l.size() > 0) {
+			if (l != null && !l.isEmpty()) {
 				FcRegolamento r = l.get(0);
 				regolamento = r;
 				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
@@ -110,19 +106,10 @@ public class RegolamentoView extends VerticalLayout
 					}
 				}
 			}
-			LOG.debug(html);
-			// if (l != null && l.size() > 0) {
-			// LOG.debug(html);
-			// String encodedString = html;
-			// LOG.debug(encodedString);
-			// Decoder decoder = Base64.getDecoder();
-			// byte[] bytes = decoder.decode(encodedString);
-			// html = new String(bytes);
-			// LOG.debug(html);
-			// }
+			log.debug(html);
 
 		} catch (Exception ex2) {
-			LOG.error("ex2 " + ex2.getMessage());
+			log.error("ex2 " + ex2.getMessage());
 		}
 	}
 
@@ -157,26 +144,22 @@ public class RegolamentoView extends VerticalLayout
 
 		VerticalLayout previewHtml = new VerticalLayout();
 		try {
-
 			previewHtml.getElement().setProperty("innerHTML", html);
-
 			this.add(previewHtml);
-
 		} catch (Exception ex2) {
-			LOG.error("ex2 " + ex2.getMessage());
+			log.error("ex2 " + ex2.getMessage());
 		}
-
 	}
 
 	@Override
 	public void onComponentEvent(ClickEvent<Button> event) {
 		try {
 			if (event.getSource() == salvaDb) {
-				LOG.info("SALVA");
+				log.info("SALVA");
 
 				String valueHtml = null;
 				valueHtml = decoupledEditor.getValue();
-				LOG.info(valueHtml);
+				log.info(valueHtml);
 				// valueHtml = StringUtils.encodeHtml(valueHtml);
 				// Encoder encoder = Base64.getEncoder();
 				// String encodedString =
@@ -196,6 +179,5 @@ public class RegolamentoView extends VerticalLayout
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
 	}
-
 
 }

@@ -80,7 +80,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -130,7 +130,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -157,12 +157,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
 		final VerticalLayout layoutConfornti = new VerticalLayout();
 		setConfronti(layoutConfornti, campionato, att);
-
-//		VerticalLayout container = new VerticalLayout();
-//		PagedTabs tabs = new PagedTabs(container);
-//		tabs.add("Statistiche", layoutStat, false);
-//		tabs.add("Confronti", layoutConfornti, false);
-//		add(tabs, container);
 
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Statistiche", layoutStat);
@@ -296,13 +290,14 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("DIVISORE", "" + Costants.DIVISORE_100);
 			Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
-			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
+					Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
 
 			button1Wrapper.wrapComponent(stampaPdf);
 			hlayout1.add(button1Wrapper);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -313,13 +308,14 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("DIVISORE", "" + Costants.DIVISORE_100);
 			Resource resource = resourceLoader.getResource("classpath:reports/statisticheVotiFreePlayers.jasper");
-			FileDownloadWrapper button1Wrapper2 = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVotiFreePlayers.pdf", conn, hm, resource.getInputStream()));
-			
+			FileDownloadWrapper button1Wrapper2 = new FileDownloadWrapper(
+					Utils.getStreamResource("StatisticheVotiFreePlayers.pdf", conn, hm, resource.getInputStream()));
+
 			button1Wrapper2.wrapComponent(stampaPdf2);
 			hlayout1.add(button1Wrapper2);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -363,9 +359,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		comboSqudreA.setPlaceholder("Squadra");
 		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
-			// Image img = buildImage("classpath:/img/squadre/",
-			// item.getNomeSquadra() + ".png");
-			// container.add(img);
 			if (item != null && item.getImg() != null) {
 				try {
 					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
@@ -382,7 +375,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		txtQuotaz = new NumberField("Quotazione <=");
 		txtQuotaz.setMin(0d);
 		txtQuotaz.setMax(500d);
-		// txtQuotaz.setHasControls(true);
 
 		freePlayers = new ToggleButton();
 		freePlayers.setLabel("Free Players");
@@ -412,9 +404,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		layout.add(hlayoutFilter);
 
 		List<FcStatistiche> items = statisticheController.findByFlagAttivo(true);
-
-		// Grid<FcStatistiche> grid = new Grid<>();
-		// grid.setItems(items);
 
 		PaginatedGrid<FcStatistiche, ?> grid = new PaginatedGrid<>();
 		ListDataProvider<FcStatistiche> dataProvider = new ListDataProvider<>(items);
@@ -446,12 +435,10 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		});
 
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		// grid.setHeightByRows(true);
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
 				GridVariant.LUMO_ROW_STRIPES);
 		grid.setMultiSort(true);
 		grid.setAllRowsVisible(true);
-		// grid.setSizeFull();
 
 		Column<FcStatistiche> ruoloColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -475,7 +462,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey("giocatore");
 		giocatoreColumn.setSortable(true);
 		giocatoreColumn.setHeader("Giocatore");
-		// giocatoreColumn.setWidth("150px");
 		giocatoreColumn.setAutoWidth(true);
 
 		Column<FcStatistiche> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -485,14 +471,10 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 			if (s != null && s.getNomeSquadra() != null) {
 				Image img = Utils.buildImage(s.getNomeSquadra() + ".png",
 						resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeSquadra() + ".png"));
-
 				Span lblSquadra = new Span(s.getNomeSquadra());
-				// lblSquadra.getStyle().set("font-size", "11px");
-
 				cellLayout.add(img);
 				cellLayout.add(lblSquadra);
 			}
@@ -503,7 +485,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator((p1, p2) -> p1.getNomeSquadra().compareTo(p2.getNomeSquadra()));
 		nomeSquadraColumn.setHeader("Squadra");
-		// nomeSquadraColumn.setWidth("100px");
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcStatistiche> quotazioneColumn = grid
@@ -600,10 +581,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		golSubitoColumn.setSortable(true);
 		golSubitoColumn.setHeader("G-");
 		golSubitoColumn.setAutoWidth(true);
-
-		// grid.addColumn(s -> s.getRigoreSegnato()).setKey("rigoreSegnato");
-		// grid.addColumn(s ->
-		// s.getRigoreSbagliato()).setKey("rigoreSbagliato");
 
 		Column<FcStatistiche> assistColumn = grid.addColumn(s -> s.getAssist()).setKey("assist");
 		assistColumn.setSortable(true);

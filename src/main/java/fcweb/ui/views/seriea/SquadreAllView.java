@@ -59,7 +59,7 @@ public class SquadreAllView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -76,12 +76,12 @@ public class SquadreAllView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public SquadreAllView() {
-		LOG.info("SquadreAllView()");
+		log.info("SquadreAllView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 
 		if (!Utils.isValidVaadinSession()) {
 			return;
@@ -104,7 +104,7 @@ public class SquadreAllView extends VerticalLayout{
 		try {
 			add(buildButtonRose(campionato));
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -167,22 +167,6 @@ public class SquadreAllView extends VerticalLayout{
 
 	private FileDownloadWrapper buildButtonRose(FcCampionato campionato) {
 
-//		FileDownloadWrapper buttonWrapper = new FileDownloadWrapper(new StreamResource("RoseFcAll.pdf",() -> {
-//			try {
-//				Map<String, Object> hm = getMapRoseFcAll(campionato);
-//				hm.put("titolo", "Rose Fc");
-//				Collection<FormazioneJasper> collection = new ArrayList<FormazioneJasper>();
-//				collection.add(new FormazioneJasper("P","G","Sq",0,0));
-//				Resource resource = resourceLoader.getResource("classpath:reports/roseFcAll.jasper");
-//				InputStream inputStream = resource.getInputStream();
-//				return JasperReporUtils.runReportToPdf(inputStream, hm, collection);
-//			} catch (Exception ex2) {
-//				LOG.error(ex2.toString());
-//			}
-//			return null;
-//		}));
-
-		
 		try {
 			Button stampapdfRose = new Button("Tutte le Rose pdf");
 			stampapdfRose.setIcon(VaadinIcon.DOWNLOAD.create());
@@ -200,7 +184,7 @@ public class SquadreAllView extends VerticalLayout{
 			return button1Wrapper;
 			
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -253,8 +237,6 @@ public class SquadreAllView extends VerticalLayout{
 		Column<FcFormazione> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(f -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (f != null && f.getFcGiocatore() != null && f.getFcGiocatore().getFcSquadra() != null) {
-//				Image img = buildImage("classpath:/img/squadre/", f.getFcGiocatore().getFcSquadra().getNomeSquadra() + ".png");
-//				cellLayout.add(img);
 				FcSquadra sq = f.getFcGiocatore().getFcSquadra();
 				if (sq != null && sq.getImg() != null) {
 					try {

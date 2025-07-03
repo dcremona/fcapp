@@ -65,7 +65,7 @@ public class SquadreView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -88,12 +88,12 @@ public class SquadreView extends VerticalLayout {
 	private AccessoService accessoController;
 
 	public SquadreView() {
-		LOG.info("SquadreView()");
+		log.info("SquadreView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 
 		if (!Utils.isValidVaadinSession()) {
 			return;
@@ -128,14 +128,14 @@ public class SquadreView extends VerticalLayout {
 				try {
 					layoutBtn.add(buildButtonRosa(conn, campionato, attore));
 				} catch (Exception e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 					e.printStackTrace();
 				}
 
 				try {
 					layoutBtn.add(buildButtonVotiRosa(conn, campionato, attore, giornataInfo));
 				} catch (Exception e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 					e.printStackTrace();
 				}
 
@@ -171,11 +171,9 @@ public class SquadreView extends VerticalLayout {
 				layout.add(tableFormazione);
 				layout.add(tableMercato);
 
-//				tabs.add(attore.getDescAttore(), layout, false);
 				tabSheet.add(attore.getDescAttore(), layout);
 			}
 		}
-//		this.add(tabs, container);
 		tabSheet.setSizeFull();
 		this.add(tabSheet);
 	}
@@ -204,7 +202,7 @@ public class SquadreView extends VerticalLayout {
 			return button1Wrapper;
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -224,9 +222,9 @@ public class SquadreView extends VerticalLayout {
 
 			String start = campionato.getStart().toString();
 			String currentGiornata = "" + giornataInfo.getCodiceGiornata();
-			LOG.info("START " + start);
-			LOG.info("END " + currentGiornata);
-			LOG.info("ID_ATTORE " + idAttore);
+			log.info("START " + start);
+			log.info("END " + currentGiornata);
+			log.info("ID_ATTORE " + idAttore);
 			final Map<String, Object> hm = new HashMap<String, Object>();
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("START", start);
@@ -243,7 +241,7 @@ public class SquadreView extends VerticalLayout {
 			return button2Wrapper;
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -258,15 +256,9 @@ public class SquadreView extends VerticalLayout {
 		grid.setSelectionMode(Grid.SelectionMode.SINGLE);
 		grid.setAllRowsVisible(true);
 		grid.addThemeVariants(GridVariant.LUMO_COMPACT);
-		// grid.setSizeFull();
 
 		Column<FcFormazione> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
-			// cellLayout.setMargin(false);
-			// cellLayout.setPadding(false);
-			// cellLayout.setSpacing(false);
-			// cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 			if (f != null && f.getFcGiocatore() != null
 					&& !StringUtils.isEmpty(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
 				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
@@ -278,7 +270,6 @@ public class SquadreView extends VerticalLayout {
 		}));
 		ruoloColumn.setSortable(true);
 		ruoloColumn.setHeader("R");
-		// ruoloColumn.setWidth("50px");
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcFormazione> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -287,8 +278,6 @@ public class SquadreView extends VerticalLayout {
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
-			// cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 
 			if (f != null && f.getFcGiocatore() != null && !StringUtils.isEmpty(f.getFcGiocatore().getNomeImg())) {
 
@@ -308,7 +297,6 @@ public class SquadreView extends VerticalLayout {
 		}));
 		cognGiocatoreColumn.setSortable(false);
 		cognGiocatoreColumn.setHeader("Giocatore");
-		// cognGiocatoreColumn.setWidth("150px");
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcFormazione> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -317,12 +305,7 @@ public class SquadreView extends VerticalLayout {
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
-			// cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 			if (f != null && f.getFcGiocatore() != null && f.getFcGiocatore().getFcSquadra() != null) {
-				// Image img = buildImage("classpath:/img/squadre/",
-				// f.getFcGiocatore().getFcSquadra().getNomeSquadra() + ".png");
-				// cellLayout.add(img);
 				FcSquadra sq = f.getFcGiocatore().getFcSquadra();
 				if (sq != null && sq.getImg() != null) {
 					try {
@@ -343,7 +326,6 @@ public class SquadreView extends VerticalLayout {
 		nomeSquadraColumn.setComparator((p1, p2) -> p1.getFcGiocatore().getFcSquadra().getNomeSquadra()
 				.compareTo(p2.getFcGiocatore().getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setHeader("Squadra");
-		// nomeSquadraColumn.setWidth("100px");
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcFormazione> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -427,14 +409,12 @@ public class SquadreView extends VerticalLayout {
 				formazione -> formazione.getFcGiocatore() != null ? formazione.getFcGiocatore().getQuotazione() : 0);
 		quotazioneColumn.setSortable(true);
 		quotazioneColumn.setHeader("Q");
-		// quotazioneColumn.setWidth("60px");
 		quotazioneColumn.setAutoWidth(true);
 
 		Column<FcFormazione> totPagatoColumn = grid.addColumn(
 				formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato().intValue() : 0);
 		totPagatoColumn.setSortable(true);
 		totPagatoColumn.setHeader("P");
-		// totPagatoColumn.setWidth("60px");
 		totPagatoColumn.setAutoWidth(true);
 
 		HeaderRow topRow = grid.prependHeaderRow();
@@ -544,11 +524,6 @@ public class SquadreView extends VerticalLayout {
 		Column<FcMercatoDett> gVenColumn = grid.addColumn(new ComponentRenderer<>(m -> {
 
 			FlexLayout cellLayout = new FlexLayout();
-			// cellLayout.setMargin(false);
-			// cellLayout.setPadding(false);
-			// cellLayout.setSpacing(false);
-			// cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 			if (m != null && m.getFcGiocatoreByIdGiocVen() != null) {
 
 				if (m.getFcGiocatoreByIdGiocVen().getImgSmall() != null) {
