@@ -540,6 +540,15 @@ public class Utils {
 			return null;
 		});
 	}
+	
+	public static StreamResource getStreamResource(String inputStreamName,byte[] bytes) {
+
+		return new StreamResource(inputStreamName,() -> new ByteArrayInputStream(bytes));
+		
+	}
+	
+	
+
 
 
 //	public static Image getImage(String nomeImg, InputStream inputStream) {

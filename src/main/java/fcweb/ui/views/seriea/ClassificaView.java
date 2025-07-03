@@ -67,7 +67,7 @@ public class ClassificaView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ClassificaService classificaController;
@@ -83,7 +83,7 @@ public class ClassificaView extends VerticalLayout {
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -93,7 +93,7 @@ public class ClassificaView extends VerticalLayout {
 
 	private void initLayout() {
 
-		LOG.info("initLayout");
+		log.info("initLayout");
 
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
@@ -109,14 +109,14 @@ public class ClassificaView extends VerticalLayout {
 			grid = buildTableClassifica(campionato);
 			layoutGrid.add(grid);
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
 		try {
 			this.add(buildButtonPdf(campionato, p));
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 		this.add(layoutGrid);
@@ -133,14 +133,14 @@ public class ClassificaView extends VerticalLayout {
 			}
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
 		try {
 			this.add(buildTableInfoClassifica(campionato));
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 		// this.add(new Label("Tot pt 18 = quella attuale"));
@@ -175,7 +175,7 @@ public class ClassificaView extends VerticalLayout {
 			i++;
 		}
 
-		if (all.size() > 0) {
+		if (!all.isEmpty()) {
 
 			Series series = new Series("Tot Pt Rosa", data.get(0), data.get(1), data.get(2), data.get(3), data.get(4),
 					data.get(5), data.get(6), data.get(7));
@@ -222,7 +222,7 @@ public class ClassificaView extends VerticalLayout {
 			i++;
 		}
 
-		if (all.size() > 0) {
+		if (!all.isEmpty()) {
 
 			Series series = new Series("Tot Pt TvsT", data.get(0), data.get(1), data.get(2), data.get(3), data.get(4),
 					data.get(5), data.get(6), data.get(7));
@@ -254,20 +254,6 @@ public class ClassificaView extends VerticalLayout {
 
 	private HorizontalLayout buildButtonPdf(FcCampionato campionato, Properties p) throws Exception {
 
-//		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
-//			try {
-//				Map<String, Object> hm = new HashMap<String, Object>();
-//				hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-//				hm.put("DIVISORE", "" + Costants.DIVISORE_100);
-//				Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
-//				InputStream inputStream = resource.getInputStream();
-//				Connection conn = jdbcTemplate.getDataSource().getConnection();
-//				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-//			} catch (Exception ex2) {
-//			}
-//			return null;
-//		}));
-
 		HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
 
@@ -287,7 +273,7 @@ public class ClassificaView extends VerticalLayout {
 			horLayout.add(button1Wrapper);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -300,9 +286,7 @@ public class ClassificaView extends VerticalLayout {
 
 		Grid<FcClassifica> grid = new Grid<>();
 		grid.setItems(items);
-		// grid.setWidth("70%");
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-				GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,GridVariant.LUMO_ROW_STRIPES);
 		grid.setAllRowsVisible(true);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setMultiSort(true);
@@ -371,10 +355,6 @@ public class ClassificaView extends VerticalLayout {
 		totfmColumn.setHeader("Tot FM");
 		totfmColumn.setSortable(true);
 		totfmColumn.setAutoWidth(true);
-
-		// Column<FcClassifica> mercatofmColumn = grid.addColumn(classifica ->
-		// classifica.getFmMercato());
-		// mercatofmColumn.setHeader("Mercato FM");
 
 		HeaderRow headerRow = grid.prependHeaderRow();
 		HeaderCell headerCell = headerRow.join(squadraColumn, puntiColumn, vinteColumn, pariColumn, perseColumn,

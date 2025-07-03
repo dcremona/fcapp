@@ -8,8 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.vaadin.addons.badge.Badge;
-//import org.vaadin.addons.badge.Badge.BadgeVariant;
 
 import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.flow.component.card.Card;
@@ -51,7 +49,7 @@ public class HomeView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataService giornataController;
@@ -66,13 +64,13 @@ public class HomeView extends VerticalLayout {
 	private AccessoService accessoController;
 
 	public HomeView() {
-		LOG.info("HomeView()");
+		log.info("HomeView()");
 	}
 
 	@PostConstruct
 	void init() {
 
-		LOG.info("init");
+		log.info("init");
 
 		try {
 
@@ -89,7 +87,7 @@ public class HomeView extends VerticalLayout {
 			add(builLayoutRisultati());
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 
@@ -177,7 +175,6 @@ public class HomeView extends VerticalLayout {
 		grid.setAllRowsVisible(true);
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
 				GridVariant.LUMO_ROW_STRIPES);
-		// grid.setSizeFull();
 
 		grid.addColumn(c -> c.getAttoreCasa()).setAutoWidth(true);
 		grid.addColumn(c -> c.getPunteggio()).setAutoWidth(true);
@@ -192,7 +189,7 @@ public class HomeView extends VerticalLayout {
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		String nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
 		long millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
-		LOG.info("millisDiff " + millisDiff);
+		log.info("millisDiff " + millisDiff);
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
@@ -233,9 +230,6 @@ public class HomeView extends VerticalLayout {
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
-		Integer to = campionato.getEnd();
-		LOG.info("from " + "" + from);
-		LOG.info("to " + "" + to);
 
 		for (FcGiornataRis fcGiornataRis : l) {
 			int cg = fcGiornataRis.getFcGiornataInfo().getCodiceGiornata();

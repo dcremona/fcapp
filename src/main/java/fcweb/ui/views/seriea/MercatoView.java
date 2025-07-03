@@ -61,7 +61,7 @@ public class MercatoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private static final String widthG = "240px";
 	private static final String widthc1 = "150px";
@@ -108,7 +108,7 @@ public class MercatoView extends VerticalLayout
 	private SquadraService squadraController;
 
 	public MercatoView() {
-		LOG.info("MercatoView");
+		log.info("MercatoView");
 	}
 
 	public void randomFormazioni() {
@@ -197,7 +197,7 @@ public class MercatoView extends VerticalLayout
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -209,7 +209,7 @@ public class MercatoView extends VerticalLayout
 	}
 
 	private void initData() {
-		LOG.info("initData");
+		log.info("initData");
 		squadre = attoreController.findByActive(true);
 		giocatori = giocatoreController.findAll();
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
@@ -380,7 +380,6 @@ public class MercatoView extends VerticalLayout
 					}
 					att++;
 				}
-				// updateInfoAttore();
 				CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
 			}
 		} catch (Exception e) {
@@ -390,7 +389,7 @@ public class MercatoView extends VerticalLayout
 
 	private void updateInfoAttore() throws Exception {
 
-		LOG.info("START updateInfoAttore");
+		log.info("START updateInfoAttore");
 
 		int att = 1;
 		String descError = "";
@@ -444,11 +443,6 @@ public class MercatoView extends VerticalLayout
 
 					if (Integer.parseInt((String) pairs.getValue()) > 5) {
 
-						// ConfirmDialog.createInfo().withCaption("Messaggio di
-						// avviso").withMessage(att + "\nTroppi giocatori per la
-						// squadra " +
-						// (String)pairs.getKey()).withOkButton().open();
-
 						String sq = (String) pairs.getKey();
 						int countPSq = 0;
 						for (FcFormazione f : data) {
@@ -465,7 +459,6 @@ public class MercatoView extends VerticalLayout
 						if (maxG > 5) {
 							descError += descAttore + " Troppi giocatori per la squadra " + sq + " - ";
 						}
-
 					}
 					list.add(p);
 				}
@@ -484,9 +477,6 @@ public class MercatoView extends VerticalLayout
 			lblResiduoPlayer[i].getStyle().set("background", "#ABEBC6");
 			if (residuo < 0) {
 				lblResiduoPlayer[i].getStyle().set("background", "#EC7063");
-				// ConfirmDialog.createInfo().withCaption("Messaggio di
-				// errore").withMessage(descAttore + " Residuo minore di
-				// 0").withOkButton().open();
 				descError += descAttore + " Residuo minore di 0 - ";
 			}
 
@@ -501,7 +491,7 @@ public class MercatoView extends VerticalLayout
 			lblError.setVisible(true);
 		}
 
-		LOG.info("END updateInfoAttore");
+		log.info("END updateInfoAttore");
 	}
 
 	private void refreshContaGiocatori(HashMap<String, String> m, String sq) {
@@ -521,7 +511,6 @@ public class MercatoView extends VerticalLayout
 		idCampionato = "" + campionato.getIdCampionato();
 
 		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
-		// LOG.info("" + listFormazione.size());
 
 		Grid<FcFormazione> grid = new Grid<>();
 		grid.setAllRowsVisible(true);
@@ -529,7 +518,7 @@ public class MercatoView extends VerticalLayout
 		grid.setWidth(widthG);
 		grid.setItems(listFormazione);
 
-		if (listFormazione.size() == 0) {
+		if (listFormazione.isEmpty()) {
 			return grid;
 		}
 
@@ -559,9 +548,7 @@ public class MercatoView extends VerticalLayout
 		giocatore.setItems(giocatori);
 		giocatore.setWidth(widthc1);
 		giocatore.addValueChangeListener(evt -> {
-			// LOG.info("giocatore.addValueChangeListener");
 		});
-		// Close the editor in case of forward navigation between
 		giocatore.getElement().addEventListener("keydown", event -> grid.getEditor().cancel()).setFilter("event.key === 'Tab' && !event.shiftKey");
 
 		NumberField totPagato = new NumberField();
@@ -569,12 +556,10 @@ public class MercatoView extends VerticalLayout
 		totPagato.setMax(500d);
 		totPagato.setStepButtonsVisible(true);
 		totPagato.setWidth(widthc2);
-		// Close the editor in case of backward between components
 		totPagato.getElement().addEventListener("keydown", event -> grid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
 
 		Column<FcFormazione> cognGiocatoreColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getFcGiocatore().getCognGiocatore() : null);
 		cognGiocatoreColumn.setKey("fcGiocatore");
-		// cognGiocatoreColumn.setHeader("G");
 		binder.bind(giocatore, "fcGiocatore");
 		cognGiocatoreColumn.setEditorComponent(giocatore);
 
@@ -585,15 +570,12 @@ public class MercatoView extends VerticalLayout
 			return Double.valueOf(0);
 		});
 		totPagatoColumn.setKey("totPagato");
-		// totPagatoColumn.setHeader("P");
 		binder.bind(totPagato, "totPagato");
 		totPagatoColumn.setEditorComponent(totPagato);
 
 		binder.addValueChangeListener(evt -> {
 			if (evt.getValue() != null && evt.getValue() instanceof FcGiocatore) {
 				FcGiocatore g = ((FcGiocatore) evt.getValue());
-				// LOG.info("binder.addValueChangeListener " +
-				// g.getCognGiocatore());
 				List<FcFormazione> data = grid.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
 				for (FcFormazione f : data) {
 					if (f.getFcGiocatore() != null && f.getFcGiocatore().getCognGiocatore().equals(g.getCognGiocatore())) {
@@ -606,7 +588,7 @@ public class MercatoView extends VerticalLayout
 		});
 
 		binder.addValueChangeListener(event -> {
-			LOG.info("addValueChangeListener");
+			log.info("addValueChangeListener");
 			grid.getEditor().refresh();
 
 			try {
@@ -619,41 +601,7 @@ public class MercatoView extends VerticalLayout
 		grid.addItemDoubleClickListener(event -> grid.getEditor().editItem(event.getItem()));
 
 		grid.addItemClickListener(event -> {
-			// LOG.info("addItemClickListener");
-			// if (binder.getBean() != null && binder.getBean().getFcGiocatore()
-			// != null) {
-			// LOG.info(binder.getBean().getFcGiocatore().getCognGiocatore() +
-			// ", " + binder.getBean().getTotPagato());
-			// }
 		});
-
-		// grid.getDataProvider().addDataProviderListener(event -> {
-		// LOG.info("addDataProviderListener");
-		// List<FcFormazione> data = event.getSource().fetch(new
-		// Query<>()).collect(Collectors.toList());
-		// Double totCrediti = new Double(500);
-		// Double somma = new Double(0);
-		// String descAttore = "";
-		// for (FcFormazione f : data) {
-		// if (f.getFcGiocatore() != null && f.getTotPagato() != null) {
-		// somma += f.getTotPagato();
-		// }
-		// descAttore = f.getFcAttore().getDescAttore();
-		// }
-		// Double residuo = totCrediti - somma;
-		//
-		// grid.appendFooterRow().getCell(cognGiocatoreColumn).setComponent(new
-		// Span("RES " + residuo));
-		// grid.appendFooterRow().getCell(totPagatoColumn).setComponent(new
-		// Span("TOT " + somma));
-		// if (residuo < 0) {
-		// ConfirmDialog.createInfo().withCaption("Messaggio di
-		// errore").withMessage(descAttore + " Residuo minore di
-		// 0").withOkButton().open();
-		// }
-		// });
-		// Fire a data change event to initialize the summary footer
-		// grid.getDataProvider().refreshAll();
 
 		return grid;
 	}
@@ -663,13 +611,8 @@ public class MercatoView extends VerticalLayout
 		Grid<FcProperties> grid = new Grid<>();
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-		// grid.addThemeVariants(GridVariant.LUMO_COMPACT);
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 		grid.setWidth(widthG);
-
-		// Column<FcProperties> keyColumn = grid.addColumn(p -> p.getKey());
-		// keyColumn.setSortable(false);
-		// keyColumn.setWidth(widthc1);
 
 		Column<FcProperties> keyColumn = grid.addColumn(new ComponentRenderer<>(f -> {
 

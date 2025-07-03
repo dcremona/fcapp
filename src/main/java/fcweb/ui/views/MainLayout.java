@@ -1,6 +1,5 @@
 package fcweb.ui.views;
 
-import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -21,10 +20,10 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.security.AuthenticatedUser;
 import fcweb.ui.views.admin.FcAccessoView;
@@ -93,7 +92,6 @@ public class MainLayout extends AppLayout{
 
 	private void addHeaderContent() {
 		DrawerToggle toggle = new DrawerToggle();
-		//toggle.getElement().setAttribute("aria-label", "Menu toggle");
 		toggle.setAriaLabel("Menu toggle");
 
 		viewTitle = new H2();
@@ -378,8 +376,7 @@ public class MainLayout extends AppLayout{
 			FcAttore user = maybeUser.get();
 
 			Avatar avatar = new Avatar(user.getName());
-			StreamResource resource = new StreamResource("profile-pic",() -> new ByteArrayInputStream(user.getProfilePicture()));
-			avatar.setImageResource(resource);
+			avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
 			avatar.setThemeName("xsmall");
 			avatar.getElement().setAttribute("tabindex", "-1");
 

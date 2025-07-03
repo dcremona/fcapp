@@ -1,8 +1,5 @@
 package fcweb.ui.views.admin;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.security.SecureRandom;
 
 import org.slf4j.Logger;
@@ -23,12 +20,9 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 
 import common.util.Utils;
 import fcweb.backend.data.Role;
@@ -36,7 +30,6 @@ import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.ui.views.MainLayout;
-import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -111,8 +104,7 @@ public class FcUserView extends VerticalLayout{
 			cellLayout.setSizeFull();
 			if (u != null && u.getProfilePicture() != null) {
 				Avatar avatar = new Avatar(u.getName());
-				StreamResource resource = new StreamResource("profile-pic",() -> new ByteArrayInputStream(u.getProfilePicture()));
-				avatar.setImageResource(resource);
+				avatar.setImageResource(Utils.getStreamResource("profile-pic", u.getProfilePicture()));
 				avatar.setThemeName("xsmall");
 				avatar.getElement().setAttribute("tabindex", "-1");
 				cellLayout.add(avatar);
@@ -125,35 +117,35 @@ public class FcUserView extends VerticalLayout{
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setSizeFull();
 
-			FileBuffer fileBuffer = new FileBuffer();
-			Upload singleFileUpload = new Upload(fileBuffer);
-			singleFileUpload.setDropAllowed(true);
-			singleFileUpload.addSucceededListener(event -> {
-				try {
-
-					// Get information about the uploaded file
-					InputStream fileData = fileBuffer.getInputStream();
-					// String fileName = event.getFileName();
-					// long contentLength = event.getContentLength();
-					// String mimeType = event.getMIMEType();
-
-					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-					int nRead;
-					byte[] data = new byte[4];
-					while ((nRead = fileData.read(data, 0, data.length)) != -1) {
-						buffer.write(data, 0, nRead);
-					}
-					buffer.flush();
-					byte[] targetArray = buffer.toByteArray();
-					u.setProfilePicture(targetArray);
-					attoreService.update(u);
-					CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-				} catch (Exception e) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-				}
-
-			});
-			cellLayout.add(singleFileUpload);
+//			FileBuffer fileBuffer = new FileBuffer();
+//			Upload singleFileUpload = new Upload(fileBuffer);
+//			singleFileUpload.setDropAllowed(true);
+//			singleFileUpload.addSucceededListener(event -> {
+//				try {
+//
+//					// Get information about the uploaded file
+//					InputStream fileData = fileBuffer.getInputStream();
+//					// String fileName = event.getFileName();
+//					// long contentLength = event.getContentLength();
+//					// String mimeType = event.getMIMEType();
+//
+//					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//					int nRead;
+//					byte[] data = new byte[4];
+//					while ((nRead = fileData.read(data, 0, data.length)) != -1) {
+//						buffer.write(data, 0, nRead);
+//					}
+//					buffer.flush();
+//					byte[] targetArray = buffer.toByteArray();
+//					u.setProfilePicture(targetArray);
+//					attoreService.update(u);
+//					CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+//				} catch (Exception e) {
+//					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+//				}
+//
+//			});
+//			cellLayout.add(singleFileUpload);
 
 			return cellLayout;
 		}));
