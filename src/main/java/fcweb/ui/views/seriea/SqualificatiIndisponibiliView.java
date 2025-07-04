@@ -232,7 +232,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
 				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader
-						.getResource("classpath:images/" + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+						.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;

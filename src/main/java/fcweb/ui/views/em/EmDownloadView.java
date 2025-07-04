@@ -38,6 +38,7 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.ExpRoseAService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
@@ -274,7 +275,7 @@ public class EmDownloadView extends VerticalLayout
 			}
 
 			if (ruolo != null && ("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
-				Image img = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+ruolo.toLowerCase() + ".png"));
+				Image img = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+ruolo.toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -341,7 +342,7 @@ public class EmDownloadView extends VerticalLayout
 //			cellLayout.setAlignItems(Alignment.STRETCH);
 //			cellLayout.setSizeFull();
 //			if (g != null && g.getIdRuolo() != null) {
-//				Image img = buildImage("classpath:images/", g.getIdRuolo().toLowerCase() + ".png");
+//				Image img = buildImage(Costants.CLASSPATH_IMAGES, g.getIdRuolo().toLowerCase() + ".png");
 //				cellLayout.add(img);
 //			}
 //			return cellLayout;
@@ -431,7 +432,7 @@ public class EmDownloadView extends VerticalLayout
 //						imgThink = "3.png";
 //					}
 //				}
-//				Image img = buildImage("classpath:images/", imgThink);
+//				Image img = buildImage(Costants.CLASSPATH_IMAGES, imgThink);
 //
 //				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 //				Double d = Double.valueOf(0);

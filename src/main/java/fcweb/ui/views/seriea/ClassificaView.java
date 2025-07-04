@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +94,6 @@ public class ClassificaView extends VerticalLayout {
 
 		log.info("initLayout");
 
-		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
 		HorizontalLayout layoutGrid = new HorizontalLayout();
@@ -114,14 +112,14 @@ public class ClassificaView extends VerticalLayout {
 		}
 
 		try {
-			this.add(buildButtonPdf(campionato, p));
+			this.add(buildButtonPdf(campionato));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 		this.add(layoutGrid);
+		
 		try {
-
 			Component comp = buildGrafico(campionato);
 			if (comp != null) {
 				this.add(comp);
@@ -131,7 +129,6 @@ public class ClassificaView extends VerticalLayout {
 			if (comp2 != null) {
 				this.add(comp2);
 			}
-
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -143,23 +140,10 @@ public class ClassificaView extends VerticalLayout {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-		// this.add(new Label("Tot pt 18 = quella attuale"));
-		// this.add(new Label("Tot pt 11 = quella proposta da Rinc e Skizzo sui
-		// 11 titolari schierati il sabato (senza la panchina e i 2 cambi "));
-		// this.add(new Label("Tot pt Rosa = quella proposta da Greg sul totale
-		// della rosa"));
-		// this.add(new Label("Grand Prix G18 = quella proposta da Skizzo di
-		// attribure 7 punti al migliore di giornate, poi a scendere
-		// 6,5,4,3,2,1,0"));
-		// this.add(new Label("Grand Prix G11 = stessa della precedente ma
-		// calcolata solo sui 11 titolari (senza panchina e cambi)"));
-		// this.add(new Label("Grand Prix F1 = stessa della proposta di Skizzo
-		// ma i punti calcolati come gp di formula1 15 al vincitore, 10 al
-		// secondo, etc"));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Component buildGrafico(FcCampionato campionato) throws Exception {
+	public Component buildGrafico(FcCampionato campionato) {
 
 		String[] att = new String[8];
 		ArrayList<Double> data = new ArrayList<>();
@@ -206,7 +190,7 @@ public class ClassificaView extends VerticalLayout {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Component buildGraficoTuttiVsTutti(FcCampionato campionato) throws Exception {
+	public Component buildGraficoTuttiVsTutti(FcCampionato campionato) {
 
 		String[] att = new String[8];
 		ArrayList<Integer> data = new ArrayList<>();
@@ -252,7 +236,7 @@ public class ClassificaView extends VerticalLayout {
 
 	}
 
-	private HorizontalLayout buildButtonPdf(FcCampionato campionato, Properties p) throws Exception {
+	private HorizontalLayout buildButtonPdf(FcCampionato campionato) {
 
 		HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
@@ -261,16 +245,18 @@ public class ClassificaView extends VerticalLayout {
 			Button stampapdf = new Button("Classifica pdf");
 			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
-			Connection conn = jdbcTemplate.getDataSource().getConnection();
-			Map<String, Object> hm = new HashMap<String, Object>();
-			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-			Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
-			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
-					Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
+			if (jdbcTemplate.getDataSource() != null) {
 
-			button1Wrapper.wrapComponent(stampapdf);
-			horLayout.add(button1Wrapper);
+				Connection conn = jdbcTemplate.getDataSource().getConnection();
+				Map<String, Object> hm = new HashMap<String, Object>();
+				hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+				hm.put("DIVISORE", "" + Costants.DIVISORE_100);
+				Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
+				FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
+
+				button1Wrapper.wrapComponent(stampapdf);
+				horLayout.add(button1Wrapper);
+			}
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -280,7 +266,7 @@ public class ClassificaView extends VerticalLayout {
 		return horLayout;
 	}
 
-	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato) throws Exception {
+	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato) {
 
 		List<FcClassifica> items = classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 
@@ -364,7 +350,7 @@ public class ClassificaView extends VerticalLayout {
 		return grid;
 	}
 
-	private Grid<FcClassificaTotPt> buildTableInfoClassifica(FcCampionato campionato) throws Exception {
+	private Grid<FcClassificaTotPt> buildTableInfoClassifica(FcCampionato campionato){
 
 		String sql = " select a.desc_attore, ";
 		sql += " sum(pt.tot_pt) as tot18, ";

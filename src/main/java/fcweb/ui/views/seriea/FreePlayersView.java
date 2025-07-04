@@ -238,7 +238,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 			cellLayout.setSizeFull();
 			if (g != null && g.getFcRuolo() != null) {
 				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader
-						.getResource("classpath:images/" + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+						.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -310,7 +310,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -348,7 +348,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);

@@ -530,8 +530,8 @@ public class TeamInsertMobileView extends VerticalLayout
 		layoutAvviso.setSpacing(false);
 		layoutAvviso.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-		Image campo = Utils.buildImage("small-campo.jpg", resourceLoader.getResource("classpath:images/small-campo.jpg"));
-		Image panchina = Utils.buildImage("small-panchina.png", resourceLoader.getResource("classpath:images/small-panchina.png")); 
+		Image campo = Utils.buildImage("small-campo.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"small-campo.jpg"));
+		Image panchina = Utils.buildImage("small-panchina.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"small-panchina.png")); 
 
 		absLayout.add(comboModulo, 0, 0);
 		absLayout.add(rosa, 180, 0);
@@ -827,7 +827,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				cellLayoutImg.setSizeUndefined();
 				cellLayoutImg.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
 
-				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayoutImg.add(imgR);
 
@@ -850,7 +850,7 @@ public class TeamInsertMobileView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
 
@@ -972,7 +972,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -1052,7 +1052,7 @@ public class TeamInsertMobileView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				img.setTitle(title);
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -2798,15 +2798,15 @@ public class TeamInsertMobileView extends VerticalLayout
 		if (gg != null) {
 			if (gg.isInfortunato()) {
 				if ( gg.getNote().indexOf("INCERTO") != -1) {
-					img = Utils.buildImage("help.png", resourceLoader.getResource("classpath:images/icons/16/"+"help.png"));
+					img = Utils.buildImage("help.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"icons/16/"+"help.png"));
 					img.setTitle(gg.getNote());
 				} else  {
-					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource("classpath:images/"+"ospedale_s.png"));
+					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"ospedale_s.png"));
 					img.setTitle(gg.getNote());
 				}
 
 			} else if (gg.isSqualificato()) {
-				img = Utils.buildImage("esp_s.png", resourceLoader.getResource("classpath:images/"+"esp_s.png"));
+				img = Utils.buildImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"esp_s.png"));
 				img.setTitle(gg.getNote());
 
 			}

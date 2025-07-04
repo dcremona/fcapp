@@ -130,24 +130,24 @@ public class FormazioniView extends VerticalLayout {
 
 		log.info("initImg()");
 
-		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource("classpath:images/" + "amm.png"));
-		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource("classpath:images/" + "esp.png"));
-		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource("classpath:images/" + "assist.png"));
-		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource("classpath:images/" + "autogol.png"));
-		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource("classpath:images/" + "entrato.png"));
+		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm.png"));
+		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp.png"));
+		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
+		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
+		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
 		iconGolfatto_ = Utils.buildImage("golfatto.png",
-				resourceLoader.getResource("classpath:images/" + "golfatto.png"));
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
 		iconGolsubito_ = Utils.buildImage("golsubito.png",
-				resourceLoader.getResource("classpath:images/" + "golsubito.png"));
-		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource("classpath:images/" + "uscito.png"));
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
+		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
 		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png",
-				resourceLoader.getResource("classpath:images/" + "rigoresbagliato.png"));
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato.png"));
 		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png",
-				resourceLoader.getResource("classpath:images/" + "rigoresegnato.png"));
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato.png"));
 		iconRigoreParato_ = Utils.buildImage("rigoreparato.png",
-				resourceLoader.getResource("classpath:images/" + "rigoreparato.png"));
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoreparato.png"));
 		iconBonusPortiere_ = Utils.buildImage("portiereImbattuto.png",
-				resourceLoader.getResource("classpath:images/" + "portiereImbattuto.png"));
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "portiereImbattuto.png"));
 	}
 
 	private void initLayout() {
@@ -265,9 +265,9 @@ public class FormazioniView extends VerticalLayout {
 
 			HorizontalLayout layoutRisultato = new HorizontalLayout();
 			String s1 = p.getGolCasa() == null ? "0.png" : p.getGolCasa() + ".png";
-			Image imgCasa = Utils.buildImage(s1, resourceLoader.getResource("classpath:images/number/" + s1));
+			Image imgCasa = Utils.buildImage(s1, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"number/" + s1));
 			String s2 = p.getGolCasa() == null ? "0.png" : p.getGolFuori() + ".png";
-			Image imgFuori = Utils.buildImage(s2, resourceLoader.getResource("classpath:images/number/" + s2));
+			Image imgFuori = Utils.buildImage(s2, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"number/" + s2));
 
 			layoutRisultato.add(imgCasa);
 			layoutRisultato.add(imgFuori);
@@ -399,7 +399,7 @@ public class FormazioniView extends VerticalLayout {
 			if (gd != null && gd.getFcGiocatore() != null) {
 
 				Image img = Utils.buildImage(gd.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-						resourceLoader.getResource("classpath:images/"
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES
 								+ gd.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 
@@ -417,13 +417,13 @@ public class FormazioniView extends VerticalLayout {
 				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo())
 						&& "N".equals(gd.getFlagAttivo().toUpperCase())) {
 					info.add(Utils.buildImage("uscito_s.png",
-							resourceLoader.getResource("classpath:images/" + "uscito_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito_s.png")));
 				}
 
 				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo())
 						&& "S".equals(gd.getFlagAttivo().toUpperCase())) {
 					info.add(Utils.buildImage("entrato_s.png",
-							resourceLoader.getResource("classpath:images/" + "entrato_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato_s.png")));
 				}
 
 				if (!info.isEmpty()) {
@@ -481,47 +481,47 @@ public class FormazioniView extends VerticalLayout {
 
 				for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
 					info.add(Utils.buildImage("amm_s.png",
-							resourceLoader.getResource("classpath:images/" + "amm_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getEspulsione(); a++) {
 					info.add(Utils.buildImage("esp_s.png",
-							resourceLoader.getResource("classpath:images/" + "esp_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalSubito(); a++) {
 					info.add(Utils.buildImage("golsubito_s.png",
-							resourceLoader.getResource("classpath:images/" + "golsubito_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalRealizzato() - gd.getFcPagelle().getRigoreSegnato(); a++) {
 					info.add(Utils.buildImage("golfatto_s.png",
-							resourceLoader.getResource("classpath:images/" + "golfatto_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAutorete(); a++) {
 					info.add(Utils.buildImage("autogol_s.png",
-							resourceLoader.getResource("classpath:images/" + "autogol_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreFallito(); a++) {
 					info.add(Utils.buildImage("rigoresbagliato_s.png",
-							resourceLoader.getResource("classpath:images/" + "rigoresbagliato_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreSegnato(); a++) {
 					info.add(Utils.buildImage("rigoresegnato_s.png",
-							resourceLoader.getResource("classpath:images/" + "rigoresegnato_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreParato(); a++) {
 					info.add(Utils.buildImage("rigoreparato_s.png",
-							resourceLoader.getResource("classpath:images/" + "rigoreparato_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoreparato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAssist(); a++) {
 					info.add(Utils.buildImage("assist_s.png",
-							resourceLoader.getResource("classpath:images/" + "assist_s.png")));
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist_s.png")));
 				}
 
 				if ("P".equals(gd.getFcGiocatore().getFcRuolo().getIdRuolo()) && gd.getFcPagelle().getGoalSubito() == 0
@@ -529,7 +529,7 @@ public class FormazioniView extends VerticalLayout {
 					if (gd.getFcPagelle().getG() != 0 && gd.getFcPagelle().getCs() != 0
 							&& gd.getFcPagelle().getTs() != 0) {
 						info.add(Utils.buildImage("portiereImbattuto_s.png",
-								resourceLoader.getResource("classpath:images/" + "portiereImbattuto_s.png")));
+								resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "portiereImbattuto_s.png")));
 					}
 				}
 				if (info.size() > 0) {

@@ -418,7 +418,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getIdRuolo() != null) {
-				Image img = Utils.buildImage(s.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+s.getIdRuolo().toLowerCase() + ".png"));
+				Image img = Utils.buildImage(s.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+s.getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -555,7 +555,7 @@ public class EmStatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -596,7 +596,7 @@ public class EmStatisticheView extends VerticalLayout
 					}
 				}
 				
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);

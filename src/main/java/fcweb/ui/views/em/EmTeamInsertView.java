@@ -412,7 +412,7 @@ public class EmTeamInsertView extends VerticalLayout
 		List<FcCalendarioCompetizione> listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
 		tablePartite = getTablePartite(listPartite);
 
-		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource("classpath:images/panchina.jpg"));
+		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"panchina.jpg"));
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
@@ -439,7 +439,7 @@ public class EmTeamInsertView extends VerticalLayout
 		absLayout.add(comboModulo, 20, 50);
 
 		absLayout.add(tableFormazione, 10, 150);
-		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource("classpath:images/campo.jpg"));
+		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource("Costants.CLASSPATH_IMAGES/campo.jpg"));
 		absLayout.add(campo, _350px, 150);
 
 		this.add(absLayout);
@@ -729,7 +729,7 @@ public class EmTeamInsertView extends VerticalLayout
 				cellLayout.add(lblOrdinamento);
 				cellLayout.setAlignSelf(Alignment.CENTER, lblOrdinamento);
 
-				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+ruolo.toLowerCase() + ".png"));
+				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+ruolo.toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayout.add(imgR);
 
@@ -872,7 +872,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -974,7 +974,7 @@ public class EmTeamInsertView extends VerticalLayout
 					}
 				}
 
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				img.setTitle(title);
 				cellLayout.add(img);
 

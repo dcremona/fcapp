@@ -354,7 +354,7 @@ public class EmMercatoView extends VerticalLayout
 		comboRuolo.setPlaceholder("Ruolo");
 		comboRuolo.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
-			Image imgR = Utils.buildImage(item.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+item.getIdRuolo().toLowerCase() + ".png"));
+			Image imgR = Utils.buildImage(item.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+item.getIdRuolo().toLowerCase() + ".png"));
 			container.add(imgR);
 			return container;
 		}));
@@ -570,10 +570,10 @@ public class EmMercatoView extends VerticalLayout
 		// layoutInfoRuolo.getStyle().set("background", Costants.LIGHT_BLUE);
 		layoutInfoRuolo.setAlignItems(FlexComponent.Alignment.END);
 
-		Image imgP = Utils.buildImage("p.png", resourceLoader.getResource("classpath:images/"+"p.png"));
-		Image imgD = Utils.buildImage("d.png", resourceLoader.getResource("classpath:images/"+"d.png"));
-		Image imgC = Utils.buildImage("c.png", resourceLoader.getResource("classpath:images/"+"c.png"));
-		Image imgA = Utils.buildImage("a.png", resourceLoader.getResource("classpath:images/"+"a.png"));
+		Image imgP = Utils.buildImage("p.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"p.png"));
+		Image imgD = Utils.buildImage("d.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"d.png"));
+		Image imgC = Utils.buildImage("c.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"c.png"));
+		Image imgA = Utils.buildImage("a.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"a.png"));
 		
 		lblInfoP = new Span();
 		lblInfoD = new Span();
@@ -2712,7 +2712,7 @@ public class EmMercatoView extends VerticalLayout
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
-				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+ruolo.toLowerCase() + ".png"));
+				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+ruolo.toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayout.add(imgR);
 				cellLayout.setAlignSelf(Alignment.CENTER, imgR);
@@ -3014,7 +3014,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}

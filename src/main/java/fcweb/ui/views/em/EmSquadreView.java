@@ -277,7 +277,7 @@ public class EmSquadreView extends VerticalLayout {
 			if (f != null && f.getFcGiocatore() != null
 					&& !StringUtils.isEmpty(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
 				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-						resourceLoader.getResource("classpath:images/"
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES
 								+ f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
@@ -379,7 +379,7 @@ public class EmSquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -417,7 +417,7 @@ public class EmSquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -513,7 +513,7 @@ public class EmSquadreView extends VerticalLayout {
 			if (m != null && m.getFcGiocatoreByIdGiocAcq() != null) {
 				Image imgR = Utils
 						.buildImage(m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-								resourceLoader.getResource("classpath:images/"
+								resourceLoader.getResource(Costants.CLASSPATH_IMAGES
 										+ m.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase()
 										+ ".png"));
 				cellLayout.add(imgR);
@@ -559,7 +559,7 @@ public class EmSquadreView extends VerticalLayout {
 			if (m != null && m.getFcGiocatoreByIdGiocVen() != null) {
 				Image imgR = Utils
 						.buildImage(m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-								resourceLoader.getResource("classpath:images/"
+								resourceLoader.getResource(Costants.CLASSPATH_IMAGES
 										+ m.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase()
 										+ ".png"));
 				cellLayout.add(imgR);

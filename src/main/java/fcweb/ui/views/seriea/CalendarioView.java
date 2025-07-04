@@ -237,18 +237,18 @@ public class CalendarioView extends VerticalLayout{
 			Button stampapdf = new Button("Calendario pdf");
 			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
-			Connection conn = jdbcTemplate.getDataSource().getConnection();
-			Map<String, Object> hm = new HashMap<String, Object>();
-			String start = campionato.getStart().toString();
-			String end = campionato.getEnd().toString();
-			hm.put("START", start);
-			hm.put("END", end);
-			Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
-			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
-					Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
-
-			button1Wrapper.wrapComponent(stampapdf);
-			horLayout.add(button1Wrapper);
+			if (jdbcTemplate.getDataSource() != null) {
+				Connection conn = jdbcTemplate.getDataSource().getConnection();
+				Map<String, Object> hm = new HashMap<String, Object>();
+				String start = campionato.getStart().toString();
+				String end = campionato.getEnd().toString();
+				hm.put("START", start);
+				hm.put("END", end);
+				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
+				FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
+				button1Wrapper.wrapComponent(stampapdf);
+				horLayout.add(button1Wrapper);
+			}
 
 		} catch (Exception e) {
 			log.error(e.getMessage());

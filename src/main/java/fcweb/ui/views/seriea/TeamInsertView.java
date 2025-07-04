@@ -431,8 +431,8 @@ public class TeamInsertView extends VerticalLayout
 		cssLayout2.add(lblInfo2);
 		layoutAvviso.add(cssLayout2);
 
-		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource("classpath:images/panchina.jpg")); 
-		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource("classpath:images/campo.jpg"));
+		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"panchina.jpg")); 
+		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"campo.jpg"));
 
 		absLayout.add(save, 20, 5);
 		absLayout.add(checkMail, 115, 10);
@@ -696,7 +696,7 @@ public class TeamInsertView extends VerticalLayout
 				cellLayoutImg.setSpacing(false);
 				cellLayoutImg.setSizeUndefined();
 
-				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayoutImg.add(imgR);
 
@@ -720,7 +720,7 @@ public class TeamInsertView extends VerticalLayout
 					}
 				}
 
-				Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				imgMv.setTitle(title);
 				cellLayoutImg.add(imgMv);
 
@@ -840,7 +840,7 @@ public class TeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -920,7 +920,7 @@ public class TeamInsertView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/"+imgThink));
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				img.setTitle(title);
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -2662,15 +2662,15 @@ public class TeamInsertView extends VerticalLayout
 		if (gg != null) {
 			if (gg.isInfortunato()) {
 				if ( gg.getNote().indexOf("INCERTO") != -1) {
-					img = Utils.buildImage("help.png", resourceLoader.getResource("classpath:images/icons/16/"+"help.png"));
+					img = Utils.buildImage("help.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"icons/16/"+"help.png"));
 					img.setTitle(gg.getNote());
 				} else  {
-					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource("classpath:images/"+"ospedale_s.png"));
+					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"ospedale_s.png"));
 					img.setTitle(gg.getNote());
 				}
 
 			} else if (gg.isSqualificato()) {
-				img = Utils.buildImage("esp_s.png", resourceLoader.getResource("classpath:images/"+"esp_s.png"));
+				img = Utils.buildImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"esp_s.png"));
 				img.setTitle(gg.getNote());
 
 			}

@@ -140,18 +140,18 @@ public class EmFormazioniView extends VerticalLayout{
 
 		LOG.info("initImg()");
 		
-		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource("classpath:images/"+"amm.png"));
-		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource("classpath:images/"+"esp.png"));
-		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource("classpath:images/"+"assist.png"));
-		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource("classpath:images/"+"autogol.png"));
-		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource("classpath:images/"+"entrato.png"));
-		iconGolfatto_ = Utils.buildImage("golfatto.png", resourceLoader.getResource("classpath:images/"+"golfatto.png"));
-		iconGolsubito_ = Utils.buildImage("golsubito.png", resourceLoader.getResource("classpath:images/"+"golsubito.png"));
-		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource("classpath:images/"+"uscito.png"));
-		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png", resourceLoader.getResource("classpath:images/"+"rigoresbagliato.png"));
-		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png", resourceLoader.getResource("classpath:images/"+"rigoresegnato.png"));
-		iconRigoreParato_ = Utils.buildImage("rigoreparato.png", resourceLoader.getResource("classpath:images/"+"rigoreparato.png"));
-		iconGolVittoria_ = Utils.buildImage("golvittoria.png", resourceLoader.getResource("classpath:images/"+"golvittoria.png"));
+		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"amm.png"));
+		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"esp.png"));
+		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"assist.png"));
+		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"autogol.png"));
+		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"entrato.png"));
+		iconGolfatto_ = Utils.buildImage("golfatto.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golfatto.png"));
+		iconGolsubito_ = Utils.buildImage("golsubito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golsubito.png"));
+		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"uscito.png"));
+		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresbagliato.png"));
+		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresegnato.png"));
+		iconRigoreParato_ = Utils.buildImage("rigoreparato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoreparato.png"));
+		iconGolVittoria_ = Utils.buildImage("golvittoria.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golvittoria.png"));
 		
 	}
 
@@ -300,7 +300,7 @@ public class EmFormazioniView extends VerticalLayout{
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (f != null && f.getFcGiocatore() != null) {
-				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource("classpath:images/"+f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -333,11 +333,11 @@ public class EmFormazioniView extends VerticalLayout{
 
 				ArrayList<Image> info = new ArrayList<Image>();
 				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "N".equals(gd.getFlagAttivo().toUpperCase())) {
-					info.add(Utils.buildImage("uscito_s.png", resourceLoader.getResource("classpath:images/"+"uscito_s.png")));
+					info.add(Utils.buildImage("uscito_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"uscito_s.png")));
 				}
 
 				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "S".equals(gd.getFlagAttivo().toUpperCase())) {
-					info.add(Utils.buildImage("entrato_s.png", resourceLoader.getResource("classpath:images/"+"entrato_s.png")));
+					info.add(Utils.buildImage("entrato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"entrato_s.png")));
 				}
 
 				if (info.size() > 0) {
@@ -408,43 +408,43 @@ public class EmFormazioniView extends VerticalLayout{
 				ArrayList<Image> info = new ArrayList<Image>();
 
 				for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
-					info.add(Utils.buildImage("amm_s.png", resourceLoader.getResource("classpath:images/"+"amm_s.png")));
+					info.add(Utils.buildImage("amm_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"amm_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getEspulsione(); a++) {
-					info.add(Utils.buildImage("esp_s.png", resourceLoader.getResource("classpath:images/"+"esp_s.png")));
+					info.add(Utils.buildImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"esp_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalSubito(); a++) {
-					info.add(Utils.buildImage("golsubito_s.png", resourceLoader.getResource("classpath:images/"+"golsubito_s.png")));
+					info.add(Utils.buildImage("golsubito_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golsubito_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalRealizzato() - gd.getFcPagelle().getRigoreSegnato(); a++) {
-					info.add(Utils.buildImage("golfatto_s.png", resourceLoader.getResource("classpath:images/"+"golfatto_s.png")));
+					info.add(Utils.buildImage("golfatto_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golfatto_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAutorete(); a++) {
-					info.add(Utils.buildImage("autogol_s.png", resourceLoader.getResource("classpath:images/"+"autogol_s.png")));
+					info.add(Utils.buildImage("autogol_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"autogol_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreFallito(); a++) {
-					info.add(Utils.buildImage("rigoresbagliato_s.png", resourceLoader.getResource("classpath:images/"+"rigoresbagliato_s.png")));
+					info.add(Utils.buildImage("rigoresbagliato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresbagliato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreSegnato(); a++) {
-					info.add(Utils.buildImage("rigoresegnato_s.png", resourceLoader.getResource("classpath:images/"+"rigoresegnato_s.png")));
+					info.add(Utils.buildImage("rigoresegnato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresegnato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreParato(); a++) {
-					info.add(Utils.buildImage("rigoreparato_s.png", resourceLoader.getResource("classpath:images/"+"rigoreparato_s.png")));
+					info.add(Utils.buildImage("rigoreparato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoreparato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAssist(); a++) {
-					info.add(Utils.buildImage("assist_s.png", resourceLoader.getResource("classpath:images/"+"assist_s.png")));
+					info.add(Utils.buildImage("assist_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"assist_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGdv(); a++) {
-					info.add(Utils.buildImage("golvittoria_s.png", resourceLoader.getResource("classpath:images/"+"golvittoria_s.png")));
+					info.add(Utils.buildImage("golvittoria_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golvittoria_s.png")));
 				}
 
 				if (info.size() > 0) {
@@ -524,64 +524,64 @@ public class EmFormazioniView extends VerticalLayout{
 		// if (gd.getOrdinamento() < 12 &&
 		// StringUtils.isNotEmpty(gd.getFlagAttivo()) &&
 		// "N".equals(gd.getFlagAttivo().toUpperCase())) {
-		// info.add(buildImage("classpath:images/", "uscito_s.png", "Uscito"));
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "uscito_s.png", "Uscito"));
 		// }
 		//
 		// if (gd.getOrdinamento() > 11 &&
 		// StringUtils.isNotEmpty(gd.getFlagAttivo()) &&
 		// "S".equals(gd.getFlagAttivo().toUpperCase())) {
-		// info.add(buildImage("classpath:images/", "entrato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "entrato_s.png",
 		// "Entrato"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
-		// info.add(buildImage("classpath:images/", "amm_s.png", "Ammonizione
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "amm_s.png", "Ammonizione
 		// (-0,5)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getEspulsione(); a++) {
-		// info.add(buildImage("classpath:images/", "esp_s.png", "Espulsione
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "esp_s.png", "Espulsione
 		// (-1)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getGoalSubito(); a++) {
-		// info.add(buildImage("classpath:images/", "golsubito_s.png", "Gol
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "golsubito_s.png", "Gol
 		// subito (-1)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getGoalRealizzato() -
 		// gd.getFcPagelle().getRigoreSegnato(); a++) {
-		// info.add(buildImage("classpath:images/", "golfatto_s.png", "Gol fatto
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "golfatto_s.png", "Gol fatto
 		// (+3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getAutorete(); a++) {
-		// info.add(buildImage("classpath:images/", "autogol_s.png", "Autogol
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "autogol_s.png", "Autogol
 		// (-2)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getRigoreFallito(); a++) {
-		// info.add(buildImage("classpath:images/", "rigoresbagliato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "rigoresbagliato_s.png",
 		// "Rigore sbagliato (-3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getRigoreSegnato(); a++) {
-		// info.add(buildImage("classpath:images/", "rigoresegnato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "rigoresegnato_s.png",
 		// "Rigore segnato (+3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getRigoreParato(); a++) {
-		// info.add(buildImage("classpath:images/", "rigoreparato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "rigoreparato_s.png",
 		// "Rigore parato (+3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getAssist(); a++) {
-		// info.add(buildImage("classpath:images/", "assist_s.png", "Assist
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "assist_s.png", "Assist
 		// (+1)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getGdv(); a++) {
-		// info.add(buildImage("classpath:images/", "golvittoria_s.png", "Bonus
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "golvittoria_s.png", "Bonus
 		// goal vittoria (+1)"));
 		// }
 		//

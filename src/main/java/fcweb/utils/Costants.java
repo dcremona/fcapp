@@ -72,7 +72,7 @@ public class Costants {
 	public static final int DIV_2_0 = 200;
 	public static final int DIV_3_0 = 300;
 
-	public static final String CLASSPATH_IMAGES = "classpath:images/";
+	public static final String CLASSPATH_IMAGES = "classpath:/images/";
 	public static final String CLASSPATH_IMG_SQUADRE = "classpath:/img/squadre/";
 	
 	public static final String TYPE_IMAGE_PNG = "image/png";
