@@ -42,7 +42,7 @@ public class FcPagelleView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataInfoService giornataInfoController;
@@ -63,12 +63,12 @@ public class FcPagelleView extends VerticalLayout{
 	private ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<>();
 
 	public FcPagelleView() {
-		LOG.info("FcPagelleView()");
+		log.info("FcPagelleView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}

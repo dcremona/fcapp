@@ -44,7 +44,7 @@ public class FcMercatoDettView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private MercatoService mercatoController;
@@ -65,12 +65,12 @@ public class FcMercatoDettView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcMercatoDettView() {
-		LOG.info("FcMercatoDettView()");
+		log.info("FcMercatoDettView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -89,10 +89,6 @@ public class FcMercatoDettView extends VerticalLayout{
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
 
-		// formFactory.setVisibleProperties("id", "fcAttore",
-		// "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "fcGiornataInfo",
-		// "dataCambio","nota");
-
 		formFactory.setVisibleProperties(CrudOperation.READ, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "dataCambio", "nota");
 		formFactory.setVisibleProperties(CrudOperation.ADD, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "dataCambio", "nota");
 		formFactory.setVisibleProperties(CrudOperation.UPDATE, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "dataCambio", "nota");
@@ -106,7 +102,6 @@ public class FcMercatoDettView extends VerticalLayout{
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocVen() != null ? "" + g.getFcGiocatoreByIdGiocVen().getCognGiocatore() : "")).setHeader("Gioc Ven");
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocAcq() != null ? "" + g.getFcGiocatoreByIdGiocAcq().getCognGiocatore() : "")).setHeader("Gioc Acq");
 
-		//Column<FcMercatoDett> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM).withLocale(Locale.ITALY)));
 		Column<FcMercatoDett> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataColumn.setHeader("Data Cambio");
 		dataColumn.setSortable(false);
@@ -136,131 +131,5 @@ public class FcMercatoDettView extends VerticalLayout{
 		crud.setDeleteOperation(g -> mercatoController.deleteMercatoDett(g));
 
 		add(crud);
-
-		// this.add(getDefaultCrud());
-		// this.add(getMinimal());
 	}
-
-	// @Override
-	// public FcGiocatore add(FcGiocatore arg0) {
-	// return null;
-	// }
-	//
-	// @Override
-	// public void delete(FcGiocatore arg0) {
-	// }
-	//
-	// @Override
-	// public Collection<FcGiocatore> findAll() {
-	// Collection<FcGiocatore> c = giocatoreController.findAll();
-	// return c;
-	// }
-	//
-	// @Override
-	// public FcGiocatore update(FcGiocatore arg0) {
-	// return null;
-	// }
-
-	// private Component getDefaultCrud() {
-	// return new GridCrud<>(FcGiocatore.class, this);
-	// }
-	//
-	// private Component getMinimal() {
-	// GridCrud<FcGiocatore> crud = new GridCrud<>(FcGiocatore.class);
-	// crud.setCrudListener(this);
-	// crud.getCrudFormFactory().setFieldProvider("fcSquadra", new
-	// ComboBoxProvider<>(squadraController.findAll()));
-	// crud.getCrudFormFactory().setFieldProvider("fcRuolo", new
-	// CheckBoxGroupProvider<>(ruoloController.findAll()));
-	// crud.getGrid().setColumns("idGiocatore", "cognGiocatore", "quotazione",
-	// "flagAttivo");
-	// return crud;
-	// }
-
-	// private Component getConfiguredCrud() {
-	// GridCrud<User> crud = new GridCrud<>(User.class, new
-	// HorizontalSplitCrudLayout());
-	// crud.setCrudListener(this);
-	//
-	// DefaultCrudFormFactory<User> formFactory = new
-	// DefaultCrudFormFactory<>(User.class);
-	// crud.setCrudFormFactory(formFactory);
-	//
-	// formFactory.setUseBeanValidation(true);
-	//
-	// formFactory.setErrorListener(e -> {
-	// Notification.show("Custom error message");
-	// e.printStackTrace();
-	// });
-	//
-	// formFactory.setVisibleProperties("name", "birthDate", "email",
-	// "phoneNumber",
-	// "maritalStatus", "groups", "active", "mainGroup");
-	// formFactory.setVisibleProperties(CrudOperation.DELETE, "name", "email",
-	// "mainGroup");
-	//
-	// formFactory.setDisabledProperties("id");
-	//
-	// crud.getGrid().setColumns("name", "email", "phoneNumber", "active");
-	// crud.getGrid().addColumn(new LocalDateRenderer<>(
-	// user -> user.getBirthDate(),
-	// DateTimeFormatter.ISO_LOCAL_DATE))
-	// .setHeader("Birthdate");
-	//
-	// crud.getGrid().addColumn(new TextRenderer<>(user -> user == null ? "" :
-	// user.getMainGroup().getName()))
-	// .setHeader("Main group");
-	//
-	// crud.getGrid().setColumnReorderingAllowed(true);
-	//
-	// formFactory.setFieldType("password", PasswordField.class);
-	// formFactory.setFieldProvider("birthDate", () -> {
-	// DatePicker datePicker = new DatePicker();
-	// datePicker.setMax(LocalDate.now());
-	// return datePicker;
-	// });
-	//
-	// formFactory.setFieldProvider("maritalStatus", new
-	// RadioButtonGroupProvider<>(Arrays.asList(MaritalStatus.values())));
-	// formFactory.setFieldProvider("groups", new
-	// CheckBoxGroupProvider<>("Groups", GroupRepository.findAll(), new
-	// TextRenderer<>(Group::getName)));
-	// formFactory.setFieldProvider("mainGroup",
-	// new ComboBoxProvider<>("Main Group", GroupRepository.findAll(), new
-	// TextRenderer<>(Group::getName), Group::getName));
-	//
-	// formFactory.setButtonCaption(CrudOperation.ADD, "Add new user");
-	// crud.setRowCountCaption("%d user(s) found");
-	//
-	// crud.setClickRowToUpdate(true);
-	// crud.setUpdateOperationVisible(false);
-	//
-	//
-	// nameFilter.setPlaceholder("filter by name...");
-	// nameFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(nameFilter);
-	//
-	// groupFilter.setPlaceholder("Group");
-	// groupFilter.setItems(GroupRepository.findAll());
-	// groupFilter.setItemLabelGenerator(Group::getName);
-	// groupFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(groupFilter);
-	//
-	// Button clearFilters = new Button(null, VaadinIcon.ERASER.create());
-	// clearFilters.addClickListener(event -> {
-	// nameFilter.clear();
-	// groupFilter.clear();
-	// });
-	// crud.getCrudLayout().addFilterComponent(clearFilters);
-	//
-	// crud.setFindAllOperation(
-	// DataProvider.fromCallbacks(
-	// query -> UserRepository.findByNameLike(nameFilter.getValue(),
-	// groupFilter.getValue(), query.getOffset(), query.getLimit()).stream(),
-	// query -> UserRepository.countByNameLike(nameFilter.getValue(),
-	// groupFilter.getValue()))
-	// );
-	// return crud;
-	// }
-
 }

@@ -29,7 +29,7 @@ public class FcPropertiesView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ProprietaService proprietaController;
@@ -41,12 +41,12 @@ public class FcPropertiesView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcPropertiesView() {
-		LOG.info("FcPropertiesView()");
+		log.info("FcPropertiesView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -86,18 +86,5 @@ public class FcPropertiesView extends VerticalLayout{
 
 		add(crud);
 	}
-
-	// private CrudEditor<FcProperties> createFcPropertiesEditor() {
-	// TextField descAttore = new TextField("Desc Attore");
-	// TextField cognome = new TextField("Cognome");
-	// FormLayout form = new FormLayout(descAttore,cognome);
-	//
-	// Binder<FcProperties> binder = new Binder<>(FcProperties.class);
-	// binder.bind(descAttore, FcProperties::getDescAttore,
-	// FcProperties::setDescAttore);
-	// binder.bind(cognome, FcProperties::getCognome, FcProperties::setCognome);
-	//
-	// return new BinderCrudEditor<>(binder,form);
-	// }
 
 }

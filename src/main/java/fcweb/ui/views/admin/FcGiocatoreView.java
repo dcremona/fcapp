@@ -51,7 +51,7 @@ public class FcGiocatoreView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiocatoreService giocatoreController;
@@ -72,12 +72,12 @@ public class FcGiocatoreView extends VerticalLayout{
 	private ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
 
 	public FcGiocatoreView() {
-		LOG.info("FcGiocatoreView()");
+		log.info("FcGiocatoreView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -126,7 +126,7 @@ public class FcGiocatoreView extends VerticalLayout{
 						try {
 							Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 							String basePathData = (String) p.get("PATH_TMP");
-							LOG.info("basePathData " + basePathData);
+							log.info("basePathData " + basePathData);
 
 							File f = new File(basePathData);
 							if (!f.exists()) {
@@ -135,19 +135,19 @@ public class FcGiocatoreView extends VerticalLayout{
 							}
 
 							String newImg = g.getNomeImg();
-							LOG.info("newImg " + newImg);
-							LOG.info("httpUrlImg " + Costants.HTTP_URL_IMG);
+							log.info("newImg " + newImg);
+							log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
 							String imgPath = basePathData;
 
 							boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, imgPath + newImg);
-							LOG.info("bResult 1 " + flag);
+							log.info("bResult 1 " + flag);
 							flag = Utils.buildFileSmall(imgPath + newImg, imgPath + "small-" + newImg);
-							LOG.info("bResult 2 " + flag);
+							log.info("bResult 2 " + flag);
 
 							g.setImg(BlobProxy.generateProxy(Utils.getImage(imgPath + newImg)));
 							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(imgPath + "small-" + newImg)));
 
-							LOG.info("SAVE GIOCATORE ");
+							log.info("SAVE GIOCATORE ");
 							giocatoreController.updateGiocatore(g);
 
 							CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
@@ -199,10 +199,6 @@ public class FcGiocatoreView extends VerticalLayout{
 		squadraFilter.addValueChangeListener(e -> crud.refreshGrid());
 		crud.getCrudLayout().addFilterComponent(squadraFilter);
 
-		// flagAttivoFilter.setPlaceholder("filter by flag...");
-		// flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		// crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
-
 		Button clearFilters = new Button("clear");
 		clearFilters.addClickListener(event -> {
 			ruoloFilter.clear();
@@ -217,130 +213,5 @@ public class FcGiocatoreView extends VerticalLayout{
 
 		add(crud);
 
-		// this.add(getDefaultCrud());
-		// this.add(getMinimal());
 	}
-
-	// @Override
-	// public FcGiocatore add(FcGiocatore arg0) {
-	// return null;
-	// }
-	//
-	// @Override
-	// public void delete(FcGiocatore arg0) {
-	// }
-	//
-	// @Override
-	// public Collection<FcGiocatore> findAll() {
-	// Collection<FcGiocatore> c = giocatoreController.findAll();
-	// return c;
-	// }
-	//
-	// @Override
-	// public FcGiocatore update(FcGiocatore arg0) {
-	// return null;
-	// }
-
-	// private Component getDefaultCrud() {
-	// return new GridCrud<>(FcGiocatore.class, this);
-	// }
-	//
-	// private Component getMinimal() {
-	// GridCrud<FcGiocatore> crud = new GridCrud<>(FcGiocatore.class);
-	// crud.setCrudListener(this);
-	// crud.getCrudFormFactory().setFieldProvider("fcSquadra", new
-	// ComboBoxProvider<>(squadraController.findAll()));
-	// crud.getCrudFormFactory().setFieldProvider("fcRuolo", new
-	// CheckBoxGroupProvider<>(ruoloController.findAll()));
-	// crud.getGrid().setColumns("idGiocatore", "cognGiocatore", "quotazione",
-	// "flagAttivo");
-	// return crud;
-	// }
-
-	// private Component getConfiguredCrud() {
-	// GridCrud<User> crud = new GridCrud<>(User.class, new
-	// HorizontalSplitCrudLayout());
-	// crud.setCrudListener(this);
-	//
-	// DefaultCrudFormFactory<User> formFactory = new
-	// DefaultCrudFormFactory<>(User.class);
-	// crud.setCrudFormFactory(formFactory);
-	//
-	// formFactory.setUseBeanValidation(true);
-	//
-	// formFactory.setErrorListener(e -> {
-	// Notification.show("Custom error message");
-	// e.printStackTrace();
-	// });
-	//
-	// formFactory.setVisibleProperties("name", "birthDate", "email",
-	// "phoneNumber",
-	// "maritalStatus", "groups", "active", "mainGroup");
-	// formFactory.setVisibleProperties(CrudOperation.DELETE, "name", "email",
-	// "mainGroup");
-	//
-	// formFactory.setDisabledProperties("id");
-	//
-	// crud.getGrid().setColumns("name", "email", "phoneNumber", "active");
-	// crud.getGrid().addColumn(new LocalDateRenderer<>(
-	// user -> user.getBirthDate(),
-	// DateTimeFormatter.ISO_LOCAL_DATE))
-	// .setHeader("Birthdate");
-	//
-	// crud.getGrid().addColumn(new TextRenderer<>(user -> user == null ? "" :
-	// user.getMainGroup().getName()))
-	// .setHeader("Main group");
-	//
-	// crud.getGrid().setColumnReorderingAllowed(true);
-	//
-	// formFactory.setFieldType("password", PasswordField.class);
-	// formFactory.setFieldProvider("birthDate", () -> {
-	// DatePicker datePicker = new DatePicker();
-	// datePicker.setMax(LocalDate.now());
-	// return datePicker;
-	// });
-	//
-	// formFactory.setFieldProvider("maritalStatus", new
-	// RadioButtonGroupProvider<>(Arrays.asList(MaritalStatus.values())));
-	// formFactory.setFieldProvider("groups", new
-	// CheckBoxGroupProvider<>("Groups", GroupRepository.findAll(), new
-	// TextRenderer<>(Group::getName)));
-	// formFactory.setFieldProvider("mainGroup",
-	// new ComboBoxProvider<>("Main Group", GroupRepository.findAll(), new
-	// TextRenderer<>(Group::getName), Group::getName));
-	//
-	// formFactory.setButtonCaption(CrudOperation.ADD, "Add new user");
-	// crud.setRowCountCaption("%d user(s) found");
-	//
-	// crud.setClickRowToUpdate(true);
-	// crud.setUpdateOperationVisible(false);
-	//
-	//
-	// nameFilter.setPlaceholder("filter by name...");
-	// nameFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(nameFilter);
-	//
-	// groupFilter.setPlaceholder("Group");
-	// groupFilter.setItems(GroupRepository.findAll());
-	// groupFilter.setItemLabelGenerator(Group::getName);
-	// groupFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(groupFilter);
-	//
-	// Button clearFilters = new Button(null, VaadinIcon.ERASER.create());
-	// clearFilters.addClickListener(event -> {
-	// nameFilter.clear();
-	// groupFilter.clear();
-	// });
-	// crud.getCrudLayout().addFilterComponent(clearFilters);
-	//
-	// crud.setFindAllOperation(
-	// DataProvider.fromCallbacks(
-	// query -> UserRepository.findByNameLike(nameFilter.getValue(),
-	// groupFilter.getValue(), query.getOffset(), query.getLimit()).stream(),
-	// query -> UserRepository.countByNameLike(nameFilter.getValue(),
-	// groupFilter.getValue()))
-	// );
-	// return crud;
-	// }
-
 }

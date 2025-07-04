@@ -45,7 +45,7 @@ public class FcGiornataDettView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -73,12 +73,12 @@ public class FcGiornataDettView extends VerticalLayout{
 	private TextField flagAttivoFilter = new TextField();
 
 	public FcGiornataDettView() {
-		LOG.info("FcGiornataDettView()");
+		log.info("FcGiornataDettView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -102,8 +102,6 @@ public class FcGiornataDettView extends VerticalLayout{
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "ordinamento", "fcStatoGiocatore", "voto", "flagAttivo");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "ordinamento", "fcGiornataInfo", "fcAttore","fcGiocatore");
 
-		// crud.getGrid().setColumns("ordinamento", "fcGiornataInfo",
-		// "fcAttore", "fcGiocatore", "fcStatoGiocatore", "voto", "flagAttivo");
 		crud.getGrid().removeAllColumns();
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getOrdinamento() : "")).setHeader("Ordinamento");
@@ -161,101 +159,8 @@ public class FcGiornataDettView extends VerticalLayout{
 
 		add(crud);
 
-		// add(getConfiguredCrud());
 
 	}
 
-	// private Component getConfiguredCrud() {
-	// GridCrud<FcGiornataDett> crud = new GridCrud<>(FcGiornataDett.class,new
-	// HorizontalSplitCrudLayout());
-	// crud.getCrudFormFactory().setUseBeanValidation(true);
-	// crud.getCrudFormFactory().setErrorListener(e -> {
-	// Notification.show("Custom error message");
-	// e.printStackTrace();
-	// });
-	//
-	// crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ,
-	// "ordinamento", "fcGiornataInfo", "fcAttore", "fcGiocatore",
-	// "fcStatoGiocatore", "voto", "flagAttivo");
-	// crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD,
-	// "ordinamento", "fcGiornataInfo", "fcAttore", "fcGiocatore",
-	// "fcStatoGiocatore", "voto", "flagAttivo");
-	// crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE,
-	// "ordinamento", "fcGiocatore", "statoGiocatore", "voto", "flagAttivo");
-	// crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE,
-	// "ordinamento", "fcGiornataInfo", "fcAttore");
-	//
-	// crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new
-	// ComboBoxProvider<>("GG",giornataInfoController.findAll(),new
-	// TextRenderer<>(FcGiornataInfo::getDescGiornata),FcGiornataInfo::getDescGiornata));
-	// crud.getCrudFormFactory().setFieldProvider("fcAttore", new
-	// ComboBoxProvider<>("Attore",attoreController.findAll(),new
-	// TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-	// crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new
-	// ComboBoxProvider<>("Giocatore",giocatoreController.findAll(),new
-	// TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
-	// crud.getCrudFormFactory().setFieldProvider("fcStatoGiocatore", new
-	// ComboBoxProvider<>("StatoGiocatore",statoGiocatoreController.findAll(),new
-	// TextRenderer<>(FcStatoGiocatore::getDescStatoGiocatore),FcStatoGiocatore::getDescStatoGiocatore));
-	//
-	// crud.getGrid().setColumns("ordinamento", "fcGiornataInfo", "fcAttore",
-	// "fcGiocatore", "fcStatoGiocatore", "voto", "flagAttivo");
-	//
-	// crud.getGrid().setColumnReorderingAllowed(true);
-	//
-	// crud.setRowCountCaption("%d giornatadett(s) found");
-	//
-	// giornataInfoFilter.setPlaceholder("GG");
-	// giornataInfoFilter.setItems(giornataInfoController.findAll());
-	// giornataInfoFilter.setItemLabelGenerator(FcGiornataInfo::getDescGiornata);
-	// giornataInfoFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
-	//
-	// attoreFilter.setPlaceholder("Attore");
-	// attoreFilter.setItems(attoreController.findAll());
-	// attoreFilter.setItemLabelGenerator(FcAttore::getDescAttore);
-	// attoreFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(attoreFilter);
-	//
-	// flagAttivoFilter.setPlaceholder("filter by flag...");
-	// flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
-	//
-	// Button clearFilters = new Button("clear");
-	// clearFilters.addClickListener(event -> {
-	// flagAttivoFilter.clear();
-	// attoreFilter.clear();
-	// });
-	// crud.getCrudLayout().addFilterComponent(clearFilters);
-	//
-	// crud.setFindAllOperation(() ->
-	// giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attoreFilter.getValue(),
-	// giornataInfoFilter.getValue()));
-	// // crud.setFindAllOperation(() -> giornataDettController.findAll());
-	// crud.setAddOperation(user ->
-	// giornataDettController.updateGiornataDett(user));
-	// crud.setUpdateOperation(user ->
-	// giornataDettController.updateGiornataDett(user));
-	// crud.setDeleteOperation(user ->
-	// giornataDettController.deleteGiornataDett(user));
-	//
-	// return crud;
-	// }
-
-	// private Component getDefaultCrud() {
-	// return new GridCrud<>(GiornataDett.class, this);
-	// }
-
-	// private Component getMinimal() {
-	// GridCrud<GiornataDett> crud = new GiornataDett<>(GiornataDett.class);
-	// crud.setCrudListener(this);
-	// crud.getCrudFormFactory().setFieldProvider("mainGroup", new
-	// ComboBoxProvider<>(GroupRepository.findAll()));
-	// crud.getCrudFormFactory().setFieldProvider("groups", new
-	// CheckBoxGroupProvider<>(GroupRepository.findAll()));
-	// crud.getGrid().setColumns("name", "birthDate", "gender", "email",
-	// "phoneNumber", "active");
-	// return crud;
-	// }
 
 }

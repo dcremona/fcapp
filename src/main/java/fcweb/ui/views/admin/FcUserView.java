@@ -40,7 +40,7 @@ public class FcUserView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreService;
@@ -52,12 +52,12 @@ public class FcUserView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcUserView() {
-		LOG.info("FcUserView()");
+		log.info("FcUserView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -82,9 +82,6 @@ public class FcUserView extends VerticalLayout{
 		formFactory.setVisibleProperties(CrudOperation.UPDATE, "username", "hashedPassword", "name", "roles", "profilePicture", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
 		formFactory.setVisibleProperties(CrudOperation.DELETE, "id", "username");
 
-		// crud.getGrid().setColumns("id", "username", "hashedPassword", "name",
-		// "roles", "idAttore", "descAttore", "cognome", "nome", "email",
-		// "cellulare");
 		crud.getGrid().setColumns("idAttore", "descAttore", "username", "name", "email", "cellulare", "roles");
 
 		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
@@ -171,13 +168,13 @@ public class FcUserView extends VerticalLayout{
 			int strength = 10; // work factor of bcrypt
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength,new SecureRandom());
 			String encodedPassword = bCryptPasswordEncoder.encode(user.getHashedPassword());
-			System.out.println(encodedPassword);
+			//System.out.println(encodedPassword);
 
 			boolean isPasswordMatch = bCryptPasswordEncoder.matches(password, encodedPassword);
-			System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
+			//System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
 
 			isPasswordMatch = bCryptPasswordEncoder.matches(password, encodedPassword);
-			System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
+			//System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
 
 			user.setHashedPassword(encodedPassword);
 

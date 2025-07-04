@@ -37,7 +37,7 @@ public class FcFormazioneView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -55,12 +55,12 @@ public class FcFormazioneView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcFormazioneView() {
-		LOG.info("FcFormazioneView()");
+		log.info("FcFormazioneView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -78,9 +78,6 @@ public class FcFormazioneView extends VerticalLayout{
 		DefaultCrudFormFactory<FcFormazione> formFactory = new DefaultCrudFormFactory<>(FcFormazione.class);
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
-
-		// formFactory.setVisibleProperties("id", "fcAttore", "fcGiocatore",
-		// "totPagato");
 
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcAttore", "fcGiocatore", "totPagato");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcAttore", "fcGiocatore", "totPagato");

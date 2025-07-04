@@ -33,7 +33,7 @@ public class FcExpStatView extends VerticalLayout
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ExpStatService expStatController;
@@ -45,12 +45,12 @@ public class FcExpStatView extends VerticalLayout
 	private AccessoService accessoController;
 
 	public FcExpStatView() {
-		LOG.info("FcExpStatView()");
+		log.info("FcExpStatView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}

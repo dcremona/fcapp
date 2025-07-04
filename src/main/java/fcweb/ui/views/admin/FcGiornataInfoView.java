@@ -35,7 +35,7 @@ public class FcGiornataInfoView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataInfoService giornataInfoController;
@@ -47,12 +47,12 @@ public class FcGiornataInfoView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcGiornataInfoView() {
-		LOG.info("FcGiornataInfoView()");
+		log.info("FcGiornataInfoView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -102,23 +102,19 @@ public class FcGiornataInfoView extends VerticalLayout{
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornataFc()));
 
 		crud.getCrudFormFactory().setFieldProvider("dataAnticipo1", a -> {
-			DateTimePicker data = new DateTimePicker();
-			return data;
+			return new DateTimePicker();
 		});
 
 		crud.getCrudFormFactory().setFieldProvider("dataAnticipo2", a -> {
-			DateTimePicker data = new DateTimePicker();
-			return data;
+			return new DateTimePicker();
 		});
 
 		crud.getCrudFormFactory().setFieldProvider("dataGiornata", a -> {
-			DateTimePicker data = new DateTimePicker();
-			return data;
+			return new DateTimePicker();
 		});
 
 		crud.getCrudFormFactory().setFieldProvider("dataPosticipo", a -> {
-			DateTimePicker data = new DateTimePicker();
-			return data;
+			return new DateTimePicker();
 		});
 
 		crud.setRowCountCaption("%d GiornataInfo(s) found");
