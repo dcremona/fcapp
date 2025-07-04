@@ -175,7 +175,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		comboAttoreA.setItems(squadreA);
 		comboAttoreA.setItemLabelGenerator(p -> p.getDescAttore());
 		comboAttoreA.setValue(att);
-		comboAttoreA.setPlaceholder("Seleziona attore");
+		comboAttoreA.setPlaceholder(Costants.SELEZIONA_ATTORE);
 		comboAttoreA.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
 			verticalLayoutGrafico.add(buildGrafico(campionato));
@@ -185,16 +185,16 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		comboAttoreB.setItems(squadreB);
 		comboAttoreB.setItemLabelGenerator(p -> p.getDescAttore());
 		comboAttoreB.setValue(att);
-		comboAttoreB.setPlaceholder("Seleziona attore");
+		comboAttoreB.setPlaceholder(Costants.SELEZIONA_ATTORE);
 		comboAttoreB.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
 			verticalLayoutGrafico.add(buildGrafico(campionato));
 		});
 
 		comboPunti = new ComboBox<>();
-		comboPunti.setItems("PUNTI", "TOTALE_PUNTI", "PT_TVST");
-		comboPunti.setValue("PUNTI");
-		comboPunti.setPlaceholder("Claasifica per");
+		comboPunti.setItems(Costants.PUNTI, Costants.TOTALE_PUNTI, Costants.PT_TVST);
+		comboPunti.setValue(Costants.PUNTI);
+		comboPunti.setPlaceholder(Costants.CLASSIFICA_PER);
 		comboPunti.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
 			verticalLayoutGrafico.add(buildGrafico(campionato));
@@ -237,20 +237,20 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 			giornate.add(gg);
 
 			if (squadra.equals(descAttoreA)) {
-				if (sPunti.equals("PUNTI")) {
+				if (sPunti.equals(Costants.PUNTI)) {
 					dataA.add(punti);
-				} else if (sPunti.equals("TOTALE_PUNTI")) {
+				} else if (sPunti.equals(Costants.TOTALE_PUNTI)) {
 					dataA.add(totPunti);
-				} else if (sPunti.equals("PT_TVST")) {
+				} else if (sPunti.equals(Costants.PT_TVST)) {
 					dataA.add(ptTvst);
 				}
 
 			} else if (squadra.equals(descAttoreB)) {
-				if (sPunti.equals("PUNTI")) {
+				if (sPunti.equals(Costants.PUNTI)) {
 					dataB.add(punti);
-				} else if (sPunti.equals("TOTALE_PUNTI")) {
+				} else if (sPunti.equals(Costants.TOTALE_PUNTI)) {
 					dataB.add(totPunti);
-				} else if (sPunti.equals("PT_TVST")) {
+				} else if (sPunti.equals(Costants.PT_TVST)) {
 					dataB.add(ptTvst);
 				}
 			}
@@ -263,8 +263,8 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 				.withChart(ChartBuilder
 						.get().withType(Type.LINE).withZoom(ZoomBuilder.get().withEnabled(false).build()).build())
 				.withStroke(StrokeBuilder.get().withCurve(Curve.STRAIGHT).build())
-				.withTitle(
-						TitleSubtitleBuilder.get().withText("Classifica per " + sPunti).withAlign(Align.LEFT).build())
+				.withTitle(TitleSubtitleBuilder.get().withText(Costants.CLASSIFICA_PER + " " + sPunti)
+						.withAlign(Align.LEFT).build())
 				.withGrid(GridBuilder.get()
 						.withRow(RowBuilder.get().withColors("#f3f3f3", "transparent").withOpacity(0.5).build())
 						.build())
@@ -340,23 +340,23 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		hlayoutFilter.setSpacing(true);
 
 		toggleP = new ToggleButton();
-		toggleP.setLabel("P");
+		toggleP.setLabel(Costants.P);
 		toggleP.setValue(true);
 		toggleD = new ToggleButton();
-		toggleD.setLabel("D");
+		toggleD.setLabel(Costants.D);
 		toggleD.setValue(true);
 		toggleC = new ToggleButton();
-		toggleC.setLabel("C");
+		toggleC.setLabel(Costants.C);
 		toggleC.setValue(true);
 		toggleA = new ToggleButton();
-		toggleA.setLabel("A");
+		toggleA.setLabel(Costants.A);
 		toggleA.setValue(true);
 
-		comboSqudreA = new ComboBox<>("Squadra");
+		comboSqudreA = new ComboBox<>(Costants.SQUADRA);
 		comboSqudreA.setItems(squadreSerieA);
 		comboSqudreA.setItemLabelGenerator(ss -> ss.getNomeSquadra());
 		comboSqudreA.setClearButtonVisible(true);
-		comboSqudreA.setPlaceholder("Squadra");
+		comboSqudreA.setPlaceholder(Costants.SQUADRA);
 		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
 			if (item != null && item.getImg() != null) {
@@ -380,11 +380,11 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		freePlayers.setLabel("Free Players");
 		freePlayers.setValue(false);
 
-		comboProprietario = new ComboBox<>("Propretari");
+		comboProprietario = new ComboBox<>(Costants.PROPETARIO);
 		comboProprietario.setItems(propretari);
 		comboProprietario.setItemLabelGenerator(ss -> ss.getDescAttore());
 		comboProprietario.setClearButtonVisible(true);
-		comboProprietario.setPlaceholder("Proprietario");
+		comboProprietario.setPlaceholder(Costants.PROPETARIO);
 		comboProprietario.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
 			Span lblProp = new Span(item.getDescAttore());
@@ -449,19 +449,19 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 			cellLayout.setSizeFull();
 			if (g != null && g.getIdRuolo() != null) {
 				Image img = Utils.buildImage(g.getIdRuolo().toLowerCase() + ".png",
-						resourceLoader.getResource("classpath:images/" + g.getIdRuolo().toLowerCase() + ".png"));
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
 		}));
-		ruoloColumn.setKey("ruolo");
+		ruoloColumn.setKey(Costants.RUOLO);
 		ruoloColumn.setSortable(true);
 		ruoloColumn.setHeader("R");
 		ruoloColumn.setAutoWidth(true);
 
-		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey("giocatore");
+		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey(Costants.GIOCATORE);
 		giocatoreColumn.setSortable(true);
-		giocatoreColumn.setHeader("Giocatore");
+		giocatoreColumn.setHeader(Costants.GIOCATORE);
 		giocatoreColumn.setAutoWidth(true);
 
 		Column<FcStatistiche> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -473,7 +473,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getNomeSquadra() != null) {
 				Image img = Utils.buildImage(s.getNomeSquadra() + ".png",
-						resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeSquadra() + ".png"));
+						resourceLoader.getResource(Costants.CLASSPATH_IMG_SQUADRE + s.getNomeSquadra() + ".png"));
 				Span lblSquadra = new Span(s.getNomeSquadra());
 				cellLayout.add(img);
 				cellLayout.add(lblSquadra);
@@ -484,7 +484,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		}));
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator((p1, p2) -> p1.getNomeSquadra().compareTo(p2.getNomeSquadra()));
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcStatistiche> quotazioneColumn = grid
@@ -493,14 +493,14 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		quotazioneColumn.setHeader("Q");
 		quotazioneColumn.setAutoWidth(true);
 
-		Column<FcStatistiche> proprietarioColumn = grid.addColumn(s -> s.getProprietario()).setKey("proprietario");
+		Column<FcStatistiche> proprietarioColumn = grid.addColumn(s -> s.getProprietario()).setKey(Costants.PROPETARIO);
 		proprietarioColumn.setSortable(true);
-		proprietarioColumn.setHeader("Proprietario");
+		proprietarioColumn.setHeader(Costants.PROPETARIO);
 		proprietarioColumn.setAutoWidth(true);
 
-		Column<FcStatistiche> giocateColumn = grid.addColumn(s -> s.getGiocate()).setKey("giocate");
+		Column<FcStatistiche> giocateColumn = grid.addColumn(s -> s.getGiocate()).setKey(Costants.GIOCATE);
 		giocateColumn.setSortable(true);
-		giocateColumn.setHeader("Giocate");
+		giocateColumn.setHeader(Costants.GIOCATE);
 		giocateColumn.setAutoWidth(true);
 
 		Column<FcStatistiche> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -517,7 +517,8 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
+				Image img = Utils.buildImage(imgThink,
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -552,7 +553,8 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource("classpath:images/" + imgThink));
+				Image img = Utils.buildImage(imgThink,
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -626,50 +628,64 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
 		dataProvider.clearFilters();
 
-		if (toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
-			dataProvider
-					.addFilter(s -> s.getIdRuolo().toUpperCase().equals("P") || s.getIdRuolo().toUpperCase().equals("D")
-							|| s.getIdRuolo().toUpperCase().equals("C") || s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue() && !toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("P"));
-		} else if (!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && !toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("D"));
-		} else if (!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("C"));
-		} else if (!toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && !toggleA.getValue()) {
+		if (toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue() && toggleC.getValue().booleanValue()
+				&& toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equals(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D)
+					|| s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P));
+		} else if (!toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D));
+		} else if (!toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.C));
+		} else if (!toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
 			dataProvider.addFilter(
-					s -> s.getIdRuolo().toUpperCase().equals("P") || s.getIdRuolo().toUpperCase().equals("D"));
-		} else if (toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("P")
-					|| s.getIdRuolo().toUpperCase().equals("D") || s.getIdRuolo().toUpperCase().equals("C"));
-		} else if (!toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("D")
-					|| s.getIdRuolo().toUpperCase().equals("C") || s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (!toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
+					s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D));
+		} else if (toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P)
+					|| s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
+		} else if (!toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D)
+					|| s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (!toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
 			dataProvider.addFilter(
-					s -> s.getIdRuolo().toUpperCase().equals("D") || s.getIdRuolo().toUpperCase().equals("C"));
-		} else if (!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
+					s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
+		} else if (!toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
 			dataProvider.addFilter(
-					s -> s.getIdRuolo().toUpperCase().equals("C") || s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
+					s -> s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (!toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
 			dataProvider.addFilter(
-					s -> s.getIdRuolo().toUpperCase().equals("D") || s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
+					s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && !toggleA.getValue().booleanValue()) {
 			dataProvider.addFilter(
-					s -> s.getIdRuolo().toUpperCase().equals("P") || s.getIdRuolo().toUpperCase().equals("C"));
-		} else if (toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
+					s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
+		} else if (toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
 			dataProvider.addFilter(
-					s -> s.getIdRuolo().toUpperCase().equals("P") || s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("P")
-					|| s.getIdRuolo().toUpperCase().equals("D") || s.getIdRuolo().toUpperCase().equals("A"));
-		} else if (toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("P")
-					|| s.getIdRuolo().toUpperCase().equals("C") || s.getIdRuolo().toUpperCase().equals("A"));
+					s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (toggleP.getValue().booleanValue() && toggleD.getValue().booleanValue()
+				&& !toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P)
+					|| s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
+		} else if (toggleP.getValue().booleanValue() && !toggleD.getValue().booleanValue()
+				&& toggleC.getValue().booleanValue() && toggleA.getValue().booleanValue()) {
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P)
+					|| s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
 		} else {
-			dataProvider.addFilter(s -> s.getIdRuolo().toUpperCase().equals("-"));
+			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase("-"));
 		}
 
 		if (comboSqudreA.getValue() != null) {
@@ -681,7 +697,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 					.addFilter(s -> s.getFcGiocatore().getQuotazione().intValue() <= txtQuotaz.getValue().intValue());
 		}
 
-		if (freePlayers.getValue()) {
+		if (freePlayers.getValue().booleanValue()) {
 			dataProvider.addFilter(s -> StringUtils.isEmpty(s.getProprietario()));
 		}
 

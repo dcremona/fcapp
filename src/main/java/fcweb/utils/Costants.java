@@ -73,7 +73,28 @@ public class Costants {
 	public static final int DIV_3_0 = 300;
 
 	public static final String CLASSPATH_IMAGES = "classpath:images/";
+	public static final String CLASSPATH_IMG_SQUADRE = "classpath:/img/squadre/";
+	
 	public static final String TYPE_IMAGE_PNG = "image/png";
 	public static final String TYPE_IMAGE_JPG = "image/jpg";
+	
+	public static final String PUNTI = "PUNTI";
+	public static final String TOTALE_PUNTI = "TOTALE_PUNTI";
+	public static final String PT_TVST = "PT_TVST";
+	
+	public static final String SELEZIONA_ATTORE = "Seleziona attore";
+	public static final String CLASSIFICA_PER = "Claasifica per";
+	
+	public static final String RUOLO = "Ruolo";
+	public static final String GIOCATORE = "Giocatore";
+	public static final String SQUADRA = "Squadra";
+	public static final String PROPETARIO = "Proprietario";
+	public static final String GIOCATE = "Giocate";
+	
+	public static final String P = "P";
+	public static final String D = "C";
+	public static final String C = "D";
+	public static final String A = "A";
+	
 
 }

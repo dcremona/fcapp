@@ -499,69 +499,69 @@ public class AlboView extends VerticalLayout {
 
 			String squadra = attore.getDescAttore();
 
-			int count_scudetto = 0;
-			int count_p2 = 0;
-			int count_p3 = 0;
-			int count_p4 = 0;
-			int count_p5 = 0;
-			int count_p6 = 0;
-			int count_p7 = 0;
-			int count_p8 = 0;
-			int count_win_clas_pt = 0;
-			int count_win_clas_reg = 0;
-			int count_win_clas_tvst = 0;
+			int countScudetto = 0;
+			int countP2 = 0;
+			int countP3 = 0;
+			int countP4 = 0;
+			int countP5 = 0;
+			int countP6 = 0;
+			int countP7 = 0;
+			int countP8 = 0;
+			int countWinClasPt = 0;
+			int countWinClasReg = 0;
+			int countWinClasTvst = 0;
 
 			for (FcExpStat bean : all) {
 
-				if (bean.getScudetto().equals(squadra)) {
-					count_scudetto++;
+				if (squadra.equals(bean.getScudetto())) {
+					countScudetto++;
 				}
 				if (bean.getP2().equals(squadra)) {
-					count_p2++;
+					countP2++;
 				}
 				if (bean.getP3().equals(squadra)) {
-					count_p3++;
+					countP3++;
 				}
 				if (bean.getP4().equals(squadra)) {
-					count_p4++;
+					countP4++;
 				}
 				if (bean.getP5().equals(squadra)) {
-					count_p5++;
+					countP5++;
 				}
 				if (bean.getP6().equals(squadra)) {
-					count_p6++;
+					countP6++;
 				}
 				if (bean.getP7().equals(squadra)) {
-					count_p7++;
+					countP7++;
 				}
 				if (bean.getP8().equals(squadra)) {
-					count_p8++;
+					countP8++;
 				}
-				if (bean.getWinClasPt().equals(squadra)) {
-					count_win_clas_pt++;
+				if (squadra.equals(bean.getWinClasPt())) {
+					countWinClasPt++;
 				}
-				if (bean.getWinClasReg().equals(squadra)) {
-					count_win_clas_reg++;
+				if (squadra.equals(bean.getWinClasReg())) {
+					countWinClasReg++;
 				}
-				if (bean.getWinClasTvsT().equals(squadra)) {
-					count_win_clas_tvst++;
+				if (squadra.equals(bean.getWinClasTvsT())) {
+					countWinClasTvst++;
 				}
 			}
 
 			FcExpStat b = new FcExpStat();
 			b.setAnno(squadra);
-			b.setScudetto(count_scudetto < 10 ? "0" + count_scudetto : "" + count_scudetto);
-			b.setP2(count_p2 < 10 ? "0" + count_p2 : "" + count_p2);
-			b.setP3(count_p3 < 10 ? "0" + count_p3 : "" + count_p3);
-			b.setP4(count_p4 < 10 ? "0" + count_p4 : "" + count_p4);
-			b.setP5(count_p5 < 10 ? "0" + count_p5 : "" + count_p5);
-			b.setP6(count_p6 < 10 ? "0" + count_p6 : "" + count_p6);
-			b.setP7(count_p7 < 10 ? "0" + count_p7 : "" + count_p7);
-			b.setP8(count_p8 < 10 ? "0" + count_p8 : "" + count_p8);
+			b.setScudetto(countScudetto < 10 ? "0" + countScudetto : "" + countScudetto);
+			b.setP2(countP2 < 10 ? "0" + countP2 : "" + countP2);
+			b.setP3(countP3 < 10 ? "0" + countP3 : "" + countP3);
+			b.setP4(countP4 < 10 ? "0" + countP4 : "" + countP4);
+			b.setP5(countP5 < 10 ? "0" + countP5 : "" + countP5);
+			b.setP6(countP6 < 10 ? "0" + countP6 : "" + countP6);
+			b.setP7(countP7 < 10 ? "0" + countP7 : "" + countP7);
+			b.setP8(countP8 < 10 ? "0" + countP8 : "" + countP8);
 
-			b.setWinClasPt(count_win_clas_pt < 10 ? "0" + count_win_clas_pt : "" + count_win_clas_pt);
-			b.setWinClasReg(count_win_clas_reg < 10 ? "0" + count_win_clas_reg : "" + count_win_clas_reg);
-			b.setWinClasTvsT(count_win_clas_tvst < 10 ? "0" + count_win_clas_tvst : "" + count_win_clas_tvst);
+			b.setWinClasPt(countWinClasPt < 10 ? "0" + countWinClasPt : "" + countWinClasPt);
+			b.setWinClasReg(countWinClasReg < 10 ? "0" + countWinClasReg : "" + countWinClasReg);
+			b.setWinClasTvsT(countWinClasTvst < 10 ? "0" + countWinClasTvst : "" + countWinClasTvst);
 
 			beans.add(b);
 		}
