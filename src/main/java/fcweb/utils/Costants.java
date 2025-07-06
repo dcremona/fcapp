@@ -5,6 +5,7 @@ public class Costants {
 	public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/small/";
 	public static final String HTTP_URL_IMG_CARD = "https://content.fantacalcio.it/web/campioncini/card/";
 
+	public static final String FONT_SIZE = "font-size";
 	public static final String BACKGROUND = "background";
 	
 	public static final String BORDER = "border";

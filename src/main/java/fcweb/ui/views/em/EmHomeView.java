@@ -152,7 +152,7 @@ public class EmHomeView extends VerticalLayout{
 			// cellLayout.setAlignItems(Alignment.STRETCH);
 			// cellLayout.setSizeFull();
 			if (s != null && s.getSquadraCasa() != null) {
-				// lblSquadra.getStyle().set("font-size", "11px");
+				// lblSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 //				Image img = buildImage("classpath:/img/nazioni/", s.getSquadraCasa() + ".png");
 //				cellLayout.add(img);
 				FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraCasa());
@@ -181,7 +181,7 @@ public class EmHomeView extends VerticalLayout{
 			// cellLayout.setAlignItems(Alignment.STRETCH);
 			// cellLayout.setSizeFull();
 			if (s != null && s.getSquadraCasa() != null) {
-				// lblSquadra.getStyle().set("font-size", "11px");
+				// lblSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 //				Image img = buildImage("classpath:/img/nazioni/", s.getSquadraFuori() + ".png");
 //				cellLayout.add(img);
 				FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraFuori());
@@ -218,7 +218,7 @@ public class EmHomeView extends VerticalLayout{
 		LOG.info("millisDiff " + millisDiff);
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 
 		HorizontalLayout cssLayout = new HorizontalLayout();

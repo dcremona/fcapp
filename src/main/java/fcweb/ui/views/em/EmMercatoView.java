@@ -276,7 +276,7 @@ public class EmMercatoView extends VerticalLayout
 	public void initLayout() {
 
 		absLayout = new AbsoluteLayout(1600,1200);
-		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
+		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		saveSendMail = new Button("Salva e Invia Mail");
@@ -429,7 +429,7 @@ public class EmMercatoView extends VerticalLayout
 
 		VerticalLayout layoutFilter = new VerticalLayout();
 		layoutFilter.setMargin(false);
-		layoutFilter.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutFilter.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutFilter.add(layoutFilterRow1);
 
@@ -466,7 +466,7 @@ public class EmMercatoView extends VerticalLayout
 		}
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
@@ -511,7 +511,7 @@ public class EmMercatoView extends VerticalLayout
 		final HorizontalLayout layoutInfoGenerali = new HorizontalLayout();
 		layoutInfoGenerali.setPadding(true);
 		layoutInfoGenerali.setSpacing(true);
-		layoutInfoGenerali.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutInfoGenerali.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutInfoGenerali.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		layoutInfoGenerali.setAlignItems(FlexComponent.Alignment.END);
 
@@ -566,7 +566,7 @@ public class EmMercatoView extends VerticalLayout
 		layoutInfoRuolo.getThemeList().set("dark", true);
 		layoutInfoRuolo.setPadding(true);
 		layoutInfoRuolo.setSpacing(true);
-		// layoutInfoRuolo.getStyle().set("border", Costants.BORDER_COLOR);
+		// layoutInfoRuolo.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		// layoutInfoRuolo.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		layoutInfoRuolo.setAlignItems(FlexComponent.Alignment.END);
 
@@ -701,7 +701,7 @@ public class EmMercatoView extends VerticalLayout
 
 		Span lblInfoGiocatori = new Span();
 		lblInfoGiocatori.setText("Giocatori per Nazione:");
-		lblInfoGiocatori.getStyle().set("font-size", "16px");
+		lblInfoGiocatori.getStyle().set(Costants.FONT_SIZE, "16px");
 		lblInfoGiocatori.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 
 		absLayout.add(lblInfoGiocatori, left, top);
@@ -2682,7 +2682,7 @@ public class EmMercatoView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		// grid.getStyle().set("border", Costants.BORDER_COLOR);
+		// grid.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		grid.setWidth(width);
 		grid.setHeight(height);
 
@@ -2698,13 +2698,13 @@ public class EmMercatoView extends VerticalLayout
 
 				String ruolo = g.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
 				}
 
 				if (!g.isFlagAttivo()) {
@@ -2720,7 +2720,7 @@ public class EmMercatoView extends VerticalLayout
 				// Label lblGiocatore = new Label(g.getCognGiocatore());
 				Span lblGiocatore = new Span();
 				lblGiocatore.setText(g.getCognGiocatore());
-				lblGiocatore.getStyle().set("font-size", "11px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
 				lblGiocatore.setTitle(title);
 				cellLayout.add(lblGiocatore);
 				cellLayout.setAlignSelf(Alignment.STRETCH, lblGiocatore);
@@ -2741,7 +2741,7 @@ public class EmMercatoView extends VerticalLayout
 					// Label(sq.getNomeSquadra());
 					Span lblInfoNomeSquadra = new Span();
 					lblInfoNomeSquadra.setText(sq.getNomeSquadra());
-					lblInfoNomeSquadra.getStyle().set("font-size", "11px");
+					lblInfoNomeSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 					lblInfoNomeSquadra.setTitle(title);
 					cellLayout.add(lblInfoNomeSquadra);
 					cellLayout.setAlignSelf(Alignment.STRETCH, lblInfoNomeSquadra);
@@ -2751,7 +2751,7 @@ public class EmMercatoView extends VerticalLayout
 				Span lblInfoQuotazione = new Span();
 				lblInfoQuotazione.setText("" + g.getQuotazione());
 
-				lblInfoQuotazione.getStyle().set("font-size", "14px");
+				lblInfoQuotazione.getStyle().set(Costants.FONT_SIZE, "14px");
 				lblInfoQuotazione.setTitle(title);
 				cellLayout.add(lblInfoQuotazione);
 				cellLayout.setAlignSelf(Alignment.CENTER, lblInfoQuotazione);

@@ -107,7 +107,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		VerticalLayout layoutSqualificati = new VerticalLayout();
 		layoutSqualificati.setMargin(true);
-		layoutSqualificati.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutSqualificati.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutSqualificati.add(tableSqualificati);
 		Details panelSqualificati = new Details("Squalificati", layoutSqualificati);
 		panelSqualificati.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
@@ -119,7 +119,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		VerticalLayout layoutInfortunati = new VerticalLayout();
 		layoutInfortunati.setMargin(true);
-		layoutInfortunati.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutInfortunati.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutInfortunati.add(tableInfortunati);
 		Details panelInfortunati = new Details("Infortunati", layoutInfortunati);
 		panelInfortunati.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
@@ -280,7 +280,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		}));
 		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> noteColumn = grid.addColumn(g -> g.getNote());

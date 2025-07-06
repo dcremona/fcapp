@@ -239,7 +239,7 @@ public class TeamInsertView extends VerticalLayout
 	private void initLayout() {
 
 		absLayout = new AbsoluteLayout(1500,1200);
-		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
+		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		save = new Button("Salva");
@@ -417,7 +417,7 @@ public class TeamInsertView extends VerticalLayout
 		tablePartite = getTablePartite(listPartite);
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
@@ -676,13 +676,13 @@ public class TeamInsertView extends VerticalLayout
 
 				String ruolo = p.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
 				}
 
 				if (isGiocatoreOut(p) != null) {
@@ -731,7 +731,7 @@ public class TeamInsertView extends VerticalLayout
 
 				Span lblGiocatore = new Span(p.getCognGiocatore());
 				lblGiocatore.setTitle(title);
-				lblGiocatore.getStyle().set("font-size", "11px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
 
 				cellLayout.add(cellLayoutImg);
 				try {

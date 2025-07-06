@@ -263,7 +263,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				log.info("small screen detected ");
 			}
 
-			absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
+			absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 			absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 			dialogTribuna.setWidth(WIN_WIDTH - 50 + "px");
@@ -489,7 +489,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		tablePlayer18 = getTableGiocatore(modelPlayer18);
 
 		final VerticalLayout layoutPartite = new VerticalLayout();
-		layoutPartite.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutPartite.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutPartite.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		layoutPartite.setWidth("300px");
 		layoutPartite.setMargin(false);
@@ -498,13 +498,13 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
 		Span lblInfo = new Span(Utils.buildInfoGiornata(giornataInfo));
-		lblInfo.getStyle().set("font-size", "14px");
+		lblInfo.getStyle().set(Costants.FONT_SIZE, "14px");
 		cssLayout.add(lblInfo);
 		layoutPartite.add(cssLayout);
 
 		HorizontalLayout cssLayout2 = new HorizontalLayout();
 		Span lblInfo2 = new Span("Formazione entro: " + nextDate);
-		lblInfo2.getStyle().set("font-size", "12px");
+		lblInfo2.getStyle().set(Costants.FONT_SIZE, "12px");
 		cssLayout2.add(lblInfo2);
 		layoutPartite.add(cssLayout2);
 
@@ -522,7 +522,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		dialogPartite.add(mainLayoutPartite);
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("100px");
 		layoutAvviso.setMargin(false);
@@ -806,13 +806,13 @@ public class TeamInsertMobileView extends VerticalLayout
 
 				String ruolo = p.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
 				}
 
 				if (isGiocatoreOut(p) != null) {
@@ -860,7 +860,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				}
 
 				Span lblGiocatore = new Span(p.getCognGiocatore());
-				lblGiocatore.getStyle().set("font-size", "9px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "9px");
 				lblGiocatore.setTitle(title);
 				lblGiocatore.setWidth("60px");
 

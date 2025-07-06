@@ -291,7 +291,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		HorizontalLayout layoutSetup = new HorizontalLayout();
 		layoutSetup.setMargin(true);
-		layoutSetup.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutSetup.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 //		layoutSetup.add(upload, output);
 		layoutSetup.add(initDb);
 		layoutSetup.add(initDbAttore);
@@ -361,7 +361,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutUpdate = new VerticalLayout();
 		layoutUpdate.setMargin(true);
-		layoutUpdate.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutUpdate.add(layoutUpdateRow1);
 		layoutUpdate.add(layoutUpdateRow2);
@@ -417,7 +417,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutCalcola = new VerticalLayout();
 		layoutCalcola.setMargin(true);
-		layoutCalcola.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		HorizontalLayout vHor = new HorizontalLayout();
 		vHor.add(download);
@@ -446,7 +446,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutNotifiche = new VerticalLayout();
 		layoutNotifiche.setMargin(true);
-		layoutNotifiche.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutNotifiche.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutNotifiche.add(notifica);
 		layoutNotifiche.add(messaggio);
@@ -956,7 +956,7 @@ public class EmImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> quotazioneColumn = grid.addColumn(new ComponentRenderer<>(g -> {

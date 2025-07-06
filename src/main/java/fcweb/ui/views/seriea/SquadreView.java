@@ -421,18 +421,18 @@ public class SquadreView extends VerticalLayout {
 				fmVotoColumn, quotazioneColumn, totPagatoColumn);
 		Div lblTitle = new Div();
 		lblTitle.setText("Rosa Ufficiale");
-		lblTitle.getStyle().set("font-size", "16px");
+		lblTitle.getStyle().set(Costants.FONT_SIZE, "16px");
 		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		FooterRow footerRow = grid.appendFooterRow();
 		Div lblCreditiSpesi0 = new Div();
 		lblCreditiSpesi0.setText(Costants.TOTALE);
-		lblCreditiSpesi0.getStyle().set("font-size", "20px");
+		lblCreditiSpesi0.getStyle().set(Costants.FONT_SIZE, "20px");
 		lblCreditiSpesi0.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		Div lblCreditiSpesi1 = new Div();
 		lblCreditiSpesi1.setText("" + somma);
-		lblCreditiSpesi1.getStyle().set("font-size", "20px");
+		lblCreditiSpesi1.getStyle().set(Costants.FONT_SIZE, "20px");
 		lblCreditiSpesi1.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		footerRow.getCell(quotazioneColumn).setComponent(lblCreditiSpesi0);
 		footerRow.getCell(totPagatoColumn).setComponent(lblCreditiSpesi1);
@@ -496,7 +496,7 @@ public class SquadreView extends VerticalLayout {
 
 				Span lblSquadra = new Span(
 						" (" + m.getFcGiocatoreByIdGiocAcq().getFcSquadra().getNomeSquadra().substring(0, 3) + ")");
-				lblSquadra.getStyle().set("font-size", "10px");
+				lblSquadra.getStyle().set(Costants.FONT_SIZE, "10px");
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -539,7 +539,7 @@ public class SquadreView extends VerticalLayout {
 
 				Span lblSquadra = new Span(
 						" (" + m.getFcGiocatoreByIdGiocVen().getFcSquadra().getNomeSquadra().substring(0, 3) + ")");
-				lblSquadra.getStyle().set("font-size", "10px");
+				lblSquadra.getStyle().set(Costants.FONT_SIZE, "10px");
 				cellLayout.add(lblSquadra);
 			}
 			return cellLayout;
@@ -559,7 +559,7 @@ public class SquadreView extends VerticalLayout {
 				ruoloVenColumn, gVenColumn, notaColumn);
 		Div lblTitle = new Div();
 		lblTitle.setText("Cambi Rosa");
-		lblTitle.getStyle().set("font-size", "16px");
+		lblTitle.getStyle().set(Costants.FONT_SIZE, "16px");
 		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 

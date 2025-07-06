@@ -132,14 +132,18 @@ public class FormazioniView extends VerticalLayout {
 
 		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm.png"));
 		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp.png"));
-		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
-		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
-		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
+		iconAssist_ = Utils.buildImage("assist.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
+		iconAutogol_ = Utils.buildImage("autogol.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
+		iconEntrato_ = Utils.buildImage("entrato.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
 		iconGolfatto_ = Utils.buildImage("golfatto.png",
 				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
 		iconGolsubito_ = Utils.buildImage("golsubito.png",
 				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
-		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
+		iconUscito_ = Utils.buildImage("uscito.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
 		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png",
 				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato.png"));
 		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png",
@@ -265,16 +269,18 @@ public class FormazioniView extends VerticalLayout {
 
 			HorizontalLayout layoutRisultato = new HorizontalLayout();
 			String s1 = p.getGolCasa() == null ? "0.png" : p.getGolCasa() + ".png";
-			Image imgCasa = Utils.buildImage(s1, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"number/" + s1));
+			Image imgCasa = Utils.buildImage(s1,
+					resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "number/" + s1));
 			String s2 = p.getGolCasa() == null ? "0.png" : p.getGolFuori() + ".png";
-			Image imgFuori = Utils.buildImage(s2, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"number/" + s2));
+			Image imgFuori = Utils.buildImage(s2,
+					resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "number/" + s2));
 
 			layoutRisultato.add(imgCasa);
 			layoutRisultato.add(imgFuori);
 
 			HorizontalLayout horizontalLayout0 = new HorizontalLayout();
 			horizontalLayout0.setWidth("100%");
-			horizontalLayout0.getStyle().set("border", Costants.BORDER_COLOR);
+			horizontalLayout0.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 			horizontalLayout0.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 			horizontalLayout0.add(labelCasa);
 			horizontalLayout0.add(layoutRisultato);
@@ -766,19 +772,19 @@ public class FormazioniView extends VerticalLayout {
 
 		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
-		lblTotGiornata.getStyle().set("font-size", "24px");
+		lblTotGiornata.getStyle().set(Costants.FONT_SIZE, "24px");
 		lblTotGiornata.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
 		Span lblTotPuntiRosa = new Span();
 		lblTotPuntiRosa.setText("Totale Punteggio Rosa: " + totPuntiRosa);
-		lblTotPuntiRosa.getStyle().set("font-size", "16px");
+		lblTotPuntiRosa.getStyle().set(Costants.FONT_SIZE, "16px");
 		lblTotPuntiRosa.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 		lblTotPuntiRosa.setSizeFull();
 
 		Span lblTotPuntiTvsT = new Span();
 		lblTotPuntiTvsT.setText("Totale Punteggio TvsT: " + totPuntiTvsT);
-		lblTotPuntiTvsT.getStyle().set("font-size", "16px");
+		lblTotPuntiTvsT.getStyle().set(Costants.FONT_SIZE, "16px");
 		lblTotPuntiTvsT.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		lblTotPuntiTvsT.setSizeFull();
 
@@ -798,7 +804,7 @@ public class FormazioniView extends VerticalLayout {
 	private FormLayout buildLegenda() {
 
 		FormLayout layout = new FormLayout();
-		layout.getStyle().set("border", Costants.BORDER_COLOR);
+		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layout.addFormItem(iconGolfatto_, "Gol Fatto (+3)");
 		layout.addFormItem(iconGolsubito_, "Gol Subito (-1)");

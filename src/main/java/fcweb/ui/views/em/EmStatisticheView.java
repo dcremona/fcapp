@@ -485,7 +485,7 @@ public class EmStatisticheView extends VerticalLayout
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator((p1,
 				p2) -> p1.getNomeSquadra().compareTo(p2.getNomeSquadra()));
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setWidth("100px");
 		nomeSquadraColumn.setAutoWidth(true);
 

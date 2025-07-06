@@ -234,12 +234,12 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 			randomSaveButton.setVisible(false);
 
 			lblError = new Span();
-			lblError.getStyle().set("border", Costants.BORDER_COLOR);
+			lblError.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 			lblError.getStyle().set(Costants.BACKGROUND, "#EC7063");
 			lblError.setVisible(false);
 
 			HorizontalLayout layoutButton = new HorizontalLayout();
-			layoutButton.getStyle().set("border", Costants.BORDER_COLOR);
+			layoutButton.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 			layoutButton.setSpacing(true);
 			layoutButton.add(menuHome);
 			layoutButton.add(menuFreePlayers);
@@ -278,7 +278,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 				lblAttore[att] = new Span(a.getDescAttore());
 				lblAttore[att].setWidth(Costants.WIDTH_205);
-				lblAttore[att].getStyle().set("border", Costants.BORDER_COLOR);
+				lblAttore[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 				lblAttore[att].getStyle().set(Costants.BACKGROUND, "#D2E6F0");
 				layoutHeaderInfo.add(lblAttore[att]);
 
@@ -293,24 +293,24 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 				lblCreditoPlayer[att] = new Span("Credito");
 				lblCreditoPlayer[att].setWidth(Costants.WIDTH_205);
-				lblCreditoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
+				lblCreditoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 				lblCreditoPlayer[att].getStyle().set(Costants.BACKGROUND, "#F5E37F");
 				layoutInfo.add(lblCreditoPlayer[att]);
 
 				lblTotPagatoPlayer[att] = new Span("Pagato");
 				lblTotPagatoPlayer[att].setWidth(Costants.WIDTH_205);
-				lblTotPagatoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
+				lblTotPagatoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 				lblTotPagatoPlayer[att].getStyle().set(Costants.BACKGROUND, "#D7DBDD");
 				layoutInfo.add(lblTotPagatoPlayer[att]);
 
 				lblResiduoPlayer[att] = new Span("Residuo");
 				lblResiduoPlayer[att].setWidth(Costants.WIDTH_205);
-				lblResiduoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
+				lblResiduoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 				lblResiduoPlayer[att].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
 				layoutInfo.add(lblResiduoPlayer[att]);
 
 				lblRuoliPlayer[att] = new Span("P D C A");
-				lblRuoliPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
+				lblRuoliPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 				lblRuoliPlayer[att].getStyle().set(Costants.BACKGROUND, "#AED6F1");
 				lblRuoliPlayer[att].setWidth(Costants.WIDTH_205);
 				layoutInfo.add(lblRuoliPlayer[att]);

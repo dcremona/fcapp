@@ -109,7 +109,7 @@ public class HomeView extends VerticalLayout {
 				title = "Ultima Giornata - " + Utils.buildInfoGiornata(giornataInfoPrev);
 				Div lblInfoSx = new Div();
 				lblInfoSx.setText(title);
-				lblInfoSx.getStyle().set("font-size", "16px");
+				lblInfoSx.getStyle().set(Costants.FONT_SIZE, "16px");
 				lblInfoSx.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 				lblInfoSx.setSizeFull();
 				layoutSx.add(lblInfoSx);
@@ -122,7 +122,7 @@ public class HomeView extends VerticalLayout {
 			title = "Prossima Giornata - " + Utils.buildInfoGiornata(giornataInfoCurr);
 			Div lblInfoDx = new Div();
 			lblInfoDx.setText(title);
-			lblInfoDx.getStyle().set("font-size", "16px");
+			lblInfoDx.getStyle().set(Costants.FONT_SIZE, "16px");
 			lblInfoDx.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 			lblInfoDx.setSizeFull();
 			layoutDx.add(lblInfoDx);

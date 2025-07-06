@@ -359,9 +359,9 @@ public class EmDownloadView extends VerticalLayout
 //		giocatoreColumn.setAutoWidth(true);
 //
 //		// Column<FcStatistiche> squadraColumn = grid.addColumn(s ->
-//		// s.getNomeSquadra()).setKey("squadra");
+//		// s.getNomeSquadra()).setKey(Costants.SQUADRA);
 //		// squadraColumn.setSortable(true);
-//		// squadraColumn.setHeader("Squadra");
+//		// squadraColumn.setHeader(Costants.SQUADRA);
 //
 //		Column<FcStatistiche> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 //
@@ -389,7 +389,7 @@ public class EmDownloadView extends VerticalLayout
 //				img.setSrc(resource);
 //
 //				Label lblSquadra = new Label(s.getNomeSquadra());
-//				// lblSquadra.getStyle().set("font-size", "11px");
+//				// lblSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 //
 //				cellLayout.add(img);
 //				cellLayout.add(lblSquadra);
@@ -401,7 +401,7 @@ public class EmDownloadView extends VerticalLayout
 //		nomeSquadraColumn.setSortable(true);
 //		nomeSquadraColumn.setComparator((p1,
 //				p2) -> p1.getNomeSquadra().compareTo(p2.getNomeSquadra()));
-//		nomeSquadraColumn.setHeader("Squadra");
+//		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 //		nomeSquadraColumn.setWidth("100px");
 //		nomeSquadraColumn.setAutoWidth(true);
 //

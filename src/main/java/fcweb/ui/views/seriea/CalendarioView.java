@@ -110,23 +110,23 @@ public class CalendarioView extends VerticalLayout{
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
 		VerticalLayout gridPrimaFaseAndata = new VerticalLayout();
-		gridPrimaFaseAndata.getStyle().set("border", Costants.BORDER_COLOR);
+		gridPrimaFaseAndata.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		gridPrimaFaseAndata.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
 		VerticalLayout gridPrimaFaseRitorno = new VerticalLayout();
-		gridPrimaFaseRitorno.getStyle().set("border", Costants.BORDER_COLOR);
+		gridPrimaFaseRitorno.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		gridPrimaFaseRitorno.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
 		VerticalLayout gridQuarti = new VerticalLayout();
-		gridQuarti.getStyle().set("border", Costants.BORDER_COLOR);
+		gridQuarti.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		gridQuarti.getStyle().set(Costants.BACKGROUND, Costants.MISTYROSE);
 
 		VerticalLayout gridSemi = new VerticalLayout();
-		gridSemi.getStyle().set("border", Costants.BORDER_COLOR);
+		gridSemi.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		gridSemi.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 
 		VerticalLayout gridFinali = new VerticalLayout();
-		gridFinali.getStyle().set("border", Costants.BORDER_COLOR);
+		gridFinali.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		gridFinali.getStyle().set(Costants.BACKGROUND, Costants.POWDERBLUE);
 
 		List<FcGiornata> beanContainer = new ArrayList<>();
@@ -155,7 +155,7 @@ public class CalendarioView extends VerticalLayout{
 
 				final VerticalLayout layout = new VerticalLayout();
 				Span lblInfoSx = new Span(descG);
-				lblInfoSx.getStyle().set("font-size", "14px");
+				lblInfoSx.getStyle().set(Costants.FONT_SIZE, "14px");
 				layout.add(lblInfoSx);
 				layout.add(tableGiornata);
 

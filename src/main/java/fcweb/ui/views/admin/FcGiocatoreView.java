@@ -170,7 +170,7 @@ public class FcGiocatoreView extends VerticalLayout{
 		giocatoreColumn.setSortable(false);
 		giocatoreColumn.setAutoWidth(true);
 
-		Column<FcGiocatore> squadraColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcSquadra().getNomeSquadra())).setHeader("Squadra");
+		Column<FcGiocatore> squadraColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcSquadra().getNomeSquadra())).setHeader(Costants.SQUADRA);
 		squadraColumn.setSortable(false);
 		squadraColumn.setAutoWidth(true);
 
@@ -192,7 +192,7 @@ public class FcGiocatoreView extends VerticalLayout{
 		ruoloFilter.addValueChangeListener(e -> crud.refreshGrid());
 		crud.getCrudLayout().addFilterComponent(ruoloFilter);
 
-		squadraFilter.setPlaceholder("Squadra");
+		squadraFilter.setPlaceholder(Costants.SQUADRA);
 		squadraFilter.setItems(squadraController.findAll());
 		squadraFilter.setItemLabelGenerator(FcSquadra::getNomeSquadra);
 		squadraFilter.setClearButtonVisible(true);

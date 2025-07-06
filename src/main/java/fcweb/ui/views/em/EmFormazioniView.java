@@ -631,7 +631,7 @@ public class EmFormazioniView extends VerticalLayout{
 
 		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
-		lblTotGiornata.getStyle().set("font-size", "24px");
+		lblTotGiornata.getStyle().set(Costants.FONT_SIZE, "24px");
 		lblTotGiornata.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
@@ -648,7 +648,7 @@ public class EmFormazioniView extends VerticalLayout{
 	private VerticalLayout buildLegenda() {
 
 		VerticalLayout layout = new VerticalLayout();
-		layout.getStyle().set("border", Costants.BORDER_COLOR);
+		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		// layout.setSizeFull();
 		layout.setMargin(false);
 

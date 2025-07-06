@@ -240,7 +240,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		HorizontalLayout layoutSetup = new HorizontalLayout();
 		layoutSetup.setMargin(true);
-		layoutSetup.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutSetup.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutSetup.add(initDb);
 		layoutSetup.add(generaCalendar);
 
@@ -331,7 +331,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutUpdate = new VerticalLayout();
 		layoutUpdate.setMargin(true);
-		layoutUpdate.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutUpdate.add(layoutUpdateRow1);
 		layoutUpdate.add(layoutUpdateRow2);
@@ -363,7 +363,7 @@ public class ImpostazioniView extends VerticalLayout
 		comboSqudreA.setItems(squadreSerieA);
 		comboSqudreA.setItemLabelGenerator(p -> p.getNomeSquadra());
 		comboSqudreA.setClearButtonVisible(true);
-		comboSqudreA.setPlaceholder("Squadra");
+		comboSqudreA.setPlaceholder(Costants.SQUADRA);
 		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
 			if (item != null && item.getImg() != null) {
@@ -403,7 +403,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutCalcola = new VerticalLayout();
 		layoutCalcola.setMargin(true);
-		layoutCalcola.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		HorizontalLayout vHor = new HorizontalLayout();
 		vHor.add(download);
@@ -494,7 +494,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutDate = new VerticalLayout();
 		layoutDate.setMargin(true);
-		layoutDate.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutDate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutDate.add(layoutRow1);
 		layoutDate.add(layoutRow2);
@@ -996,7 +996,7 @@ public class ImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> quotazioneColumn = grid.addColumn(g -> g.getQuotazione());

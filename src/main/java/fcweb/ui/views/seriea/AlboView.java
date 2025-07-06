@@ -351,7 +351,7 @@ public class AlboView extends VerticalLayout {
 
 		Column<FcExpStat> annoColumn = grid.addColumn(s -> s.getAnno());
 		annoColumn.setSortable(true);
-		annoColumn.setHeader("Squadra");
+		annoColumn.setHeader(Costants.SQUADRA);
 
 		Column<FcExpStat> scudettoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();

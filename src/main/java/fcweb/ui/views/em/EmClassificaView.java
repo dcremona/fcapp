@@ -238,7 +238,7 @@ public class EmClassificaView extends VerticalLayout{
 
 		Column<ClassificaBean> squadraColumn = grid.addColumn(classifica -> classifica.getSquadra());
 		squadraColumn.setSortable(false);
-		squadraColumn.setHeader("Squadra");
+		squadraColumn.setHeader(Costants.SQUADRA);
 
 		Column<ClassificaBean> totPuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -247,7 +247,7 @@ public class EmClassificaView extends VerticalLayout{
 
 			Span lblTotPunti = new Span(sTotPunti);
 
-			lblTotPunti.getStyle().set("font-size", "14px");
+			lblTotPunti.getStyle().set(Costants.FONT_SIZE, "14px");
 			lblTotPunti.getStyle().set("color", Costants.BLUE);
 			lblTotPunti.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
 			return lblTotPunti;

@@ -233,7 +233,7 @@ public class EmTeamInsertView extends VerticalLayout
 	private void initLayout() throws Exception {
 
 		absLayout = new AbsoluteLayout(1600,1200);
-		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
+		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		save = new Button("Save");
@@ -415,7 +415,7 @@ public class EmTeamInsertView extends VerticalLayout
 		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"panchina.jpg"));
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
@@ -691,7 +691,7 @@ public class EmTeamInsertView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		// grid.getStyle().set("border", Costants.BORDER_COLOR);
+		// grid.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		grid.setWidth(width);
 		grid.setHeight(height);
 
@@ -708,13 +708,13 @@ public class EmTeamInsertView extends VerticalLayout
 
 				String ruolo = g.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
 				}
 
 				if (!g.isFlagAttivo()) {
@@ -724,7 +724,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 				Span lblOrdinamento = new Span();
 				lblOrdinamento.setText("" + getOrdinamento(g));
-				lblOrdinamento.getStyle().set("font-size", "14px");
+				lblOrdinamento.getStyle().set(Costants.FONT_SIZE, "14px");
 				lblOrdinamento.setTitle(title);
 				cellLayout.add(lblOrdinamento);
 				cellLayout.setAlignSelf(Alignment.CENTER, lblOrdinamento);
@@ -736,7 +736,7 @@ public class EmTeamInsertView extends VerticalLayout
 				// Label lblGiocatore = new Label(g.getCognGiocatore());
 				Span lblGiocatore = new Span();
 				lblGiocatore.setText(g.getCognGiocatore());
-				lblGiocatore.getStyle().set("font-size", "11px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
 				lblGiocatore.setTitle(title);
 				cellLayout.add(lblGiocatore);
 				cellLayout.setAlignSelf(Alignment.STRETCH, lblGiocatore);
@@ -757,7 +757,7 @@ public class EmTeamInsertView extends VerticalLayout
 					// Label(sq.getNomeSquadra());
 					Span lblInfoNomeSquadra = new Span();
 					lblInfoNomeSquadra.setText(sq.getNomeSquadra());
-					lblInfoNomeSquadra.getStyle().set("font-size", "11px");
+					lblInfoNomeSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 					lblInfoNomeSquadra.setTitle(title);
 					cellLayout.add(lblInfoNomeSquadra);
 					cellLayout.setAlignSelf(Alignment.STRETCH, lblInfoNomeSquadra);

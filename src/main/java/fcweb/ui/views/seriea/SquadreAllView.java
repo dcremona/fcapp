@@ -305,18 +305,18 @@ public class SquadreAllView extends VerticalLayout{
 		HeaderCell informationCell = topRow.join(ruoloColumn, cognGiocatoreColumn, nomeSquadraColumn, mediaVotoColumn, quotazioneColumn, totPagatoColumn);
 		Div lblTitle = new Div();
 		lblTitle.setText(attore);
-		lblTitle.getStyle().set("font-size", "16px");
+		lblTitle.getStyle().set(Costants.FONT_SIZE, "16px");
 		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		FooterRow footerRow = grid.appendFooterRow();
 		Div lblCreditiSpesi0 = new Div();
 		lblCreditiSpesi0.setText("Totale");
-		lblCreditiSpesi0.getStyle().set("font-size", "20px");
+		lblCreditiSpesi0.getStyle().set(Costants.FONT_SIZE, "20px");
 		lblCreditiSpesi0.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		Div lblCreditiSpesi1 = new Div();
 		lblCreditiSpesi1.setText("" + somma);
-		lblCreditiSpesi1.getStyle().set("font-size", "20px");
+		lblCreditiSpesi1.getStyle().set(Costants.FONT_SIZE, "20px");
 		lblCreditiSpesi1.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		footerRow.getCell(quotazioneColumn).setComponent(lblCreditiSpesi0);
 		footerRow.getCell(totPagatoColumn).setComponent(lblCreditiSpesi1);

@@ -111,7 +111,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 		radioGroup.setValue("All");
 
 		HorizontalLayout layoutButton = new HorizontalLayout();
-		layoutButton.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutButton.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutButton.setSpacing(true);
 		layoutButton.add(menuHome);
 		layoutButton.add(menuMercato);
@@ -276,7 +276,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setKey("fcSquadra.nomeSquadra");
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator(
 				(p1, p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));

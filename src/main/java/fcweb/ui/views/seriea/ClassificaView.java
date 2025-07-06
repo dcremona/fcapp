@@ -282,7 +282,7 @@ public class ClassificaView extends VerticalLayout {
 
 		Column<FcClassifica> squadraColumn = grid.addColumn(classifica -> classifica.getFcAttore().getDescAttore());
 		squadraColumn.setSortable(false);
-		squadraColumn.setHeader("Squadra");
+		squadraColumn.setHeader(Costants.SQUADRA);
 		squadraColumn.setAutoWidth(true);
 
 		Column<FcClassifica> puntiColumn = grid.addColumn(classifica -> classifica.getPunti());
@@ -420,7 +420,7 @@ public class ClassificaView extends VerticalLayout {
 		Column<FcClassificaTotPt> squadraColumn = grid
 				.addColumn(classifica -> classifica.getFcAttore().getDescAttore());
 		squadraColumn.setSortable(false);
-		squadraColumn.setHeader("Squadra");
+		squadraColumn.setHeader(Costants.SQUADRA);
 
 		Column<FcClassificaTotPt> totPtRosaColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
