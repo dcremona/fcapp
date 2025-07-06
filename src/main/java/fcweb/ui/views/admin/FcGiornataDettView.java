@@ -33,6 +33,7 @@ import fcweb.backend.service.GiornataDettService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.StatoGiocatoreService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -106,7 +107,7 @@ public class FcGiornataDettView extends VerticalLayout{
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getOrdinamento() : "")).setHeader("Ordinamento");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader("Giocatore");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcStatoGiocatore() != null ? f.getFcStatoGiocatore().getDescStatoGiocatore() : "")).setHeader("Stato");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getVoto() != null ? f.getVoto().toString() : "")).setHeader("Voto");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFlagAttivo() != null ? f.getFlagAttivo() : "")).setHeader("Attivo");
@@ -115,7 +116,7 @@ public class FcGiornataDettView extends VerticalLayout{
 
 		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoController.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
 		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>("Giocatore",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 		crud.getCrudFormFactory().setFieldProvider("fcStatoGiocatore", new ComboBoxProvider<>("Stato",statoGiocatoreController.findAll(),new TextRenderer<>(FcStatoGiocatore::getDescStatoGiocatore),FcStatoGiocatore::getDescStatoGiocatore));
 
 		crud.setRowCountCaption("%d Giornata(s) found");

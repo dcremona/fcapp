@@ -992,7 +992,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setWidth("160px");
 
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {

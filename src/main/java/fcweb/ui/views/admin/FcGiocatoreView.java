@@ -44,8 +44,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 
-@PageTitle("Giocatore")
-@Route(value = "giocatore", layout = MainLayout.class)
+@PageTitle(Costants.GIOCATORE)
+@Route(value = Costants.GIOCATORE, layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcGiocatoreView extends VerticalLayout{
 
@@ -164,9 +164,9 @@ public class FcGiocatoreView extends VerticalLayout{
 		}
 
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiocatore())).setHeader("Id");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcRuolo().getIdRuolo())).setHeader("Ruolo");
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcRuolo().getIdRuolo())).setHeader(Costants.RUOLO);
 
-		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCognGiocatore())).setHeader("Giocatore");
+		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCognGiocatore())).setHeader(Costants.GIOCATORE);
 		giocatoreColumn.setSortable(false);
 		giocatoreColumn.setAutoWidth(true);
 
@@ -185,7 +185,7 @@ public class FcGiocatoreView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		ruoloFilter.setPlaceholder("Ruolo");
+		ruoloFilter.setPlaceholder(Costants.RUOLO);
 		ruoloFilter.setItems(ruoloController.findAll());
 		ruoloFilter.setItemLabelGenerator(FcRuolo::getIdRuolo);
 		ruoloFilter.setClearButtonVisible(true);

@@ -667,7 +667,7 @@ public class JobProcessGiornata{
 
 			formazioneHtml += "<tr>";
 			formazioneHtml += "<td>";
-			formazioneHtml += "Giocatore";
+			formazioneHtml += Costants.GIOCATORE;
 			formazioneHtml += "</td>";
 			formazioneHtml += "<td>";
 			formazioneHtml += "count_sv ";

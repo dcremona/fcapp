@@ -238,7 +238,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(false);
-		ruoloColumn.setHeader("Ruolo");
+		ruoloColumn.setHeader(Costants.RUOLO);
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
@@ -257,7 +257,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(gg -> {

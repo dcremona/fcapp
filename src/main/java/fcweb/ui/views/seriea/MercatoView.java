@@ -523,7 +523,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		ComboBox<FcGiocatore> giocatore = new ComboBox<>();
 		giocatore.setItemLabelGenerator(p -> p.getCognGiocatore());
 		giocatore.setClearButtonVisible(true);
-		giocatore.setPlaceholder("Giocatore");
+		giocatore.setPlaceholder(Costants.GIOCATORE);
 		giocatore.setRenderer(new ComponentRenderer<>(g -> {
 			VerticalLayout container = new VerticalLayout();
 

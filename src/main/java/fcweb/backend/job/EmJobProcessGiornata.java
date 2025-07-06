@@ -269,7 +269,7 @@ public class EmJobProcessGiornata{
 
 			formazioneHtml += "<tr>";
 			formazioneHtml += "<td>";
-			formazioneHtml += "Giocatore";
+			formazioneHtml += Costants.GIOCATORE;
 			formazioneHtml += "</td>";
 			formazioneHtml += "<td>";
 			formazioneHtml += "count_sv ";
@@ -663,7 +663,7 @@ public class EmJobProcessGiornata{
 
 			formazioneHtml += "<tr>";
 			formazioneHtml += "<td>";
-			formazioneHtml += "Giocatore";
+			formazioneHtml += Costants.GIOCATORE;
 			formazioneHtml += "</td>";
 			formazioneHtml += "<td>";
 			formazioneHtml += "count_sv ";

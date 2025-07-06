@@ -347,14 +347,14 @@ public class EmDownloadView extends VerticalLayout
 //			}
 //			return cellLayout;
 //		}));
-//		ruoloColumn.setKey("ruolo");
+//		ruoloColumn.setKey(Costants.RUOLO);
 //		ruoloColumn.setSortable(true);
 //		ruoloColumn.setHeader("R");
 //		ruoloColumn.setAutoWidth(true);
 //
-//		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey("giocatore");
+//		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey(Costants.GIOCATORE);
 //		giocatoreColumn.setSortable(true);
-//		giocatoreColumn.setHeader("Giocatore");
+//		giocatoreColumn.setHeader(Costants.GIOCATORE);
 //		giocatoreColumn.setWidth("150px");
 //		giocatoreColumn.setAutoWidth(true);
 //

@@ -351,7 +351,7 @@ public class EmMercatoView extends VerticalLayout
 		comboRuolo.setItems(ruoli);
 		comboRuolo.setItemLabelGenerator(a -> a.getIdRuolo());
 		comboRuolo.setClearButtonVisible(true);
-		comboRuolo.setPlaceholder("Ruolo");
+		comboRuolo.setPlaceholder(Costants.RUOLO);
 		comboRuolo.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
 			Image imgR = Utils.buildImage(item.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+item.getIdRuolo().toLowerCase() + ".png"));
@@ -3055,7 +3055,7 @@ public class EmMercatoView extends VerticalLayout
 		cognGiocatoreColumn.setSortable(true);
 		cognGiocatoreColumn.setComparator((p1,
 				p2) -> p1.getCognGiocatore().compareTo(p2.getCognGiocatore()));
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setWidth("150px");
 		// cognGiocatoreColumn.setAutoWidth(true);
 

@@ -860,7 +860,7 @@ public class TeamInsertView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setWidth("180px");
 
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {

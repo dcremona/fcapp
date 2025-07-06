@@ -107,7 +107,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 
 		radioGroup = new RadioButtonGroup<>();
 		radioGroup.setLabel("Tipo Aggiornamento");
-		radioGroup.setItems("All", "Ruolo");
+		radioGroup.setItems("All", Costants.RUOLO);
 		radioGroup.setValue("All");
 
 		HorizontalLayout layoutButton = new HorizontalLayout();
@@ -250,7 +250,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "-");
 		cognGiocatoreColumn.setKey("cognGiocatore");
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setSortable(false);
 		cognGiocatoreColumn.setAutoWidth(true);
 
@@ -429,7 +429,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 			log.info("START AGGIORNA");
 
 			log.info("selAggion " + radioGroup.getValue());
-			if ("Ruolo".equals(radioGroup.getValue())) {
+			if (Costants.RUOLO.equals(radioGroup.getValue())) {
 				String selTab = tabs.getSelectedTab().getLabel();
 				log.info("selTab " + selTab);
 				if ("Portieri".equals(selTab)) {

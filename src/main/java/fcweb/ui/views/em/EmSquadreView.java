@@ -324,7 +324,7 @@ public class EmSquadreView extends VerticalLayout {
 
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		// cognGiocatoreColumn.setWidth("150px");
 		cognGiocatoreColumn.setAutoWidth(true);
 

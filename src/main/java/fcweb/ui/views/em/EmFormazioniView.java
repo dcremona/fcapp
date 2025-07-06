@@ -597,7 +597,7 @@ public class EmFormazioniView extends VerticalLayout{
 		// }));
 		// cognGiocatoreColumn.setSortable(false);
 		// cognGiocatoreColumn.setResizable(false);
-		// cognGiocatoreColumn.setHeader("Giocatore");
+		// cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		// // cognGiocatoreColumn.setFlexGrow(0);
 		// cognGiocatoreColumn.setWidth("240px");
 

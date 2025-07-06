@@ -948,7 +948,7 @@ public class ImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader("Ruolo");
+		ruoloColumn.setHeader(Costants.RUOLO);
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -971,7 +971,7 @@ public class ImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {

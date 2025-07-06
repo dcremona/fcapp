@@ -26,6 +26,7 @@ import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.GiocatoreService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -88,13 +89,13 @@ public class FcFormazioneView extends VerticalLayout{
 		crud.getGrid().removeAllColumns();
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getOrdinamento() : "")).setHeader("Id");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader("Giocatore");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotPagato() != null ? f.getTotPagato().toString() : "")).setHeader("Pagato");
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
 		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>("Giocatore",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 
 		crud.setRowCountCaption("%d Formazione(s) found");
 		crud.setClickRowToUpdate(true);

@@ -911,7 +911,7 @@ public class EmTeamInsertView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setWidth("145px");
 		// cognGiocatoreColumn.setAutoWidth(true);
 

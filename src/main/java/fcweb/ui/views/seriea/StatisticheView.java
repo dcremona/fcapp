@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -148,12 +147,11 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
 	private void initLayout() {
 
-		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 
 		final VerticalLayout layoutStat = new VerticalLayout();
-		setStatisticheA(layoutStat, campionato, p, att);
+		setStatisticheA(layoutStat, campionato, att);
 
 		final VerticalLayout layoutConfornti = new VerticalLayout();
 		setConfronti(layoutConfornti, campionato, att);
@@ -277,7 +275,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 		return lineChart;
 	}
 
-	private void setStatisticheA(VerticalLayout layout, FcCampionato campionato, Properties p, FcAttore att) {
+	private void setStatisticheA(VerticalLayout layout, FcCampionato campionato, FcAttore att) {
 
 		HorizontalLayout hlayout1 = new HorizontalLayout();
 		hlayout1.setSpacing(true);

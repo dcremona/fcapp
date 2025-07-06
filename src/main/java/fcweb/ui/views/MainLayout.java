@@ -67,6 +67,7 @@ import fcweb.ui.views.seriea.SqualificatiIndisponibiliView;
 import fcweb.ui.views.seriea.StatisticheView;
 import fcweb.ui.views.seriea.TeamInsertMobileView;
 import fcweb.ui.views.seriea.TeamInsertView;
+import fcweb.utils.Costants;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -254,7 +255,7 @@ public class MainLayout extends AppLayout{
 				}
 
 				if (accessChecker.hasAccess(FcGiocatoreView.class)) {
-					adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
+					adminNav.addItem(new SideNavItem(Costants.GIOCATORE,FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
 				}
 
 				if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
@@ -323,7 +324,7 @@ public class MainLayout extends AppLayout{
 				}
 
 				if (accessChecker.hasAccess(FcGiocatoreView.class)) {
-					adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
+					adminNav.addItem(new SideNavItem(Costants.GIOCATORE,FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
 				}
 
 				if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
