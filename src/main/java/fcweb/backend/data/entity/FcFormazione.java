@@ -26,7 +26,7 @@ public class FcFormazione implements java.io.Serializable{
 	private FcAttore fcAttore;
 	private FcCampionato fcCampionato;
 	private FcGiocatore fcGiocatore;
-	private Double totPagato;
+	private Integer totPagato;
 
 	public FcFormazione() {
 	}
@@ -40,7 +40,7 @@ public class FcFormazione implements java.io.Serializable{
 
 	public FcFormazione(FcFormazioneId id, FcAttore fcAttore,
 			FcCampionato fcCampionato, FcGiocatore fcGiocatore,
-			Double totPagato) {
+			Integer totPagato) {
 		this.id = id;
 		this.fcAttore = fcAttore;
 		this.fcCampionato = fcCampionato;
@@ -90,11 +90,11 @@ public class FcFormazione implements java.io.Serializable{
 	}
 
 	@Column(name = "tot_pagato")
-	public Double getTotPagato() {
+	public Integer getTotPagato() {
 		return this.totPagato;
 	}
 
-	public void setTotPagato(Double totPagato) {
+	public void setTotPagato(Integer totPagato) {
 		this.totPagato = totPagato;
 	}
 

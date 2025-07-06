@@ -65,7 +65,7 @@ public class FormazioneService{
 					gNew.setQuotazione(Integer.valueOf(0));
 
 					FcFormazione fNew = new FcFormazione();
-					fNew.setTotPagato(Double.valueOf(0));
+					fNew.setTotPagato(Integer.valueOf(0));
 					fNew.setFcGiocatore(gNew);
 
 					fNew.setFcAttore(f.getFcAttore());

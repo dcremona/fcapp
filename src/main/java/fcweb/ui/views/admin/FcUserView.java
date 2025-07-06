@@ -16,7 +16,6 @@ import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -109,45 +108,45 @@ public class FcUserView extends VerticalLayout{
 			}
 			return cellLayout;
 		}));
-
+/*
 		Column<FcAttore> profilePictureColumn = crud.getGrid().addColumn(new ComponentRenderer<>(u -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setSizeFull();
 
-//			FileBuffer fileBuffer = new FileBuffer();
-//			Upload singleFileUpload = new Upload(fileBuffer);
-//			singleFileUpload.setDropAllowed(true);
-//			singleFileUpload.addSucceededListener(event -> {
-//				try {
-//
-//					// Get information about the uploaded file
-//					InputStream fileData = fileBuffer.getInputStream();
-//					// String fileName = event.getFileName();
-//					// long contentLength = event.getContentLength();
-//					// String mimeType = event.getMIMEType();
-//
-//					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//					int nRead;
-//					byte[] data = new byte[4];
-//					while ((nRead = fileData.read(data, 0, data.length)) != -1) {
-//						buffer.write(data, 0, nRead);
-//					}
-//					buffer.flush();
-//					byte[] targetArray = buffer.toByteArray();
-//					u.setProfilePicture(targetArray);
-//					attoreService.update(u);
-//					CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-//				} catch (Exception e) {
-//					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-//				}
-//
-//			});
-//			cellLayout.add(singleFileUpload);
+			FileBuffer fileBuffer = new FileBuffer();
+			Upload singleFileUpload = new Upload(fileBuffer);
+			singleFileUpload.setDropAllowed(true);
+			singleFileUpload.addSucceededListener(event -> {
+				try {
+
+					// Get information about the uploaded file
+					InputStream fileData = fileBuffer.getInputStream();
+					// String fileName = event.getFileName();
+					// long contentLength = event.getContentLength();
+					// String mimeType = event.getMIMEType();
+
+					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+					int nRead;
+					byte[] data = new byte[4];
+					while ((nRead = fileData.read(data, 0, data.length)) != -1) {
+						buffer.write(data, 0, nRead);
+					}
+					buffer.flush();
+					byte[] targetArray = buffer.toByteArray();
+					u.setProfilePicture(targetArray);
+					attoreService.update(u);
+					CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+				} catch (Exception e) {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+				}
+
+			});
+			cellLayout.add(singleFileUpload);
 
 			return cellLayout;
 		}));
 		profilePictureColumn.setWidth("350px");
-
+*/
 		formFactory.setFieldType("hashedPassword", PasswordField.class);
 		formFactory.setFieldProvider("roles", user -> {
 			CheckboxGroup<Role> checkboxes = new CheckboxGroup<>();
@@ -164,16 +163,16 @@ public class FcUserView extends VerticalLayout{
 		// logic configuration
 		crud.setOperations(() -> attoreService.findAll(), user -> attoreService.update(user), user -> {
 
-			String password = user.getHashedPassword();
+			//String password = user.getHashedPassword();
 			int strength = 10; // work factor of bcrypt
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength,new SecureRandom());
 			String encodedPassword = bCryptPasswordEncoder.encode(user.getHashedPassword());
 			//System.out.println(encodedPassword);
 
-			boolean isPasswordMatch = bCryptPasswordEncoder.matches(password, encodedPassword);
+			//boolean isPasswordMatch = bCryptPasswordEncoder.matches(password, encodedPassword);
 			//System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
 
-			isPasswordMatch = bCryptPasswordEncoder.matches(password, encodedPassword);
+			//isPasswordMatch = bCryptPasswordEncoder.matches(password, encodedPassword);
 			//System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
 
 			user.setHashedPassword(encodedPassword);
