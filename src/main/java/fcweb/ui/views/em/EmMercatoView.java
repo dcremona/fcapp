@@ -277,7 +277,7 @@ public class EmMercatoView extends VerticalLayout
 
 		absLayout = new AbsoluteLayout(1600,1200);
 		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
-		absLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		saveSendMail = new Button("Salva e Invia Mail");
 		saveSendMail.addClickListener(this);
@@ -467,7 +467,7 @@ public class EmMercatoView extends VerticalLayout
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
@@ -512,7 +512,7 @@ public class EmMercatoView extends VerticalLayout
 		layoutInfoGenerali.setPadding(true);
 		layoutInfoGenerali.setSpacing(true);
 		layoutInfoGenerali.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutInfoGenerali.getStyle().set("background", Costants.LIGHT_GRAY);
+		layoutInfoGenerali.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		layoutInfoGenerali.setAlignItems(FlexComponent.Alignment.END);
 
 		int cambiEff = getCambiEffettuati();
@@ -567,7 +567,7 @@ public class EmMercatoView extends VerticalLayout
 		layoutInfoRuolo.setPadding(true);
 		layoutInfoRuolo.setSpacing(true);
 		// layoutInfoRuolo.getStyle().set("border", Costants.BORDER_COLOR);
-		// layoutInfoRuolo.getStyle().set("background", Costants.LIGHT_BLUE);
+		// layoutInfoRuolo.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		layoutInfoRuolo.setAlignItems(FlexComponent.Alignment.END);
 
 		Image imgP = Utils.buildImage("p.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"p.png"));
@@ -702,7 +702,7 @@ public class EmMercatoView extends VerticalLayout
 		Span lblInfoGiocatori = new Span();
 		lblInfoGiocatori.setText("Giocatori per Nazione:");
 		lblInfoGiocatori.getStyle().set("font-size", "16px");
-		lblInfoGiocatori.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblInfoGiocatori.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 
 		absLayout.add(lblInfoGiocatori, left, top);
 
@@ -2708,7 +2708,7 @@ public class EmMercatoView extends VerticalLayout
 				}
 
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
@@ -3039,7 +3039,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getCognGiocatore() != null) {
@@ -3068,7 +3068,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getFcSquadra() != null) {
@@ -3109,7 +3109,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + g.getQuotazione();

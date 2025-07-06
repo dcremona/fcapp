@@ -264,7 +264,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			}
 
 			absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
-			absLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+			absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 			dialogTribuna.setWidth(WIN_WIDTH - 50 + "px");
 			dialogTribuna.setHeight(WIN_HEIGHT - 150 + "px");
@@ -490,7 +490,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		final VerticalLayout layoutPartite = new VerticalLayout();
 		layoutPartite.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutPartite.getStyle().set("background", Costants.LIGHT_BLUE);
+		layoutPartite.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		layoutPartite.setWidth("300px");
 		layoutPartite.setMargin(false);
 		layoutPartite.setPadding(false);
@@ -523,7 +523,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("100px");
 		layoutAvviso.setMargin(false);
 		layoutAvviso.setPadding(false);
@@ -816,7 +816,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				}
 
 				if (isGiocatoreOut(p) != null) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
@@ -984,7 +984,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				}
 				FcGiornataGiocatore gg = isGiocatoreOut(g);
 				if (gg != null) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 					cellLayout.add(getImageGiocatoreOut(gg));
 				}
@@ -1004,7 +1004,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (isGiocatoreOut(g) != null) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getFcSquadra() != null) {
@@ -1039,7 +1039,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (isGiocatoreOut(g) != null) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 

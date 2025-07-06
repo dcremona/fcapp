@@ -438,7 +438,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (s.getCognGiocatore() != null) {
@@ -462,7 +462,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (s.getNomeSquadra() != null) {
@@ -499,7 +499,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getFcGiocatore().getQuotazione();
@@ -523,7 +523,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getGiocate();
@@ -544,7 +544,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(true);
 			if (s != null && s.getFcGiocatore() != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String imgThink = "2.png";
@@ -584,7 +584,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(true);
 			if (s != null && s.getFcGiocatore() != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String imgThink = "2.png";
@@ -627,7 +627,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getGoalFatto();
@@ -651,7 +651,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getGoalSubito();
@@ -675,7 +675,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getAssist();
@@ -699,7 +699,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getAmmonizione();
@@ -723,7 +723,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getEspulsione();

@@ -460,18 +460,18 @@ public class EmSquadreView extends VerticalLayout {
 		Div lblTitle = new Div();
 		lblTitle.setText("Rosa Ufficiale");
 		lblTitle.getStyle().set("font-size", "16px");
-		lblTitle.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		FooterRow footerRow = grid.appendFooterRow();
 		Div lblCreditiSpesi0 = new Div();
 		lblCreditiSpesi0.setText("Totale");
 		lblCreditiSpesi0.getStyle().set("font-size", "20px");
-		lblCreditiSpesi0.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblCreditiSpesi0.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		Div lblCreditiSpesi1 = new Div();
 		lblCreditiSpesi1.setText("" + somma);
 		lblCreditiSpesi1.getStyle().set("font-size", "20px");
-		lblCreditiSpesi1.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblCreditiSpesi1.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		footerRow.getCell(quotazioneColumn).setComponent(lblCreditiSpesi0);
 		footerRow.getCell(totPagatoColumn).setComponent(lblCreditiSpesi1);
 
@@ -613,7 +613,7 @@ public class EmSquadreView extends VerticalLayout {
 		Div lblTitle = new Div();
 		lblTitle.setText("Cambi Rosa");
 		lblTitle.getStyle().set("font-size", "16px");
-		lblTitle.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		return grid;

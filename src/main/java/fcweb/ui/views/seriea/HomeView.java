@@ -91,10 +91,10 @@ public class HomeView extends VerticalLayout {
 		}
 	}
 
-	private HorizontalLayout buildInfoGiornate() throws Exception {
+	private HorizontalLayout buildInfoGiornate() {
 
 		HorizontalLayout gridWrapper = new HorizontalLayout();
-		gridWrapper.getStyle().set("border", Costants.BORDER_COLOR);
+		gridWrapper.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		gridWrapper.setSizeFull();
 
 		if (VaadinSession.getCurrent().getAttribute("GIORNATA_INFO") != null) {
@@ -110,7 +110,7 @@ public class HomeView extends VerticalLayout {
 				Div lblInfoSx = new Div();
 				lblInfoSx.setText(title);
 				lblInfoSx.getStyle().set("font-size", "16px");
-				lblInfoSx.getStyle().set("background", Costants.LIGHT_BLUE);
+				lblInfoSx.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 				lblInfoSx.setSizeFull();
 				layoutSx.add(lblInfoSx);
 				layoutSx.add(createGridGiornata(getDataTable(giornataInfoPrev)));
@@ -123,7 +123,7 @@ public class HomeView extends VerticalLayout {
 			Div lblInfoDx = new Div();
 			lblInfoDx.setText(title);
 			lblInfoDx.getStyle().set("font-size", "16px");
-			lblInfoDx.getStyle().set("background", Costants.LIGHT_BLUE);
+			lblInfoDx.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 			lblInfoDx.setSizeFull();
 			layoutDx.add(lblInfoDx);
 			layoutDx.add(createGridGiornata(getDataTable(giornataInfoCurr)));
@@ -184,16 +184,15 @@ public class HomeView extends VerticalLayout {
 		return grid;
 	}
 
-	private VerticalLayout builLayoutAvviso() throws Exception {
+	private VerticalLayout builLayoutAvviso() {
 
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		String nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
 		long millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
-		log.info("millisDiff " + millisDiff);
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
 
@@ -218,10 +217,10 @@ public class HomeView extends VerticalLayout {
 		return layoutAvviso;
 	}
 
-	private VerticalLayout builLayoutRisultati() throws Exception {
+	private VerticalLayout builLayoutRisultati() {
 
 		FormLayout layout = new FormLayout();
-		layout.getStyle().set("border", Costants.BORDER_COLOR);
+		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layout.setResponsiveSteps(new ResponsiveStep("1px", 1), new ResponsiveStep("500px", 2),
 				new ResponsiveStep("600px", 3), new ResponsiveStep("700px", 4), new ResponsiveStep("800px", 5));
 

@@ -222,9 +222,6 @@ public class SquadreView extends VerticalLayout {
 
 			String start = campionato.getStart().toString();
 			String currentGiornata = "" + giornataInfo.getCodiceGiornata();
-			log.info("START " + start);
-			log.info("END " + currentGiornata);
-			log.info("ID_ATTORE " + idAttore);
 			final Map<String, Object> hm = new HashMap<String, Object>();
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("START", start);
@@ -296,7 +293,7 @@ public class SquadreView extends VerticalLayout {
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcFormazione> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -325,7 +322,7 @@ public class SquadreView extends VerticalLayout {
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator((p1, p2) -> p1.getFcGiocatore().getFcSquadra().getNomeSquadra()
 				.compareTo(p2.getFcGiocatore().getFcSquadra().getNomeSquadra()));
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcFormazione> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -344,7 +341,8 @@ public class SquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+				Image img = Utils.buildImage(imgThink,
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -363,7 +361,7 @@ public class SquadreView extends VerticalLayout {
 		mediaVotoColumn.setSortable(true);
 		mediaVotoColumn.setComparator((p1, p2) -> p1.getFcGiocatore().getFcStatistiche().getMediaVoto()
 				.compareTo(p2.getFcGiocatore().getFcStatistiche().getMediaVoto()));
-		mediaVotoColumn.setHeader("Mv");
+		mediaVotoColumn.setHeader(Costants.MV);
 		mediaVotoColumn.setAutoWidth(true);
 		mediaVotoColumn.setKey("fcStatistiche.mediaVoto");
 
@@ -382,7 +380,8 @@ public class SquadreView extends VerticalLayout {
 						imgThink = "3.png";
 					}
 				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+				Image img = Utils.buildImage(imgThink,
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -401,20 +400,20 @@ public class SquadreView extends VerticalLayout {
 		fmVotoColumn.setSortable(true);
 		fmVotoColumn.setComparator((p1, p2) -> p1.getFcGiocatore().getFcStatistiche().getFantaMedia()
 				.compareTo(p2.getFcGiocatore().getFcStatistiche().getFantaMedia()));
-		fmVotoColumn.setHeader("FMv");
+		fmVotoColumn.setHeader(Costants.FMV);
 		fmVotoColumn.setAutoWidth(true);
 		fmVotoColumn.setKey("fcStatistiche.fantaMedia");
 
 		Column<FcFormazione> quotazioneColumn = grid.addColumn(
 				formazione -> formazione.getFcGiocatore() != null ? formazione.getFcGiocatore().getQuotazione() : 0);
 		quotazioneColumn.setSortable(true);
-		quotazioneColumn.setHeader("Q");
+		quotazioneColumn.setHeader(Costants.Q);
 		quotazioneColumn.setAutoWidth(true);
 
 		Column<FcFormazione> totPagatoColumn = grid.addColumn(
 				formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato().intValue() : 0);
 		totPagatoColumn.setSortable(true);
-		totPagatoColumn.setHeader("P");
+		totPagatoColumn.setHeader(Costants.P);
 		totPagatoColumn.setAutoWidth(true);
 
 		HeaderRow topRow = grid.prependHeaderRow();
@@ -423,18 +422,18 @@ public class SquadreView extends VerticalLayout {
 		Div lblTitle = new Div();
 		lblTitle.setText("Rosa Ufficiale");
 		lblTitle.getStyle().set("font-size", "16px");
-		lblTitle.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		FooterRow footerRow = grid.appendFooterRow();
 		Div lblCreditiSpesi0 = new Div();
-		lblCreditiSpesi0.setText("Totale");
+		lblCreditiSpesi0.setText(Costants.TOTALE);
 		lblCreditiSpesi0.getStyle().set("font-size", "20px");
-		lblCreditiSpesi0.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblCreditiSpesi0.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		Div lblCreditiSpesi1 = new Div();
 		lblCreditiSpesi1.setText("" + somma);
 		lblCreditiSpesi1.getStyle().set("font-size", "20px");
-		lblCreditiSpesi1.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblCreditiSpesi1.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		footerRow.getCell(quotazioneColumn).setComponent(lblCreditiSpesi0);
 		footerRow.getCell(totPagatoColumn).setComponent(lblCreditiSpesi1);
 
@@ -453,14 +452,14 @@ public class SquadreView extends VerticalLayout {
 		Column<FcMercatoDett> giornataColumn = grid
 				.addColumn(mercato -> mercato.getFcGiornataInfo().getCodiceGiornata());
 		giornataColumn.setSortable(false);
-		giornataColumn.setHeader("Giornata");
+		giornataColumn.setHeader(Costants.GIORNATA);
 		giornataColumn.setAutoWidth(true);
 
 		Column<FcMercatoDett> dataCambioColumn = grid
 				.addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,
 						() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataCambioColumn.setSortable(false);
-		dataCambioColumn.setHeader("Data");
+		dataCambioColumn.setHeader(Costants.DATA);
 		dataCambioColumn.setAutoWidth(true);
 
 		Column<FcMercatoDett> ruoloAcqColumn = grid.addColumn(new ComponentRenderer<>(m -> {
@@ -503,7 +502,7 @@ public class SquadreView extends VerticalLayout {
 			return cellLayout;
 		}));
 		gAcqColumn.setSortable(false);
-		gAcqColumn.setHeader("Acquisti");
+		gAcqColumn.setHeader(Costants.ACQUISTI);
 		gAcqColumn.setAutoWidth(true);
 
 		Column<FcMercatoDett> ruoloVenColumn = grid.addColumn(new ComponentRenderer<>(m -> {
@@ -546,12 +545,12 @@ public class SquadreView extends VerticalLayout {
 			return cellLayout;
 		}));
 		gVenColumn.setSortable(false);
-		gVenColumn.setHeader("Cessioni");
+		gVenColumn.setHeader(Costants.CESSIONI);
 		gVenColumn.setAutoWidth(true);
 
 		Column<FcMercatoDett> notaColumn = grid.addColumn(mercato -> mercato.getNota());
 		notaColumn.setSortable(false);
-		notaColumn.setHeader("Nota");
+		notaColumn.setHeader(Costants.NOTA);
 		notaColumn.setAutoWidth(true);
 
 		HeaderRow topRow = grid.prependHeaderRow();
@@ -561,7 +560,7 @@ public class SquadreView extends VerticalLayout {
 		Div lblTitle = new Div();
 		lblTitle.setText("Cambi Rosa");
 		lblTitle.getStyle().set("font-size", "16px");
-		lblTitle.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		return grid;

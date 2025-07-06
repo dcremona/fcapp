@@ -234,7 +234,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 		absLayout = new AbsoluteLayout(1600,1200);
 		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
-		absLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		save = new Button("Save");
 		save.setIcon(VaadinIcon.DATABASE.create());
@@ -416,7 +416,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
@@ -718,7 +718,7 @@ public class EmTeamInsertView extends VerticalLayout
 				}
 
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
@@ -897,7 +897,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getCognGiocatore() != null) {
@@ -924,7 +924,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getFcSquadra() != null) {
@@ -961,7 +961,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				FcStatistiche s = g.getFcStatistiche();

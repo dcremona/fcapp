@@ -111,23 +111,23 @@ public class CalendarioView extends VerticalLayout{
 
 		VerticalLayout gridPrimaFaseAndata = new VerticalLayout();
 		gridPrimaFaseAndata.getStyle().set("border", Costants.BORDER_COLOR);
-		gridPrimaFaseAndata.getStyle().set("background", Costants.GREEN);
+		gridPrimaFaseAndata.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
 		VerticalLayout gridPrimaFaseRitorno = new VerticalLayout();
 		gridPrimaFaseRitorno.getStyle().set("border", Costants.BORDER_COLOR);
-		gridPrimaFaseRitorno.getStyle().set("background", Costants.GREEN);
+		gridPrimaFaseRitorno.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
 		VerticalLayout gridQuarti = new VerticalLayout();
 		gridQuarti.getStyle().set("border", Costants.BORDER_COLOR);
-		gridQuarti.getStyle().set("background", Costants.MISTYROSE);
+		gridQuarti.getStyle().set(Costants.BACKGROUND, Costants.MISTYROSE);
 
 		VerticalLayout gridSemi = new VerticalLayout();
 		gridSemi.getStyle().set("border", Costants.BORDER_COLOR);
-		gridSemi.getStyle().set("background", Costants.LIGHT_YELLOW);
+		gridSemi.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 
 		VerticalLayout gridFinali = new VerticalLayout();
 		gridFinali.getStyle().set("border", Costants.BORDER_COLOR);
-		gridFinali.getStyle().set("background", Costants.POWDERBLUE);
+		gridFinali.getStyle().set(Costants.BACKGROUND, Costants.POWDERBLUE);
 
 		List<FcGiornata> beanContainer = new ArrayList<>();
 		int conta = 1;

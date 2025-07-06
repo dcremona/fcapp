@@ -5,6 +5,9 @@ public class Costants {
 	public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/small/";
 	public static final String HTTP_URL_IMG_CARD = "https://content.fantacalcio.it/web/campioncini/card/";
 
+	public static final String BACKGROUND = "background";
+	
+	public static final String BORDER = "border";
 	public static final String BORDER_COLOR = "1px solid #9E9E9E";
 
 	public static final String BORDER_COLOR_P = "2px solid #FFA500";
@@ -74,27 +77,45 @@ public class Costants {
 
 	public static final String CLASSPATH_IMAGES = "classpath:/images/";
 	public static final String CLASSPATH_IMG_SQUADRE = "classpath:/img/squadre/";
-	
+
 	public static final String TYPE_IMAGE_PNG = "image/png";
 	public static final String TYPE_IMAGE_JPG = "image/jpg";
-	
+
 	public static final String PUNTI = "PUNTI";
 	public static final String TOTALE_PUNTI = "TOTALE_PUNTI";
 	public static final String PT_TVST = "PT_TVST";
-	
+
 	public static final String SELEZIONA_ATTORE = "Seleziona attore";
 	public static final String CLASSIFICA_PER = "Claasifica per";
-	
+
+	public static final String GIORNATA = "Giornata";
+	public static final String DATA = "Data";
+	public static final String ACQUISTI = "Acquisti";
+	public static final String CESSIONI = "Cessioni";
+	public static final String NOTA = "Nota";
 	public static final String RUOLO = "Ruolo";
 	public static final String GIOCATORE = "Giocatore";
 	public static final String SQUADRA = "Squadra";
 	public static final String PROPETARIO = "Proprietario";
 	public static final String GIOCATE = "Giocate";
-	
+	public static final String MV = "Mv";
+	public static final String FMV = "FMv";
+	public static final String R = "R";
+	public static final String Q = "Q";
+	public static final String TOTALE = "Totale";	
+
 	public static final String P = "P";
 	public static final String D = "C";
 	public static final String C = "D";
 	public static final String A = "A";
-	
+
+	public static final String WIDTH_50 = "50px";
+	public static final String WIDTH_90 = "90px";
+	public static final String WIDTH_100 = "100px";
+	public static final String WIDTH_140 = "140px";
+	public static final String WIDTH_150 = "150px";
+	public static final String WIDTH_190 = "190px";
+	public static final String WIDTH_205 = "205px";
+	public static final String WIDTH_240 = "240px";
 
 }

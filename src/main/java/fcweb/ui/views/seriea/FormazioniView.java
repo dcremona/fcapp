@@ -767,19 +767,19 @@ public class FormazioniView extends VerticalLayout {
 		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
 		lblTotGiornata.getStyle().set("font-size", "24px");
-		lblTotGiornata.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTotGiornata.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
 		Span lblTotPuntiRosa = new Span();
 		lblTotPuntiRosa.setText("Totale Punteggio Rosa: " + totPuntiRosa);
 		lblTotPuntiRosa.getStyle().set("font-size", "16px");
-		lblTotPuntiRosa.getStyle().set("background", Costants.LIGHT_YELLOW);
+		lblTotPuntiRosa.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 		lblTotPuntiRosa.setSizeFull();
 
 		Span lblTotPuntiTvsT = new Span();
 		lblTotPuntiTvsT.setText("Totale Punteggio TvsT: " + totPuntiTvsT);
 		lblTotPuntiTvsT.getStyle().set("font-size", "16px");
-		lblTotPuntiTvsT.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblTotPuntiTvsT.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		lblTotPuntiTvsT.setSizeFull();
 
 		Span lblInvio = new Span();

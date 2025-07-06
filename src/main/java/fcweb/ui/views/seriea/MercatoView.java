@@ -19,6 +19,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -62,11 +63,6 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private static final String widthG = "240px";
-	private static final String widthc1 = "150px";
-	private static final String widthc2 = "90px";
-	private static final String widthI = "205px";
-
 	private String idCampionato = null;
 
 	@Autowired
@@ -88,7 +84,6 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 	private Button saveButton;
 	private Span lblError;
 
-	private Span[] lblAttore;
 	private Grid<FcFormazione>[] tablePlayer;
 	private Span[] lblCreditoPlayer;
 	private Span[] lblTotPagatoPlayer;
@@ -96,9 +91,9 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 	private Span[] lblRuoliPlayer;
 	private Grid<FcProperties>[] tableContaPlayer;
 
-	public List<FcAttore> squadre = new ArrayList<>();
-	public List<FcGiocatore> giocatori = new ArrayList<>();
-	public List<FcClassifica> creditiFm = new ArrayList<>();
+	private List<FcAttore> squadre = new ArrayList<>();
+	private List<FcGiocatore> giocatori = new ArrayList<>();
+	private List<FcClassifica> creditiFm = new ArrayList<>();
 
 	@Autowired
 	private AccessoService accessoController;
@@ -110,7 +105,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		log.info("MercatoView");
 	}
 
-	public void randomFormazioni() {
+	private void randomFormazioni() {
 		Random rand = new Random();
 
 		List<Integer> p = new ArrayList<>();
@@ -240,7 +235,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 			lblError = new Span();
 			lblError.getStyle().set("border", Costants.BORDER_COLOR);
-			lblError.getStyle().set("background", "#EC7063");
+			lblError.getStyle().set(Costants.BACKGROUND, "#EC7063");
 			lblError.setVisible(false);
 
 			HorizontalLayout layoutButton = new HorizontalLayout();
@@ -267,7 +262,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 			layout3.setMargin(false);
 			layout3.setSpacing(false);
 
-			lblAttore = new Span[squadre.size()];
+			Span[] lblAttore = new Span[squadre.size()];
 			tablePlayer = new Grid[squadre.size()];
 			lblRuoliPlayer = new Span[squadre.size()];
 			lblCreditoPlayer = new Span[squadre.size()];
@@ -282,9 +277,9 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 				layoutHeaderInfo.setSpacing(false);
 
 				lblAttore[att] = new Span(a.getDescAttore());
-				lblAttore[att].setWidth(widthI);
+				lblAttore[att].setWidth(Costants.WIDTH_205);
 				lblAttore[att].getStyle().set("border", Costants.BORDER_COLOR);
-				lblAttore[att].getStyle().set("background", "#D2E6F0");
+				lblAttore[att].getStyle().set(Costants.BACKGROUND, "#D2E6F0");
 				layoutHeaderInfo.add(lblAttore[att]);
 
 				layout0.add(layoutHeaderInfo);
@@ -297,27 +292,27 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 				layoutInfo.setSpacing(false);
 
 				lblCreditoPlayer[att] = new Span("Credito");
-				lblCreditoPlayer[att].setWidth(widthI);
+				lblCreditoPlayer[att].setWidth(Costants.WIDTH_205);
 				lblCreditoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
-				lblCreditoPlayer[att].getStyle().set("background", "#F5E37F");
+				lblCreditoPlayer[att].getStyle().set(Costants.BACKGROUND, "#F5E37F");
 				layoutInfo.add(lblCreditoPlayer[att]);
 
 				lblTotPagatoPlayer[att] = new Span("Pagato");
-				lblTotPagatoPlayer[att].setWidth(widthI);
+				lblTotPagatoPlayer[att].setWidth(Costants.WIDTH_205);
 				lblTotPagatoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
-				lblTotPagatoPlayer[att].getStyle().set("background", "#D7DBDD");
+				lblTotPagatoPlayer[att].getStyle().set(Costants.BACKGROUND, "#D7DBDD");
 				layoutInfo.add(lblTotPagatoPlayer[att]);
 
 				lblResiduoPlayer[att] = new Span("Residuo");
-				lblResiduoPlayer[att].setWidth(widthI);
+				lblResiduoPlayer[att].setWidth(Costants.WIDTH_205);
 				lblResiduoPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
-				lblResiduoPlayer[att].getStyle().set("background", "#ABEBC6");
+				lblResiduoPlayer[att].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
 				layoutInfo.add(lblResiduoPlayer[att]);
 
 				lblRuoliPlayer[att] = new Span("P D C A");
 				lblRuoliPlayer[att].getStyle().set("border", Costants.BORDER_COLOR);
-				lblRuoliPlayer[att].getStyle().set("background", "#AED6F1");
-				lblRuoliPlayer[att].setWidth(widthI);
+				lblRuoliPlayer[att].getStyle().set(Costants.BACKGROUND, "#AED6F1");
+				lblRuoliPlayer[att].setWidth(Costants.WIDTH_205);
 				layoutInfo.add(lblRuoliPlayer[att]);
 
 				layout2.add(layoutInfo);
@@ -473,9 +468,9 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 			lblResiduoPlayer[i].setText("Residuo  = " + residuo);
 			lblRuoliPlayer[i].setText("P=" + countP + " D=" + countD + " C=" + countC + " A=" + countA);
 
-			lblResiduoPlayer[i].getStyle().set("background", "#ABEBC6");
+			lblResiduoPlayer[i].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
 			if (residuo < 0) {
-				lblResiduoPlayer[i].getStyle().set("background", "#EC7063");
+				lblResiduoPlayer[i].getStyle().set(Costants.BACKGROUND, "#EC7063");
 				descError.append(descAttore + " Residuo minore di 0 - Residuo attuale " + residuo);
 			}
 
@@ -515,7 +510,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		Grid<FcFormazione> grid = new Grid<>();
 		grid.setAllRowsVisible(true);
 		grid.addThemeVariants(GridVariant.LUMO_COMPACT);
-		grid.setWidth(widthG);
+		grid.setWidth(Costants.WIDTH_240);
 		grid.setItems(listFormazione);
 
 		if (listFormazione.isEmpty()) {
@@ -546,17 +541,18 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 			return container;
 		}));
 		giocatore.setItems(giocatori);
-		giocatore.setWidth(widthc1);
+		giocatore.setWidth(Costants.WIDTH_140);
 		giocatore.addValueChangeListener(evt -> {
 		});
 		giocatore.getElement().addEventListener("keydown", event -> grid.getEditor().cancel())
 				.setFilter("event.key === 'Tab' && !event.shiftKey");
-
+		giocatore.getStyle().set("--vaadin-combo-box-overlay-width", "16em");
+		
 		IntegerField totPagato = new IntegerField();
 		totPagato.setMin(0);
 		totPagato.setMax(500);
 		totPagato.setStepButtonsVisible(true);
-		totPagato.setWidth(widthc2);
+		totPagato.setWidth(Costants.WIDTH_100);
 		totPagato.getElement().addEventListener("keydown", event -> grid.getEditor().cancel())
 				.setFilter("event.key === 'Tab' && event.shiftKey");
 
@@ -576,6 +572,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		totPagatoColumn.setKey("totPagato");
 		binder.bind(totPagato, "totPagato");
 		totPagatoColumn.setEditorComponent(totPagato);
+		totPagatoColumn.setTextAlign(ColumnTextAlign.END);
 
 		binder.addValueChangeListener(evt -> {
 			if (evt.getValue() instanceof FcGiocatore) {
@@ -593,7 +590,6 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		});
 
 		binder.addValueChangeListener(event -> {
-			//log.info("addValueChangeListener");
 			grid.getEditor().refresh();
 
 			try {
@@ -618,7 +614,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		grid.setAllRowsVisible(true);
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
 				GridVariant.LUMO_ROW_STRIPES);
-		grid.setWidth(widthG);
+		grid.setWidth(Costants.WIDTH_240);
 
 		Column<FcProperties> keyColumn = grid.addColumn(new ComponentRenderer<>(f -> {
 
@@ -647,12 +643,10 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 		}));
 		keyColumn.setSortable(false);
-		keyColumn.setWidth(widthc1);
 		keyColumn.setAutoWidth(true);
 
 		Column<FcProperties> valueColumn = grid.addColumn(p -> p.getValue());
 		valueColumn.setSortable(false);
-		valueColumn.setWidth(widthc2);
 		valueColumn.setAutoWidth(true);
 
 		return grid;

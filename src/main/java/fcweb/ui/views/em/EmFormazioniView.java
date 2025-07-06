@@ -324,7 +324,7 @@ public class EmFormazioniView extends VerticalLayout{
 			FcGiocatore g = gd.getFcGiocatore();
 			if (gd != null && g != null) {
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
@@ -368,7 +368,7 @@ public class EmFormazioniView extends VerticalLayout{
 			FcGiocatore g = gd.getFcGiocatore();
 			if (gd != null && g != null) {
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra().substring(0, 3));
@@ -485,7 +485,7 @@ public class EmFormazioniView extends VerticalLayout{
 				lbl.getStyle().set("fontSize", "smaller");
 
 				if (!g.isFlagAttivo()) {
-					lbl.getStyle().set("background", Costants.LOWER_GRAY);
+					lbl.getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					lbl.getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 			}
@@ -632,7 +632,7 @@ public class EmFormazioniView extends VerticalLayout{
 		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
 		lblTotGiornata.getStyle().set("font-size", "24px");
-		lblTotGiornata.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTotGiornata.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
 		Span lblInvio = new Span();

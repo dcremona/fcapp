@@ -210,7 +210,7 @@ public class SquadreAllView extends VerticalLayout{
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader("R");
+		ruoloColumn.setHeader(Costants.R);
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcFormazione> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -231,7 +231,7 @@ public class SquadreAllView extends VerticalLayout{
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcFormazione> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -254,7 +254,7 @@ public class SquadreAllView extends VerticalLayout{
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator((p1,
 				p2) -> p1.getFcGiocatore().getFcSquadra().getNomeSquadra().compareTo(p2.getFcGiocatore().getFcSquadra().getNomeSquadra()));
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcFormazione> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(f -> {
@@ -288,17 +288,17 @@ public class SquadreAllView extends VerticalLayout{
 		mediaVotoColumn.setSortable(true);
 		mediaVotoColumn.setComparator((p1,
 				p2) -> p1.getFcGiocatore().getFcStatistiche().getMediaVoto().compareTo(p2.getFcGiocatore().getFcStatistiche().getMediaVoto()));
-		mediaVotoColumn.setHeader("Mv");
+		mediaVotoColumn.setHeader(Costants.MV);
 		mediaVotoColumn.setAutoWidth(true);
 
 		Column<FcFormazione> quotazioneColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getFcGiocatore().getQuotazione() : 0);
 		quotazioneColumn.setSortable(true);
-		quotazioneColumn.setHeader("Q");
+		quotazioneColumn.setHeader(Costants.Q);
 		quotazioneColumn.setAutoWidth(true);
 
 		Column<FcFormazione> totPagatoColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato().intValue() : 0);
 		totPagatoColumn.setSortable(true);
-		totPagatoColumn.setHeader("P");
+		totPagatoColumn.setHeader(Costants.P);
 		totPagatoColumn.setAutoWidth(true);
 
 		HeaderRow topRow = grid.prependHeaderRow();
@@ -306,18 +306,18 @@ public class SquadreAllView extends VerticalLayout{
 		Div lblTitle = new Div();
 		lblTitle.setText(attore);
 		lblTitle.getStyle().set("font-size", "16px");
-		lblTitle.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTitle.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		informationCell.setComponent(lblTitle);
 
 		FooterRow footerRow = grid.appendFooterRow();
 		Div lblCreditiSpesi0 = new Div();
 		lblCreditiSpesi0.setText("Totale");
 		lblCreditiSpesi0.getStyle().set("font-size", "20px");
-		lblCreditiSpesi0.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblCreditiSpesi0.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		Div lblCreditiSpesi1 = new Div();
 		lblCreditiSpesi1.setText("" + somma);
 		lblCreditiSpesi1.getStyle().set("font-size", "20px");
-		lblCreditiSpesi1.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblCreditiSpesi1.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		footerRow.getCell(quotazioneColumn).setComponent(lblCreditiSpesi0);
 		footerRow.getCell(totPagatoColumn).setComponent(lblCreditiSpesi1);
 

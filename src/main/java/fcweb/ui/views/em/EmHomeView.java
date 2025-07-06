@@ -219,7 +219,7 @@ public class EmHomeView extends VerticalLayout{
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
 		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
