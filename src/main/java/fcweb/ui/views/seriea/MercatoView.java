@@ -200,9 +200,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 		}
 		accessoController.insertAccesso(this.getClass().getName());
 		initData();
-		if (!giocatori.isEmpty()) {
-			initLayout();
-		}
+		initLayout();
 	}
 
 	private void initData() {
@@ -228,6 +226,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 			saveButton = new Button("Save");
 			saveButton.addClickListener(this);
+			saveButton.setEnabled(!giocatori.isEmpty());
 
 			randomSaveButton = new Button("Random Save");
 			randomSaveButton.addClickListener(this);
@@ -249,87 +248,92 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
 			this.add(layoutButton);
 
-			HorizontalLayout layout0 = new HorizontalLayout();
-			layout0.setMargin(false);
-			layout0.setSpacing(false);
-			HorizontalLayout layout1 = new HorizontalLayout();
-			layout1.setMargin(false);
-			layout1.setSpacing(false);
-			HorizontalLayout layout2 = new HorizontalLayout();
-			layout2.setMargin(false);
-			layout2.setSpacing(false);
-			HorizontalLayout layout3 = new HorizontalLayout();
-			layout3.setMargin(false);
-			layout3.setSpacing(false);
+			if (!giocatori.isEmpty()) {
+				
+				HorizontalLayout layout0 = new HorizontalLayout();
+				layout0.setMargin(false);
+				layout0.setSpacing(false);
+				HorizontalLayout layout1 = new HorizontalLayout();
+				layout1.setMargin(false);
+				layout1.setSpacing(false);
+				HorizontalLayout layout2 = new HorizontalLayout();
+				layout2.setMargin(false);
+				layout2.setSpacing(false);
+				HorizontalLayout layout3 = new HorizontalLayout();
+				layout3.setMargin(false);
+				layout3.setSpacing(false);
 
-			Span[] lblAttore = new Span[squadre.size()];
-			tablePlayer = new Grid[squadre.size()];
-			lblRuoliPlayer = new Span[squadre.size()];
-			lblCreditoPlayer = new Span[squadre.size()];
-			lblTotPagatoPlayer = new Span[squadre.size()];
-			lblResiduoPlayer = new Span[squadre.size()];
-			tableContaPlayer = new Grid[squadre.size()];
+				Span[] lblAttore = new Span[squadre.size()];
+				tablePlayer = new Grid[squadre.size()];
+				lblRuoliPlayer = new Span[squadre.size()];
+				lblCreditoPlayer = new Span[squadre.size()];
+				lblTotPagatoPlayer = new Span[squadre.size()];
+				lblResiduoPlayer = new Span[squadre.size()];
+				tableContaPlayer = new Grid[squadre.size()];
 
-			int att = 0;
-			for (FcAttore a : squadre) {
-				VerticalLayout layoutHeaderInfo = new VerticalLayout();
-				layoutHeaderInfo.setMargin(false);
-				layoutHeaderInfo.setSpacing(false);
+				int att = 0;
+				for (FcAttore a : squadre) {
+					VerticalLayout layoutHeaderInfo = new VerticalLayout();
+					layoutHeaderInfo.setMargin(false);
+					layoutHeaderInfo.setSpacing(false);
 
-				lblAttore[att] = new Span(a.getDescAttore());
-				lblAttore[att].setWidth(Costants.WIDTH_205);
-				lblAttore[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-				lblAttore[att].getStyle().set(Costants.BACKGROUND, "#D2E6F0");
-				layoutHeaderInfo.add(lblAttore[att]);
+					lblAttore[att] = new Span(a.getDescAttore());
+					lblAttore[att].setWidth(Costants.WIDTH_205);
+					lblAttore[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+					lblAttore[att].getStyle().set(Costants.BACKGROUND, "#D2E6F0");
+					layoutHeaderInfo.add(lblAttore[att]);
 
-				layout0.add(layoutHeaderInfo);
+					layout0.add(layoutHeaderInfo);
 
-				tablePlayer[att] = buildTable(a);
-				layout1.add(tablePlayer[att]);
+					tablePlayer[att] = buildTable(a);
+					layout1.add(tablePlayer[att]);
 
-				VerticalLayout layoutInfo = new VerticalLayout();
-				layoutInfo.setMargin(false);
-				layoutInfo.setSpacing(false);
+					VerticalLayout layoutInfo = new VerticalLayout();
+					layoutInfo.setMargin(false);
+					layoutInfo.setSpacing(false);
 
-				lblCreditoPlayer[att] = new Span("Credito");
-				lblCreditoPlayer[att].setWidth(Costants.WIDTH_205);
-				lblCreditoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-				lblCreditoPlayer[att].getStyle().set(Costants.BACKGROUND, "#F5E37F");
-				layoutInfo.add(lblCreditoPlayer[att]);
+					lblCreditoPlayer[att] = new Span("Credito");
+					lblCreditoPlayer[att].setWidth(Costants.WIDTH_205);
+					lblCreditoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+					lblCreditoPlayer[att].getStyle().set(Costants.BACKGROUND, "#F5E37F");
+					layoutInfo.add(lblCreditoPlayer[att]);
 
-				lblTotPagatoPlayer[att] = new Span("Pagato");
-				lblTotPagatoPlayer[att].setWidth(Costants.WIDTH_205);
-				lblTotPagatoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-				lblTotPagatoPlayer[att].getStyle().set(Costants.BACKGROUND, "#D7DBDD");
-				layoutInfo.add(lblTotPagatoPlayer[att]);
+					lblTotPagatoPlayer[att] = new Span("Pagato");
+					lblTotPagatoPlayer[att].setWidth(Costants.WIDTH_205);
+					lblTotPagatoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+					lblTotPagatoPlayer[att].getStyle().set(Costants.BACKGROUND, "#D7DBDD");
+					layoutInfo.add(lblTotPagatoPlayer[att]);
 
-				lblResiduoPlayer[att] = new Span("Residuo");
-				lblResiduoPlayer[att].setWidth(Costants.WIDTH_205);
-				lblResiduoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-				lblResiduoPlayer[att].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
-				layoutInfo.add(lblResiduoPlayer[att]);
+					lblResiduoPlayer[att] = new Span("Residuo");
+					lblResiduoPlayer[att].setWidth(Costants.WIDTH_205);
+					lblResiduoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+					lblResiduoPlayer[att].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
+					layoutInfo.add(lblResiduoPlayer[att]);
 
-				lblRuoliPlayer[att] = new Span("P D C A");
-				lblRuoliPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-				lblRuoliPlayer[att].getStyle().set(Costants.BACKGROUND, "#AED6F1");
-				lblRuoliPlayer[att].setWidth(Costants.WIDTH_205);
-				layoutInfo.add(lblRuoliPlayer[att]);
+					lblRuoliPlayer[att] = new Span("P D C A");
+					lblRuoliPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+					lblRuoliPlayer[att].getStyle().set(Costants.BACKGROUND, "#AED6F1");
+					lblRuoliPlayer[att].setWidth(Costants.WIDTH_205);
+					layoutInfo.add(lblRuoliPlayer[att]);
 
-				layout2.add(layoutInfo);
+					layout2.add(layoutInfo);
 
-				tableContaPlayer[att] = buildTableContaPlayer();
+					tableContaPlayer[att] = buildTableContaPlayer();
 
-				layout3.add(tableContaPlayer[att]);
+					layout3.add(tableContaPlayer[att]);
 
-				att++;
+					att++;
+				}
+
+				this.add(layout0);
+				this.add(layout1);
+				this.add(layout2);
+				this.add(layout3);
+
+				updateInfoAttore();
+				
 			}
 
-			this.add(layout0);
-			this.add(layout1);
-			this.add(layout2);
-			this.add(layout3);
-
-			updateInfoAttore();
 
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
