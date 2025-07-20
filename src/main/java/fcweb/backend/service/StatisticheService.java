@@ -25,7 +25,7 @@ public class StatisticheService{
 	}
 
 	public List<FcStatistiche> findByFlagAttivo(boolean flagAttivo) {
-		List<FcStatistiche> l = (List<FcStatistiche>) statisticheRepository.findByFlagAttivo(flagAttivo);
+		List<FcStatistiche> l = statisticheRepository.findByFlagAttivo(flagAttivo);
 		return l;
 	}
 

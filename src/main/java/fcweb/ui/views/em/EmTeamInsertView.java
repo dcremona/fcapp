@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -19,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -45,7 +43,6 @@ import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.ContentIdGenerator;
@@ -156,30 +153,30 @@ public class EmTeamInsertView extends VerticalLayout
 
 	// DATA
 	private static final String[] schemi = new String[] { "5-4-1", "5-3-2", "4-5-1", "4-4-2", "4-3-3", "3-5-2", "3-4-3" };
-	private List<FcGiocatore> modelFormazione = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer1 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer2 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer3 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer4 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer5 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer6 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer7 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer8 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer9 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer10 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer11 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer12 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer13 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer14 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer15 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer16 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer17 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer18 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer19 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer20 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer21 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer22 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer23 = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelFormazione = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer1 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer2 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer3 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer4 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer5 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer6 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer7 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer8 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer9 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer10 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer11 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer12 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer13 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer14 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer15 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer16 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer17 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer18 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer19 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer20 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer21 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer22 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
 	@Autowired
 	private AttoreService attoreController;
@@ -236,8 +233,8 @@ public class EmTeamInsertView extends VerticalLayout
 	private void initLayout() throws Exception {
 
 		absLayout = new AbsoluteLayout(1600,1200);
-		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
-		absLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		save = new Button("Save");
 		save.setIcon(VaadinIcon.DATABASE.create());
@@ -257,7 +254,7 @@ public class EmTeamInsertView extends VerticalLayout
 			removeAllElementsList();
 
 			if (evt.getValue() != null) {
-				String modulo = (String) evt.getValue();
+				String modulo = evt.getValue();
 
 				absLayout.add(tablePlayer1, _550px, _P);
 
@@ -415,11 +412,11 @@ public class EmTeamInsertView extends VerticalLayout
 		List<FcCalendarioCompetizione> listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
 		tablePartite = getTablePartite(listPartite);
 
-		Image panchina = buildImage("classpath:images/", "panchina.jpg");
+		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"panchina.jpg"));
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
@@ -442,7 +439,7 @@ public class EmTeamInsertView extends VerticalLayout
 		absLayout.add(comboModulo, 20, 50);
 
 		absLayout.add(tableFormazione, 10, 150);
-		Image campo = buildImage("classpath:images/", "campo.jpg");
+		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource("Costants.CLASSPATH_IMAGES/campo.jpg"));
 		absLayout.add(campo, _350px, 150);
 
 		this.add(absLayout);
@@ -508,139 +505,139 @@ public class EmTeamInsertView extends VerticalLayout
 
 		LOG.info("removeAllElementsList");
 		if (modelPlayer1.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer1.get(0);
+			FcGiocatore bean = modelPlayer1.get(0);
 			modelFormazione.add(bean);
 			modelPlayer1.clear();
 			tablePlayer1.getDataProvider().refreshAll();
 		}
 		if (modelPlayer2.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer2.get(0);
+			FcGiocatore bean = modelPlayer2.get(0);
 			modelFormazione.add(bean);
 			modelPlayer2.clear();
 			tablePlayer2.getDataProvider().refreshAll();
 		}
 		if (modelPlayer3.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer3.get(0);
+			FcGiocatore bean = modelPlayer3.get(0);
 			modelFormazione.add(bean);
 			modelPlayer3.clear();
 			tablePlayer3.getDataProvider().refreshAll();
 		}
 		if (modelPlayer4.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer4.get(0);
+			FcGiocatore bean = modelPlayer4.get(0);
 			modelFormazione.add(bean);
 			modelPlayer4.clear();
 			tablePlayer4.getDataProvider().refreshAll();
 		}
 		if (modelPlayer5.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer5.get(0);
+			FcGiocatore bean = modelPlayer5.get(0);
 			modelFormazione.add(bean);
 			modelPlayer5.clear();
 			tablePlayer5.getDataProvider().refreshAll();
 		}
 		if (modelPlayer6.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer6.get(0);
+			FcGiocatore bean = modelPlayer6.get(0);
 			modelFormazione.add(bean);
 			modelPlayer6.clear();
 			tablePlayer6.getDataProvider().refreshAll();
 		}
 		if (modelPlayer7.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer7.get(0);
+			FcGiocatore bean = modelPlayer7.get(0);
 			modelFormazione.add(bean);
 			modelPlayer7.clear();
 			tablePlayer7.getDataProvider().refreshAll();
 		}
 		if (modelPlayer8.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer8.get(0);
+			FcGiocatore bean = modelPlayer8.get(0);
 			modelFormazione.add(bean);
 			modelPlayer8.clear();
 			tablePlayer8.getDataProvider().refreshAll();
 		}
 		if (modelPlayer9.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer9.get(0);
+			FcGiocatore bean = modelPlayer9.get(0);
 			modelFormazione.add(bean);
 			modelPlayer9.clear();
 			tablePlayer9.getDataProvider().refreshAll();
 		}
 		if (modelPlayer10.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer10.get(0);
+			FcGiocatore bean = modelPlayer10.get(0);
 			modelFormazione.add(bean);
 			modelPlayer10.clear();
 			tablePlayer10.getDataProvider().refreshAll();
 		}
 		if (modelPlayer11.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer11.get(0);
+			FcGiocatore bean = modelPlayer11.get(0);
 			modelFormazione.add(bean);
 			modelPlayer11.clear();
 			tablePlayer11.getDataProvider().refreshAll();
 		}
 		if (modelPlayer12.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer12.get(0);
+			FcGiocatore bean = modelPlayer12.get(0);
 			modelFormazione.add(bean);
 			modelPlayer12.clear();
 			tablePlayer12.getDataProvider().refreshAll();
 		}
 		if (modelPlayer13.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer13.get(0);
+			FcGiocatore bean = modelPlayer13.get(0);
 			modelFormazione.add(bean);
 			modelPlayer13.clear();
 			tablePlayer13.getDataProvider().refreshAll();
 		}
 		if (modelPlayer14.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer14.get(0);
+			FcGiocatore bean = modelPlayer14.get(0);
 			modelFormazione.add(bean);
 			modelPlayer14.clear();
 			tablePlayer14.getDataProvider().refreshAll();
 		}
 		if (modelPlayer15.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer15.get(0);
+			FcGiocatore bean = modelPlayer15.get(0);
 			modelFormazione.add(bean);
 			modelPlayer15.clear();
 			tablePlayer15.getDataProvider().refreshAll();
 		}
 		if (modelPlayer16.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer16.get(0);
+			FcGiocatore bean = modelPlayer16.get(0);
 			modelFormazione.add(bean);
 			modelPlayer16.clear();
 			tablePlayer16.getDataProvider().refreshAll();
 		}
 		if (modelPlayer17.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer17.get(0);
+			FcGiocatore bean = modelPlayer17.get(0);
 			modelFormazione.add(bean);
 			modelPlayer17.clear();
 			tablePlayer17.getDataProvider().refreshAll();
 		}
 		if (modelPlayer18.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer18.get(0);
+			FcGiocatore bean = modelPlayer18.get(0);
 			modelFormazione.add(bean);
 			modelPlayer18.clear();
 			tablePlayer18.getDataProvider().refreshAll();
 		}
 		if (modelPlayer19.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer19.get(0);
+			FcGiocatore bean = modelPlayer19.get(0);
 			modelFormazione.add(bean);
 			modelPlayer19.clear();
 			tablePlayer19.getDataProvider().refreshAll();
 		}
 		if (modelPlayer20.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer20.get(0);
+			FcGiocatore bean = modelPlayer20.get(0);
 			modelFormazione.add(bean);
 			modelPlayer20.clear();
 			tablePlayer20.getDataProvider().refreshAll();
 		}
 		if (modelPlayer21.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer21.get(0);
+			FcGiocatore bean = modelPlayer21.get(0);
 			modelFormazione.add(bean);
 			modelPlayer21.clear();
 			tablePlayer21.getDataProvider().refreshAll();
 		}
 		if (modelPlayer22.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer22.get(0);
+			FcGiocatore bean = modelPlayer22.get(0);
 			modelFormazione.add(bean);
 			modelPlayer22.clear();
 			tablePlayer22.getDataProvider().refreshAll();
 		}
 		if (modelPlayer23.size() != 0) {
-			FcGiocatore bean = (FcGiocatore) modelPlayer23.get(0);
+			FcGiocatore bean = modelPlayer23.get(0);
 			modelFormazione.add(bean);
 			modelPlayer23.clear();
 			tablePlayer23.getDataProvider().refreshAll();
@@ -678,7 +675,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
 
-		ArrayList<FcGiocatore> beans = new ArrayList<FcGiocatore>();
+		ArrayList<FcGiocatore> beans = new ArrayList<>();
 		for (FcFormazione f : listFormazione) {
 			if (f.getFcGiocatore() != null) {
 				beans.add(f.getFcGiocatore());
@@ -694,7 +691,7 @@ public class EmTeamInsertView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		// grid.getStyle().set("border", Costants.BORDER_COLOR);
+		// grid.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		grid.setWidth(width);
 		grid.setHeight(height);
 
@@ -711,35 +708,35 @@ public class EmTeamInsertView extends VerticalLayout
 
 				String ruolo = g.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
 				}
 
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
 				Span lblOrdinamento = new Span();
 				lblOrdinamento.setText("" + getOrdinamento(g));
-				lblOrdinamento.getStyle().set("font-size", "14px");
+				lblOrdinamento.getStyle().set(Costants.FONT_SIZE, "14px");
 				lblOrdinamento.setTitle(title);
 				cellLayout.add(lblOrdinamento);
 				cellLayout.setAlignSelf(Alignment.CENTER, lblOrdinamento);
 
-				Image imgR = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+ruolo.toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayout.add(imgR);
 
 				// Label lblGiocatore = new Label(g.getCognGiocatore());
 				Span lblGiocatore = new Span();
 				lblGiocatore.setText(g.getCognGiocatore());
-				lblGiocatore.getStyle().set("font-size", "11px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
 				lblGiocatore.setTitle(title);
 				cellLayout.add(lblGiocatore);
 				cellLayout.setAlignSelf(Alignment.STRETCH, lblGiocatore);
@@ -760,7 +757,7 @@ public class EmTeamInsertView extends VerticalLayout
 					// Label(sq.getNomeSquadra());
 					Span lblInfoNomeSquadra = new Span();
 					lblInfoNomeSquadra.setText(sq.getNomeSquadra());
-					lblInfoNomeSquadra.getStyle().set("font-size", "11px");
+					lblInfoNomeSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 					lblInfoNomeSquadra.setTitle(title);
 					cellLayout.add(lblInfoNomeSquadra);
 					cellLayout.setAlignSelf(Alignment.STRETCH, lblInfoNomeSquadra);
@@ -769,7 +766,7 @@ public class EmTeamInsertView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
 
-					FcGiocatore bean = (FcGiocatore) g;
+					FcGiocatore bean = g;
 					LOG.info("click " + bean.getCognGiocatore());
 					modelFormazione.add(bean);
 					refreshAndSortGridFormazione();
@@ -875,7 +872,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -900,7 +897,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getCognGiocatore() != null) {
@@ -914,10 +911,10 @@ public class EmTeamInsertView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setWidth("145px");
 		// cognGiocatoreColumn.setAutoWidth(true);
-		
+
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -927,7 +924,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getFcSquadra() != null) {
@@ -955,7 +952,7 @@ public class EmTeamInsertView extends VerticalLayout
 		nomeSquadraColumn.setHeader("Naz");
 		nomeSquadraColumn.setWidth("70px");
 		// nomeSquadraColumn.setAutoWidth(true);
-		
+
 		Column<FcGiocatore> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -964,7 +961,7 @@ public class EmTeamInsertView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				FcStatistiche s = g.getFcStatistiche();
@@ -976,7 +973,8 @@ public class EmTeamInsertView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
 				img.setTitle(title);
 				cellLayout.add(img);
 
@@ -1002,7 +1000,7 @@ public class EmTeamInsertView extends VerticalLayout
 		// mediaVotoColumn.setAutoWidth(true);
 
 		grid.addItemClickListener(event -> {
-			String valModulo = (String) comboModulo.getValue();
+			String valModulo = comboModulo.getValue();
 			if (valModulo == null) {
 				return;
 			}
@@ -1797,95 +1795,95 @@ public class EmTeamInsertView extends VerticalLayout
 				ORDINAMENTO = "" + ord;
 				ord++;
 				if (i == 0) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer1.get(0);
+					FcGiocatore bean = modelPlayer1.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 1) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer2.get(0);
+					FcGiocatore bean = modelPlayer2.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 2) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer3.get(0);
+					FcGiocatore bean = modelPlayer3.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 3) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer4.get(0);
+					FcGiocatore bean = modelPlayer4.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 4) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer5.get(0);
+					FcGiocatore bean = modelPlayer5.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 5) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer6.get(0);
+					FcGiocatore bean = modelPlayer6.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 6) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer7.get(0);
+					FcGiocatore bean = modelPlayer7.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 7) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer8.get(0);
+					FcGiocatore bean = modelPlayer8.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 8) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer9.get(0);
+					FcGiocatore bean = modelPlayer9.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 9) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer10.get(0);
+					FcGiocatore bean = modelPlayer10.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 10) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer11.get(0);
+					FcGiocatore bean = modelPlayer11.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "T";
 				} else if (i == 11) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer12.get(0);
+					FcGiocatore bean = modelPlayer12.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 12) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer13.get(0);
+					FcGiocatore bean = modelPlayer13.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 13) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer14.get(0);
+					FcGiocatore bean = modelPlayer14.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 14) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer15.get(0);
+					FcGiocatore bean = modelPlayer15.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 15) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer16.get(0);
+					FcGiocatore bean = modelPlayer16.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 16) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer17.get(0);
+					FcGiocatore bean = modelPlayer17.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 17) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer18.get(0);
+					FcGiocatore bean = modelPlayer18.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 18) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer19.get(0);
+					FcGiocatore bean = modelPlayer19.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 19) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer20.get(0);
+					FcGiocatore bean = modelPlayer20.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 20) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer21.get(0);
+					FcGiocatore bean = modelPlayer21.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 21) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer22.get(0);
+					FcGiocatore bean = modelPlayer22.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				} else if (i == 22) {
-					FcGiocatore bean = (FcGiocatore) modelPlayer23.get(0);
+					FcGiocatore bean = modelPlayer23.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
 				}
@@ -1941,58 +1939,58 @@ public class EmTeamInsertView extends VerticalLayout
 		String ORDINAMENTO = "";
 		String SQUADRA = "";
 		int ord = 1;
-		Map<String, InputStream> listImg = new HashMap<String, InputStream>();
+		Map<String, InputStream> listImg = new HashMap<>();
 		for (int i = 0; i < 23; i++) {
 
 			ORDINAMENTO = "" + ord;
 			FcGiocatore bean = null;
 
 			if (i == 0) {
-				bean = (FcGiocatore) modelPlayer1.get(0);
+				bean = modelPlayer1.get(0);
 			} else if (i == 1) {
-				bean = (FcGiocatore) modelPlayer2.get(0);
+				bean = modelPlayer2.get(0);
 			} else if (i == 2) {
-				bean = (FcGiocatore) modelPlayer3.get(0);
+				bean = modelPlayer3.get(0);
 			} else if (i == 3) {
-				bean = (FcGiocatore) modelPlayer4.get(0);
+				bean = modelPlayer4.get(0);
 			} else if (i == 4) {
-				bean = (FcGiocatore) modelPlayer5.get(0);
+				bean = modelPlayer5.get(0);
 			} else if (i == 5) {
-				bean = (FcGiocatore) modelPlayer6.get(0);
+				bean = modelPlayer6.get(0);
 			} else if (i == 6) {
-				bean = (FcGiocatore) modelPlayer7.get(0);
+				bean = modelPlayer7.get(0);
 			} else if (i == 7) {
-				bean = (FcGiocatore) modelPlayer8.get(0);
+				bean = modelPlayer8.get(0);
 			} else if (i == 8) {
-				bean = (FcGiocatore) modelPlayer9.get(0);
+				bean = modelPlayer9.get(0);
 			} else if (i == 9) {
-				bean = (FcGiocatore) modelPlayer10.get(0);
+				bean = modelPlayer10.get(0);
 			} else if (i == 10) {
-				bean = (FcGiocatore) modelPlayer11.get(0);
+				bean = modelPlayer11.get(0);
 			} else if (i == 11) {
-				bean = (FcGiocatore) modelPlayer12.get(0);
+				bean = modelPlayer12.get(0);
 			} else if (i == 12) {
-				bean = (FcGiocatore) modelPlayer13.get(0);
+				bean = modelPlayer13.get(0);
 			} else if (i == 13) {
-				bean = (FcGiocatore) modelPlayer14.get(0);
+				bean = modelPlayer14.get(0);
 			} else if (i == 14) {
-				bean = (FcGiocatore) modelPlayer15.get(0);
+				bean = modelPlayer15.get(0);
 			} else if (i == 15) {
-				bean = (FcGiocatore) modelPlayer16.get(0);
+				bean = modelPlayer16.get(0);
 			} else if (i == 16) {
-				bean = (FcGiocatore) modelPlayer17.get(0);
+				bean = modelPlayer17.get(0);
 			} else if (i == 17) {
-				bean = (FcGiocatore) modelPlayer18.get(0);
+				bean = modelPlayer18.get(0);
 			} else if (i == 18) {
-				bean = (FcGiocatore) modelPlayer19.get(0);
+				bean = modelPlayer19.get(0);
 			} else if (i == 19) {
-				bean = (FcGiocatore) modelPlayer20.get(0);
+				bean = modelPlayer20.get(0);
 			} else if (i == 20) {
-				bean = (FcGiocatore) modelPlayer21.get(0);
+				bean = modelPlayer21.get(0);
 			} else if (i == 21) {
-				bean = (FcGiocatore) modelPlayer22.get(0);
+				bean = modelPlayer22.get(0);
 			} else if (i == 22) {
-				bean = (FcGiocatore) modelPlayer23.get(0);
+				bean = modelPlayer23.get(0);
 			}
 
 			NOME_GIOCATORE = bean.getCognGiocatore();
@@ -2057,7 +2055,7 @@ public class EmTeamInsertView extends VerticalLayout
 		formazioneHtml += "<html>";
 
 		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
@@ -2066,7 +2064,7 @@ public class EmTeamInsertView extends VerticalLayout
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			email_destinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
@@ -2078,34 +2076,18 @@ public class EmTeamInsertView extends VerticalLayout
 		String[] bcc = null;
 
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
+			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
+				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 			} catch (Exception e2) {
 				LOG.error(e2.getMessage());
 				throw e2;
 			}
 		}
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 	private Grid<FcCalendarioCompetizione> getTablePartite(

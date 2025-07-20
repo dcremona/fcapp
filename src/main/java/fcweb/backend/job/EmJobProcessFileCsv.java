@@ -110,7 +110,7 @@ public class EmJobProcessFileCsv{
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 
-		HashMap<String, String> mapSQ = new HashMap<String, String>();
+		HashMap<String, String> mapSQ = new HashMap<>();
 		String data = "";
 		// Load ArrayList with table row strings
 		for (Element tableRow : tableRows) {
@@ -122,11 +122,11 @@ public class EmJobProcessFileCsv{
 				if (conta > headCount) {
 					Elements tdRows = trRow.select("td");
 
-					HashMap<String, String> map = new HashMap<String, String>();
+					HashMap<String, String> map = new HashMap<>();
 					map.put("AMM", "0");
 					map.put("ESP", "0");
 					map.put("GDV", "0");
-					
+
 					int c = 0;
 					String rowValue = "";
 					for (Element tdRow : tdRows) {
@@ -137,7 +137,7 @@ public class EmJobProcessFileCsv{
 							map.put("R", rowData);
 						} else if (c == 1) {
 							map.put("SQ_GIOCATORE", rowData);
-							
+
 							Element link = tdRow.select("a").first();
 							if (link!=null) {
 								String linkText = link.text(); // "example""
@@ -146,7 +146,7 @@ public class EmJobProcessFileCsv{
 									map.put("SQ_GIOCATORE", linkText);
 								}
 							}
-							
+
 							List<Node> childNodes = tdRow.childNodes();
 							for (Node n : childNodes) {
 								String sclass = n.attr("class");
@@ -249,20 +249,20 @@ public class EmJobProcessFileCsv{
 						c++;
 						rowValue += rowData + ";";
 					}
-					
+
 					if (rowValue.indexOf("M2;M3;") != -1 ) {
 						String squadra = map.get("SQ_GIOCATORE");
 						mapSQ.put("SQUADRA", squadra);
-						
+
 						rowValue = "";
 					} else {
 						// R;SQ_GIOCATORE;VM;GF;GS;AU;AS;VR;GF;GS;AU;AS;VT;GF;GS;AU;AS;SB;PA;TR;SU;VM;VR;VT;M2;M3;
-						
-						String ruolo = (String)map.get("R");
+
+						String ruolo = map.get("R");
 						if (StringUtils.isEmpty(ruolo) || "M".equals(ruolo)) {
 							continue;
 						}
-						
+
 						data += map.get("R") + ";";
 						data += map.get("SQ_GIOCATORE") + ";";
 						data += mapSQ.get("SQUADRA") + ";";
@@ -450,18 +450,18 @@ public class EmJobProcessFileCsv{
 		 * BufferedWriter output = null; try { // Create temp file. File temp =
 		 * File.createTempFile("temp_" + fileName, ".csv"); // Delete temp file
 		 * when program exits. // temp.deleteOnExit();
-		 * 
+		 *
 		 * // Write to temp file output = new BufferedWriter(new
 		 * FileWriter(temp)); output.write(data); output.close();
-		 * 
+		 *
 		 * // DELETE File f = new File(path_csv + fileName + ".csv"); if
 		 * (f.exists()) { f.delete(); }
-		 * 
+		 *
 		 * File dest = new File(path_csv + fileName + ".csv"); // Move file to
 		 * new directory boolean success = temp.renameTo(dest); if (!success) {
 		 * // File was not successfully moved
 		 * LOG.error("File was not successfully moved " + success); }
-		 * 
+		 *
 		 * } catch (IOException e) { LOG.error(e.getMessage()); } finally { if
 		 * (output != null) { output.close(); } }
 		 */
@@ -472,15 +472,18 @@ public class EmJobProcessFileCsv{
 
 		// Create a new trust manager that trust all certificates
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager(){
+			@Override
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
 			}
 
+			@Override
 			public void checkClientTrusted(
 					java.security.cert.X509Certificate[] certs,
 					String authType) {
 			}
 
+			@Override
 			public void checkServerTrusted(
 					java.security.cert.X509Certificate[] certs,
 					String authType) {

@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -25,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.ronny.AbsoluteLayout;
@@ -54,7 +52,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.ContentIdGenerator;
@@ -162,7 +159,7 @@ public class EmMercatoView extends VerticalLayout
 	private Grid<FcGiocatore> tablePlayer23;
 
 	private Grid<FcProperties> tableContaPlayer;
-	private List<FcProperties> modelContaPlayer = new ArrayList<FcProperties>();
+	private List<FcProperties> modelContaPlayer = new ArrayList<>();
 
 	private List<FcAttore> attori = null;
 	private List<FcRuolo> ruoli = null;
@@ -171,45 +168,45 @@ public class EmMercatoView extends VerticalLayout
 	private long millisDiff = 0;
 	private Properties p = null;
 
-	private List<FcGiocatore> modelFormazione = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelFormazione = new ArrayList<>();
 
 	private boolean activeFilter = true;
 
 	private Grid<FcGiocatore> tableGiocatori;
-	private List<FcGiocatore> modelPlayerG = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelPlayerG = new ArrayList<>();
 
 	private Grid<FcGiocatore> tablePlayerP;
 	private Grid<FcGiocatore> tablePlayerD;
 	private Grid<FcGiocatore> tablePlayerC;
 	private Grid<FcGiocatore> tablePlayerA;
-	private List<FcGiocatore> modelPlayerP = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayerD = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayerC = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayerA = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelPlayerP = new ArrayList<>();
+	private List<FcGiocatore> modelPlayerD = new ArrayList<>();
+	private List<FcGiocatore> modelPlayerC = new ArrayList<>();
+	private List<FcGiocatore> modelPlayerA = new ArrayList<>();
 
-	private List<FcGiocatore> modelPlayer1 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer2 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer3 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer4 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer5 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer6 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer7 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer8 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer9 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer10 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer11 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer12 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer13 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer14 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer15 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer16 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer17 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer18 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer19 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer20 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer21 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer22 = new ArrayList<FcGiocatore>();
-	private List<FcGiocatore> modelPlayer23 = new ArrayList<FcGiocatore>();
+	private List<FcGiocatore> modelPlayer1 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer2 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer3 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer4 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer5 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer6 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer7 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer8 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer9 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer10 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer11 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer12 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer13 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer14 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer15 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer16 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer17 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer18 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer19 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer20 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer21 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer22 = new ArrayList<>();
+	private List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -279,8 +276,8 @@ public class EmMercatoView extends VerticalLayout
 	public void initLayout() {
 
 		absLayout = new AbsoluteLayout(1600,1200);
-		absLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR);
-		absLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
 		saveSendMail = new Button("Salva e Invia Mail");
 		saveSendMail.addClickListener(this);
@@ -354,10 +351,10 @@ public class EmMercatoView extends VerticalLayout
 		comboRuolo.setItems(ruoli);
 		comboRuolo.setItemLabelGenerator(a -> a.getIdRuolo());
 		comboRuolo.setClearButtonVisible(true);
-		comboRuolo.setPlaceholder("Ruolo");
+		comboRuolo.setPlaceholder(Costants.RUOLO);
 		comboRuolo.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
-			Image imgR = buildImage("classpath:images/", item.getIdRuolo().toLowerCase() + ".png");
+			Image imgR = Utils.buildImage(item.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+item.getIdRuolo().toLowerCase() + ".png"));
 			container.add(imgR);
 			return container;
 		}));
@@ -432,7 +429,7 @@ public class EmMercatoView extends VerticalLayout
 
 		VerticalLayout layoutFilter = new VerticalLayout();
 		layoutFilter.setMargin(false);
-		layoutFilter.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutFilter.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutFilter.add(layoutFilterRow1);
 
@@ -455,22 +452,22 @@ public class EmMercatoView extends VerticalLayout
 //			absLayout.add(tabsRuoli, 10, 170);
 //			absLayout.add(container, 10, 200);
 //			add(tabSheet);
-			
+
 			TabSheet tabSheet = new TabSheet();
 			tabSheet.add("P", tablePlayerP);
 			tabSheet.add("D", tablePlayerD);
 			tabSheet.add("C", tablePlayerC);
 			tabSheet.add("A", tablePlayerA);
 			absLayout.add(tabSheet, 10, 170);
-			
-			
+
+
 		} else {
 			absLayout.add(tableGiocatori, 10, 250);
 		}
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set("background", Costants.YELLOW);
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("500px");
 
 		HorizontalLayout cssLayout = new HorizontalLayout();
@@ -514,8 +511,8 @@ public class EmMercatoView extends VerticalLayout
 		final HorizontalLayout layoutInfoGenerali = new HorizontalLayout();
 		layoutInfoGenerali.setPadding(true);
 		layoutInfoGenerali.setSpacing(true);
-		layoutInfoGenerali.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutInfoGenerali.getStyle().set("background", Costants.LIGHT_GRAY);
+		layoutInfoGenerali.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		layoutInfoGenerali.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		layoutInfoGenerali.setAlignItems(FlexComponent.Alignment.END);
 
 		int cambiEff = getCambiEffettuati();
@@ -569,14 +566,15 @@ public class EmMercatoView extends VerticalLayout
 		layoutInfoRuolo.getThemeList().set("dark", true);
 		layoutInfoRuolo.setPadding(true);
 		layoutInfoRuolo.setSpacing(true);
-		// layoutInfoRuolo.getStyle().set("border", Costants.BORDER_COLOR);
-		// layoutInfoRuolo.getStyle().set("background", Costants.LIGHT_BLUE);
+		// layoutInfoRuolo.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		// layoutInfoRuolo.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		layoutInfoRuolo.setAlignItems(FlexComponent.Alignment.END);
 
-		Image imgP = buildImage("classpath:images/", "p.png");
-		Image imgD = buildImage("classpath:images/", "d.png");
-		Image imgC = buildImage("classpath:images/", "c.png");
-		Image imgA = buildImage("classpath:images/", "a.png");
+		Image imgP = Utils.buildImage("p.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"p.png"));
+		Image imgD = Utils.buildImage("d.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"d.png"));
+		Image imgC = Utils.buildImage("c.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"c.png"));
+		Image imgA = Utils.buildImage("a.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"a.png"));
+		
 		lblInfoP = new Span();
 		lblInfoD = new Span();
 		lblInfoC = new Span();
@@ -703,8 +701,8 @@ public class EmMercatoView extends VerticalLayout
 
 		Span lblInfoGiocatori = new Span();
 		lblInfoGiocatori.setText("Giocatori per Nazione:");
-		lblInfoGiocatori.getStyle().set("font-size", "16px");
-		lblInfoGiocatori.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblInfoGiocatori.getStyle().set(Costants.FONT_SIZE, "16px");
+		lblInfoGiocatori.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 
 		absLayout.add(lblInfoGiocatori, left, top);
 
@@ -723,7 +721,7 @@ public class EmMercatoView extends VerticalLayout
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
 
-		if ("0".equals((String) p.getProperty("ABILITA_MERCATO"))) {
+		if ("0".equals(p.getProperty("ABILITA_MERCATO"))) {
 			showMessageStopInsert();
 		} else {
 //			if (millisDiff == 0) {
@@ -932,7 +930,7 @@ public class EmMercatoView extends VerticalLayout
 		int countC = 0;
 		int countA = 0;
 
-		HashMap<String, String> map = new HashMap<String, String>();
+		HashMap<String, String> map = new HashMap<>();
 
 		if (modelPlayer1.size() != 0) {
 			FcGiocatore bean = modelPlayer1.get(0);
@@ -1264,7 +1262,7 @@ public class EmMercatoView extends VerticalLayout
 		lblInfoC.setText("" + countC);
 		lblInfoA.setText("" + countA);
 
-		List<FcProperties> list = new ArrayList<FcProperties>();
+		List<FcProperties> list = new ArrayList<>();
 		if (!map.isEmpty()) {
 			Iterator<?> it = map.entrySet().iterator();
 			while (it.hasNext()) {
@@ -1604,8 +1602,8 @@ public class EmMercatoView extends VerticalLayout
 //
 //				}).closeOnClick();
 //				messageDialog.open();
-				
-				
+
+
 				ConfirmDialog dialog = new ConfirmDialog();
 				dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
 				dialog.setText(msg);
@@ -1620,7 +1618,7 @@ public class EmMercatoView extends VerticalLayout
 
 				dialog.setConfirmText("Conferma");
 				dialog.addConfirmListener(e -> {
-					
+
 					try {
 
 						int totCambi = 0;
@@ -1672,11 +1670,11 @@ public class EmMercatoView extends VerticalLayout
 						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
 					}
 				});
-				
-				
+
+
 				dialog.open();
 
-				
+
 			}
 		}
 	}
@@ -2050,8 +2048,8 @@ public class EmMercatoView extends VerticalLayout
 
 	private int insertCambi() throws Exception {
 
-		ArrayList<FcGiocatore> listAcquisti = new ArrayList<FcGiocatore>();
-		ArrayList<FcGiocatore> listCessioni = new ArrayList<FcGiocatore>();
+		ArrayList<FcGiocatore> listAcquisti = new ArrayList<>();
+		ArrayList<FcGiocatore> listCessioni = new ArrayList<>();
 
 		for (int i = 0; i < modelFormazione.size(); i++) {
 			FcGiocatore beanPlayer = modelFormazione.get(i);
@@ -2411,58 +2409,58 @@ public class EmMercatoView extends VerticalLayout
 		String Q = "";
 
 		int ord = 1;
-		Map<String, InputStream> listImg = new HashMap<String, InputStream>();
+		Map<String, InputStream> listImg = new HashMap<>();
 		for (int i = 0; i < NUM_GIOCATORI; i++) {
 
 			ORDINAMENTO = "" + ord;
 			FcGiocatore bean = null;
 
 			if (i == 0) {
-				bean = (FcGiocatore) modelPlayer1.get(0);
+				bean = modelPlayer1.get(0);
 			} else if (i == 1) {
-				bean = (FcGiocatore) modelPlayer2.get(0);
+				bean = modelPlayer2.get(0);
 			} else if (i == 2) {
-				bean = (FcGiocatore) modelPlayer3.get(0);
+				bean = modelPlayer3.get(0);
 			} else if (i == 3) {
-				bean = (FcGiocatore) modelPlayer4.get(0);
+				bean = modelPlayer4.get(0);
 			} else if (i == 4) {
-				bean = (FcGiocatore) modelPlayer5.get(0);
+				bean = modelPlayer5.get(0);
 			} else if (i == 5) {
-				bean = (FcGiocatore) modelPlayer6.get(0);
+				bean = modelPlayer6.get(0);
 			} else if (i == 6) {
-				bean = (FcGiocatore) modelPlayer7.get(0);
+				bean = modelPlayer7.get(0);
 			} else if (i == 7) {
-				bean = (FcGiocatore) modelPlayer8.get(0);
+				bean = modelPlayer8.get(0);
 			} else if (i == 8) {
-				bean = (FcGiocatore) modelPlayer9.get(0);
+				bean = modelPlayer9.get(0);
 			} else if (i == 9) {
-				bean = (FcGiocatore) modelPlayer10.get(0);
+				bean = modelPlayer10.get(0);
 			} else if (i == 10) {
-				bean = (FcGiocatore) modelPlayer11.get(0);
+				bean = modelPlayer11.get(0);
 			} else if (i == 11) {
-				bean = (FcGiocatore) modelPlayer12.get(0);
+				bean = modelPlayer12.get(0);
 			} else if (i == 12) {
-				bean = (FcGiocatore) modelPlayer13.get(0);
+				bean = modelPlayer13.get(0);
 			} else if (i == 13) {
-				bean = (FcGiocatore) modelPlayer14.get(0);
+				bean = modelPlayer14.get(0);
 			} else if (i == 14) {
-				bean = (FcGiocatore) modelPlayer15.get(0);
+				bean = modelPlayer15.get(0);
 			} else if (i == 15) {
-				bean = (FcGiocatore) modelPlayer16.get(0);
+				bean = modelPlayer16.get(0);
 			} else if (i == 16) {
-				bean = (FcGiocatore) modelPlayer17.get(0);
+				bean = modelPlayer17.get(0);
 			} else if (i == 17) {
-				bean = (FcGiocatore) modelPlayer18.get(0);
+				bean = modelPlayer18.get(0);
 			} else if (i == 18) {
-				bean = (FcGiocatore) modelPlayer19.get(0);
+				bean = modelPlayer19.get(0);
 			} else if (i == 19) {
-				bean = (FcGiocatore) modelPlayer20.get(0);
+				bean = modelPlayer20.get(0);
 			} else if (i == 20) {
-				bean = (FcGiocatore) modelPlayer21.get(0);
+				bean = modelPlayer21.get(0);
 			} else if (i == 21) {
-				bean = (FcGiocatore) modelPlayer22.get(0);
+				bean = modelPlayer22.get(0);
 			} else if (i == 22) {
-				bean = (FcGiocatore) modelPlayer23.get(0);
+				bean = modelPlayer23.get(0);
 			}
 
 			RUOLO = bean.getFcRuolo().getDescRuolo();
@@ -2640,7 +2638,7 @@ public class EmMercatoView extends VerticalLayout
 		formazioneHtml += "<HTML>";
 
 		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
@@ -2649,7 +2647,7 @@ public class EmMercatoView extends VerticalLayout
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			email_destinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
@@ -2661,12 +2659,12 @@ public class EmMercatoView extends VerticalLayout
 		String[] bcc = null;
 
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
+			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
+				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
 			} catch (Exception e2) {
 				LOG.error(e2.getMessage());
@@ -2684,7 +2682,7 @@ public class EmMercatoView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		// grid.getStyle().set("border", Costants.BORDER_COLOR);
+		// grid.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		grid.setWidth(width);
 		grid.setHeight(height);
 
@@ -2700,21 +2698,21 @@ public class EmMercatoView extends VerticalLayout
 
 				String ruolo = g.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set("border", Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
 				}
 
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 
-				Image imgR = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+				Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+ruolo.toLowerCase() + ".png"));
 				imgR.setTitle(title);
 				cellLayout.add(imgR);
 				cellLayout.setAlignSelf(Alignment.CENTER, imgR);
@@ -2722,7 +2720,7 @@ public class EmMercatoView extends VerticalLayout
 				// Label lblGiocatore = new Label(g.getCognGiocatore());
 				Span lblGiocatore = new Span();
 				lblGiocatore.setText(g.getCognGiocatore());
-				lblGiocatore.getStyle().set("font-size", "11px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
 				lblGiocatore.setTitle(title);
 				cellLayout.add(lblGiocatore);
 				cellLayout.setAlignSelf(Alignment.STRETCH, lblGiocatore);
@@ -2743,7 +2741,7 @@ public class EmMercatoView extends VerticalLayout
 					// Label(sq.getNomeSquadra());
 					Span lblInfoNomeSquadra = new Span();
 					lblInfoNomeSquadra.setText(sq.getNomeSquadra());
-					lblInfoNomeSquadra.getStyle().set("font-size", "11px");
+					lblInfoNomeSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 					lblInfoNomeSquadra.setTitle(title);
 					cellLayout.add(lblInfoNomeSquadra);
 					cellLayout.setAlignSelf(Alignment.STRETCH, lblInfoNomeSquadra);
@@ -2753,14 +2751,14 @@ public class EmMercatoView extends VerticalLayout
 				Span lblInfoQuotazione = new Span();
 				lblInfoQuotazione.setText("" + g.getQuotazione());
 
-				lblInfoQuotazione.getStyle().set("font-size", "14px");
+				lblInfoQuotazione.getStyle().set(Costants.FONT_SIZE, "14px");
 				lblInfoQuotazione.setTitle(title);
 				cellLayout.add(lblInfoQuotazione);
 				cellLayout.setAlignSelf(Alignment.CENTER, lblInfoQuotazione);
 
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
-					FcGiocatore bean = (FcGiocatore) g;
+					FcGiocatore bean = g;
 					if (CHECK_TOT_CAMBI_EFFETTUATI > 0) {
 						LOG.info("click " + bean.getCognGiocatore());
 
@@ -2923,7 +2921,7 @@ public class EmMercatoView extends VerticalLayout
 		} else {
 			LOG.info("attore " + att.getDescAttore());
 			List<FcFormazione> listFormazione = formazioneController.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(att);
-			Collection<Integer> notIn = new ArrayList<Integer>();
+			Collection<Integer> notIn = new ArrayList<>();
 			for (FcFormazione f : listFormazione) {
 				if (f.getFcGiocatore() != null) {
 					notIn.add(f.getFcGiocatore().getIdGiocatore());
@@ -3016,7 +3014,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
 					cellLayout.add(img);
 				}
@@ -3041,7 +3039,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getCognGiocatore() != null) {
@@ -3057,7 +3055,7 @@ public class EmMercatoView extends VerticalLayout
 		cognGiocatoreColumn.setSortable(true);
 		cognGiocatoreColumn.setComparator((p1,
 				p2) -> p1.getCognGiocatore().compareTo(p2.getCognGiocatore()));
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setWidth("150px");
 		// cognGiocatoreColumn.setAutoWidth(true);
 
@@ -3070,7 +3068,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (g.getFcSquadra() != null) {
@@ -3111,7 +3109,7 @@ public class EmMercatoView extends VerticalLayout
 			if (g != null) {
 				String title = getInfoPlayer(g);
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + g.getQuotazione();
@@ -3302,22 +3300,6 @@ public class EmMercatoView extends VerticalLayout
 		return info;
 	}
 
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
-	}
-
 	private Grid<FcProperties> buildTableContaPlayer(List<FcProperties> items) {
 
 		Grid<FcProperties> grid = new Grid<>();
@@ -3484,7 +3466,7 @@ public class EmMercatoView extends VerticalLayout
 	@SuppressWarnings("unchecked")
 	private void ordinaMercato() throws Exception {
 
-		List<FcGiocatore> modelMercatoGiocatori = new ArrayList<FcGiocatore>();
+		List<FcGiocatore> modelMercatoGiocatori = new ArrayList<>();
 		if (modelPlayer1.size() != 0) {
 			modelMercatoGiocatori.add(modelPlayer1.get(0));
 		}

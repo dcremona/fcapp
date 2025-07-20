@@ -29,7 +29,7 @@ public class FcPropertiesView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ProprietaService proprietaController;
@@ -41,16 +41,16 @@ public class FcPropertiesView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcPropertiesView() {
-		LOG.info("FcPropertiesView()");
+		log.info("FcPropertiesView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());		
+		accessoController.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -61,20 +61,20 @@ public class FcPropertiesView extends VerticalLayout{
 		this.setSizeFull();
 
 		GridCrud<FcProperties> crud = new GridCrud<>(FcProperties.class,new HorizontalSplitCrudLayout());
-		
+
 		DefaultCrudFormFactory<FcProperties> formFactory = new DefaultCrudFormFactory<>(FcProperties.class);
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
-		
+
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "key", "value");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "key", "value");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "key", "value");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "key");
 
 		crud.getGrid().setColumns("key", "value");
-		
+
 		crud.getGrid().setColumnReorderingAllowed(true);
-		
+
 		crud.setRowCountCaption("%d property(s) found");
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
@@ -86,18 +86,5 @@ public class FcPropertiesView extends VerticalLayout{
 
 		add(crud);
 	}
-
-	// private CrudEditor<FcProperties> createFcPropertiesEditor() {
-	// TextField descAttore = new TextField("Desc Attore");
-	// TextField cognome = new TextField("Cognome");
-	// FormLayout form = new FormLayout(descAttore,cognome);
-	//
-	// Binder<FcProperties> binder = new Binder<>(FcProperties.class);
-	// binder.bind(descAttore, FcProperties::getDescAttore,
-	// FcProperties::setDescAttore);
-	// binder.bind(cognome, FcProperties::getCognome, FcProperties::setCognome);
-	//
-	// return new BinderCrudEditor<>(binder,form);
-	// }
 
 }

@@ -31,7 +31,7 @@ public class FcCampionatoView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private CampionatoService campionatoController;
@@ -43,12 +43,12 @@ public class FcCampionatoView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcCampionatoView() {
-		LOG.info("FcCampionatoView()");
+		log.info("FcCampionatoView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}

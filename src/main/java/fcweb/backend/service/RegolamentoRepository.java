@@ -12,6 +12,6 @@ public interface RegolamentoRepository extends CrudRepository<FcRegolamento, Lon
 	Page<FcRegolamento> findAll(Pageable pageable);
 
 	Iterable<FcRegolamento> findAll(Sort sort);
-	
+
 
 }

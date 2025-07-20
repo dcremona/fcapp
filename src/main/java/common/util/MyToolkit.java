@@ -25,8 +25,9 @@ public class MyToolkit{
 		buffer.moveFirst();
 
 		String sFieldNotEqual[] = new String[iTotValori];
-		for (int i = 0; i < iTotValori; i++)
+		for (int i = 0; i < iTotValori; i++) {
 			sFieldNotEqual[i] = "";
+		}
 
 		for (int r = 1; r <= iNumRec; r++) {
 			bEqual = true;
@@ -36,8 +37,9 @@ public class MyToolkit{
 					bFieldEqual = ((valori[1][c].trim().equals("")) || ((buffer.getField(Integer.parseInt(valori[0][c])).indexOf(valori[1][c]) == 0) ? true : false));
 					bEqual = bEqual && bFieldEqual;
 
-					if (!bFieldEqual)
+					if (!bFieldEqual) {
 						sFieldNotEqual[c] = "KO";
+					}
 				}
 
 			} catch (NumberFormatException e) {
@@ -56,9 +58,11 @@ public class MyToolkit{
 		}
 
 		if (iTotRecord == 0) {
-			for (int i = 0; i < iTotValori; i++)
-				if (sFieldNotEqual[i].equals("KO"))
+			for (int i = 0; i < iTotValori; i++) {
+				if (sFieldNotEqual[i].equals("KO")) {
 					valori[0][i] = "KO";
+				}
+			}
 
 			return null;
 		} else {
@@ -74,14 +78,16 @@ public class MyToolkit{
 		// int iMatch = 0;
 		// int iRecMatch = 0;
 
-		if (rstDati.findFirst(sMatchField, iCol, false) != -1)
+		if (rstDati.findFirst(sMatchField, iCol, false) != -1) {
 			return 0;
+		}
 
 		rstDati.moveFirst();
 
 		for (int idx = 1; idx <= iMax; idx++) {
-			if (rstDati.getField(iCol).indexOf(sMatchField) == 0)
+			if (rstDati.getField(iCol).indexOf(sMatchField) == 0) {
 				return 1;
+			}
 
 			rstDati.moveNext();
 		}
@@ -90,8 +96,9 @@ public class MyToolkit{
 	}
 
 	public static int freeCode(Buffer buffer, int iCol) {
-		if (buffer.getRecordCount() == 0)
+		if (buffer.getRecordCount() == 0) {
 			return 1;
+		}
 
 		if (!buffer.getFieldType(iCol).equals("NUMERIC")) {
 			JOptionPane.showMessageDialog(new Frame(), "SivaToolkit, metodo freeCode: Campo " + iCol + " non numerico.");
@@ -123,12 +130,14 @@ public class MyToolkit{
 		if (clone.getFieldByInt(iCol) == 0) {
 			clone.moveNext();
 			iDiff = 0;
-		} else
+		} else {
 			iDiff = 1;
+		}
 
 		for (int i = 1; i <= iRec; i++) {
-			if (clone.getFieldByInt(iCol) != i)
+			if (clone.getFieldByInt(iCol) != i) {
 				return i;
+			}
 			clone.moveNext();
 		}
 
@@ -149,23 +158,27 @@ public class MyToolkit{
 			if (CurChar.equals("&")) {
 				start = -1;
 
-				if (i + 1 != end)
+				if (i + 1 != end) {
 					start = t.indexOf("=", i + 1);
+				}
 
 				if (start != -1) {
 					sub = t.substring(i + 1, start);
-					if (sub.indexOf("&") != -1)
+					if (sub.indexOf("&") != -1) {
 						sApp += "%26";
-					else
+					} else {
 						sApp += CurChar;
+					}
 				} else {
-					if (t.substring(i, i + 1).equals("&"))
+					if (t.substring(i, i + 1).equals("&")) {
 						sApp += "%26";
-					else
+					} else {
 						sApp += CurChar;
+					}
 				}
-			} else
+			} else {
 				sApp += CurChar;
+			}
 		}
 
 		return sApp;
@@ -180,8 +193,9 @@ public class MyToolkit{
 		String SPACE = new String();
 
 		// spazi aggiuntivi
-		for (int i = 0; i < spaces; i++)
+		for (int i = 0; i < spaces; i++) {
 			SPACE += " ";
+		}
 
 		col1--;
 		col2--;
@@ -189,11 +203,13 @@ public class MyToolkit{
 		// se il secondo campo va allineato a sx ottimizzo e non chiamo
 		// FormattaTesto..
 		if (align2 != 1) {
-			for (int c = 0; c < nRec; c++)
+			for (int c = 0; c < nRec; c++) {
 				aStrApp[c] = formatText(asResultSet[c][col1], lcol1, " ", align1).concat(SPACE).concat(formatText(asResultSet[c][col2], lcol2, " ", align2));
+			}
 		} else {
-			for (int c = 0; c < nRec; c++)
+			for (int c = 0; c < nRec; c++) {
 				aStrApp[c] = formatText(asResultSet[c][col1], lcol1, " ", align1).concat(SPACE).concat(asResultSet[c][col2]);
+			}
 		}
 
 		return aStrApp;
@@ -204,8 +220,9 @@ public class MyToolkit{
 	// quanti sono quelli passati.
 	public static String getDateFrom(String date, int day, int month,
 			int year) {
-		if (date.trim().equals(""))
+		if (date.trim().equals("")) {
 			return date;
+		}
 
 		if (date.trim().length() != 10) {
 			JOptionPane.showMessageDialog(new Frame(), "SivaToolkit getDateFrom:\n Errore lunghezza data (" + date + ")");
@@ -246,16 +263,18 @@ public class MyToolkit{
 		// seguente formato: gg/mm/aaaa. (X Es. 01/01/1999)
 		date = "";
 		d = calend.get(Calendar.DATE);
-		if (d < 10)
+		if (d < 10) {
 			date += "0" + d + "/";
-		else
+		} else {
 			date += d + "/";
+		}
 
 		m = (calend.get(Calendar.MONTH)) + 1;
-		if (m < 10)
+		if (m < 10) {
 			date += "0" + m + "/";
-		else
+		} else {
 			date += m + "/";
+		}
 
 		date += calend.get(Calendar.YEAR);
 
@@ -270,8 +289,9 @@ public class MyToolkit{
 		L = (a.length) / 2;
 		R = a.length - 1;
 
-		while (L > 0)
+		while (L > 0) {
 			siftS(--L, R, a);
+		}
 
 		while (R > 0) {
 			x = a[0];
@@ -287,8 +307,9 @@ public class MyToolkit{
 		L = ((a.length) / 2) + 1;
 		R = a.length - 1;
 
-		while (L > 0)
+		while (L > 0) {
 			sift(--L, R, a);
+		}
 
 		while (R > 0) {
 			x = a[0];
@@ -308,11 +329,12 @@ public class MyToolkit{
 		L = ((a.length) / 2) + 1;
 		R = a.length - 1;
 
-		while (L > 0)
+		while (L > 0) {
 			siftBuffer(--L, R, a, ValoreBuffer);
+		}
 
 		while (R > 0) {
-			x = (Object) a[0];
+			x = a[0];
 			a[0] = a[R];
 			a[R] = (String) x;
 			x = ValoreBuffer[0];
@@ -334,16 +356,18 @@ public class MyToolkit{
 		x = a[L];
 		x2 = rstDati[L];
 
-		if ((j < R) && (a[j].compareTo(a[j + 1]) < 0))
+		if ((j < R) && (a[j].compareTo(a[j + 1]) < 0)) {
 			j++;
+		}
 
 		while ((j <= R) && (x.compareTo(a[j]) < 0)) {
 			a[i] = a[j];
 			rstDati[i] = rstDati[j];
 			i = j;
 			j *= 2;
-			if ((j < R) && (a[j].compareTo(a[j + 1]) < 0))
+			if ((j < R) && (a[j].compareTo(a[j + 1]) < 0)) {
 				j++;
+			}
 		}
 
 		a[i] = x;
@@ -360,8 +384,9 @@ public class MyToolkit{
 		L = ((a.length) / 2) + 1;
 		R = a.length - 1;
 
-		while (L > 0)
+		while (L > 0) {
 			siftBufferN(--L, R, a, ValoreBuffer);
+		}
 
 		while (R > 0) {
 			x = a[0];
@@ -385,16 +410,18 @@ public class MyToolkit{
 		x = a[L];
 		x2 = rstDati[L];
 
-		if ((j < R) && (a[j] < a[j + 1]))
+		if ((j < R) && (a[j] < a[j + 1])) {
 			j++;
+		}
 
 		while ((j <= R) && (x < a[j])) {
 			a[i] = a[j];
 			rstDati[i] = rstDati[j];
 			i = j;
 			j *= 2;
-			if ((j < R) && (a[j] < a[j + 1]))
+			if ((j < R) && (a[j] < a[j + 1])) {
 				j++;
+			}
 		}
 
 		a[i] = x;
@@ -412,15 +439,17 @@ public class MyToolkit{
 		j = 2 * L;
 		x = a[L];
 
-		if ((j < R) && (a[j].compareTo(a[j + 1]) < 0))
+		if ((j < R) && (a[j].compareTo(a[j + 1]) < 0)) {
 			j++;
+		}
 
 		while ((j <= R) && (x.compareTo(a[j]) < 0)) {
 			a[i] = a[j];
 			i = j;
 			j *= 2;
-			if ((j < R) && (a[j].compareTo(a[j + 1]) < 0))
+			if ((j < R) && (a[j].compareTo(a[j + 1]) < 0)) {
 				j++;
+			}
 		}
 
 		a[i] = x;
@@ -432,15 +461,17 @@ public class MyToolkit{
 		j = 2 * L;
 		x = a[L];
 
-		if ((j < R) && (a[j] < a[j + 1]))
+		if ((j < R) && (a[j] < a[j + 1])) {
 			j++;
+		}
 
 		while ((j <= R) && (x < a[j])) {
 			a[i] = a[j];
 			i = j;
 			j *= 2;
-			if ((j < R) && (a[j] < a[j + 1]))
+			if ((j < R) && (a[j] < a[j + 1])) {
 				j++;
+			}
 		}
 
 		a[i] = x;
@@ -451,20 +482,23 @@ public class MyToolkit{
 	public static String formatText(String s, int lng, String f, int pos) {
 		int iLen = s.length();
 
-		if (iLen > lng)
+		if (iLen > lng) {
 			return s.substring(0, lng);
+		}
 
 		lng -= iLen;
 
 		StringBuffer sRiempimento = new StringBuffer(lng);
 
-		for (int i = 0; i < lng; i++)
+		for (int i = 0; i < lng; i++) {
 			sRiempimento.append(f);
+		}
 
-		if (pos == 0)
+		if (pos == 0) {
 			return sRiempimento + s;
-		else
+		} else {
 			return s + sRiempimento;
+		}
 	}
 
 	/*
@@ -473,18 +507,18 @@ public class MyToolkit{
 	 * String sDec = ""; int iNdx = 0; if ((iNdx = sText.indexOf(',')) != -1) {
 	 * sDec = sText.substring(iNdx); sText = sText.substring(0, iNdx); iLen =
 	 * sText.length(); } int iCont = 0;
-	 * 
+	 *
 	 * for (int i = iLen; i > 0; i--) { char k = sText.charAt(i - 1);
-	 * 
+	 *
 	 * if (k != ',') { iCont++;
-	 * 
+	 *
 	 * if (iCont > 3) { sApp += "." + sApp.valueOf(k); iCont = 1; } else sApp +=
 	 * sApp.valueOf(k); } }
-	 * 
+	 *
 	 * iLen = sApp.length();
-	 * 
+	 *
 	 * for (int y = iLen; y > 0; y--) sApp2 += sApp.charAt(y - 1);
-	 * 
+	 *
 	 * return sApp2 + sDec; }
 	 */
 
@@ -499,17 +533,19 @@ public class MyToolkit{
 				j = 1;
 				while (j < 10) {
 					V2 = 2 * Integer.parseInt(text.substring(j, j + 1));
-					if (V2 > 9)
+					if (V2 > 9) {
 						V2 -= 9;
+					}
 					CR = CR + V2 + Integer.parseInt(text.substring(j - 1, j));
 					j += 2;
 				}
 				V = ((100 - CR) + "").substring(((100 - CR) + "").length() - 1);
 
-				if (!(V.equals((text.substring(text.length() - 1)))))
+				if (!(V.equals((text.substring(text.length() - 1))))) {
 					return false; // Partita IVA errata !
-				else
+				} else {
 					return true; // Partita IVA esatta !!
+				}
 			}
 		} catch (NumberFormatException err) {
 			return false;
@@ -534,18 +570,20 @@ public class MyToolkit{
 
 			if (bCifraPari) {
 				iCifraCorr *= 2;
-				if (iCifraCorr >= 10)
+				if (iCifraCorr >= 10) {
 					iCifraCorr -= 9;
+				}
 			}
 
 			iChecksum += iCifraCorr;
 			bCifraPari = !bCifraPari;
 		}
 
-		if (iChecksum % 10 != 0)
+		if (iChecksum % 10 != 0) {
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 
 	public static String replaceString(String sText, String Old, String New) {
@@ -578,13 +616,15 @@ public class MyToolkit{
 				if (giorno <= nGiorniMese[mese - 1] && giorno > 0) {
 					dataValida = true;
 				} else {
-					if (mese == 2 && annoBisestile && giorno == 29)
+					if (mese == 2 && annoBisestile && giorno == 29) {
 						dataValida = true;
-					else
+					} else {
 						dataValida = false;
+					}
 				}
-			} else
+			} else {
 				dataValida = false;
+			}
 		}
 
 		return dataValida;
@@ -596,8 +636,9 @@ public class MyToolkit{
 
 		int iRec = rstDati.getRecordCount();
 
-		if (iRec == 1)
+		if (iRec == 1) {
 			return rstDati.getClone();
+		}
 
 		int aiRecordValidi[] = new int[iRec];
 		int cont = 0,i = 1;
@@ -606,8 +647,9 @@ public class MyToolkit{
 			rstDati.setCurrentIndex(i);
 			aiRecordValidi[cont++] = i;
 
-			if (i >= iRec)
+			if (i >= iRec) {
 				break;
+			}
 
 			sAppCampoAttBuffer = rstDati.getField(iCol);
 
@@ -616,10 +658,11 @@ public class MyToolkit{
 
 			while (sAppCampoAttBuffer.equals(sAppCampoSucBuffer)) {
 				rstDati.setCurrentIndex(++i);
-				if (i <= iRec)
+				if (i <= iRec) {
 					sAppCampoSucBuffer = rstDati.getField(iCol);
-				else
+				} else {
 					break;
+				}
 			}
 		}
 
@@ -631,9 +674,11 @@ public class MyToolkit{
 	public static String rTrim(String s) {
 		int iLen = s.length() - 1,i;
 
-		for (i = iLen; i > 0; i--)
-			if (s.charAt(i) != ' ')
+		for (i = iLen; i > 0; i--) {
+			if (s.charAt(i) != ' ') {
 				break;
+			}
+		}
 
 		return s.substring(0, i + 1);
 	}
@@ -641,9 +686,11 @@ public class MyToolkit{
 	public static String lTrim(String s) {
 		int iLen = s.length(),i;
 
-		for (i = 0; i < iLen; i++)
-			if (s.charAt(i) != ' ')
+		for (i = 0; i < iLen; i++) {
+			if (s.charAt(i) != ' ') {
 				break;
+			}
+		}
 
 		return s.substring(i);
 	}

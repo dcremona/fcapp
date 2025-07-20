@@ -21,10 +21,10 @@ import jakarta.persistence.Table;
 public class FcMercatoDett implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 //	@Id
 //	@GeneratedValue(strategy = IDENTITY)
 //	@Column(name = "id", unique = true, nullable = false)
@@ -36,11 +36,11 @@ public class FcMercatoDett implements java.io.Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_attore")
 	private FcAttore fcAttore;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_gioc_ven")
 	private FcGiocatore fcGiocatoreByIdGiocVen;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_gioc_acq")
 	private FcGiocatore fcGiocatoreByIdGiocAcq;
@@ -48,7 +48,7 @@ public class FcMercatoDett implements java.io.Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_giornata")
 	private FcGiornataInfo fcGiornataInfo;
-	
+
 	@Column(name = "data_cambio", nullable = false)
 	private LocalDateTime dataCambio;
 

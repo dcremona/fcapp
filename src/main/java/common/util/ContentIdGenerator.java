@@ -21,7 +21,7 @@ public class ContentIdGenerator{
 	/**
 	 * Sequence goes from 0 to 100K, then starts up at 0 again. This is large
 	 * enough, and saves
-	 * 
+	 *
 	 * @return
 	 */
 	public static synchronized int getSeq() {
@@ -30,7 +30,7 @@ public class ContentIdGenerator{
 
 	/**
 	 * One possible way to generate very-likely-unique content IDs.
-	 * 
+	 *
 	 * @return A content id that uses the hostname, the current time, and a
 	 *         sequence number to avoid collision.
 	 */

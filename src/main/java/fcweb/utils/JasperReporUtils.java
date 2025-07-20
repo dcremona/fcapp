@@ -11,10 +11,10 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-public class JasperReporUtils{
+public class JasperReporUtils {
 
-	public static ByteArrayInputStream runReportToPdf(InputStream inputStream,
-			Map<String, Object> hm, Connection conn) {
+	public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm,
+			Connection conn) {
 
 		byte[] b = null;
 		try {
@@ -25,13 +25,11 @@ public class JasperReporUtils{
 			ex2.printStackTrace();
 		}
 		return new ByteArrayInputStream(b);
-
-		// return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static ByteArrayInputStream runReportToPdf(InputStream inputStream,
-			Map<String, Object> hm, Collection coll) {
+	public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm,
+			Collection coll) {
 
 		byte[] b = null;
 		try {
@@ -42,13 +40,11 @@ public class JasperReporUtils{
 			ex2.printStackTrace();
 		}
 		return new ByteArrayInputStream(b);
-
-		// return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static byte[] getReportByteCollectionDataSource(
-			InputStream inputStream, Map<String, Object> hm, Collection coll) {
+	public static byte[] getReportByteCollectionDataSource(InputStream inputStream, Map<String, Object> hm,
+			Collection coll) {
 
 		byte[] b = null;
 		try {
@@ -59,14 +55,11 @@ public class JasperReporUtils{
 			ex2.printStackTrace();
 		}
 		return b;
-
-		// return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static void runReportToPdfStream(InputStream inputStream,
-			FileOutputStream outputStream, Map<String, Object> hm,
-			Collection coll) {
+	public static void runReportToPdfStream(InputStream inputStream, FileOutputStream outputStream,
+			Map<String, Object> hm, Collection coll) {
 
 		try {
 			JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, new JRBeanCollectionDataSource(coll));
@@ -77,9 +70,8 @@ public class JasperReporUtils{
 		}
 	}
 
-	public static void runReportToPdfStream(InputStream inputStream,
-			FileOutputStream outputStream, Map<String, Object> hm,
-			Connection conn) {
+	public static void runReportToPdfStream(InputStream inputStream, FileOutputStream outputStream,
+			Map<String, Object> hm, Connection conn) {
 
 		try {
 			JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, conn);

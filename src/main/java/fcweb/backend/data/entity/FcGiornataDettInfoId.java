@@ -11,7 +11,7 @@ import jakarta.persistence.Embeddable;
 public class FcGiornataDettInfoId implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idAttore;
@@ -43,18 +43,20 @@ public class FcGiornataDettInfoId implements java.io.Serializable{
 		this.idGiornata = idGiornata;
 	}
 
+	@Override
 	public boolean equals(Object other) {
-		if ((this == other))
+		if ((this == other)) {
 			return true;
-		if ((other == null))
+		}
+		if ((other == null) || !(other instanceof FcGiornataDettInfoId)) {
 			return false;
-		if (!(other instanceof FcGiornataDettInfoId))
-			return false;
+		}
 		FcGiornataDettInfoId castOther = (FcGiornataDettInfoId) other;
 
 		return (this.getIdAttore() == castOther.getIdAttore()) && (this.getIdGiornata() == castOther.getIdGiornata());
 	}
 
+	@Override
 	public int hashCode() {
 		int result = 17;
 

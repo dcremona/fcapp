@@ -16,7 +16,7 @@ public class ConnectorConfig {
 //	server.http.port=${HTTP_PORT:14939}
 //	# Tell Spring Security (if used) to require requests over HTTPS
 //	security.require-ssl=true
-//	# The format used for the keystore 
+//	# The format used for the keystore
 //	server.ssl.key-store-type=PKCS12
 //	# The path to the keystore containing the certificate
 //	server.ssl.key-store=classpath:keystore.p12
@@ -24,7 +24,7 @@ public class ConnectorConfig {
 //	server.ssl.key-store-password=fclt2024
 //	# The alias mapped to the certificate
 //	server.ssl.key-alias=tomcat
-	
+
 //	@Value("${server.http.port}")
 //    private int SERVER_HTTP_PORT;
 //
@@ -39,9 +39,9 @@ public class ConnectorConfig {
 //        return tomcat;
 //    }
 
-    
-    
-    
+
+
+
 //    #server.port=${PORT:8080}
 //    #server.port=8443
 //    #server.ssl.key-store-type=PKCS12
@@ -49,7 +49,7 @@ public class ConnectorConfig {
 //    #server.ssl.key-store-password=fclt2024
 //    #server.ssl.key-alias=springboot
 //    #server.ssl.key-password=fclt2024
-    
+
 //	@Bean
 //	public TomcatServletWebServerFactory servletContainer() {
 //		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {

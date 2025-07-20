@@ -23,12 +23,12 @@ public class CampionatoService{
 	}
 
 	public FcCampionato findByIdCampionato(Integer idCampionato) {
-		FcCampionato c = (FcCampionato) campionatoRepository.findByIdCampionato(idCampionato);
+		FcCampionato c = campionatoRepository.findByIdCampionato(idCampionato);
 		return c;
 	}
 
 	public FcCampionato findByActive(boolean active) {
-		FcCampionato c = (FcCampionato) campionatoRepository.findByActive(active);
+		FcCampionato c = campionatoRepository.findByActive(active);
 		return c;
 	}
 

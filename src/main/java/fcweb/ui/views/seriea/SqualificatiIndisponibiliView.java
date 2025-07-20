@@ -1,7 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -28,7 +25,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -52,11 +48,11 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 @PageTitle("Squalificati-Indisponibili")
 public class SqualificatiIndisponibiliView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+		implements ComponentEventListener<ClickEvent<Button>> {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AccessoService accessoController;
@@ -75,25 +71,16 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	private ResourceLoader resourceLoader;
 
 	public SqualificatiIndisponibiliView() {
-		LOG.info("SqualificatiIndisponibiliView()");
+		log.info("SqualificatiIndisponibiliView()");
 	}
 
 	@PostConstruct
 	void init() {
-		// LOG.debug("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
 		accessoController.insertAccesso(this.getClass().getName());
-		initData();
 		initLayout();
-	}
-
-	private void initData() {
-		// try {
-		// } catch (Exception ex2) {
-		// LOG.error("ex2 " + ex2.getMessage());
-		// }
 	}
 
 	private void initLayout() {
@@ -109,7 +96,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 			}
 		}
 
-		salvaDb = new Button("Salva "+giornataInfo.getDescGiornata());
+		salvaDb = new Button("Salva " + giornataInfo.getDescGiornata());
 		salvaDb.setIcon(VaadinIcon.DATABASE.create());
 		salvaDb.addClickListener(this);
 		salvaDb.setVisible(isAdmin);
@@ -120,9 +107,9 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		VerticalLayout layoutSqualificati = new VerticalLayout();
 		layoutSqualificati.setMargin(true);
-		layoutSqualificati.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutSqualificati.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutSqualificati.add(tableSqualificati);
-		Details panelSqualificati = new Details("Squalificati",layoutSqualificati);
+		Details panelSqualificati = new Details("Squalificati", layoutSqualificati);
 		panelSqualificati.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
 		panelSqualificati.setOpened(true);
 
@@ -132,9 +119,9 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		VerticalLayout layoutInfortunati = new VerticalLayout();
 		layoutInfortunati.setMargin(true);
-		layoutInfortunati.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutInfortunati.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutInfortunati.add(tableInfortunati);
-		Details panelInfortunati = new Details("Infortunati",layoutInfortunati);
+		Details panelInfortunati = new Details("Infortunati", layoutInfortunati);
 		panelInfortunati.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
 		panelInfortunati.setOpened(true);
 
@@ -142,9 +129,10 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		try {
 
-			List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-			ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<FcGiornataGiocatore>();
-			ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<FcGiornataGiocatore>();
+			List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo,
+					null);
+			ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<>();
+			ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<>();
 
 			for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
 				if (gg.isSqualificato()) {
@@ -154,16 +142,16 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				}
 			}
 
-			LOG.info("listSqualificati " + listSqualificati.size());
+			log.info("listSqualificati " + listSqualificati.size());
 			tableSqualificati.setItems(listSqualificati);
 			tableSqualificati.getDataProvider().refreshAll();
 
-			LOG.info("listInfortunati " + listInfortunati.size());
+			log.info("listInfortunati " + listInfortunati.size());
 			tableInfortunati.setItems(listInfortunati);
 			tableInfortunati.getDataProvider().refreshAll();
 
 		} catch (Exception ex2) {
-			LOG.error("ex2 " + ex2.getMessage());
+			log.error("ex2 " + ex2.getMessage());
 		}
 
 	}
@@ -172,7 +160,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	public void onComponentEvent(ClickEvent<Button> event) {
 		try {
 			if (event.getSource() == salvaDb) {
-				LOG.info("SALVA");
+				log.info("SALVA");
 				Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 				FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
@@ -186,7 +174,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				// DOWNLOAD FILE SQUALIFICATI
 				// **************************************
 				String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
-				LOG.info("httpUrlSqualificati " + httpUrlSqualificati);
+				log.info("httpUrlSqualificati " + httpUrlSqualificati);
 				String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
 				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 				jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
@@ -198,16 +186,17 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				// DOWNLOAD FILE INFORTUNATI
 				// **************************************
 				String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
-				LOG.info("httpUrlInfortunati " + httpUrlInfortunati);
+				log.info("httpUrlInfortunati " + httpUrlInfortunati);
 				String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
 				jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
 
 				fileName = basePathData + fileName2 + ".csv";
 				jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
 
-				List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-				ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<FcGiornataGiocatore>();
-				ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<FcGiornataGiocatore>();
+				List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService
+						.findByCustonm(giornataInfo, null);
+				ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<>();
+				ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<>();
 
 				for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
 					if (gg.isSqualificato()) {
@@ -217,11 +206,11 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					}
 				}
 
-				LOG.info("listSqualificati " + listSqualificati.size());
+				log.info("listSqualificati " + listSqualificati.size());
 				tableSqualificati.setItems(listSqualificati);
 				tableSqualificati.getDataProvider().refreshAll();
 
-				LOG.info("listInfortunati " + listInfortunati.size());
+				log.info("listInfortunati " + listInfortunati.size());
 				tableInfortunati.setItems(listInfortunati);
 				tableInfortunati.getDataProvider().refreshAll();
 
@@ -234,47 +223,41 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	private Grid<FcGiornataGiocatore> getTableSqualificatiInfortunati() {
 
 		Grid<FcGiornataGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<FcGiornataGiocatore>());
+		grid.setItems(new ArrayList<>());
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-		// grid.setWidth("550px");
 
 		Column<FcGiornataGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader
+						.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(false);
-		ruoloColumn.setHeader("Ruolo");
+		ruoloColumn.setHeader(Costants.RUOLO);
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			FcGiocatore g = gg.getFcGiocatore();
 			if (g != null) {
-				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = g.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-				cellLayout.add(img);
+				try {
+					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+					cellLayout.add(img);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
 			}
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
@@ -297,7 +280,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 		}));
 		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiornataGiocatore> noteColumn = grid.addColumn(g -> g.getNote());
@@ -306,22 +289,6 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 		noteColumn.setAutoWidth(true);
 
 		return grid;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

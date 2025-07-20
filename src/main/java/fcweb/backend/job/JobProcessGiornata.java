@@ -126,9 +126,9 @@ public class JobProcessGiornata{
 
 		LOG.info("START initDbGiocatori");
 
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
-		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<FcGiocatore>();
-		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<FcGiocatore>();
+		HashMap<Object, Object> map = new HashMap<>();
+		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<>();
+		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<>();
 
 		FileReader fileReader = null;
 		CSVParser csvFileParser = null;
@@ -140,7 +140,7 @@ public class JobProcessGiornata{
 		try {
 
 			// Create a new list of student to be filled by CSV file data
-			List<FcGiocatore> giocatores = new ArrayList<FcGiocatore>();
+			List<FcGiocatore> giocatores = new ArrayList<>();
 
 			// initialize FileReader object
 			fileReader = new FileReader(fileName);
@@ -573,16 +573,16 @@ public class JobProcessGiornata{
 			List<FcGiocatore> giocatores = null;
 			if (freePlayer) {
 				List<FcFormazione> allFormaz = formazioneRepository.findByFcCampionato(campionato);
-				List<Integer> listNotIn = new ArrayList<Integer>();
+				List<Integer> listNotIn = new ArrayList<>();
 				for (FcFormazione f : allFormaz) {
 					if (f.getFcGiocatore() != null) {
 						listNotIn.add(f.getFcGiocatore().getIdGiocatore());
 					}
 				}
-				giocatores = (List<FcGiocatore>) giocatoreRepository.findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(true, s, listNotIn);
+				giocatores = giocatoreRepository.findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(true, s, listNotIn);
 
 			} else {
-				giocatores = (List<FcGiocatore>) giocatoreRepository.findByFlagAttivoAndFcSquadraOrderByFcRuoloDescQuotazioneDesc(true, s);
+				giocatores = giocatoreRepository.findByFlagAttivoAndFcSquadraOrderByFcRuoloDescQuotazioneDesc(true, s);
 			}
 
 			int newRec = giocatores.size();
@@ -602,7 +602,7 @@ public class JobProcessGiornata{
 
 			for (int i2 = 0; i2 < 40; i2++) {
 				if (i2 < newRec) {
-					FcGiocatore giocatore = (FcGiocatore) giocatores.get(i2);
+					FcGiocatore giocatore = giocatores.get(i2);
 					cognGiocatore = giocatore.getCognGiocatore();
 					ruolo = giocatore.getFcRuolo().getIdRuolo();
 					sQuot = giocatore.getQuotazione().toString();
@@ -667,7 +667,7 @@ public class JobProcessGiornata{
 
 			formazioneHtml += "<tr>";
 			formazioneHtml += "<td>";
-			formazioneHtml += "Giocatore";
+			formazioneHtml += Costants.GIOCATORE;
 			formazioneHtml += "</td>";
 			formazioneHtml += "<td>";
 			formazioneHtml += "count_sv ";
@@ -791,9 +791,10 @@ public class JobProcessGiornata{
 					G = Utils.replaceString(G, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,"))
+						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,")) {
 							G = "6";
 						// LOG.debug("PORTIERE s.v.: "+Giocatore);
+						}
 					} else {
 						if (G.equals("") || G.equals("s.v.") || G.equals("s,v,")) {
 							G = "0";
@@ -808,8 +809,9 @@ public class JobProcessGiornata{
 					CS = Utils.replaceString(CS, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,"))
+						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,")) {
 							CS = "6";
+						}
 					} else {
 						if (CS.equals("") || CS.equals("s.v.") || CS.equals("s,v,")) {
 							CS = "0";
@@ -825,8 +827,9 @@ public class JobProcessGiornata{
 					TS = Utils.replaceString(TS, ",", ".");
 					// PORTIERE SV
 					if (ruolo.equals("P")) {
-						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,"))
+						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,")) {
 							TS = "6";
+						}
 					} else {
 						if (TS.equals("") || TS.equals("s.v.") || TS.equals("s,v,")) {
 							TS = "0";
@@ -958,7 +961,7 @@ public class JobProcessGiornata{
 				}
 			}
 
-			String email_destinatario = (String) p.getProperty("to");
+			String email_destinatario = p.getProperty("to");
 			String[] to = null;
 			if (email_destinatario != null && !email_destinatario.equals("")) {
 				to = Utils.tornaArrayString(email_destinatario, ";");
@@ -987,14 +990,14 @@ public class JobProcessGiornata{
 			formazioneHtml += "<p>Ciao Davide</p>\n";
 			formazioneHtml += "</body>\n";
 			formazioneHtml += "<html>";
-			
+
 			try {
-				String from = (String) env.getProperty("spring.mail.secondary.username");
+				String from = env.getProperty("spring.mail.secondary.username");
 				emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
 				try {
-					String from = (String) env.getProperty("spring.mail.primary.username");
+					String from = env.getProperty("spring.mail.primary.username");
 					emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", att);
 				} catch (Exception e2) {
 					LOG.error(e2.getMessage());
@@ -1025,7 +1028,7 @@ public class JobProcessGiornata{
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
 
-		List<FcPagelle> lPagelle = (List<FcPagelle>) pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
+		List<FcPagelle> lPagelle = pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
 		int v = 600;
 		for (FcPagelle pagelle : lPagelle) {
 
@@ -1126,7 +1129,7 @@ public class JobProcessGiornata{
 
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
-		List<FcPagelle> lPagelle = (List<FcPagelle>) pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
+		List<FcPagelle> lPagelle = pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
 
 		for (FcPagelle pagelle : lPagelle) {
 
@@ -1227,7 +1230,7 @@ public class JobProcessGiornata{
 
 		LOG.info("START aggiornaScore");
 
-		HashMap<String, String> map = new HashMap<String, String>();
+		HashMap<String, String> map = new HashMap<>();
 		map.put("7", "25");
 		map.put("6", "18");
 		map.put("5", "15");
@@ -1344,7 +1347,7 @@ public class JobProcessGiornata{
 				List<FcFormazione> listFormazione = formazioneRepository.findByFcCampionatoAndFcGiocatore(campionato, appoFcGiocatore);
 				String proprietario = "";
 				if (listFormazione != null && listFormazione.size() > 0) {
-					FcFormazione formazione = (FcFormazione) listFormazione.get(0);
+					FcFormazione formazione = listFormazione.get(0);
 					if (formazione != null) {
 						proprietario = formazione.getFcAttore().getDescAttore();
 					}
@@ -1408,7 +1411,7 @@ public class JobProcessGiornata{
 		List<FcFormazione> listFormazione = formazioneRepository.findByFcCampionatoAndFcGiocatore(campionato, appoFcGiocatore);
 		String proprietario = "";
 		if (listFormazione != null && listFormazione.size() > 0) {
-			FcFormazione formazione = (FcFormazione) listFormazione.get(0);
+			FcFormazione formazione = listFormazione.get(0);
 			if (formazione != null) {
 				proprietario = formazione.getFcAttore().getDescAttore();
 			}
@@ -1573,7 +1576,7 @@ public class JobProcessGiornata{
 
 		List<FcFormazione> listFormazione = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
 
-		ArrayList<FcFormazione> listTribuna = new ArrayList<FcFormazione>();
+		ArrayList<FcFormazione> listTribuna = new ArrayList<>();
 		boolean bInsert18 = false;
 		for (FcFormazione f : listFormazione) {
 
@@ -1678,7 +1681,7 @@ public class JobProcessGiornata{
 
 		List<FcGiornata> lGiornata = giornataRepository.findByFcGiornataInfo(giornataInfo);
 
-		List<FcAttore> l = (List<FcAttore>) attoreRepository.findByActive(true);
+		List<FcAttore> l = attoreRepository.findByActive(true);
 
 		for (FcAttore attore : l) {
 
@@ -1968,11 +1971,11 @@ public class JobProcessGiornata{
 				b.moveNext();
 			}
 
-			for (int q = 0; q < cambi.length; q++) {
+			for (String element : cambi) {
 
 				String query = "UPDATE fc_giornata_dett SET ";
 				query += " FLAG_ATTIVO='N'";
-				query += " WHERE ID_GIOCATORE=" + cambi[q];
+				query += " WHERE ID_GIOCATORE=" + element;
 				query += " AND ID_GIORNATA=" + giornata;
 				query += " AND ID_ATTORE=" + ID_ATTORE;
 
@@ -1996,8 +1999,8 @@ public class JobProcessGiornata{
 			// riserva 2 con penalità
 
 			// VERIFICO TERZO CAMBIO POSSIBILE
-			ArrayList<String> listaRuoliPossibiliCambi = new ArrayList<String>();
-			ArrayList<String> listaIdGiocatoriCambiati = new ArrayList<String>();
+			ArrayList<String> listaRuoliPossibiliCambi = new ArrayList<>();
+			ArrayList<String> listaIdGiocatoriCambiati = new ArrayList<>();
 
 			List<FcGiornataDett> lGiocatori2 = giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 			int countCambiEffettuati = 0;
@@ -2030,32 +2033,32 @@ public class JobProcessGiornata{
 				if ("P".equals(r)) {
 					HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori2, 12, r, somma);
 					if (mapResult.containsKey("SOMMA")) {
-						somma = Integer.parseInt((String) mapResult.get("SOMMA"));
-						listaIdGiocatoriCambiati.add((String) mapResult.get("ID_GIOCATORE"));
+						somma = Integer.parseInt(mapResult.get("SOMMA"));
+						listaIdGiocatoriCambiati.add(mapResult.get("ID_GIOCATORE"));
 						bCambioEffettuato = true;
 						countCambiEffettuati++;
 					}
 				} else if ("D".equals(r)) {
 					HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori2, 13, r, somma);
 					if (mapResult.containsKey("SOMMA")) {
-						somma = Integer.parseInt((String) mapResult.get("SOMMA"));
-						listaIdGiocatoriCambiati.add((String) mapResult.get("ID_GIOCATORE"));
+						somma = Integer.parseInt(mapResult.get("SOMMA"));
+						listaIdGiocatoriCambiati.add(mapResult.get("ID_GIOCATORE"));
 						bCambioEffettuato = true;
 						countCambiEffettuati++;
 					}
 				} else if ("C".equals(r)) {
 					HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori2, 15, r, somma);
 					if (mapResult.containsKey("SOMMA")) {
-						somma = Integer.parseInt((String) mapResult.get("SOMMA"));
-						listaIdGiocatoriCambiati.add((String) mapResult.get("ID_GIOCATORE"));
+						somma = Integer.parseInt(mapResult.get("SOMMA"));
+						listaIdGiocatoriCambiati.add(mapResult.get("ID_GIOCATORE"));
 						bCambioEffettuato = true;
 						countCambiEffettuati++;
 					}
 				} else if ("A".equals(r)) {
 					HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori2, 17, r, somma);
 					if (mapResult.containsKey("SOMMA")) {
-						somma = Integer.parseInt((String) mapResult.get("SOMMA"));
-						listaIdGiocatoriCambiati.add((String) mapResult.get("ID_GIOCATORE"));
+						somma = Integer.parseInt(mapResult.get("SOMMA"));
+						listaIdGiocatoriCambiati.add(mapResult.get("ID_GIOCATORE"));
 						bCambioEffettuato = true;
 						countCambiEffettuati++;
 					}
@@ -2079,7 +2082,7 @@ public class JobProcessGiornata{
 
 			if (countCambiEffettuati < 3) {
 
-				listaRuoliPossibiliCambi = new ArrayList<String>();
+				listaRuoliPossibiliCambi = new ArrayList<>();
 
 				List<FcGiornataDett> lGiocatori3 = giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 				for (FcGiornataDett gd : lGiocatori3) {
@@ -2099,7 +2102,7 @@ public class JobProcessGiornata{
 					if ("D".equals(r)) {
 						HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori3, 14, r, somma);
 						if (mapResult.containsKey("SOMMA")) {
-							somma = Integer.parseInt((String) mapResult.get("SOMMA"));
+							somma = Integer.parseInt(mapResult.get("SOMMA"));
 							somma = somma - Costants.DIV_0_5;
 							bCambioEffettuato = true;
 							countCambiEffettuati++;
@@ -2107,7 +2110,7 @@ public class JobProcessGiornata{
 					} else if ("C".equals(r)) {
 						HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori3, 16, r, somma);
 						if (mapResult.containsKey("SOMMA")) {
-							somma = Integer.parseInt((String) mapResult.get("SOMMA"));
+							somma = Integer.parseInt(mapResult.get("SOMMA"));
 							somma = somma - Costants.DIV_0_5;
 							bCambioEffettuato = true;
 							countCambiEffettuati++;
@@ -2115,7 +2118,7 @@ public class JobProcessGiornata{
 					} else if ("A".equals(r)) {
 						HashMap<String, String> mapResult = effettuaCambio(giornata, ID_ATTORE, listaIdGiocatoriCambiati, lGiocatori3, 18, r, somma);
 						if (mapResult.containsKey("SOMMA")) {
-							somma = Integer.parseInt((String) mapResult.get("SOMMA"));
+							somma = Integer.parseInt(mapResult.get("SOMMA"));
 							somma = somma - Costants.DIV_0_5;
 							bCambioEffettuato = true;
 							countCambiEffettuati++;
@@ -2715,13 +2718,13 @@ public class JobProcessGiornata{
 			semifinali[7][2] = semifinali[3][1];
 			semifinali[7][3] = semifinali[3][3];
 
-			for (int i = 0; i < semifinali.length; i++) {
+			for (String[] element : semifinali) {
 
-				String query = "INSERT INTO fc_giornata  (id_giornata,id_attore_casa,id_attore_fuori,gol_casa,gol_fuori,tot_casa,tot_fuori,id_tipo_giornata) VALUES (" + semifinali[i][0] + ",";
-				query += semifinali[i][1] + "," + semifinali[i][2] + ",";
+				String query = "INSERT INTO fc_giornata  (id_giornata,id_attore_casa,id_attore_fuori,gol_casa,gol_fuori,tot_casa,tot_fuori,id_tipo_giornata) VALUES (" + element[0] + ",";
+				query += element[1] + "," + element[2] + ",";
 				query += "null" + "," + "null" + ",";
 				query += "null" + "," + "null" + ",";
-				query += semifinali[i][3] + ")";
+				query += element[3] + ")";
 
 				jdbcTemplate.update(query);
 
@@ -2774,13 +2777,13 @@ public class JobProcessGiornata{
 			finali[3][2] = calen.getField(2);
 			finali[3][3] = "4";
 
-			for (int i = 0; i < finali.length; i++) {
+			for (String[] element : finali) {
 
-				String query = "INSERT INTO fc_giornata (id_giornata,id_attore_casa,id_attore_fuori,gol_casa,gol_fuori,tot_casa,tot_fuori,id_tipo_giornata) VALUES (" + finali[i][0] + ",";
-				query += finali[i][1] + "," + finali[i][2] + ",";
+				String query = "INSERT INTO fc_giornata (id_giornata,id_attore_casa,id_attore_fuori,gol_casa,gol_fuori,tot_casa,tot_fuori,id_tipo_giornata) VALUES (" + element[0] + ",";
+				query += element[1] + "," + element[2] + ",";
 				query += "null" + "," + "null" + ",";
 				query += "null" + "," + "null" + ",";
-				query += finali[i][3] + ")";
+				query += element[3] + ")";
 
 				jdbcTemplate.update(query);
 
@@ -2807,7 +2810,7 @@ public class JobProcessGiornata{
 			List<FcGiornataDett> lGiocatori, int ordinamento,
 			String ruoloGiocatore, int somma) throws Exception {
 
-		HashMap<String, String> mapResult = new HashMap<String, String>();
+		HashMap<String, String> mapResult = new HashMap<>();
 		boolean bChange = false;
 		for (FcGiornataDett gd : lGiocatori) {
 
@@ -3011,7 +3014,7 @@ public class JobProcessGiornata{
 
 	/*
 	 * CALCOLO LE POSIZIONI FINALI IN CASO DI PUNTEGGIO PARI
-	 * 
+	 *
 	 * 1 ) Punti negli scontri diretti 2 ) Differenza reti negli scontri diretti
 	 * 3 ) Differenza reti generali 4 ) Gol realizzati totali 5 ) Punteggio
 	 * totale ottenuto
@@ -3033,15 +3036,15 @@ public class JobProcessGiornata{
 		buf.setCurrentIndex(1);
 
 		int posizione = 8;
-		ArrayList<String> listAttoriProcessati = new ArrayList<String>(); 
-		
+		ArrayList<String> listAttoriProcessati = new ArrayList<>();
+
 		String appoPt = buf.getField(2);
 		Buffer appoBuf = new Buffer();
 		appoBuf.addNew(buf.getItem(1));
 
 		for (int i = 2; i <= buf.getRecordCount(); i++) {
 			buf.setCurrentIndex(i);
-			
+
 			if (appoPt.equals(buf.getField(2))) {
 				appoBuf.addNew(buf.getItem(i));
 			} else {
@@ -3052,18 +3055,18 @@ public class JobProcessGiornata{
 					for (int r = 1; r <= finale.getRecordCount(); r++) {
 						finale.setCurrentIndex(r);
 						String idAttore = finale.getField(1);
-						
+
 						if (listAttoriProcessati.indexOf(idAttore) != -1) {
 							continue;
 						}
-						
+
 						int row = buf.findFirst(idAttore, 1, true);
 						if (row != -1) {
 							// LOG.debug("posizione "+finale.getField(2));
 							buf.setField(row, 12, finale.getField(2));
 							listAttoriProcessati.add(idAttore);
 						}
-						
+
 						posizione--;
 					}
 
@@ -3078,19 +3081,19 @@ public class JobProcessGiornata{
 				appoPt = buf.getField(2);
 			}
 		}
-		
-		
+
+
 		try {
 			Buffer finale = calcolaPosizione(appoBuf, posizione, campionato);
 			// LOG.debug("SIZE "+finale.getRecordCount());
 			for (int r = 1; r <= finale.getRecordCount(); r++) {
 				finale.setCurrentIndex(r);
 				String idAttore = finale.getField(1);
-				
+
 				if (listAttoriProcessati.indexOf(idAttore) != -1) {
 					continue;
 				}
-				
+
 				int row = buf.findFirst(finale.getField(1), 1, true);
 				if (row != -1) {
 					// LOG.debug("posizione "+finale.getField(2));
@@ -3107,19 +3110,19 @@ public class JobProcessGiornata{
 
 	private Buffer getBufferScontro(int posizione, String att1,
 			String att2, int p1, int p2) {
-		
+
 		Buffer position = new Buffer();
 		if (p1 > p2) {
 			position.addNew("@1" + att2 + "@2" + posizione);
 			posizione--;
 			position.addNew("@1" + att1 + "@2" + posizione);
-			
+
 			return position;
 		} else if (p1 < p2) {
 			position.addNew("@1" + att1 + "@2" + posizione);
 			posizione--;
 			position.addNew("@1" + att2 + "@2" + posizione);
-			
+
 			return position;
 		}
 		return null;
@@ -3252,7 +3255,7 @@ public class JobProcessGiornata{
 		String start = campionato.getStart().toString();
 		String end = campionato.getEnd().toString();
 
-		ArrayList<String> giornate = new ArrayList<String>();
+		ArrayList<String> giornate = new ArrayList<>();
 
 		buffer.setCurrentIndex(2);
 		String att2 = buffer.getField(1);
@@ -3993,7 +3996,7 @@ public class JobProcessGiornata{
 
 	private void calendarNew(FcCampionato campionato, Integer[] squadre) {
 
-		Map<Integer, String> mapSquadre = new HashMap<Integer, String>();
+		Map<Integer, String> mapSquadre = new HashMap<>();
 		int GG_START = 1;
 		int GG_END = 14;
 		int incremento = 0;
@@ -4004,7 +4007,7 @@ public class JobProcessGiornata{
 			incremento = 19;
 		}
 
-		List<FcAttore> l = (List<FcAttore>) attoreRepository.findAll();
+		List<FcAttore> l = attoreRepository.findAll();
 		for (FcAttore attore : l) {
 			if (attore.getIdAttore() > 0 && attore.getIdAttore() < 9) {
 				mapSquadre.put(attore.getIdAttore(), attore.getDescAttore());
@@ -4017,7 +4020,7 @@ public class JobProcessGiornata{
 			}
 		}
 
-		ArrayList<FcGiornata> calend = new ArrayList<FcGiornata>();
+		ArrayList<FcGiornata> calend = new ArrayList<>();
 
 		calend.add(buildPartita(1 + incremento, squadre[0], squadre[1]));
 		calend.add(buildPartita(1 + incremento, squadre[2], squadre[7]));
@@ -4185,9 +4188,7 @@ public class JobProcessGiornata{
 
 			List<FcCalendarioCompetizione> listCalendarioTim = calendarioTimRepository.findByIdGiornata(idGiornata);
 
-			for (int i = 0; i < csvRecords.size(); i++) {
-				CSVRecord record = csvRecords.get(i);
-
+			for (CSVRecord record : csvRecords) {
 				String dataOra = record.get(0);
 
 				if (dataOra.length() == 18 || dataOra.length() == 17) {
@@ -4276,9 +4277,7 @@ public class JobProcessGiornata{
 
 			List<FcCalendarioCompetizione> listCalendarioTim = calendarioTimRepository.findByIdGiornata(idGiornata);
 
-			for (int i = 0; i < csvRecords.size(); i++) {
-				CSVRecord record = csvRecords.get(i);
-
+			for (CSVRecord record : csvRecords) {
 				String dataOra = record.get(0);
 
 				if (dataOra.length() == 18 || dataOra.length() == 17) {
@@ -4370,9 +4369,7 @@ public class JobProcessGiornata{
 			List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
 			boolean bUpdate = false;
-			for (int i = 0; i < csvRecords.size(); i++) {
-				CSVRecord record = csvRecords.get(i);
-
+			for (CSVRecord record : csvRecords) {
 				String dataOra = record.get(0);
 
 				if (dataOra.length() == 18 || dataOra.length() == 17) {
@@ -4476,9 +4473,7 @@ public class JobProcessGiornata{
 
 			// LocalDateTime now = LocalDateTime.now();
 
-			for (int i = 0; i < csvRecords.size(); i++) {
-				CSVRecord record = csvRecords.get(i);
-
+			for (CSVRecord record : csvRecords) {
 				String cognGiocatore = record.get(0);
 				String note = record.get(1);
 

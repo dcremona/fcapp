@@ -1,7 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -13,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.flow.component.accordion.Accordion;
@@ -31,7 +28,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -102,14 +98,13 @@ public class EmFormazioniView extends VerticalLayout{
 	@Autowired
 	private AttoreService attoreController;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
+	public List<FcAttore> squadre = new ArrayList<>();
 
 	@Autowired
 	private AccessoService accessoController;
 
 	public EmFormazioniView() throws Exception {
 		LOG.info("EmFormazioniView()");
-		initImg();
 	}
 
 	@PostConstruct
@@ -120,8 +115,8 @@ public class EmFormazioniView extends VerticalLayout{
 		}
 		accessoController.insertAccesso(this.getClass().getName());
 
+		initImg();
 		initData();
-
 		initLayout();
 	}
 
@@ -144,20 +139,20 @@ public class EmFormazioniView extends VerticalLayout{
 	private void initImg() throws Exception {
 
 		LOG.info("initImg()");
-
-		iconAmm_ = buildImage("classpath:images/", "amm.png", "Ammonizione (-0.5)");
-		iconEsp_ = buildImage("classpath:images/", "esp.png", "Espulso (-1)");
-		iconAssist_ = buildImage("classpath:images/", "assist.png", "Assist (+1)");
-		iconAutogol_ = buildImage("classpath:images/", "autogol.png", "Autogol (-2)");
-		iconEntrato_ = buildImage("classpath:images/", "entrato.png", "Entrato");
-		iconGolfatto_ = buildImage("classpath:images/", "golfatto.png", "Gol Fatto (+3)");
-		iconGolsubito_ = buildImage("classpath:images/", "golsubito.png", "Gol subito (-1)");
-		iconUscito_ = buildImage("classpath:images/", "uscito.png", "Uscito");
-		iconRigoreSbagliato_ = buildImage("classpath:images/", "rigoresbagliato.png", "Rigore sbagliato (-3)");
-		iconRigoreSegnato_ = buildImage("classpath:images/", "rigoresegnato.png", "Rigore segnato (+3)");
-		iconRigoreParato_ = buildImage("classpath:images/", "rigoreparato.png", "Rigore parato (+3)");
-		iconGolVittoria_ = buildImage("classpath:images/", "golvittoria.png", "Bonus goal vittoria (+1)");
-
+		
+		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"amm.png"));
+		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"esp.png"));
+		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"assist.png"));
+		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"autogol.png"));
+		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"entrato.png"));
+		iconGolfatto_ = Utils.buildImage("golfatto.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golfatto.png"));
+		iconGolsubito_ = Utils.buildImage("golsubito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golsubito.png"));
+		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"uscito.png"));
+		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresbagliato.png"));
+		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresegnato.png"));
+		iconRigoreParato_ = Utils.buildImage("rigoreparato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoreparato.png"));
+		iconGolVittoria_ = Utils.buildImage("golvittoria.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golvittoria.png"));
+		
 	}
 
 	private void initLayout() {
@@ -249,7 +244,7 @@ public class EmFormazioniView extends VerticalLayout{
 		HashMap<String, Object> map = new HashMap<>();
 
 		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
-		List<FcGiornataDett> items = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> items = new ArrayList<>();
 
 		int countD = 0;
 		int countC = 0;
@@ -269,8 +264,8 @@ public class EmFormazioniView extends VerticalLayout{
 
 		String schema = countD + "-" + countC + "-" + countA;
 
-		List<FcGiornataDett> itemsTitolari = new ArrayList<FcGiornataDett>();
-		List<FcGiornataDett> itemsPanchina = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> itemsTitolari = new ArrayList<>();
+		List<FcGiornataDett> itemsPanchina = new ArrayList<>();
 		for (FcGiornataDett gd2 : items) {
 			if (gd2.getOrdinamento() < 12) {
 				itemsTitolari.add(gd2);
@@ -305,7 +300,7 @@ public class EmFormazioniView extends VerticalLayout{
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (f != null && f.getFcGiocatore() != null) {
-				Image img = buildImage("classpath:images/", f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", f.getFcGiocatore().getFcRuolo().getDescRuolo());
+				Image img = Utils.buildImage(f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -329,7 +324,7 @@ public class EmFormazioniView extends VerticalLayout{
 			FcGiocatore g = gd.getFcGiocatore();
 			if (gd != null && g != null) {
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
@@ -338,11 +333,11 @@ public class EmFormazioniView extends VerticalLayout{
 
 				ArrayList<Image> info = new ArrayList<Image>();
 				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "N".equals(gd.getFlagAttivo().toUpperCase())) {
-					info.add(buildImage("classpath:images/", "uscito_s.png", "Uscito"));
+					info.add(Utils.buildImage("uscito_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"uscito_s.png")));
 				}
 
 				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "S".equals(gd.getFlagAttivo().toUpperCase())) {
-					info.add(buildImage("classpath:images/", "entrato_s.png", "Entrato"));
+					info.add(Utils.buildImage("entrato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"entrato_s.png")));
 				}
 
 				if (info.size() > 0) {
@@ -373,7 +368,7 @@ public class EmFormazioniView extends VerticalLayout{
 			FcGiocatore g = gd.getFcGiocatore();
 			if (gd != null && g != null) {
 				if (!g.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra().substring(0, 3));
@@ -413,43 +408,43 @@ public class EmFormazioniView extends VerticalLayout{
 				ArrayList<Image> info = new ArrayList<Image>();
 
 				for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
-					info.add(buildImage("classpath:images/", "amm_s.png", "Ammonizione (-0,5)"));
+					info.add(Utils.buildImage("amm_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"amm_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getEspulsione(); a++) {
-					info.add(buildImage("classpath:images/", "esp_s.png", "Espulsione (-1)"));
+					info.add(Utils.buildImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"esp_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalSubito(); a++) {
-					info.add(buildImage("classpath:images/", "golsubito_s.png", "Gol subito (-1)"));
+					info.add(Utils.buildImage("golsubito_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golsubito_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalRealizzato() - gd.getFcPagelle().getRigoreSegnato(); a++) {
-					info.add(buildImage("classpath:images/", "golfatto_s.png", "Gol fatto (+3)"));
+					info.add(Utils.buildImage("golfatto_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golfatto_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAutorete(); a++) {
-					info.add(buildImage("classpath:images/", "autogol_s.png", "Autogol (-2)"));
+					info.add(Utils.buildImage("autogol_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"autogol_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreFallito(); a++) {
-					info.add(buildImage("classpath:images/", "rigoresbagliato_s.png", "Rigore sbagliato (-3)"));
+					info.add(Utils.buildImage("rigoresbagliato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresbagliato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreSegnato(); a++) {
-					info.add(buildImage("classpath:images/", "rigoresegnato_s.png", "Rigore segnato (+3)"));
+					info.add(Utils.buildImage("rigoresegnato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoresegnato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreParato(); a++) {
-					info.add(buildImage("classpath:images/", "rigoreparato_s.png", "Rigore parato (+3)"));
+					info.add(Utils.buildImage("rigoreparato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"rigoreparato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAssist(); a++) {
-					info.add(buildImage("classpath:images/", "assist_s.png", "Assist (+1)"));
+					info.add(Utils.buildImage("assist_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"assist_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGdv(); a++) {
-					info.add(buildImage("classpath:images/", "golvittoria_s.png", "Bonus goal vittoria (+1)"));
+					info.add(Utils.buildImage("golvittoria_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"golvittoria_s.png")));
 				}
 
 				if (info.size() > 0) {
@@ -490,7 +485,7 @@ public class EmFormazioniView extends VerticalLayout{
 				lbl.getStyle().set("fontSize", "smaller");
 
 				if (!g.isFlagAttivo()) {
-					lbl.getStyle().set("background", Costants.LOWER_GRAY);
+					lbl.getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					lbl.getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 			}
@@ -529,64 +524,64 @@ public class EmFormazioniView extends VerticalLayout{
 		// if (gd.getOrdinamento() < 12 &&
 		// StringUtils.isNotEmpty(gd.getFlagAttivo()) &&
 		// "N".equals(gd.getFlagAttivo().toUpperCase())) {
-		// info.add(buildImage("classpath:images/", "uscito_s.png", "Uscito"));
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "uscito_s.png", "Uscito"));
 		// }
 		//
 		// if (gd.getOrdinamento() > 11 &&
 		// StringUtils.isNotEmpty(gd.getFlagAttivo()) &&
 		// "S".equals(gd.getFlagAttivo().toUpperCase())) {
-		// info.add(buildImage("classpath:images/", "entrato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "entrato_s.png",
 		// "Entrato"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
-		// info.add(buildImage("classpath:images/", "amm_s.png", "Ammonizione
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "amm_s.png", "Ammonizione
 		// (-0,5)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getEspulsione(); a++) {
-		// info.add(buildImage("classpath:images/", "esp_s.png", "Espulsione
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "esp_s.png", "Espulsione
 		// (-1)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getGoalSubito(); a++) {
-		// info.add(buildImage("classpath:images/", "golsubito_s.png", "Gol
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "golsubito_s.png", "Gol
 		// subito (-1)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getGoalRealizzato() -
 		// gd.getFcPagelle().getRigoreSegnato(); a++) {
-		// info.add(buildImage("classpath:images/", "golfatto_s.png", "Gol fatto
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "golfatto_s.png", "Gol fatto
 		// (+3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getAutorete(); a++) {
-		// info.add(buildImage("classpath:images/", "autogol_s.png", "Autogol
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "autogol_s.png", "Autogol
 		// (-2)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getRigoreFallito(); a++) {
-		// info.add(buildImage("classpath:images/", "rigoresbagliato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "rigoresbagliato_s.png",
 		// "Rigore sbagliato (-3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getRigoreSegnato(); a++) {
-		// info.add(buildImage("classpath:images/", "rigoresegnato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "rigoresegnato_s.png",
 		// "Rigore segnato (+3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getRigoreParato(); a++) {
-		// info.add(buildImage("classpath:images/", "rigoreparato_s.png",
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "rigoreparato_s.png",
 		// "Rigore parato (+3)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getAssist(); a++) {
-		// info.add(buildImage("classpath:images/", "assist_s.png", "Assist
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "assist_s.png", "Assist
 		// (+1)"));
 		// }
 		//
 		// for (int a = 0; a < gd.getFcPagelle().getGdv(); a++) {
-		// info.add(buildImage("classpath:images/", "golvittoria_s.png", "Bonus
+		// info.add(buildImage(Costants.CLASSPATH_IMAGES, "golvittoria_s.png", "Bonus
 		// goal vittoria (+1)"));
 		// }
 		//
@@ -602,7 +597,7 @@ public class EmFormazioniView extends VerticalLayout{
 		// }));
 		// cognGiocatoreColumn.setSortable(false);
 		// cognGiocatoreColumn.setResizable(false);
-		// cognGiocatoreColumn.setHeader("Giocatore");
+		// cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		// // cognGiocatoreColumn.setFlexGrow(0);
 		// cognGiocatoreColumn.setWidth("240px");
 
@@ -636,8 +631,8 @@ public class EmFormazioniView extends VerticalLayout{
 
 		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
-		lblTotGiornata.getStyle().set("font-size", "24px");
-		lblTotGiornata.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTotGiornata.getStyle().set(Costants.FONT_SIZE, "24px");
+		lblTotGiornata.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
 		Span lblInvio = new Span();
@@ -653,7 +648,7 @@ public class EmFormazioniView extends VerticalLayout{
 	private VerticalLayout buildLegenda() {
 
 		VerticalLayout layout = new VerticalLayout();
-		layout.getStyle().set("border", Costants.BORDER_COLOR);
+		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		// layout.setSizeFull();
 		layout.setMargin(false);
 
@@ -716,23 +711,6 @@ public class EmFormazioniView extends VerticalLayout{
 
 		return layout;
 
-	}
-
-	private Image buildImage(String path, String nomeImg, String title) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		img.setTitle(title);
-		return img;
 	}
 
 }

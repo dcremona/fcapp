@@ -36,25 +36,25 @@ public class CalendarioCompetizioneService{
 		if (fcGiornataInfo == null) {
 			l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findAll(sortByIdAsc());
 		} else {
-			l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findByIdGiornataOrderByDataAsc(fcGiornataInfo.getCodiceGiornata());
+			l = calendarioTimRepository.findByIdGiornataOrderByDataAsc(fcGiornataInfo.getCodiceGiornata());
 		}
 		return l;
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata) {
-		List<FcCalendarioCompetizione> l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findByIdGiornata(idGiornata);
+		List<FcCalendarioCompetizione> l = calendarioTimRepository.findByIdGiornata(idGiornata);
 		return l;
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(
 			int idGiornata) {
-		List<FcCalendarioCompetizione> l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findByIdGiornataOrderByDataAsc(idGiornata);
+		List<FcCalendarioCompetizione> l = calendarioTimRepository.findByIdGiornataOrderByDataAsc(idGiornata);
 		return l;
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(
 			int idGiornata, LocalDateTime data) {
-		List<FcCalendarioCompetizione> l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
+		List<FcCalendarioCompetizione> l = calendarioTimRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
 		return l;
 	}
 

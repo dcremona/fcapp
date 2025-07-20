@@ -38,7 +38,7 @@ public class FcClassificaView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ClassificaService classificaController;
@@ -52,19 +52,18 @@ public class FcClassificaView extends VerticalLayout{
 	@Autowired
 	public Environment env;
 
-//	private ComboBox<FcAttore> attoreFilter = new ComboBox<FcAttore>();
-	private ComboBox<FcCampionato> campionatoFilter = new ComboBox<FcCampionato>();
+	private ComboBox<FcCampionato> campionatoFilter = new ComboBox<>();
 
 	@Autowired
 	private AccessoService accessoController;
 
 	public FcClassificaView() {
-		LOG.info("FcClassificaView()");
+		log.info("FcClassificaView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -88,21 +87,6 @@ public class FcClassificaView extends VerticalLayout{
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcCampionato", "fcAttore", "punti", "idPosiz", "idPosizFinal", "totPunti", "totPuntiOld", "totPuntiRosa");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcCampionato", "fcAttore", "punti", "idPosiz", "idPosizFinal", "totPunti", "totPuntiOld", "totPuntiRosa");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcCampionato", "fcAttore", "punti");
-
-		// private int dr;
-		// private int fmMercato;
-		// private int gf;
-		// private int gs;
-		// private int idPosiz;
-		// private int idPosizFinal;
-		// private int pari;
-		// private int perse;
-		// private int punti;
-		// private int totFm;
-		// private Double totPunti;
-		// private Double totPuntiOld;
-		// private Double totPuntiRosa;
-		// private int vinte;
 
 		crud.getGrid().removeAllColumns();
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getIdCampionato() : "")).setHeader("Id");
@@ -132,25 +116,12 @@ public class FcClassificaView extends VerticalLayout{
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		campionatoFilter.setValue(campionato);
 
-
-//		attoreFilter.setPlaceholder("Attore");
-//		attoreFilter.setItems(attoreController.findByActive(true));
-//		attoreFilter.setItemLabelGenerator(FcAttore::getDescAttore);
-//		attoreFilter.addValueChangeListener(e -> crud.refreshGrid());
-//		crud.getCrudLayout().addFilterComponent(attoreFilter);
-
-		// flagAttivoFilter.setPlaceholder("filter by flag...");
-		// flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		// crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
-
 		Button clearFilters = new Button("clear");
 		clearFilters.addClickListener(event -> {
 			campionatoFilter.clear();
-			//attoreFilter.clear();
 		});
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		//crud.setFindAllOperation(() -> classificaController.findAll());
 		crud.setFindAllOperation(() -> classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionatoFilter.getValue()));
 		crud.setAddOperation(user -> classificaController.updateClassifica(user));
 		crud.setUpdateOperation(user -> classificaController.updateClassifica(user));

@@ -1,11 +1,8 @@
 package fcweb.ui.views.em;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -13,16 +10,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +23,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasComponents;
-import com.vaadin.flow.component.HtmlComponent;
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -45,9 +31,7 @@ import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -56,13 +40,9 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -190,59 +170,59 @@ public class EmImpostazioniView extends VerticalLayout
 		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
-	private Component createComponent(String mimeType, String fileName,
-			InputStream stream) {
-		if (mimeType.startsWith("text")) {
-			return createTextComponent(stream);
-		} else if (mimeType.startsWith("image")) {
-			Image image = new Image();
-			try {
+//	private Component createComponent(String mimeType, String fileName,
+//			InputStream stream) {
+//		if (mimeType.startsWith("text")) {
+//			return createTextComponent(stream);
+//		} else if (mimeType.startsWith("image")) {
+//			Image image = new Image();
+//			try {
+//
+//				byte[] bytes = IOUtils.toByteArray(stream);
+//				image.getElement().setAttribute("src", new StreamResource(fileName,() -> new ByteArrayInputStream(bytes)));
+//				try (ImageInputStream in = ImageIO.createImageInputStream(new ByteArrayInputStream(bytes))) {
+//					final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+//					if (readers.hasNext()) {
+//						ImageReader reader = readers.next();
+//						try {
+//							reader.setInput(in);
+//							image.setWidth(reader.getWidth(0) + "px");
+//							image.setHeight(reader.getHeight(0) + "px");
+//						} finally {
+//							reader.dispose();
+//						}
+//					}
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			image.setSizeFull();
+//			return image;
+//		}
+//		Div content = new Div();
+//		String text = String.format("Mime type: '%s'\nSHA-256 hash: '%s'", mimeType, MessageDigestUtil.sha256(stream.toString()));
+//		content.setText(text);
+//		return content;
+//
+//	}
 
-				byte[] bytes = IOUtils.toByteArray(stream);
-				image.getElement().setAttribute("src", new StreamResource(fileName,() -> new ByteArrayInputStream(bytes)));
-				try (ImageInputStream in = ImageIO.createImageInputStream(new ByteArrayInputStream(bytes))) {
-					final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
-					if (readers.hasNext()) {
-						ImageReader reader = readers.next();
-						try {
-							reader.setInput(in);
-							image.setWidth(reader.getWidth(0) + "px");
-							image.setHeight(reader.getHeight(0) + "px");
-						} finally {
-							reader.dispose();
-						}
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			image.setSizeFull();
-			return image;
-		}
-		Div content = new Div();
-		String text = String.format("Mime type: '%s'\nSHA-256 hash: '%s'", mimeType, MessageDigestUtil.sha256(stream.toString()));
-		content.setText(text);
-		return content;
+//	private Component createTextComponent(InputStream stream) {
+//		String text;
+//		try {
+//			text = IOUtils.toString(stream, StandardCharsets.UTF_8);
+//		} catch (IOException e) {
+//			text = "exception reading stream";
+//		}
+//		return new Text(text);
+//	}
 
-	}
-
-	private Component createTextComponent(InputStream stream) {
-		String text;
-		try {
-			text = IOUtils.toString(stream, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			text = "exception reading stream";
-		}
-		return new Text(text);
-	}
-
-	private void showOutput(String text, Component content,
-			HasComponents outputContainer) {
-		HtmlComponent p = new HtmlComponent(Tag.P);
-		p.getElement().setText(text);
-		outputContainer.add(p);
-		outputContainer.add(content);
-	}
+//	private void showOutput(String text, Component content,
+//			HasComponents outputContainer) {
+//		HtmlComponent p = new HtmlComponent(Tag.P);
+//		p.getElement().setText(text);
+//		outputContainer.add(p);
+//		outputContainer.add(content);
+//	}
 
 	private void initLayout() {
 
@@ -261,46 +241,45 @@ public class EmImpostazioniView extends VerticalLayout
 
 		this.add(comboGiornata);
 
-		MemoryBuffer buffer = new MemoryBuffer();
-		Upload upload = new Upload(buffer);
-		Div output = new Div();
-		upload.addSucceededListener(event -> {
-			try {
+//		MemoryBuffer buffer = new MemoryBuffer();
+//		Upload upload = new Upload(buffer);
+//		Div output = new Div();
+//		upload.addSucceededListener(event -> {
+//			try {
+//
+//				HashMap<Object, Object> map = emjobProcessGiornata.initDbGiocatoriExcel(buffer.getInputStream());
+//
+//				@SuppressWarnings("unchecked")
+//				ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
+//				@SuppressWarnings("unchecked")
+//				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
+//
+//				LOG.info("listGiocatoriAdd " + listGiocatoriAdd.size());
+//				LOG.info("listGiocatoriDel " + listGiocatoriDel.size());
+//
+//				tableGiocatoreAdd.setItems(listGiocatoriAdd);
+//				tableGiocatoreDel.setItems(listGiocatoriDel);
+//
+//				tableGiocatoreAdd.getDataProvider().refreshAll();
+//				tableGiocatoreDel.getDataProvider().refreshAll();
+//
+//				Component component = createComponent(event.getMIMEType(), event.getFileName(), buffer.getInputStream());
+//				output.removeAll();
+//				showOutput(event.getFileName(), component, output);
+//			} catch (Exception e) {
+//				LOG.error(e.getMessage());
+//			}
+//		});
+//
+//		upload.addFileRejectedListener(event -> {
+//			Paragraph component = new Paragraph();
+//			output.removeAll();
+//			showOutput(event.getErrorMessage(), component, output);
+//		});
+//		upload.getElement().addEventListener("file-remove", event -> {
+//			output.removeAll();
+//		});
 
-				HashMap<Object, Object> map = emjobProcessGiornata.initDbGiocatoriExcel(buffer.getInputStream());
-
-				@SuppressWarnings("unchecked")
-				ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
-				@SuppressWarnings("unchecked")
-				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
-
-				LOG.info("listGiocatoriAdd " + listGiocatoriAdd.size());
-				LOG.info("listGiocatoriDel " + listGiocatoriDel.size());
-
-				tableGiocatoreAdd.setItems(listGiocatoriAdd);
-				tableGiocatoreDel.setItems(listGiocatoriDel);
-
-				tableGiocatoreAdd.getDataProvider().refreshAll();
-				tableGiocatoreDel.getDataProvider().refreshAll();
-
-				Component component = createComponent(event.getMIMEType(), event.getFileName(), buffer.getInputStream());
-				output.removeAll();
-				showOutput(event.getFileName(), component, output);
-			} catch (Exception e) {
-				LOG.error(e.getMessage());
-			}
-		});
-
-		upload.addFileRejectedListener(event -> {
-			Paragraph component = new Paragraph();
-			output.removeAll();
-			showOutput(event.getErrorMessage(), component, output);
-		});
-		upload.getElement().addEventListener("file-remove", event -> {
-			output.removeAll();
-		});
-
-		// this.add(upload, output);
 
 		initDb = new Button("Init DB");
 		initDb.setIcon(VaadinIcon.ADD_DOCK.create());
@@ -312,8 +291,8 @@ public class EmImpostazioniView extends VerticalLayout
 
 		HorizontalLayout layoutSetup = new HorizontalLayout();
 		layoutSetup.setMargin(true);
-		layoutSetup.getStyle().set("border", Costants.BORDER_COLOR);
-		layoutSetup.add(upload, output);
+		layoutSetup.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+//		layoutSetup.add(upload, output);
 		layoutSetup.add(initDb);
 		layoutSetup.add(initDbAttore);
 
@@ -382,7 +361,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutUpdate = new VerticalLayout();
 		layoutUpdate.setMargin(true);
-		layoutUpdate.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutUpdate.add(layoutUpdateRow1);
 		layoutUpdate.add(layoutUpdateRow2);
@@ -412,7 +391,7 @@ public class EmImpostazioniView extends VerticalLayout
 		//radioGroupVotiExcel.setValue("mondiale-voti-ufficiali");
 		radioGroupVotiExcel.setItems("europei-voti-ufficiali", "europei-voti-ufficiali-fantacalcio");
 		radioGroupVotiExcel.setValue("europei-voti-ufficiali");
-		
+
 
 		calcola = new Button("Calcola (Yes Algoritmo + Statistiche)");
 		calcola.setIcon(VaadinIcon.PIN.create());
@@ -438,7 +417,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutCalcola = new VerticalLayout();
 		layoutCalcola.setMargin(true);
-		layoutCalcola.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		HorizontalLayout vHor = new HorizontalLayout();
 		vHor.add(download);
@@ -467,7 +446,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutNotifiche = new VerticalLayout();
 		layoutNotifiche.setMargin(true);
-		layoutNotifiche.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutNotifiche.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutNotifiche.add(notifica);
 		layoutNotifiche.add(messaggio);
@@ -490,7 +469,7 @@ public class EmImpostazioniView extends VerticalLayout
 			FcGiornataInfo giornataInfo = null;
 			int giornata = 0;
 			if (!comboGiornata.isEmpty()) {
-				giornataInfo = (FcGiornataInfo) comboGiornata.getValue();
+				giornataInfo = comboGiornata.getValue();
 				giornata = giornataInfo.getCodiceGiornata();
 			}
 			LOG.info("giornata " + giornata);
@@ -522,7 +501,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == initDbAttore) {
 
-				FcAttore attore = (FcAttore) comboAttore.getValue();
+				FcAttore attore = comboAttore.getValue();
 				LOG.info("attore " + attore.getDescAttore());
 
 				for (int j = 1; j <= 23; j++) {
@@ -532,7 +511,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == ultimaFormazione) {
 
-				FcAttore attore = (FcAttore) comboAttore.getValue();
+				FcAttore attore = comboAttore.getValue();
 				LOG.info("attore " + attore.getDescAttore());
 
 				emjobProcessGiornata.eminserisciUltimaFormazione(attore.getIdAttore(), giornata);
@@ -636,13 +615,13 @@ public class EmImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == pdfAndMail) {
 
-				String imgLog = (String) env.getProperty("img.logo");
+				String imgLog = env.getProperty("img.logo");
 				String pathImg = "images/";
 
 				Resource resource = resourceLoader.getResource("classpath:reports/em/risultati.jasper");
 				InputStream inputStream = resource.getInputStream();
 				Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg);
-				Collection<RisultatoBean> collection = new ArrayList<RisultatoBean>();
+				Collection<RisultatoBean> collection = new ArrayList<>();
 				collection.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
 				String destFileName1 = basePathData + giornataInfo.getDescGiornataFc() + ".pdf";
 				FileOutputStream outputStream = new FileOutputStream(new File(destFileName1));
@@ -652,7 +631,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 				Resource resource2 = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
 				InputStream inputStream2 = resource2.getInputStream();
-				Map<String, Object> params2 = new HashMap<String, Object>();
+				Map<String, Object> params2 = new HashMap<>();
 				params2.put("DIVISORE", "" + Costants.DIVISORE_10);
 				params2.put("PATH_IMG", pathImg + imgLog);
 				String destFileName2 = basePathData + "Classifica.pdf";
@@ -662,7 +641,7 @@ public class EmImpostazioniView extends VerticalLayout
 				// outputStream2, params2, conn);
 				JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, params2, conn);
 
-				
+
 				String email_destinatario = "";
 
 				if (this.chkSendMail.getValue()) {
@@ -673,7 +652,7 @@ public class EmImpostazioniView extends VerticalLayout
 						}
 					}
 				} else {
-					email_destinatario = (String) p.getProperty("to");
+					email_destinatario = p.getProperty("to");
 				}
 
 				String[] to = null;
@@ -693,13 +672,13 @@ public class EmImpostazioniView extends VerticalLayout
 				String message = getBody();
 
 				try {
-					
+
 					try {
-						String from = (String) env.getProperty("spring.mail.secondary.username");
+						String from = env.getProperty("spring.mail.secondary.username");
 						emailService.sendMail(false,from, to, cc, bcc, subject, message, "text/html", "3", att);
 					} catch (Exception e) {
 						try {
-							String from = (String) env.getProperty("spring.mail.primary.username");
+							String from = env.getProperty("spring.mail.primary.username");
 							emailService.sendMail(true,from, to, cc, bcc, subject, message, "text/html", "3", att);
 						} catch (Exception e2) {
 							throw e2;
@@ -727,19 +706,19 @@ public class EmImpostazioniView extends VerticalLayout
 				String message = messaggio.getValue();
 
 				try {
-					
+
 					try {
-						String from = (String) env.getProperty("spring.mail.secondary.username");
+						String from = env.getProperty("spring.mail.secondary.username");
 						emailService.sendMail(false,from, to, cc, bcc, subject, message, "", "3", null);
 					} catch (Exception e) {
 						try {
-							String from = (String) env.getProperty("spring.mail.primary.username");
+							String from = env.getProperty("spring.mail.primary.username");
 							emailService.sendMail(true,from, to, cc, bcc, subject, message, "", "3", null);
 						} catch (Exception e2) {
 							throw e2;
 						}
 					}
-					
+
 				} catch (Exception e) {
 					CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_MAIL_KO);
 				}
@@ -774,7 +753,7 @@ public class EmImpostazioniView extends VerticalLayout
 
 		List<FcAttore> squadre = attoreController.findAll();
 
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("path_img", pathImg);
 		parameters.put("titolo", giornataInfo.getDescGiornataFc());
 		int conta = 1;
@@ -786,7 +765,7 @@ public class EmImpostazioniView extends VerticalLayout
 			int countD = 0;
 			int countC = 0;
 			int countA = 0;
-			Collection<RisultatoBean> dm = new ArrayList<RisultatoBean>();
+			Collection<RisultatoBean> dm = new ArrayList<>();
 			for (FcGiornataDett gd : lGiocatori) {
 				if ("S".equals(gd.getFlagAttivo())) {
 					if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("D")) {
@@ -876,9 +855,9 @@ public class EmImpostazioniView extends VerticalLayout
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
 
-		
+
 		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
+		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		LOG.info("ACTIVE_MAIL " + ACTIVE_MAIL);
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findAll();
@@ -888,7 +867,7 @@ public class EmImpostazioniView extends VerticalLayout
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			email_destinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
@@ -902,11 +881,11 @@ public class EmImpostazioniView extends VerticalLayout
 		LOG.info(formazioneHtml);
 
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
+			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
 		} catch (Exception e) {
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
+				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
 			} catch (Exception e2) {
 				throw e2;
@@ -917,7 +896,7 @@ public class EmImpostazioniView extends VerticalLayout
 	private Grid<FcGiocatore> getTableGiocatori() {
 
 		Grid<FcGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<FcGiocatore>());
+		grid.setItems(new ArrayList<>());
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
 		grid.setWidth("600px");
@@ -930,13 +909,13 @@ public class EmImpostazioniView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader("Ruolo");
+		ruoloColumn.setHeader(Costants.RUOLO);
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -952,7 +931,7 @@ public class EmImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -977,7 +956,7 @@ public class EmImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> quotazioneColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -999,22 +978,6 @@ public class EmImpostazioniView extends VerticalLayout
 		quotazioneColumn.setAutoWidth(true);
 
 		return grid;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

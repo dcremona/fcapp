@@ -50,7 +50,7 @@ public class FcSquadraView extends VerticalLayout
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private SquadraService squadraController;
@@ -67,12 +67,12 @@ public class FcSquadraView extends VerticalLayout
 	private AccessoService accessoController;
 
 	public FcSquadraView() {
-		LOG.info("FcSquadraView()");
+		log.info("FcSquadraView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -108,8 +108,6 @@ public class FcSquadraView extends VerticalLayout
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
-			//cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 
 			if (f != null) {
 				try {
@@ -119,11 +117,6 @@ public class FcSquadraView extends VerticalLayout
 					}
 					Span lblSquadra = new Span(f.getNomeSquadra());
 					cellLayout.add(lblSquadra);
-
-//					if (f.getImg40() != null && f.getImg40().getBinaryStream() != null) {
-//						Image img2 = Utils.getImage(f.getNomeSquadra(), f.getImg40().getBinaryStream());
-//						cellLayout.add(img2);
-//					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -137,8 +130,6 @@ public class FcSquadraView extends VerticalLayout
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
-			//cellLayout.setAlignItems(Alignment.STRETCH);
-			// cellLayout.setSizeFull();
 			if (f != null) {
 				try {
 					if (f.getImg40() != null && f.getImg40().getBinaryStream() != null) {
@@ -177,26 +168,20 @@ public class FcSquadraView extends VerticalLayout
 					Resource r2 = null;
 					if ("1".equals(campionato.getType())) {
 						r = resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeImg());
-						if (r != null) {
-							InputStream inputStream = r.getInputStream();
-							byte[] targetArray = IOUtils.toByteArray(inputStream);
-							s.setImg(BlobProxy.generateProxy(targetArray));
-						}
+						InputStream inputStream = r.getInputStream();
+						byte[] targetArray = IOUtils.toByteArray(inputStream);
+						s.setImg(BlobProxy.generateProxy(targetArray));
 
 					} else {
 						r = resourceLoader.getResource("classpath:/img/nazioni/w20/" + s.getNomeImg());
-						if (r != null) {
-							InputStream inputStream = r.getInputStream();
-							byte[] targetArray = IOUtils.toByteArray(inputStream);
-							s.setImg(BlobProxy.generateProxy(targetArray));
-						}
+						InputStream inputStream = r.getInputStream();
+						byte[] targetArray = IOUtils.toByteArray(inputStream);
+						s.setImg(BlobProxy.generateProxy(targetArray));
 
 						r2 = resourceLoader.getResource("classpath:/img/nazioni/w40/" + s.getNomeImg());
-						if (r2 != null) {
-							InputStream inputStream2 = r2.getInputStream();
-							byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
-							s.setImg40(BlobProxy.generateProxy(targetArray2));
-						}
+						InputStream inputStream2 = r2.getInputStream();
+						byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
+						s.setImg40(BlobProxy.generateProxy(targetArray2));
 					}
 					squadraController.updateSquadra(s);
 				}

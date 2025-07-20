@@ -30,6 +30,7 @@ import fcweb.backend.service.GiocatoreService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.PagelleService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -42,7 +43,7 @@ public class FcPagelleView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataInfoService giornataInfoController;
@@ -59,16 +60,16 @@ public class FcPagelleView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<FcGiornataInfo>();
-	private ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<FcGiocatore>();
+	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+	private ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<>();
 
 	public FcPagelleView() {
-		LOG.info("FcPagelleView()");
+		log.info("FcPagelleView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -94,7 +95,7 @@ public class FcPagelleView extends VerticalLayout{
 
 		crud.getGrid().removeAllColumns();
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader("Giocatore");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getVotoGiocatore() : "")).setHeader("Voto");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getG() : "")).setHeader("G");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getTs() : "")).setHeader("Ts");
@@ -103,7 +104,7 @@ public class FcPagelleView extends VerticalLayout{
 		crud.getGrid().setColumnReorderingAllowed(true);
 
 		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoController.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>("Giocatore",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 
 		crud.setRowCountCaption("%d Pagelle(s) found");
 		crud.setClickRowToUpdate(true);
@@ -121,7 +122,7 @@ public class FcPagelleView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
 		giornataInfoFilter.setClearButtonVisible(true);
 
-		giocatoreFilter.setPlaceholder("Giocatore");
+		giocatoreFilter.setPlaceholder(Costants.GIOCATORE);
 		giocatoreFilter.setItems(giocatoreController.findAll());
 		giocatoreFilter.setItemLabelGenerator(FcGiocatore::getCognGiocatore);
 		giocatoreFilter.setRenderer(new ComponentRenderer<>(g -> {

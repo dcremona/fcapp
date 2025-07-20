@@ -2,7 +2,7 @@ package fcweb.utils;
 
 import java.util.HashMap;
 
-public class StringUtils{
+public class StringUtils {
 
 	private static final HashMap<Character, String> htmlEncodeChars = new HashMap<>();
 
@@ -275,8 +275,7 @@ public class StringUtils{
 		return encode(source, htmlEncodeChars);
 	}
 
-	private static String encode(String source,
-			HashMap<Character, String> encodingTable) {
+	private static String encode(String source, HashMap<Character, String> encodingTable) {
 		if (null == source) {
 			return null;
 		}

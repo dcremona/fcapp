@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 public class FcSquadra implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idSquadra;
@@ -28,7 +28,7 @@ public class FcSquadra implements java.io.Serializable{
 	private String nomeImg;
 	private Blob img;
 	private Blob img40;
-	private Set<FcGiocatore> fcGiocatores = new HashSet<FcGiocatore>(0);
+	private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
 
 	public FcSquadra() {
 	}
@@ -73,7 +73,7 @@ public class FcSquadra implements java.io.Serializable{
 	public void setFcGiocatores(Set<FcGiocatore> fcGiocatores) {
 		this.fcGiocatores = fcGiocatores;
 	}
-	
+
 	@Column(name = "nome_img")
 	public String getNomeImg() {
 		return this.nomeImg;
@@ -82,7 +82,7 @@ public class FcSquadra implements java.io.Serializable{
 	public void setNomeImg(String nomeImg) {
 		this.nomeImg = nomeImg;
 	}
-	
+
 	@Column(name = "img")
 	public Blob getImg() {
 		return this.img;

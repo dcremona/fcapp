@@ -12,7 +12,7 @@ public interface ProprietaRepository extends CrudRepository<FcProperties, Long>{
 	Page<FcProperties> findAll(Pageable pageable);
 
 	Iterable<FcProperties> findAll(Sort sort);
-	
+
 	public FcProperties findByKey(String key);
 
 }

@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 public class FcMercatoDettInfo implements Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

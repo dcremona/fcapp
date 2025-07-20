@@ -1,8 +1,6 @@
 package fcweb.ui.views.seriea;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.componentfactory.ToggleButton;
@@ -38,7 +35,6 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -47,7 +43,6 @@ import fcweb.backend.data.entity.FcCalendarioCompetizione;
 import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcGiocatore;
 import fcweb.backend.data.entity.FcGiornata;
-import fcweb.backend.data.entity.FcGiornataGiocatore;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcProperties;
 import fcweb.backend.data.entity.FcSquadra;
@@ -60,7 +55,6 @@ import fcweb.backend.service.CalendarioCompetizioneService;
 import fcweb.backend.service.ClassificaService;
 import fcweb.backend.service.EmailService;
 import fcweb.backend.service.FormazioneService;
-import fcweb.backend.service.GiornataGiocatoreService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.GiornataService;
 import fcweb.backend.service.ProprietaService;
@@ -79,7 +73,7 @@ public class ImpostazioniView extends VerticalLayout
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private List<FcAttore> squadre = null;
 	private List<FcSquadra> squadreSerieA = null;
@@ -90,7 +84,7 @@ public class ImpostazioniView extends VerticalLayout
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private CalendarioCompetizioneService calendarioTimController;
 
@@ -120,9 +114,6 @@ public class ImpostazioniView extends VerticalLayout
 
 	@Autowired
 	private ProprietaService proprietaController;
-	
-	@Autowired
-	private GiornataGiocatoreService giornataGiocatoreService;
 
 	private Button initDb;
 	private Button generaCalendar;
@@ -140,10 +131,7 @@ public class ImpostazioniView extends VerticalLayout
 	private NumberField txtPerc;
 	private Grid<FcGiocatore> tableGiocatoreAdd;
 	private Grid<FcGiocatore> tableGiocatoreDel;
-	private Button downloadSqualificatiInfortunati;
-	private Grid<FcGiornataGiocatore> tableSqualificati;
-	private Grid<FcGiornataGiocatore> tableInfortunati;
-	
+
 	private Button testMailPrimary;
 	private Button testMailSecondary;
 
@@ -173,7 +161,7 @@ public class ImpostazioniView extends VerticalLayout
 
 	@PostConstruct
 	void init() {
-		LOG.debug("init");
+		log.debug("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -188,8 +176,7 @@ public class ImpostazioniView extends VerticalLayout
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		LOG.info("from " + "" + from);
-		LOG.info("to " + "" + to);
+		log.info(String.format("from {0} and then {1}", from, to));
 		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
@@ -213,36 +200,32 @@ public class ImpostazioniView extends VerticalLayout
 		comboGiornata.addValueChangeListener(event -> {
 			FcGiornataInfo fcGiornataInfo2 = null;
 			if (event.getSource().isEmpty()) {
-				LOG.info("event.getSource().isEmpty()");
+				log.info("event.getSource().isEmpty()");
 			} else if (event.getOldValue() == null) {
-				LOG.info("event.getOldValue()");
+				log.info("event.getOldValue()");
 				fcGiornataInfo2 = event.getValue();
 			} else {
 				fcGiornataInfo2 = event.getValue();
 			}
 			if (fcGiornataInfo2 != null && da1 != null && da2 != null && dg != null && dp != null) {
-				LOG.info("gioranta " + "" + fcGiornataInfo2.getCodiceGiornata());
+				log.info("gioranta " + "" + fcGiornataInfo2.getCodiceGiornata());
 				if (fcGiornataInfo2.getDataAnticipo1() != null) {
-					// da.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataAnticipo()));
 					da1.setValue(fcGiornataInfo2.getDataAnticipo1());
 				}
 
 				if (fcGiornataInfo2.getDataAnticipo2() != null) {
-					// da.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataAnticipo()));
 					da2.setValue(fcGiornataInfo2.getDataAnticipo2());
 				}
 				if (fcGiornataInfo2.getDataGiornata() != null) {
-					// dg.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataGiornata()));
 					dg.setValue(fcGiornataInfo2.getDataGiornata());
 				}
 				if (fcGiornataInfo2.getDataPosticipo() != null) {
-					// dp.setValue(DateConvertUtils.asLocalDateTime(fcGiornataInfo2.getDataPosticipo()));
 					dp.setValue(fcGiornataInfo2.getDataPosticipo());
 				}
 				panelSetup.setOpened(false);
 				initDb.setEnabled(false);
 				generaCalendar.setEnabled(false);
-				LOG.info("getCodiceGiornata " + "" + fcGiornataInfo2.getCodiceGiornata());
+				log.info("getCodiceGiornata " + "" + fcGiornataInfo2.getCodiceGiornata());
 				if (fcGiornataInfo2.getCodiceGiornata() == 1 || fcGiornataInfo2.getCodiceGiornata() == 20) {
 					panelSetup.setOpened(true);
 					initDb.setEnabled(true);
@@ -257,7 +240,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		HorizontalLayout layoutSetup = new HorizontalLayout();
 		layoutSetup.setMargin(true);
-		layoutSetup.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutSetup.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutSetup.add(initDb);
 		layoutSetup.add(generaCalendar);
 
@@ -269,7 +252,6 @@ public class ImpostazioniView extends VerticalLayout
 		panelSetup.setOpened(false);
 		initDb.setEnabled(false);
 		generaCalendar.setEnabled(false);
-		LOG.info("getCodiceGiornata " + "" + giornataInfo.getCodiceGiornata());
 		if (giornataInfo.getCodiceGiornata() == 1 || giornataInfo.getCodiceGiornata() == 20) {
 			panelSetup.setOpened(true);
 			initDb.setEnabled(true);
@@ -338,21 +320,7 @@ public class ImpostazioniView extends VerticalLayout
 		layoutUpdateRow4.setMargin(true);
 		tableGiocatoreDel = getTableGiocatori();
 		layoutUpdateRow4.add(tableGiocatoreDel);
-		
-		downloadSqualificatiInfortunati = new Button("Download Squalificati Infortunati");
-		downloadSqualificatiInfortunati.setIcon(VaadinIcon.DOWNLOAD.create());
-		downloadSqualificatiInfortunati.addClickListener(this);
 
-		HorizontalLayout layoutUpdateRow5 = new HorizontalLayout();
-		layoutUpdateRow5.setMargin(true);
-		tableSqualificati = getTableSqualificatiInfortunati();
-		layoutUpdateRow5.add(tableSqualificati);
-
-		HorizontalLayout layoutUpdateRow6 = new HorizontalLayout();
-		layoutUpdateRow6.setMargin(true);
-		tableInfortunati = getTableSqualificatiInfortunati();
-		layoutUpdateRow6.add(tableInfortunati);
-		
 		testMailPrimary = new Button("Test Mail Primary");
 		testMailPrimary.setIcon(VaadinIcon.MAILBOX.create());
 		testMailPrimary.addClickListener(this);
@@ -363,18 +331,15 @@ public class ImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutUpdate = new VerticalLayout();
 		layoutUpdate.setMargin(true);
-		layoutUpdate.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutUpdate.add(layoutUpdateRow1);
 		layoutUpdate.add(layoutUpdateRow2);
 		layoutUpdate.add(layoutUpdateRow3);
 		layoutUpdate.add(layoutUpdateRow4);
-		layoutUpdate.add(downloadSqualificatiInfortunati);
-		layoutUpdate.add(layoutUpdateRow5);
-		layoutUpdate.add(layoutUpdateRow6);
 		layoutUpdate.add(testMailPrimary);
 		layoutUpdate.add(testMailSecondary);
-		
+
 		Details panelUpdate = new Details("Update",layoutUpdate);
 		panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
 		panelUpdate.setOpened(true);
@@ -398,12 +363,9 @@ public class ImpostazioniView extends VerticalLayout
 		comboSqudreA.setItems(squadreSerieA);
 		comboSqudreA.setItemLabelGenerator(p -> p.getNomeSquadra());
 		comboSqudreA.setClearButtonVisible(true);
-		comboSqudreA.setPlaceholder("Squadra");
+		comboSqudreA.setPlaceholder(Costants.SQUADRA);
 		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
-			// Image img = buildImage("classpath:/img/squadre/",
-			// item.getNomeSquadra() + ".png");
-			// container.add(img);
 			if (item != null && item.getImg() != null) {
 				try {
 					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
@@ -441,7 +403,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutCalcola = new VerticalLayout();
 		layoutCalcola.setMargin(true);
-		layoutCalcola.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		HorizontalLayout vHor = new HorizontalLayout();
 		vHor.add(download);
@@ -473,19 +435,16 @@ public class ImpostazioniView extends VerticalLayout
 
 		da2 = new DateTimePicker("Data Anticipo2");
 		if (giornataInfo.getDataAnticipo2() != null) {
-			// da.setValue(DateConvertUtils.asLocalDateTime(giornataInfo.getDataAnticipo()));
 			da2.setValue(giornataInfo.getDataAnticipo2());
 		}
 
 		dg = new DateTimePicker("Data Giornata");
 		if (giornataInfo.getDataGiornata() != null) {
-			// dg.setValue(DateConvertUtils.asLocalDateTime(giornataInfo.getDataGiornata()));
 			dg.setValue(giornataInfo.getDataGiornata());
 		}
 
 		dp = new DateTimePicker("Data Posticipo");
 		if (giornataInfo.getDataPosticipo() != null) {
-			// dp.setValue(DateConvertUtils.asLocalDateTime(giornataInfo.getDataPosticipo()));
 			dp.setValue(giornataInfo.getDataPosticipo());
 		}
 
@@ -504,7 +463,7 @@ public class ImpostazioniView extends VerticalLayout
 		HorizontalLayout layoutRow2 = new HorizontalLayout();
 		layoutRow2.add(da1);
 		layoutRow2.add(da2);
-		
+
 		HorizontalLayout layoutRow22 = new HorizontalLayout();
 		layoutRow22.add(dg);
 		layoutRow22.add(dp);
@@ -535,7 +494,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		VerticalLayout layoutDate = new VerticalLayout();
 		layoutDate.setMargin(true);
-		layoutDate.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutDate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layoutDate.add(layoutRow1);
 		layoutDate.add(layoutRow2);
@@ -553,16 +512,17 @@ public class ImpostazioniView extends VerticalLayout
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 
 		Checkbox check = new Checkbox(label);
-		check.setValue("1".equals((String) p.getProperty(key)) ? true : false);
+		boolean val = "1".equals(p.getProperty(key)) ;
+		check.setValue(val);
 
 		check.addValueChangeListener(event -> {
 			try {
-				Boolean value = (Boolean) event.getValue();
+				Boolean value = event.getValue();
 				FcProperties proprieta = new FcProperties();
 				proprieta.setKey(key);
-				proprieta.setValue(value == true ? "1" : "0");
+				proprieta.setValue(value.booleanValue() ? "1" : "0");
 				proprietaController.updateProprieta(proprieta);
-				p.setProperty(key, value == true ? "1" : "0");
+				p.setProperty(key, value.booleanValue() ? "1" : "0");
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			} catch (Exception e) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
@@ -582,16 +542,16 @@ public class ImpostazioniView extends VerticalLayout
 			FcGiornataInfo giornataInfo = null;
 			int codiceGiornata = 0;
 			if (!comboGiornata.isEmpty()) {
-				giornataInfo = (FcGiornataInfo) comboGiornata.getValue();
+				giornataInfo = comboGiornata.getValue();
 				codiceGiornata = giornataInfo.getCodiceGiornata();
 			}
-			LOG.info("giornata " + codiceGiornata);
+			log.info("giornata " + codiceGiornata);
 
-			FcAttore attore = (FcAttore) comboAttore.getValue();
-			LOG.info("giornata " + codiceGiornata);
+			FcAttore attore = comboAttore.getValue();
+			log.info("giornata " + codiceGiornata);
 
 			String basePathData = (String) p.get("PATH_TMP");
-			LOG.info("basePathData " + basePathData);
+			log.info("basePathData " + basePathData);
 			File f = new File(basePathData);
 			if (!f.exists()) {
 				CustomMessageDialog.showMessageError("Impossibile trovare il percorso specificato " + basePathData);
@@ -609,86 +569,36 @@ public class ImpostazioniView extends VerticalLayout
 						classificaController.create(a, campionato, Double.valueOf(0));
 					}
 				}
-				
+
 			} else if (event.getSource() == testMailPrimary) {
 
 				try {
-					//String fromPrimary = "notifiche-fclt@hostingtt.it"; 
-					String fromPrimary = (String) env.getProperty("spring.mail.primary.username");
+					//String fromPrimary = "notifiche-fclt@hostingtt.it";
+					String fromPrimary = env.getProperty("spring.mail.primary.username");
 					String toPrimary = "davide.cremona@gmail.com";
 					String subjectPrimary = "Testing from Spring Boot sendEmailPrimary";
 					String textPrimary = "Testing from Spring Boot sendEmailPrimary";
 					this.emailService.sendPrimaryEmail(fromPrimary, toPrimary, subjectPrimary, textPrimary);
 				} catch (Exception e) {
-					this.LOG.error(e.getMessage());
+					log.error(e.getMessage());
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 					return;
 				}
 
-			} else if (event.getSource() == testMailSecondary) {				
-					
+			} else if (event.getSource() == testMailSecondary) {
+
 				try {
 					//String fromSecondary = "notifichefclt@gmail.com";
-					String fromSecondary = (String) env.getProperty("spring.mail.secondary.username");
+					String fromSecondary = env.getProperty("spring.mail.secondary.username");
 					String toSecondary = "davide.cremona@gmail.com";
 					String subjectSecondary = "Testing from Spring Boot sendEmailSecondary";
 					String textSecondary = "Testing from Spring Boot sendEmailSecondary";
 					this.emailService.sendSecondaryEmail(fromSecondary, toSecondary, subjectSecondary, textSecondary);
 				} catch (Exception e2) {
-					this.LOG.error(e2.getMessage());
+					log.error(e2.getMessage());
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e2.getMessage());
 					return;
 				}
-				
-			} else if (event.getSource() == downloadSqualificatiInfortunati) {
-				
-				String urlFanta = (String) p.get("URL_FANTA");
-				String basePath = basePathData;
-
-				giornataGiocatoreService.deleteByCustonm(giornataInfo);
-				
-				// **************************************
-				// DOWNLOAD FILE SQUALIFICATI
-				// **************************************
-				String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
-				LOG.info("httpUrlSqualificati " + httpUrlSqualificati);
-				String fileName1 = "SQUALIFICATI_" + codiceGiornata;
-				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-				jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
-
-				String fileName = basePathData + fileName1 + ".csv";
-				jobProcessGiornata.initDbGiornataGiocatore(giornataInfo,fileName,true,false);
-				
-				// **************************************
-				// DOWNLOAD FILE INFORTUNATI
-				// **************************************
-				String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
-				LOG.info("httpUrlInfortunati " + httpUrlInfortunati);
-				String fileName2 = "INFORTUNATI_" + codiceGiornata;
-				jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
-
-				fileName = basePathData + fileName2 + ".csv";
-				jobProcessGiornata.initDbGiornataGiocatore(giornataInfo,fileName,false,true);
-				
-				List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-				ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<FcGiornataGiocatore>();
-				ArrayList<FcGiornataGiocatore> listInfortunati   = new ArrayList<FcGiornataGiocatore>();
-				
-				for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
-					if ( gg.isSqualificato() ) {
-						listSqualificati.add(gg);
-					} else if ( gg.isInfortunato() ) {
-						listInfortunati.add(gg);
-					}
-				}
-				
-				LOG.info("listSqualificati " + listSqualificati.size());
-				tableSqualificati.setItems(listSqualificati);
-				tableSqualificati.getDataProvider().refreshAll();
-
-				LOG.info("listInfortunati " + listInfortunati.size());
-				tableInfortunati.setItems(listInfortunati);
-				tableInfortunati.getDataProvider().refreshAll();
 
 			} else if (event.getSource() == downloadQuotaz) {
 
@@ -700,8 +610,8 @@ public class ImpostazioniView extends VerticalLayout
 				String basePath = basePathData;
 				String quotaz = "Giocatori-Quotazioni-Excel";
 				String httpUrl = urlFanta + quotaz + ".asp?giornata=" + codiceGiornata;
-				
-				LOG.info("httpUrl " + httpUrl);
+
+				log.info("httpUrl " + httpUrl);
 				String fileName = "Q_" + codiceGiornata;
 				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 				jobCsv.downloadCsv(httpUrl, basePath, fileName, 2);
@@ -712,7 +622,7 @@ public class ImpostazioniView extends VerticalLayout
 				// UPDATE GIOCATORI
 				// **************************************
 
-				LOG.info("httpUrlImg " + Costants.HTTP_URL_IMG);
+				log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
 				String imgPath = basePathData;
 				String fileName = "Q_" + codiceGiornata;
 				fileName = basePathData + fileName + ".csv";
@@ -726,8 +636,8 @@ public class ImpostazioniView extends VerticalLayout
 				@SuppressWarnings("unchecked")
 				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
 
-				LOG.info("listGiocatoriAdd " + listGiocatoriAdd.size());
-				LOG.info("listGiocatoriDel " + listGiocatoriDel.size());
+				log.info("listGiocatoriAdd " + listGiocatoriAdd.size());
+				log.info("listGiocatoriDel " + listGiocatoriDel.size());
 
 				tableGiocatoreAdd.setItems(listGiocatoriAdd);
 				tableGiocatoreDel.setItems(listGiocatoriDel);
@@ -798,7 +708,7 @@ public class ImpostazioniView extends VerticalLayout
 				String urlFanta = (String) p.get("URL_FANTA");
 
 				String votiExcel = "Voti-Ufficiosi-Excel";
-				if (chkUfficiali.getValue()) {
+				if (chkUfficiali.getValue().booleanValue()) {
 					votiExcel = "Voti-Ufficiali-Excel";
 				}
 
@@ -813,7 +723,7 @@ public class ImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == seiPolitico) {
 
-				FcSquadra squadra = (FcSquadra) this.comboSqudreA.getValue();
+				FcSquadra squadra = this.comboSqudreA.getValue();
 				if (squadra == null) {
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Squadra obbligaria");
 					return;
@@ -824,7 +734,7 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == calcola) {
 
 				int forzaVotoGiocatore = -1;
-				if (chkForzaVotoGiocatore.getValue()) {
+				if (chkForzaVotoGiocatore.getValue().booleanValue()) {
 					forzaVotoGiocatore = 0;
 				}
 				jobProcessGiornata.algoritmo(codiceGiornata, campionato, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
@@ -844,7 +754,7 @@ public class ImpostazioniView extends VerticalLayout
 
 				String pathImg = "images/";
 				p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
-				if (chkUfficiali.getValue()) {
+				if (chkUfficiali.getValue().booleanValue()) {
 					p.setProperty("INFO_RESULT", "UFFICIALI");
 				} else {
 					p.setProperty("INFO_RESULT", "UFFICIOSI");
@@ -852,36 +762,33 @@ public class ImpostazioniView extends VerticalLayout
 				jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, basePathData);
 
 			} else if (event.getSource() == salva) {
-				LOG.info("da1 " + da1.getValue());
-				LOG.info("da2 " + da2.getValue());
-				LOG.info("dg " + dg.getValue());
-				LOG.info("dp " + dp.getValue());
+				log.info("da1 " + da1.getValue());
+				log.info("da2 " + da2.getValue());
+				log.info("dg " + dg.getValue());
+				log.info("dp " + dp.getValue());
 				giornataInfo.setDataAnticipo1(da1.getValue());
 				giornataInfo.setDataAnticipo2(da2.getValue());
 				giornataInfo.setDataGiornata(dg.getValue());
 				giornataInfo.setDataPosticipo(dp.getValue());
-				// giornataInfo.setDataAnticipo(DateConvertUtils.asUtilDate(da.getValue()));
-				// giornataInfo.setDataGiornata(DateConvertUtils.asUtilDate(dg.getValue()));
-				// giornataInfo.setDataPosticipo(DateConvertUtils.asUtilDate(dp.getValue()));
-				LOG.info("getDataAnticipo2 " + giornataInfo.getDataAnticipo2());
-				LOG.info("getDataGiornata " + giornataInfo.getDataGiornata());
-				LOG.info("getDataPosticipo " + giornataInfo.getDataPosticipo());
+				log.info("getDataAnticipo2 " + giornataInfo.getDataAnticipo2());
+				log.info("getDataGiornata " + giornataInfo.getDataGiornata());
+				log.info("getDataPosticipo " + giornataInfo.getDataPosticipo());
 				giornataInfoController.updateGiornataInfo(giornataInfo);
 			} else if (event.getSource() == resetDate) {
 				da1.setValue(null);
 				da2.setValue(null);
 				dg.setValue(null);
 				dp.setValue(null);
-				LOG.info("1 " + da1.getValue());
-				LOG.info("1 " + da2.getValue());
-				LOG.info("1 " + dg.getValue());
-				LOG.info("1 " + dp.getValue());
+				log.info("1 " + da1.getValue());
+				log.info("1 " + da2.getValue());
+				log.info("1 " + dg.getValue());
+				log.info("1 " + dp.getValue());
 
 				List<FcCalendarioCompetizione> listCalend = calendarioTimController.findCustom(giornataInfo);
 				LocalDateTime appo = listCalend.get(0).getData();
-				ArrayList<LocalDateTime> listDate = new ArrayList<LocalDateTime>();
+				ArrayList<LocalDateTime> listDate = new ArrayList<>();
 				for (FcCalendarioCompetizione c : listCalend) {
-					LOG.info("" + appo.getDayOfWeek());
+					log.info("" + appo.getDayOfWeek());
 					if (appo.getDayOfWeek() != (c.getData().getDayOfWeek())) {
 						listDate.add(appo);
 						appo = c.getData();
@@ -922,10 +829,10 @@ public class ImpostazioniView extends VerticalLayout
 					dp.setValue(localDateTime4.minus(1, ChronoUnit.MINUTES));
 				}
 
-				LOG.info("2 " + da1.getValue());
-				LOG.info("2 " + da2.getValue());
-				LOG.info("2 " + dg.getValue());
-				LOG.info("2 " + dp.getValue());
+				log.info("2 " + da1.getValue());
+				log.info("2 " + da2.getValue());
+				log.info("2 " + dg.getValue());
+				log.info("2 " + dp.getValue());
 			}
 			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 		} catch (Exception e) {
@@ -941,77 +848,76 @@ public class ImpostazioniView extends VerticalLayout
 
 		String subject = "Avvio Giornata - " + Utils.buildInfoGiornataHtml(ggInfo);
 
-		String formazioneHtml = "";
-		formazioneHtml += "<html><head><title>FC</title></head>\n";
-		formazioneHtml += "<body>\n";
-		formazioneHtml += "<p>Prossima Giornata: " + Utils.buildInfoGiornataHtml(ggInfo) + "</p>\n";
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<br>\n";
+		StringBuilder formazioneHtml = new StringBuilder();
+		formazioneHtml.append("<html><head><title>FC</title></head>\n");
+		formazioneHtml.append("<body>\n");
+		formazioneHtml.append("<p>Prossima Giornata: " + Utils.buildInfoGiornataHtml(ggInfo) + "</p>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<br>\n");
 
-		formazioneHtml += "<table>";
+		formazioneHtml.append("<table>");
 
 		List<FcGiornata> all = giornataController.findByFcGiornataInfo(ggInfo);
 		for (FcGiornata g : all) {
-			formazioneHtml += "<tr>";
-			formazioneHtml += "<td>";
-			formazioneHtml += g.getFcAttoreByIdAttoreCasa().getDescAttore();
-			formazioneHtml += "</td>";
-			formazioneHtml += "<td>";
-			formazioneHtml += g.getFcAttoreByIdAttoreFuori().getDescAttore();
-			formazioneHtml += "</td>";
-			formazioneHtml += "</tr>";
+			formazioneHtml.append("<tr>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(g.getFcAttoreByIdAttoreCasa().getDescAttore());
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(g.getFcAttoreByIdAttoreFuori().getDescAttore());
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("</tr>");
 		}
 
-		formazioneHtml += "</table>\n";
+		formazioneHtml.append("</table>\n");
 
-		formazioneHtml += "<br>";
-		formazioneHtml += "<br>";
-		formazioneHtml += "<p>Data Anticipo1:  " + (ggInfo.getDataAnticipo1() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), "dd/MM/yyyy HH:mm")) + "</p>";
-		formazioneHtml += "<p>Data Anticipo2:  " + (ggInfo.getDataAnticipo2() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), "dd/MM/yyyy HH:mm")) + "</p>";
-		formazioneHtml += "<p>Data Giornata:  " + (ggInfo.getDataGiornata() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), "dd/MM/yyyy HH:mm")) + "</p>";
-		formazioneHtml += "<p>Data Posticipo: " + (ggInfo.getDataPosticipo() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), "dd/MM/yyyy HH:mm")) + "</p>";
-		formazioneHtml += "<br>";
-		formazioneHtml += "<br>";
-		formazioneHtml += "<p>Ciao Davide</p>";
-		formazioneHtml += "</body>";
-		formazioneHtml += "<html>";
+		formazioneHtml.append("<br>");
+		formazioneHtml.append("<br>");
+		formazioneHtml.append("<p>Data Anticipo1:  " + (ggInfo.getDataAnticipo1() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), "dd/MM/yyyy HH:mm")) + "</p>");
+		formazioneHtml.append("<p>Data Anticipo2:  " + (ggInfo.getDataAnticipo2() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), "dd/MM/yyyy HH:mm")) + "</p>");
+		formazioneHtml.append("<p>Data Giornata:  " + (ggInfo.getDataGiornata() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), "dd/MM/yyyy HH:mm")) + "</p>");
+		formazioneHtml.append("<p>Data Posticipo: " + (ggInfo.getDataPosticipo() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), "dd/MM/yyyy HH:mm")) + "</p>");
+		formazioneHtml.append("<br>");
+		formazioneHtml.append("<br>");
+		formazioneHtml.append("<p>Ciao Davide</p>");
+		formazioneHtml.append("</body>");
+		formazioneHtml.append("<html>");
 
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
 
-		String email_destinatario = "";
-		String ACTIVE_MAIL = (String) p.getProperty("ACTIVE_MAIL");
-		if ("true".equals(ACTIVE_MAIL)) {
+		String emailDestinatario = "";
+		String activeMail = p.getProperty("ACTIVE_MAIL");
+		if ("true".equals(activeMail)) {
 			List<FcAttore> attori = attoreController.findAll();
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
-					email_destinatario += a.getEmail() + ";";
+					formazioneHtml.append(a.getEmail() + ";");
 				}
 			}
 		} else {
-			email_destinatario = (String) p.getProperty("to");
+			emailDestinatario = p.getProperty("to");
 		}
 
 		String[] to = null;
-		if (email_destinatario != null && !email_destinatario.equals("")) {
-			to = Utils.tornaArrayString(email_destinatario, ";");
+		if (emailDestinatario != null && !emailDestinatario.equals("")) {
+			to = Utils.tornaArrayString(emailDestinatario, ";");
 		}
 
 		String[] cc = null;
 		String[] bcc = null;
 
-		LOG.info(formazioneHtml);
-
+		//log.info(formazioneHtml);
 		try {
-			String from = (String) env.getProperty("spring.mail.secondary.username");
-			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
+			String from = env.getProperty("spring.mail.secondary.username");
+			emailService.sendMail(false,from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", "3", null);
 		} catch (Exception e) {
-			this.LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			try {
-				String from = (String) env.getProperty("spring.mail.primary.username");
-				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", null);
+				String from = env.getProperty("spring.mail.primary.username");
+				emailService.sendMail(true,from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", "3", null);
 			} catch (Exception e2) {
-				this.LOG.error(e2.getMessage());
+				log.error(e2.getMessage());
 				throw e2;
 			}
 		}
@@ -1023,7 +929,7 @@ public class ImpostazioniView extends VerticalLayout
 	private Grid<FcGiocatore> getTableGiocatori() {
 
 		Grid<FcGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<FcGiocatore>());
+		grid.setItems(new ArrayList<>());
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
 		grid.setWidth("550px");
@@ -1036,13 +942,13 @@ public class ImpostazioniView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
 		}));
 		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader("Ruolo");
+		ruoloColumn.setHeader(Costants.RUOLO);
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -1053,26 +959,19 @@ public class ImpostazioniView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null) {
-				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = g.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-
+				try {
+					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+					cellLayout.add(img);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
-				cellLayout.add(img);
 				cellLayout.add(lblGiocatore);
 			}
 			return cellLayout;
 		}));
 		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -1097,7 +996,7 @@ public class ImpostazioniView extends VerticalLayout
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> quotazioneColumn = grid.addColumn(g -> g.getQuotazione());
@@ -1106,99 +1005,6 @@ public class ImpostazioniView extends VerticalLayout
 		quotazioneColumn.setAutoWidth(true);
 
 		return grid;
-	}
-	
-	private Grid<FcGiornataGiocatore> getTableSqualificatiInfortunati() {
-
-		Grid<FcGiornataGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<FcGiornataGiocatore>());
-		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		grid.setAllRowsVisible(true);
-		// grid.setWidth("550px");
-
-		Column<FcGiornataGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			FcGiocatore g = gg.getFcGiocatore();
-			if (g != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-		ruoloColumn.setSortable(false);
-		ruoloColumn.setHeader("Ruolo");
-		ruoloColumn.setAutoWidth(true);
-
-		Column<FcGiornataGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			FcGiocatore g = gg.getFcGiocatore();
-			if (g != null) {
-				StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-					InputStream inputStream = null;
-					try {
-						inputStream = g.getImgSmall().getBinaryStream();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return inputStream;
-				});
-				Image img = new Image(resource,"");
-				img.setSrc(resource);
-				cellLayout.add(img);
-				Span lblGiocatore = new Span(g.getCognGiocatore());
-				cellLayout.add(lblGiocatore);
-			}
-			return cellLayout;
-		}));
-		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader("Giocatore");
-		cognGiocatoreColumn.setAutoWidth(true);
-
-		Column<FcGiornataGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			FcGiocatore g = gg.getFcGiocatore();
-			if (g != null && g.getFcSquadra() != null) {
-				FcSquadra sq = g.getFcSquadra();
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
-
-		}));
-		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader("Squadra");
-		nomeSquadraColumn.setAutoWidth(true);
-
-		Column<FcGiornataGiocatore> noteColumn = grid.addColumn(g -> g.getNote());
-		noteColumn.setSortable(false);
-		noteColumn.setHeader("Note");
-		noteColumn.setAutoWidth(true);
-
-		return grid;
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

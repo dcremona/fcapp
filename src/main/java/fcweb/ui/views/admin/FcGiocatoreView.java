@@ -1,7 +1,7 @@
 package fcweb.ui.views.admin;
 
 import java.io.File;
-import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hibernate.engine.jdbc.BlobProxy;
@@ -26,7 +26,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -45,14 +44,14 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 
-@PageTitle("Giocatore")
-@Route(value = "giocatore", layout = MainLayout.class)
+@PageTitle(Costants.GIOCATORE)
+@Route(value = Costants.GIOCATORE, layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcGiocatoreView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiocatoreService giocatoreController;
@@ -69,16 +68,16 @@ public class FcGiocatoreView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcRuolo> ruoloFilter = new ComboBox<FcRuolo>();
-	private ComboBox<FcSquadra> squadraFilter = new ComboBox<FcSquadra>();
+	private ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
+	private ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
 
 	public FcGiocatoreView() {
-		LOG.info("FcGiocatoreView()");
+		log.info("FcGiocatoreView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -104,25 +103,19 @@ public class FcGiocatoreView extends VerticalLayout{
 		formFactory.setVisibleProperties(CrudOperation.DELETE, "idGiocatore", "cognGiocatore");
 
 		crud.getGrid().removeAllColumns();
-		
+
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		if ("1".equals(campionato.getType())) {
 			Column<FcGiocatore> giocatreColumn = crud.getGrid().addColumn(new ComponentRenderer<>(g -> {
 				HorizontalLayout cellLayout = new HorizontalLayout();
 				cellLayout.setSizeFull();
 				if (g != null && g.getNomeImg() != null) {
-					StreamResource resource = new StreamResource(g.getNomeImg(),() -> {
-						InputStream inputStream = null;
-						try {
-							inputStream = g.getImg().getBinaryStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return inputStream;
-					});
-					Image img = new Image(resource,"");
-					img.setSrc(resource);
-					cellLayout.add(img);
+					try {
+						Image img = Utils.getImage(g.getNomeImg(), g.getImg().getBinaryStream());
+						cellLayout.add(img);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 
 					Image imgOnline = new Image(Costants.HTTP_URL_IMG + g.getNomeImg(),g.getNomeImg());
 					cellLayout.add(imgOnline);
@@ -133,7 +126,7 @@ public class FcGiocatoreView extends VerticalLayout{
 						try {
 							Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 							String basePathData = (String) p.get("PATH_TMP");
-							LOG.info("basePathData " + basePathData);
+							log.info("basePathData " + basePathData);
 
 							File f = new File(basePathData);
 							if (!f.exists()) {
@@ -142,19 +135,19 @@ public class FcGiocatoreView extends VerticalLayout{
 							}
 
 							String newImg = g.getNomeImg();
-							LOG.info("newImg " + newImg);
-							LOG.info("httpUrlImg " + Costants.HTTP_URL_IMG);
+							log.info("newImg " + newImg);
+							log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
 							String imgPath = basePathData;
 
 							boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, imgPath + newImg);
-							LOG.info("bResult 1 " + flag);
+							log.info("bResult 1 " + flag);
 							flag = Utils.buildFileSmall(imgPath + newImg, imgPath + "small-" + newImg);
-							LOG.info("bResult 2 " + flag);
+							log.info("bResult 2 " + flag);
 
 							g.setImg(BlobProxy.generateProxy(Utils.getImage(imgPath + newImg)));
 							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(imgPath + "small-" + newImg)));
 
-							LOG.info("SAVE GIOCATORE ");
+							log.info("SAVE GIOCATORE ");
 							giocatoreController.updateGiocatore(g);
 
 							CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
@@ -171,13 +164,13 @@ public class FcGiocatoreView extends VerticalLayout{
 		}
 
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiocatore())).setHeader("Id");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcRuolo().getIdRuolo())).setHeader("Ruolo");
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcRuolo().getIdRuolo())).setHeader(Costants.RUOLO);
 
-		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCognGiocatore())).setHeader("Giocatore");
+		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCognGiocatore())).setHeader(Costants.GIOCATORE);
 		giocatoreColumn.setSortable(false);
 		giocatoreColumn.setAutoWidth(true);
 
-		Column<FcGiocatore> squadraColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcSquadra().getNomeSquadra())).setHeader("Squadra");
+		Column<FcGiocatore> squadraColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcSquadra().getNomeSquadra())).setHeader(Costants.SQUADRA);
 		squadraColumn.setSortable(false);
 		squadraColumn.setAutoWidth(true);
 
@@ -192,23 +185,19 @@ public class FcGiocatoreView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		ruoloFilter.setPlaceholder("Ruolo");
+		ruoloFilter.setPlaceholder(Costants.RUOLO);
 		ruoloFilter.setItems(ruoloController.findAll());
 		ruoloFilter.setItemLabelGenerator(FcRuolo::getIdRuolo);
 		ruoloFilter.setClearButtonVisible(true);
 		ruoloFilter.addValueChangeListener(e -> crud.refreshGrid());
 		crud.getCrudLayout().addFilterComponent(ruoloFilter);
 
-		squadraFilter.setPlaceholder("Squadra");
+		squadraFilter.setPlaceholder(Costants.SQUADRA);
 		squadraFilter.setItems(squadraController.findAll());
 		squadraFilter.setItemLabelGenerator(FcSquadra::getNomeSquadra);
 		squadraFilter.setClearButtonVisible(true);
 		squadraFilter.addValueChangeListener(e -> crud.refreshGrid());
 		crud.getCrudLayout().addFilterComponent(squadraFilter);
-
-		// flagAttivoFilter.setPlaceholder("filter by flag...");
-		// flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		// crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
 
 		Button clearFilters = new Button("clear");
 		clearFilters.addClickListener(event -> {
@@ -224,130 +213,5 @@ public class FcGiocatoreView extends VerticalLayout{
 
 		add(crud);
 
-		// this.add(getDefaultCrud());
-		// this.add(getMinimal());
 	}
-
-	// @Override
-	// public FcGiocatore add(FcGiocatore arg0) {
-	// return null;
-	// }
-	//
-	// @Override
-	// public void delete(FcGiocatore arg0) {
-	// }
-	//
-	// @Override
-	// public Collection<FcGiocatore> findAll() {
-	// Collection<FcGiocatore> c = giocatoreController.findAll();
-	// return c;
-	// }
-	//
-	// @Override
-	// public FcGiocatore update(FcGiocatore arg0) {
-	// return null;
-	// }
-
-	// private Component getDefaultCrud() {
-	// return new GridCrud<>(FcGiocatore.class, this);
-	// }
-	//
-	// private Component getMinimal() {
-	// GridCrud<FcGiocatore> crud = new GridCrud<>(FcGiocatore.class);
-	// crud.setCrudListener(this);
-	// crud.getCrudFormFactory().setFieldProvider("fcSquadra", new
-	// ComboBoxProvider<>(squadraController.findAll()));
-	// crud.getCrudFormFactory().setFieldProvider("fcRuolo", new
-	// CheckBoxGroupProvider<>(ruoloController.findAll()));
-	// crud.getGrid().setColumns("idGiocatore", "cognGiocatore", "quotazione",
-	// "flagAttivo");
-	// return crud;
-	// }
-
-	// private Component getConfiguredCrud() {
-	// GridCrud<User> crud = new GridCrud<>(User.class, new
-	// HorizontalSplitCrudLayout());
-	// crud.setCrudListener(this);
-	//
-	// DefaultCrudFormFactory<User> formFactory = new
-	// DefaultCrudFormFactory<>(User.class);
-	// crud.setCrudFormFactory(formFactory);
-	//
-	// formFactory.setUseBeanValidation(true);
-	//
-	// formFactory.setErrorListener(e -> {
-	// Notification.show("Custom error message");
-	// e.printStackTrace();
-	// });
-	//
-	// formFactory.setVisibleProperties("name", "birthDate", "email",
-	// "phoneNumber",
-	// "maritalStatus", "groups", "active", "mainGroup");
-	// formFactory.setVisibleProperties(CrudOperation.DELETE, "name", "email",
-	// "mainGroup");
-	//
-	// formFactory.setDisabledProperties("id");
-	//
-	// crud.getGrid().setColumns("name", "email", "phoneNumber", "active");
-	// crud.getGrid().addColumn(new LocalDateRenderer<>(
-	// user -> user.getBirthDate(),
-	// DateTimeFormatter.ISO_LOCAL_DATE))
-	// .setHeader("Birthdate");
-	//
-	// crud.getGrid().addColumn(new TextRenderer<>(user -> user == null ? "" :
-	// user.getMainGroup().getName()))
-	// .setHeader("Main group");
-	//
-	// crud.getGrid().setColumnReorderingAllowed(true);
-	//
-	// formFactory.setFieldType("password", PasswordField.class);
-	// formFactory.setFieldProvider("birthDate", () -> {
-	// DatePicker datePicker = new DatePicker();
-	// datePicker.setMax(LocalDate.now());
-	// return datePicker;
-	// });
-	//
-	// formFactory.setFieldProvider("maritalStatus", new
-	// RadioButtonGroupProvider<>(Arrays.asList(MaritalStatus.values())));
-	// formFactory.setFieldProvider("groups", new
-	// CheckBoxGroupProvider<>("Groups", GroupRepository.findAll(), new
-	// TextRenderer<>(Group::getName)));
-	// formFactory.setFieldProvider("mainGroup",
-	// new ComboBoxProvider<>("Main Group", GroupRepository.findAll(), new
-	// TextRenderer<>(Group::getName), Group::getName));
-	//
-	// formFactory.setButtonCaption(CrudOperation.ADD, "Add new user");
-	// crud.setRowCountCaption("%d user(s) found");
-	//
-	// crud.setClickRowToUpdate(true);
-	// crud.setUpdateOperationVisible(false);
-	//
-	//
-	// nameFilter.setPlaceholder("filter by name...");
-	// nameFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(nameFilter);
-	//
-	// groupFilter.setPlaceholder("Group");
-	// groupFilter.setItems(GroupRepository.findAll());
-	// groupFilter.setItemLabelGenerator(Group::getName);
-	// groupFilter.addValueChangeListener(e -> crud.refreshGrid());
-	// crud.getCrudLayout().addFilterComponent(groupFilter);
-	//
-	// Button clearFilters = new Button(null, VaadinIcon.ERASER.create());
-	// clearFilters.addClickListener(event -> {
-	// nameFilter.clear();
-	// groupFilter.clear();
-	// });
-	// crud.getCrudLayout().addFilterComponent(clearFilters);
-	//
-	// crud.setFindAllOperation(
-	// DataProvider.fromCallbacks(
-	// query -> UserRepository.findByNameLike(nameFilter.getValue(),
-	// groupFilter.getValue(), query.getOffset(), query.getLimit()).stream(),
-	// query -> UserRepository.countByNameLike(nameFilter.getValue(),
-	// groupFilter.getValue()))
-	// );
-	// return crud;
-	// }
-
 }

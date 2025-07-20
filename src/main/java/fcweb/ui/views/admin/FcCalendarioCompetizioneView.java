@@ -58,7 +58,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private CalendarioCompetizioneService calendarioTimController;
@@ -75,7 +75,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 	@Autowired
 	private GiornataInfoService giornataInfoController;
 
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<FcGiornataInfo>();
+	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 
 	@Autowired
 	private AccessoService accessoController;
@@ -84,12 +84,12 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 	private SquadraService squadraController;
 
 	public FcCalendarioCompetizioneView() {
-		LOG.info("FcCalendarioCompetizioneView()");
+		log.info("FcCalendarioCompetizioneView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -125,11 +125,8 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "idGiornata", "data", "idSquadraCasa", "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "idGiornata");
 
-		// crud.getGrid().setColumns("idGiornata", "data", "squadraCasa",
-		// "squadraFuori");
 		crud.getGrid().removeAllColumns();
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornata()));
-		//Column<FcCalendarioCompetizione> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(Locale.ITALY)));
 		Column<FcCalendarioCompetizione> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
 		dataColumn.setSortable(false);
 		dataColumn.setAutoWidth(true);
@@ -186,8 +183,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 		crud.getGrid().setColumnReorderingAllowed(true);
 
 		crud.getCrudFormFactory().setFieldProvider("data", a -> {
-			DateTimePicker data = new DateTimePicker();
-			return data;
+			return new DateTimePicker();
 		});
 
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null || g.getRisultato() == null ? "" : "" + g.getRisultato()));
@@ -233,7 +229,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
 			String basePathData = (String) p.get("PATH_TMP");
-			LOG.info("basePathData " + basePathData);
+			log.info("basePathData " + basePathData);
 			File f = new File(basePathData);
 			if (!f.exists()) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Impossibile trovare il percorso specificato " + basePathData);
@@ -255,7 +251,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 						String basePath = basePathData;
 						String calendario = "Serie-A-Calendario";
 						String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornata + "&Tipolink=0";
-						LOG.info("httpUrl " + httpUrl);
+						log.info("httpUrl " + httpUrl);
 						String fileName = "TIM_" + giornata;
 						JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 						jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
@@ -268,7 +264,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 				} else {
 
 					jobProcessGiornata.initDbCalendarioCompetizione(basePathData + "calendarioMondiale2022.csv");
-					
+
 //					jobProcessGiornata.deleteAllCalendarioTim();
 //					for (int g = 1; g <= 7; g++) {
 //						// **************************************
@@ -303,7 +299,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 					String quotaz = "Serie-A-Calendario";
 					String httpUrl = urlFanta + quotaz + ".asp?GiornataA=" + giornata + "&Tipolink=0";
 					// ="https://www.pianetafanta.it/Serie-A-Calendario.asp?GiornataA=5&Tipolink=0";
-					LOG.info("httpUrl " + httpUrl);
+					log.info("httpUrl " + httpUrl);
 					String fileName = "TIM_" + giornata;
 					JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 					jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
@@ -323,7 +319,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 					//String quotaz = "Mondiale-Calendario";
 					String quotaz = "europei-calendario";
 					String httpUrl = urlFanta + quotaz + ".asp?GiornataAM=" + giornata + "&Tipolink=0";
-					LOG.info("httpUrl " + httpUrl);
+					log.info("httpUrl " + httpUrl);
 					//String fileName = "MONDIALE_" + giornata;
 					String fileName = "EUROPEI_" + giornata;
 					JobProcessFileCsv jobCsv = new JobProcessFileCsv();

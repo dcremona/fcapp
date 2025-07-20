@@ -31,13 +31,13 @@ public class GiornataGiocatoreService{
 		if (giornataInfo == null && giocatore == null) {
 			l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
 		} else if (giornataInfo != null && giocatore == null) {
-			l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
+			l = giornataGiocatoreRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
 		} else if (giornataInfo == null && giocatore != null) {
 			l = giornataGiocatoreRepository.findByFcGiocatore(giocatore);
 		}
 		return l;
 	}
-	
+
 	public void deleteByCustonm(FcGiornataInfo giornataInfo) {
 		List<FcGiornataGiocatore> listSqualificatiInfortunati = this.findByCustonm(giornataInfo, null);
 		for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {

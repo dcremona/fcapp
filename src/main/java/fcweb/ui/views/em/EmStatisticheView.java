@@ -1,7 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -54,7 +52,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -73,7 +70,6 @@ import fcweb.backend.service.StatisticheService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -109,8 +105,8 @@ public class EmStatisticheView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public List<FcAttore> squadreA = new ArrayList<FcAttore>();
-	public List<FcAttore> squadreB = new ArrayList<FcAttore>();
+	public List<FcAttore> squadreA = new ArrayList<>();
+	public List<FcAttore> squadreB = new ArrayList<>();
 	private ComboBox<FcAttore> comboAttoreA;
 	private ComboBox<FcAttore> comboAttoreB;
 	private ComboBox<String> comboPunti;
@@ -171,7 +167,7 @@ public class EmStatisticheView extends VerticalLayout
 		tabSheet.add("Statistiche", layoutStat);
 		tabSheet.add("Confronti", layoutConfornti);
 		add(tabSheet);
-		
+
 
 	}
 
@@ -266,23 +262,41 @@ public class EmStatisticheView extends VerticalLayout
 		HorizontalLayout hlayout1 = new HorizontalLayout();
 		hlayout1.setSpacing(true);
 
+//		try {
+//
+//			Button stampaPdf = new Button("Statistiche Voti pdf");
+//			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("StatisticheVoti.pdf",() -> {
+//				try {
+//					Connection conn = jdbcTemplate.getDataSource().getConnection();
+//					Map<String, Object> hm = new HashMap<String, Object>();
+//					hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+//					hm.put("DIVISORE", "" + Costants.DIVISORE_100);
+//					Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
+//					InputStream inputStream = resource.getInputStream();
+//					return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+//				} catch (Exception ex2) {
+//					LOG.error(ex2.toString());
+//				}
+//				return null;
+//			}));
+//			button1Wrapper.wrapComponent(stampaPdf);
+//			hlayout1.add(button1Wrapper);
+//
+//		} catch (Exception e) {
+//			LOG.error(e.getMessage());
+//			e.printStackTrace();
+//		}
+		
 		try {
 
 			Button stampaPdf = new Button("Statistiche Voti pdf");
-			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("StatisticheVoti.pdf",() -> {
-				try {
-					Connection conn = jdbcTemplate.getDataSource().getConnection();
-					Map<String, Object> hm = new HashMap<String, Object>();
-					hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-					hm.put("DIVISORE", "" + Costants.DIVISORE_100);
-					Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
-					InputStream inputStream = resource.getInputStream();
-					return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-				} catch (Exception ex2) {
-					LOG.error(ex2.toString());
-				}
-				return null;
-			}));
+			Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<String, Object>();
+			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
+
 			button1Wrapper.wrapComponent(stampaPdf);
 			hlayout1.add(button1Wrapper);
 
@@ -301,7 +315,7 @@ public class EmStatisticheView extends VerticalLayout
 				break;
 			}
 		}
-		
+
 		layout.add(hlayout1);
 
 		HorizontalLayout hlayoutFilter = new HorizontalLayout();
@@ -404,18 +418,18 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getIdRuolo() != null) {
-				Image img = buildImage("classpath:images/", s.getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(s.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+s.getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
 		}));
-		ruoloColumn.setKey("ruolo");
+		ruoloColumn.setKey(Costants.RUOLO);
 		ruoloColumn.setSortable(true);
 		ruoloColumn.setHeader("R");
 		ruoloColumn.setAutoWidth(true);
 
 		// Column<FcStatistiche> giocatoreColumn = grid.addColumn(s ->
-		// s.getCognGiocatore()).setKey("giocatore");
+		// s.getCognGiocatore()).setKey(Costants.GIOCATORE);
 		Column<FcStatistiche> giocatoreColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
@@ -424,7 +438,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (s.getCognGiocatore() != null) {
@@ -436,7 +450,7 @@ public class EmStatisticheView extends VerticalLayout
 			return cellLayout;
 		}));
 		giocatoreColumn.setSortable(true);
-		giocatoreColumn.setHeader("Giocatore");
+		giocatoreColumn.setHeader(Costants.GIOCATORE);
 		// giocatoreColumn.setWidth("150px");
 		giocatoreColumn.setAutoWidth(true);
 
@@ -448,7 +462,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (s.getNomeSquadra() != null) {
@@ -471,7 +485,7 @@ public class EmStatisticheView extends VerticalLayout
 		nomeSquadraColumn.setSortable(true);
 		nomeSquadraColumn.setComparator((p1,
 				p2) -> p1.getNomeSquadra().compareTo(p2.getNomeSquadra()));
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setWidth("100px");
 		nomeSquadraColumn.setAutoWidth(true);
 
@@ -485,7 +499,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getFcGiocatore().getQuotazione();
@@ -509,7 +523,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getGiocate();
@@ -530,7 +544,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(true);
 			if (s != null && s.getFcGiocatore() != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String imgThink = "2.png";
@@ -541,7 +555,8 @@ public class EmStatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
+				
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
 				if (s != null) {
@@ -569,7 +584,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setSpacing(true);
 			if (s != null && s.getFcGiocatore() != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String imgThink = "2.png";
@@ -580,7 +595,9 @@ public class EmStatisticheView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES+imgThink));
+				
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
 				if (s != null) {
@@ -610,7 +627,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getGoalFatto();
@@ -634,7 +651,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getGoalSubito();
@@ -658,7 +675,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getAssist();
@@ -682,7 +699,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getAmmonizione();
@@ -706,7 +723,7 @@ public class EmStatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null) {
 				if (!s.isFlagAttivo()) {
-					cellLayout.getElement().getStyle().set("background", Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				String q = "" + s.getEspulsione();
@@ -795,22 +812,6 @@ public class EmStatisticheView extends VerticalLayout
 		} else if ("Non Attivi".equals(radioGroup.getValue())) {
 			dataProvider.addFilter(s -> !s.isFlagAttivo());
 		}
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

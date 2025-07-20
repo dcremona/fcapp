@@ -1,6 +1,5 @@
 package fcweb.ui.views;
 
-import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -21,10 +20,10 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.security.AuthenticatedUser;
 import fcweb.ui.views.admin.FcAccessoView;
@@ -68,6 +67,7 @@ import fcweb.ui.views.seriea.SqualificatiIndisponibiliView;
 import fcweb.ui.views.seriea.StatisticheView;
 import fcweb.ui.views.seriea.TeamInsertMobileView;
 import fcweb.ui.views.seriea.TeamInsertView;
+import fcweb.utils.Costants;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -93,7 +93,6 @@ public class MainLayout extends AppLayout{
 
 	private void addHeaderContent() {
 		DrawerToggle toggle = new DrawerToggle();
-		//toggle.getElement().setAttribute("aria-label", "Menu toggle");
 		toggle.setAriaLabel("Menu toggle");
 
 		viewTitle = new H2();
@@ -111,7 +110,7 @@ public class MainLayout extends AppLayout{
 
 		SideNav navAdmin = createNavigationAdmin();
 		if (navAdmin != null) {
-			addToDrawer(header, scroller, navAdmin, createFooter());	
+			addToDrawer(header, scroller, navAdmin, createFooter());
 		} else {
 			addToDrawer(header, scroller, createFooter());
 		}
@@ -125,13 +124,13 @@ public class MainLayout extends AppLayout{
 			String type = authenticatedUser.getType();
 			if ("1".equals(type)) {
 				if (accessChecker.hasAccess(HomeView.class)) {
-					nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));	
+					nav.addItem(new SideNavItem("Home", HomeView.class, LineAwesomeIcon.HOME_SOLID.create()));
 				}
-		        
+
 				if (accessChecker.hasAccess(TeamInsertView.class)) {
-					nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));	
+					nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class, LineAwesomeIcon.FUTBOL_SOLID.create()));
 				}
-				
+
 				if (accessChecker.hasAccess(TeamInsertMobileView.class)) {
 					nav.addItem(new SideNavItem("Mobile",TeamInsertMobileView.class,LineAwesomeIcon.MOBILE_SOLID.create()));
 				}
@@ -218,9 +217,9 @@ public class MainLayout extends AppLayout{
 
 		return nav;
     }
-    
+
     private SideNav createNavigationAdmin() {
-		
+
     	SideNav adminNav = new SideNav();
 		adminNav.setLabel("Admin");
 		adminNav.setCollapsible(true);
@@ -229,7 +228,7 @@ public class MainLayout extends AppLayout{
 		Optional<FcAttore> maybeUser = authenticatedUser.get();
 		if (maybeUser.isPresent()) {
 			String type = authenticatedUser.getType();
-			
+
 			if ("1".equals(type)) {
 
 				// ADMIN
@@ -238,7 +237,7 @@ public class MainLayout extends AppLayout{
 				} else {
 					return null;
 				}
-				
+
 				if (accessChecker.hasAccess(MercatoView.class)) {
 					adminNav.addItem(new SideNavItem("Mercato",MercatoView.class,LineAwesomeIcon.SEARCH_DOLLAR_SOLID.create()));
 				}
@@ -256,7 +255,7 @@ public class MainLayout extends AppLayout{
 				}
 
 				if (accessChecker.hasAccess(FcGiocatoreView.class)) {
-					adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
+					adminNav.addItem(new SideNavItem(Costants.GIOCATORE,FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
 				}
 
 				if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
@@ -306,7 +305,7 @@ public class MainLayout extends AppLayout{
 				if (accessChecker.hasAccess(FcAccessoView.class)) {
 					adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
 				}
-				
+
 			} else {
 
 				// ADMIN
@@ -325,7 +324,7 @@ public class MainLayout extends AppLayout{
 				}
 
 				if (accessChecker.hasAccess(FcGiocatoreView.class)) {
-					adminNav.addItem(new SideNavItem("Giocatore",FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
+					adminNav.addItem(new SideNavItem(Costants.GIOCATORE,FcGiocatoreView.class,LineAwesomeIcon.PLAYSTATION.create()));
 				}
 
 				if (accessChecker.hasAccess(FcGiornataInfoView.class)) {
@@ -365,7 +364,7 @@ public class MainLayout extends AppLayout{
 				}
 			}
 		}
-		
+
         return adminNav;
     }
 
@@ -378,8 +377,7 @@ public class MainLayout extends AppLayout{
 			FcAttore user = maybeUser.get();
 
 			Avatar avatar = new Avatar(user.getName());
-			StreamResource resource = new StreamResource("profile-pic",() -> new ByteArrayInputStream(user.getProfilePicture()));
-			avatar.setImageResource(resource);
+			avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
 			avatar.setThemeName("xsmall");
 			avatar.getElement().setAttribute("tabindex", "-1");
 

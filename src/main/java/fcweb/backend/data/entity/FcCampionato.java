@@ -22,7 +22,7 @@ import jakarta.persistence.TemporalType;
 public class FcCampionato implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idCampionato;
@@ -33,9 +33,9 @@ public class FcCampionato implements java.io.Serializable{
 	private Integer start;
 	private Integer end;
 	private boolean active;
-	private Set<FcClassifica> fcClassificas = new HashSet<FcClassifica>(0);
-	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<FcClassificaTotPt>(0);
-	private Set<FcFormazione> fcFormaziones = new HashSet<FcFormazione>(0);
+	private Set<FcClassifica> fcClassificas = new HashSet<>(0);
+	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<>(0);
+	private Set<FcFormazione> fcFormaziones = new HashSet<>(0);
 
 	public FcCampionato() {
 	}

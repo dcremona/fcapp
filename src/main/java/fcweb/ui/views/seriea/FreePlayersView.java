@@ -1,7 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -12,7 +10,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -35,7 +32,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -56,12 +52,11 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Free Players")
 @Route(value = "freePlayers")
 @RolesAllowed("ADMIN")
-public class FreePlayersView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class FreePlayersView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiocatoreService giocatoreController;
@@ -76,21 +71,20 @@ public class FreePlayersView extends VerticalLayout
 
 	private RadioButtonGroup<String> radioGroup = null;
 	private TabSheet tabs = null;
-	private Grid<FcGiocatore> gridP = new Grid<FcGiocatore>();
-	private Grid<FcGiocatore> gridD = new Grid<FcGiocatore>();
-	private Grid<FcGiocatore> gridC = new Grid<FcGiocatore>();
-	private Grid<FcGiocatore> gridA = new Grid<FcGiocatore>();
+	private Grid<FcGiocatore> gridP = new Grid<>();
+	private Grid<FcGiocatore> gridD = new Grid<>();
+	private Grid<FcGiocatore> gridC = new Grid<>();
+	private Grid<FcGiocatore> gridA = new Grid<>();
 
 	@Autowired
 	private AccessoService accessoController;
 
 	public FreePlayersView() {
-		LOG.info("FreePlayersView");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -100,16 +94,12 @@ public class FreePlayersView extends VerticalLayout
 
 	private void initLayout() {
 
-		// this.getStyle().set("border", Costants.BORDER_COLOR);
-		// this.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-		// this.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.STRETCH);
-
 		Button button = new Button("Home");
-		RouterLink menuHome = new RouterLink("",HomeView.class);
+		RouterLink menuHome = new RouterLink("", HomeView.class);
 		menuHome.getElement().appendChild(button.getElement());
 
 		Button button2 = new Button("Mercato");
-		RouterLink menuMercato = new RouterLink("",MercatoView.class);
+		RouterLink menuMercato = new RouterLink("", MercatoView.class);
 		menuMercato.getElement().appendChild(button2.getElement());
 
 		loadButton = new Button("Aggiorna");
@@ -117,11 +107,11 @@ public class FreePlayersView extends VerticalLayout
 
 		radioGroup = new RadioButtonGroup<>();
 		radioGroup.setLabel("Tipo Aggiornamento");
-		radioGroup.setItems("All", "Ruolo");
+		radioGroup.setItems("All", Costants.RUOLO);
 		radioGroup.setValue("All");
 
 		HorizontalLayout layoutButton = new HorizontalLayout();
-		layoutButton.getStyle().set("border", Costants.BORDER_COLOR);
+		layoutButton.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutButton.setSpacing(true);
 		layoutButton.add(menuHome);
 		layoutButton.add(menuMercato);
@@ -132,14 +122,11 @@ public class FreePlayersView extends VerticalLayout
 
 		final VerticalLayout layoutP = new VerticalLayout();
 		gridP = getTableGiocatore(getModelAsta("P"));
-		// Anchor downloadAsExcelP = new Anchor(new
-		// StreamResource("P.xlsx",Exporter.exportAsExcel(gridP)),"Download P");
-		// layoutP.add(new HorizontalLayout(downloadAsExcelP));
 		GridExporter<FcGiocatore> exporterP = GridExporter.createFor(gridP);
 		exporterP.setAutoAttachExportButtons(false);
 		exporterP.setTitle("P");
 		exporterP.setFileName("P" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-		Anchor excelLinkP = new Anchor("","Export to Excel P");
+		Anchor excelLinkP = new Anchor("", "Export to Excel P");
 		excelLinkP.setHref(exporterP.getExcelStreamResource());
 		excelLinkP.getElement().setAttribute("download", true);
 		layoutP.add(new HorizontalLayout(excelLinkP));
@@ -147,14 +134,11 @@ public class FreePlayersView extends VerticalLayout
 
 		final VerticalLayout layoutD = new VerticalLayout();
 		gridD = getTableGiocatore(getModelAsta("D"));
-		// Anchor downloadAsExcelD = new Anchor(new
-		// StreamResource("D.xlsx",Exporter.exportAsExcel(gridD)),"Download D");
-		// layoutD.add(new HorizontalLayout(downloadAsExcelD));
 		GridExporter<FcGiocatore> exporterD = GridExporter.createFor(gridD);
 		exporterD.setAutoAttachExportButtons(false);
 		exporterD.setTitle("D");
 		exporterD.setFileName("D" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-		Anchor excelLinkD = new Anchor("","Export to Excel D");
+		Anchor excelLinkD = new Anchor("", "Export to Excel D");
 		excelLinkD.setHref(exporterD.getExcelStreamResource());
 		excelLinkD.getElement().setAttribute("download", true);
 		layoutD.add(new HorizontalLayout(excelLinkD));
@@ -162,14 +146,11 @@ public class FreePlayersView extends VerticalLayout
 
 		final VerticalLayout layoutC = new VerticalLayout();
 		gridC = getTableGiocatore(getModelAsta("C"));
-		// Anchor downloadAsExcelC = new Anchor(new
-		// StreamResource("C.xlsx",Exporter.exportAsExcel(gridC)),"Download C");
-		// layoutC.add(new HorizontalLayout(downloadAsExcelC));
 		GridExporter<FcGiocatore> exporterC = GridExporter.createFor(gridC);
 		exporterC.setAutoAttachExportButtons(false);
 		exporterC.setTitle("C");
 		exporterC.setFileName("C" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-		Anchor excelLinkC = new Anchor("","Export to Excel C");
+		Anchor excelLinkC = new Anchor("", "Export to Excel C");
 		excelLinkC.setHref(exporterC.getExcelStreamResource());
 		excelLinkC.getElement().setAttribute("download", true);
 		layoutC.add(new HorizontalLayout(excelLinkC));
@@ -177,14 +158,11 @@ public class FreePlayersView extends VerticalLayout
 
 		final VerticalLayout layoutA = new VerticalLayout();
 		gridA = getTableGiocatore(getModelAsta("A"));
-		// Anchor downloadAsExcelA = new Anchor(new
-		// StreamResource("A.xlsx",Exporter.exportAsExcel(gridA)),"Download A");
-		// layoutA.add(new HorizontalLayout(downloadAsExcelA));
 		GridExporter<FcGiocatore> exporterA = GridExporter.createFor(gridA);
 		exporterA.setAutoAttachExportButtons(false);
 		exporterA.setTitle("A");
 		exporterA.setFileName("A" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-		Anchor excelLinkA = new Anchor("","Export to Excel A");
+		Anchor excelLinkA = new Anchor("", "Export to Excel A");
 		excelLinkA.setHref(exporterA.getExcelStreamResource());
 		excelLinkA.getElement().setAttribute("download", true);
 		layoutA.add(new HorizontalLayout(excelLinkA));
@@ -195,7 +173,6 @@ public class FreePlayersView extends VerticalLayout
 		tabs.add("Difensori", layoutD);
 		tabs.add("Centrocampisti", layoutC);
 		tabs.add("Attaccanti", layoutA);
-		// tabs.setSizeFull();
 
 		add(tabs);
 
@@ -203,11 +180,11 @@ public class FreePlayersView extends VerticalLayout
 
 	private List<FcGiocatore> getModelAsta(String ruolo) {
 
-		LOG.info("START getModelAsta " + ruolo);
+		log.info("START getModelAsta " + ruolo);
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		List<FcFormazione> allFormaz = formazioneController.findByFcCampionato(campionato);
-		List<Integer> listNotIn = new ArrayList<Integer>();
+		List<Integer> listNotIn = new ArrayList<>();
 		for (FcFormazione f : allFormaz) {
 			if (f.getFcGiocatore() != null) {
 				listNotIn.add(f.getFcGiocatore().getIdGiocatore());
@@ -219,8 +196,9 @@ public class FreePlayersView extends VerticalLayout
 
 		// load data
 		List<FcGiocatore> all = null;
-		if (listNotIn.size() > 0) {
-			all = giocatoreController.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(r, true, listNotIn);
+		if (!listNotIn.isEmpty()) {
+			all = giocatoreController.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(r, true,
+					listNotIn);
 		} else {
 			all = giocatoreController.findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(r, true);
 		}
@@ -235,32 +213,21 @@ public class FreePlayersView extends VerticalLayout
 			}
 		}
 
-		LOG.info("END getModelAsta " + ruolo);
+		log.info("END getModelAsta " + ruolo);
 
 		return all;
 	}
 
-	private PaginatedGrid<FcGiocatore, ?> getTableGiocatore(
-			List<FcGiocatore> items) {
+	private PaginatedGrid<FcGiocatore, ?> getTableGiocatore(List<FcGiocatore> items) {
 
 		PaginatedGrid<FcGiocatore, ?> grid = new PaginatedGrid<>();
 		ListDataProvider<FcGiocatore> dataProvider = new ListDataProvider<>(items);
 		grid.setDataProvider(dataProvider);
 
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		// grid.setHeightByRows(true);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,GridVariant.LUMO_ROW_STRIPES);
 		grid.setMultiSort(true);
 		grid.setAllRowsVisible(true);
-
-		// Grid<FcGiocatore> grid = new Grid<>();
-		// grid.setItems(items);
-		// grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-		// grid.setAllRowsVisible(true);
-		// grid.addThemeVariants(GridVariant.LUMO_NO_BORDER,
-		// GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-		// grid.setMultiSort(true);
-		// grid.setSizeFull();
 
 		Column<FcGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -270,7 +237,8 @@ public class FreePlayersView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null && g.getFcRuolo() != null) {
-				Image img = buildImage("classpath:images/", g.getFcRuolo().getIdRuolo().toLowerCase() + ".png");
+				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader
+						.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -282,7 +250,7 @@ public class FreePlayersView extends VerticalLayout
 
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "-");
 		cognGiocatoreColumn.setKey("cognGiocatore");
-		cognGiocatoreColumn.setHeader("Giocatore");
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setSortable(false);
 		cognGiocatoreColumn.setAutoWidth(true);
 
@@ -293,9 +261,6 @@ public class FreePlayersView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
-				// Image img = buildImage("classpath:/img/squadre/",
-				// g.getFcSquadra().getNomeSquadra() + ".png");
-				// cellLayout.add(img);
 				FcSquadra sq = g.getFcSquadra();
 				if (sq != null && sq.getImg() != null) {
 					try {
@@ -311,10 +276,10 @@ public class FreePlayersView extends VerticalLayout
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setKey("fcSquadra.nomeSquadra");
-		nomeSquadraColumn.setHeader("Squadra");
+		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setSortable(true);
-		nomeSquadraColumn.setComparator((p1,
-				p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
+		nomeSquadraColumn.setComparator(
+				(p1, p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> quotazioneColumn = grid.addColumn(g -> g != null ? g.getQuotazione() : 0);
@@ -323,7 +288,8 @@ public class FreePlayersView extends VerticalLayout
 		quotazioneColumn.setAutoWidth(true);
 		quotazioneColumn.setSortable(true);
 
-		Column<FcGiocatore> giocateColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGiocate() : 0);
+		Column<FcGiocatore> giocateColumn = grid
+				.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGiocate() : 0);
 		giocateColumn.setHeader("Giocate");
 		giocateColumn.setKey("fcStatistiche.giocate");
 		giocateColumn.setAutoWidth(true);
@@ -344,7 +310,7 @@ public class FreePlayersView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -361,8 +327,8 @@ public class FreePlayersView extends VerticalLayout
 			return cellLayout;
 		}));
 		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator((p1,
-				p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
+		mediaVotoColumn.setComparator(
+				(p1, p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader("Mv");
 		mediaVotoColumn.setAutoWidth(true);
 		mediaVotoColumn.setKey("fcStatistiche.mediaVoto");
@@ -382,7 +348,7 @@ public class FreePlayersView extends VerticalLayout
 						imgThink = "3.png";
 					}
 				}
-				Image img = buildImage("classpath:images/", imgThink);
+				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 				Double d = Double.valueOf(0);
@@ -399,43 +365,49 @@ public class FreePlayersView extends VerticalLayout
 			return cellLayout;
 		}));
 		fmVotoColumn.setSortable(true);
-		fmVotoColumn.setComparator((p1,
-				p2) -> p1.getFcStatistiche().getFantaMedia().compareTo(p2.getFcStatistiche().getFantaMedia()));
+		fmVotoColumn.setComparator(
+				(p1, p2) -> p1.getFcStatistiche().getFantaMedia().compareTo(p2.getFcStatistiche().getFantaMedia()));
 		fmVotoColumn.setHeader("FMv");
 		fmVotoColumn.setAutoWidth(true);
 		fmVotoColumn.setKey("fcStatistiche.fantaMedia");
 
-		Column<FcGiocatore> assistColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getAssist() : 0);
+		Column<FcGiocatore> assistColumn = grid
+				.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getAssist() : 0);
 		assistColumn.setSortable(true);
 		assistColumn.setHeader("Assist");
 		assistColumn.setAutoWidth(true);
 		assistColumn.setKey("fcStatistiche.assist");
 
-		Column<FcGiocatore> gfColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGoalFatto() : 0);
+		Column<FcGiocatore> gfColumn = grid
+				.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGoalFatto() : 0);
 		gfColumn.setSortable(true);
 		gfColumn.setHeader("GF");
 		gfColumn.setAutoWidth(true);
 		gfColumn.setKey("fcStatistiche.goalFatto");
 
-		Column<FcGiocatore> gsColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGoalSubito() : 0);
+		Column<FcGiocatore> gsColumn = grid
+				.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGoalSubito() : 0);
 		gsColumn.setSortable(true);
 		gsColumn.setHeader("GS");
 		gsColumn.setAutoWidth(true);
 		gsColumn.setKey("fcStatistiche.goalSubito");
 
-		Column<FcGiocatore> rsColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getRigoreSegnato() : 0);
+		Column<FcGiocatore> rsColumn = grid.addColumn(
+				g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getRigoreSegnato() : 0);
 		rsColumn.setSortable(true);
 		rsColumn.setHeader("RS");
 		rsColumn.setAutoWidth(true);
 		rsColumn.setKey("RS");
 
-		Column<FcGiocatore> ammonizColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getAmmonizione() : 0);
+		Column<FcGiocatore> ammonizColumn = grid
+				.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getAmmonizione() : 0);
 		ammonizColumn.setSortable(true);
 		ammonizColumn.setHeader("A");
 		ammonizColumn.setAutoWidth(true);
 		ammonizColumn.setKey("fcStatistiche.ammonizione");
 
-		Column<FcGiocatore> espulsColumn = grid.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getEspulsione() : 0);
+		Column<FcGiocatore> espulsColumn = grid
+				.addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getEspulsione() : 0);
 		espulsColumn.setSortable(true);
 		espulsColumn.setHeader("E");
 		espulsColumn.setAutoWidth(true);
@@ -454,12 +426,12 @@ public class FreePlayersView extends VerticalLayout
 	@Override
 	public void onComponentEvent(ClickEvent<Button> event) {
 		try {
-			LOG.info("START AGGIORNA");
+			log.info("START AGGIORNA");
 
-			LOG.info("selAggion " + radioGroup.getValue());
-			if ("Ruolo".equals(radioGroup.getValue())) {
+			log.info("selAggion " + radioGroup.getValue());
+			if (Costants.RUOLO.equals(radioGroup.getValue())) {
 				String selTab = tabs.getSelectedTab().getLabel();
-				LOG.info("selTab " + selTab);
+				log.info("selTab " + selTab);
 				if ("Portieri".equals(selTab)) {
 					gridP.setItems(getModelAsta("P"));
 					gridP.getDataProvider().refreshAll();
@@ -485,27 +457,11 @@ public class FreePlayersView extends VerticalLayout
 				gridA.getDataProvider().refreshAll();
 			}
 
-			LOG.info("END AGGIORNA");
+			log.info("END AGGIORNA");
 
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
-	}
-
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
 	}
 
 }

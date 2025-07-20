@@ -31,7 +31,7 @@ public class GiornataDettService{
 
 	public List<FcGiornataDett> findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(
 			FcAttore attore, FcGiornataInfo giornataInfo) {
-		List<FcGiornataDett> l = (List<FcGiornataDett>) giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> l = giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 		return l;
 	}
 

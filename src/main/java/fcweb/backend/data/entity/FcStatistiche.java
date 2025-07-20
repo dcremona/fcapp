@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 public class FcStatistiche implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idGiocatore;
@@ -85,6 +85,7 @@ public class FcStatistiche implements java.io.Serializable{
 	}
 
 	// @GeneratedValue(generator = "generator")
+	@SuppressWarnings("deprecation")
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "fcGiocatore"))
 	@Id
 	@Column(name = "id_giocatore", unique = true, nullable = false)

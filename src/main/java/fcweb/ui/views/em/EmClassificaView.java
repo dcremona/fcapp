@@ -1,6 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -40,7 +39,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -50,7 +48,6 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.ClassificaTotalePuntiService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -172,27 +169,51 @@ public class EmClassificaView extends VerticalLayout{
 
 	private HorizontalLayout buildButtonPdf(Properties p) throws Exception {
 
-		Button stampapdf = new Button("Classifica pdf");
-		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
-			try {
-				String imgLog = (String) env.getProperty("img.logo");
-				Map<String, Object> hm = new HashMap<String, Object>();
-				hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-				hm.put("PATH_IMG", "images/" + imgLog);
-				Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
-				InputStream inputStream = resource.getInputStream();
-				Connection conn = jdbcTemplate.getDataSource().getConnection();
-				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-			} catch (Exception ex2) {
-			}
-			return null;
-		}));
-		button1Wrapper.wrapComponent(stampapdf);
+//		Button stampapdf = new Button("Classifica pdf");
+//		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+//		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Classifica.pdf",() -> {
+//			try {
+//				String imgLog = env.getProperty("img.logo");
+//				Map<String, Object> hm = new HashMap<String, Object>();
+//				hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+//				hm.put("PATH_IMG", "images/" + imgLog);
+//				Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
+//				InputStream inputStream = resource.getInputStream();
+//				Connection conn = jdbcTemplate.getDataSource().getConnection();
+//				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+//			} catch (Exception ex2) {
+//			}
+//			return null;
+//		}));
+//		button1Wrapper.wrapComponent(stampapdf);
+//
+//		HorizontalLayout horLayout = new HorizontalLayout();
+//		horLayout.setSpacing(true);
+//		horLayout.add(button1Wrapper);
 
 		HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
-		horLayout.add(button1Wrapper);
+
+		try {
+			Button stampapdf = new Button("Classifica pdf");
+			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+
+			Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<String, Object>();
+			String imgLog = env.getProperty("img.logo");
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			hm.put("PATH_IMG", "images/" + imgLog);
+			Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
+					Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
+
+			button1Wrapper.wrapComponent(stampapdf);
+			horLayout.add(button1Wrapper);
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 
 		return horLayout;
 	}
@@ -217,7 +238,7 @@ public class EmClassificaView extends VerticalLayout{
 
 		Column<ClassificaBean> squadraColumn = grid.addColumn(classifica -> classifica.getSquadra());
 		squadraColumn.setSortable(false);
-		squadraColumn.setHeader("Squadra");
+		squadraColumn.setHeader(Costants.SQUADRA);
 
 		Column<ClassificaBean> totPuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -226,7 +247,7 @@ public class EmClassificaView extends VerticalLayout{
 
 			Span lblTotPunti = new Span(sTotPunti);
 
-			lblTotPunti.getStyle().set("font-size", "14px");
+			lblTotPunti.getStyle().set(Costants.FONT_SIZE, "14px");
 			lblTotPunti.getStyle().set("color", Costants.BLUE);
 			lblTotPunti.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
 			return lblTotPunti;

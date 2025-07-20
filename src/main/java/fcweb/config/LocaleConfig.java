@@ -21,7 +21,7 @@ public class LocaleConfig{
 	@Autowired
 	private ProprietaService proprietaController;
 
-	
+
 	@PostConstruct
 	public void init() {
 
@@ -33,7 +33,7 @@ public class LocaleConfig{
 		LOG.info("basePathData " + basePathData);
 
 	}
-	
+
 	@Bean
 	public String getCronValueUfficiosi() {
 		FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
@@ -44,7 +44,7 @@ public class LocaleConfig{
 			return "0 0 9 * * *";
 		}
 	}
-	
+
 	@Bean
 	public String getCronValueUfficiali() {
 		FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");

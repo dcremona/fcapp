@@ -47,9 +47,9 @@ public class AttoreService {
 		return repository.findAll();
 	}
 
-    
+
 	public List<FcAttore> findByActive(boolean active) {
-		List<FcAttore> l = (List<FcAttore>) repository.findByActive(active);
+		List<FcAttore> l = repository.findByActive(active);
 		return l;
 	}
 

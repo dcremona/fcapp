@@ -12,6 +12,6 @@ public interface AlboRepository extends CrudRepository<FcExpStat, Long>{
 	Page<FcExpStat> findAll(Pageable pageable);
 
 	Iterable<FcExpStat> findAll(Sort sort);
-	
-	
+
+
 }

@@ -23,7 +23,7 @@ public class ProprietaService{
 	}
 
 	public FcProperties findByKey(String key) {
-		FcProperties l = (FcProperties) proprietaRepository.findByKey(key);
+		FcProperties l = proprietaRepository.findByKey(key);
 		return l;
 	}
 

@@ -37,12 +37,12 @@ public class PagelleService{
 		if (giornataInfo == null && giocatore == null) {
 			l = (List<FcPagelle>) pagelleRepository.findAll();
 		} else if (giornataInfo != null && giocatore == null) {
-			l = (List<FcPagelle>) pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
+			l = pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
 		} else if (giornataInfo == null && giocatore != null) {
 			l = pagelleRepository.findByFcGiocatore(giocatore);
 		} else if (giornataInfo != null && giocatore != null) {
 			FcPagelle fcPagelle = pagelleRepository.findByFcGiornataInfoAndFcGiocatore(giornataInfo, giocatore);
-			l = new ArrayList<FcPagelle>();
+			l = new ArrayList<>();
 			l.add(fcPagelle);
 		}
 		return l;

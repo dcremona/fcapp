@@ -1,8 +1,6 @@
 package fcweb.ui.views.seriea;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.olli.FileDownloadWrapper;
 
@@ -66,11 +63,11 @@ import jakarta.annotation.security.RolesAllowed;;
 @PageTitle("Formazioni")
 @Route(value = "formazioni", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class FormazioniView extends VerticalLayout{
+public class FormazioniView extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private Image iconAmm_ = null;
 	private Image iconEsp_ = null;
@@ -116,41 +113,50 @@ public class FormazioniView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FormazioniView() {
-		LOG.info("FormazioniView()");
-		initImg();
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
 		accessoController.insertAccesso(this.getClass().getName());
+		initImg();
 		initLayout();
 	}
 
 	private void initImg() {
 
-		LOG.info("initImg()");
+		log.info("initImg()");
 
-		iconAmm_ = buildImage("classpath:images/", "amm.png", "Ammonizione (-0.5)");
-		iconEsp_ = buildImage("classpath:images/", "esp.png", "Espulso (-1)");
-		iconAssist_ = buildImage("classpath:images/", "assist.png", "Assist (+1)");
-		iconAutogol_ = buildImage("classpath:images/", "autogol.png", "Autogol (-2)");
-		iconEntrato_ = buildImage("classpath:images/", "entrato.png", "Entrato");
-		iconGolfatto_ = buildImage("classpath:images/", "golfatto.png", "Gol Fatto (+3)");
-		iconGolsubito_ = buildImage("classpath:images/", "golsubito.png", "Gol subito (-1)");
-		iconUscito_ = buildImage("classpath:images/", "uscito.png", "Uscito");
-		iconRigoreSbagliato_ = buildImage("classpath:images/", "rigoresbagliato.png", "Rigore sbagliato (-3)");
-		iconRigoreSegnato_ = buildImage("classpath:images/", "rigoresegnato.png", "Rigore segnato (+3)");
-		iconRigoreParato_ = buildImage("classpath:images/", "rigoreparato.png", "Rigore parato (+3)");
-		iconBonusPortiere_ = buildImage("classpath:images/", "portiereImbattuto.png", "Portiere imbattuto (+1)");
+		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm.png"));
+		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp.png"));
+		iconAssist_ = Utils.buildImage("assist.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
+		iconAutogol_ = Utils.buildImage("autogol.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
+		iconEntrato_ = Utils.buildImage("entrato.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
+		iconGolfatto_ = Utils.buildImage("golfatto.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
+		iconGolsubito_ = Utils.buildImage("golsubito.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
+		iconUscito_ = Utils.buildImage("uscito.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
+		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato.png"));
+		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato.png"));
+		iconRigoreParato_ = Utils.buildImage("rigoreparato.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoreparato.png"));
+		iconBonusPortiere_ = Utils.buildImage("portiereImbattuto.png",
+				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "portiereImbattuto.png"));
 	}
 
 	private void initLayout() {
 
-		LOG.info("initLayout()");
+		log.info("initLayout()");
 
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
@@ -158,9 +164,10 @@ public class FormazioniView extends VerticalLayout{
 
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		List<FcGiornataInfo> giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		List<FcGiornataInfo> giornate = giornataInfoController
+				.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Risultati.pdf",() -> {
+		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Risultati.pdf", () -> {
 			String pathImg = "images/";
 			byte[] b = jobProcessSendMail.getJasperRisultati(campionato, comboGiornata.getValue(), p, pathImg);
 			return new ByteArrayInputStream(b);
@@ -176,26 +183,26 @@ public class FormazioniView extends VerticalLayout{
 		comboGiornata.setClearButtonVisible(true);
 		comboGiornata.setPlaceholder("Seleziona la giornata");
 		comboGiornata.addValueChangeListener(event -> {
-			LOG.info("addValueChangeListener ");
+			log.info("addValueChangeListener ");
 			mainLayout.removeAll();
 			stampapdf.setEnabled(false);
 			if (event.getSource().isEmpty()) {
-				LOG.info("event.getSource().isEmpty()");
+				log.info("event.getSource().isEmpty()");
 			} else if (event.getOldValue() == null) {
-				LOG.info("event.getOldValue()");
+				log.info("event.getOldValue()");
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-				LOG.info("gioranta " + "" + fcGiornataInfo.getCodiceGiornata());
+				log.info("gioranta " + "" + fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
 				stampapdf.setEnabled(true);
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-				LOG.info("gioranta " + "" + fcGiornataInfo.getCodiceGiornata());
+				log.info("gioranta " + "" + fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
 				stampapdf.setEnabled(true);
 			}
 		});
 		comboGiornata.setWidthFull();
-		
+
 		mainLayout.setSizeFull();
 
 		add(comboGiornata);
@@ -218,7 +225,6 @@ public class FormazioniView extends VerticalLayout{
 		if (campionato.getIdCampionato() == 1) {
 			currGG = Integer.valueOf(giornata);
 		} else if (campionato.getIdCampionato() == 2) {
-			// currGG = new Integer(giornata) + 19;
 			currGG = Integer.valueOf(giornata);
 		}
 
@@ -231,8 +237,6 @@ public class FormazioniView extends VerticalLayout{
 			FcAttore attoreCasa = p.getFcAttoreByIdAttoreCasa();
 			HashMap<String, Object> mapCasa = buildData(attoreCasa, giornataInfo);
 
-			// List<FcGiornataDett> itemsCasa = (List<FcGiornataDett>)
-			// mapCasa.get("items");
 			List<FcGiornataDett> itemsCasaTitolari = (List<FcGiornataDett>) mapCasa.get("itemsTitolari");
 			List<FcGiornataDett> itemsCasaPanchina = (List<FcGiornataDett>) mapCasa.get("itemsPanchina");
 			List<FcGiornataDett> itemsCasaTribuna = (List<FcGiornataDett>) mapCasa.get("itemsTribuna");
@@ -242,15 +246,14 @@ public class FormazioniView extends VerticalLayout{
 			Grid<FcGiornataDett> tableSqCasaTitolari = buildResultSquadra(itemsCasaTitolari, "Titolari", schemaCasa);
 			Grid<FcGiornataDett> tableSqCasaPanchina = buildResultSquadra(itemsCasaPanchina, "Panchina", "");
 			Grid<FcGiornataDett> tableSqCasaTribuna = buildResultSquadra(itemsCasaTribuna, "Tribuna", "");
-			Grid<FcProperties> tableAltriPunteggiCasa = buildAltriPunteggiInfo(campionato, attoreCasa, giornataInfo, true, mdCasa, itemsCasaPanchina);
+			Grid<FcProperties> tableAltriPunteggiCasa = buildAltriPunteggiInfo(campionato, attoreCasa, giornataInfo,
+					true, mdCasa, itemsCasaPanchina);
 			VerticalLayout layoutTotaliCasa = buildTotaliInfo(campionato, attoreCasa, giornataInfo, p.getTotCasa());
 
 			// FUORI
 			FcAttore attoreFuori = p.getFcAttoreByIdAttoreFuori();
 			HashMap<String, Object> mapFuori = buildData(attoreFuori, giornataInfo);
 
-			// List<FcGiornataDett> itemsFuori = (List<FcGiornataDett>)/
-			// mapFuori.get("items");
 			List<FcGiornataDett> itemsFuoriTitolari = (List<FcGiornataDett>) mapFuori.get("itemsTitolari");
 			List<FcGiornataDett> itemsFuoriPanchina = (List<FcGiornataDett>) mapFuori.get("itemsPanchina");
 			List<FcGiornataDett> itemsFuoriTribuna = (List<FcGiornataDett>) mapFuori.get("itemsTribuna");
@@ -260,18 +263,24 @@ public class FormazioniView extends VerticalLayout{
 			Grid<FcGiornataDett> tableSqFuoriTitolari = buildResultSquadra(itemsFuoriTitolari, "Titolari", schemaFuori);
 			Grid<FcGiornataDett> tableSqFuoriPanchina = buildResultSquadra(itemsFuoriPanchina, "Panchina", "");
 			Grid<FcGiornataDett> tableSqFuoriTribuna = buildResultSquadra(itemsFuoriTribuna, "Tribuna", "");
-			Grid<FcProperties> tableAltriPunteggiFuori = buildAltriPunteggiInfo(campionato, attoreFuori, giornataInfo, false, mdFuori, itemsFuoriPanchina);
+			Grid<FcProperties> tableAltriPunteggiFuori = buildAltriPunteggiInfo(campionato, attoreFuori, giornataInfo,
+					false, mdFuori, itemsFuoriPanchina);
 			VerticalLayout layoutTotaliFuori = buildTotaliInfo(campionato, attoreFuori, giornataInfo, p.getTotFuori());
 
 			HorizontalLayout layoutRisultato = new HorizontalLayout();
-			Image imgCasa = buildImage("classpath:images/number/", p.getGolCasa() == null ? "0.png" : p.getGolCasa() + ".png", "Media voto");
-			Image imgFuori = buildImage("classpath:images/number/", p.getGolFuori() == null ? "0.png" : p.getGolFuori() + ".png", "Media voto");
+			String s1 = p.getGolCasa() == null ? "0.png" : p.getGolCasa() + ".png";
+			Image imgCasa = Utils.buildImage(s1,
+					resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "number/" + s1));
+			String s2 = p.getGolCasa() == null ? "0.png" : p.getGolFuori() + ".png";
+			Image imgFuori = Utils.buildImage(s2,
+					resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "number/" + s2));
+
 			layoutRisultato.add(imgCasa);
 			layoutRisultato.add(imgFuori);
 
 			HorizontalLayout horizontalLayout0 = new HorizontalLayout();
 			horizontalLayout0.setWidth("100%");
-			horizontalLayout0.getStyle().set("border", Costants.BORDER_COLOR);
+			horizontalLayout0.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 			horizontalLayout0.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 			horizontalLayout0.add(labelCasa);
 			horizontalLayout0.add(layoutRisultato);
@@ -283,7 +292,6 @@ public class FormazioniView extends VerticalLayout{
 			vCasa.add(tableSqCasaTribuna);
 			vCasa.add(tableAltriPunteggiCasa);
 			vCasa.add(layoutTotaliCasa);
-			// vCasa.setSizeFull();
 
 			VerticalLayout vFuori = new VerticalLayout();
 			vFuori.add(tableSqFuoriTitolari);
@@ -291,18 +299,12 @@ public class FormazioniView extends VerticalLayout{
 			vFuori.add(tableSqFuoriTribuna);
 			vFuori.add(tableAltriPunteggiFuori);
 			vFuori.add(layoutTotaliFuori);
-			// vFuori.setSizeFull();
 
 			HorizontalLayout horizontalLayout1 = new HorizontalLayout();
 			horizontalLayout1.setWidth("100%");
 			horizontalLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 			horizontalLayout1.add(vCasa);
 			horizontalLayout1.add(vFuori);
-			// horizontalLayout1.setSizeFull();
-
-			// layout.add(horizontalLayout0);
-			// layout.add(horizontalLayout1);
-			// layout.setSizeFull();
 
 			final VerticalLayout layoutTab = new VerticalLayout();
 			layoutTab.setMargin(false);
@@ -316,18 +318,18 @@ public class FormazioniView extends VerticalLayout{
 		}
 
 		layout.add(tabSheet);
-		
+
 	}
 
-	private HashMap<String, Object> buildData(FcAttore attore,
-			FcGiornataInfo giornataInfo) {
+	private HashMap<String, Object> buildData(FcAttore attore, FcGiornataInfo giornataInfo) {
 
-		LOG.info("START buildData " + attore.getDescAttore());
+		log.info("START buildData " + attore.getDescAttore());
 
 		HashMap<String, Object> map = new HashMap<>();
 
-		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
-		List<FcGiornataDett> items = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore,
+				giornataInfo);
+		List<FcGiornataDett> items = new ArrayList<>();
 
 		int countD = 0;
 		int countC = 0;
@@ -358,9 +360,9 @@ public class FormazioniView extends VerticalLayout{
 
 		String schema = countD + "-" + countC + "-" + countA;
 
-		List<FcGiornataDett> itemsTitolari = new ArrayList<FcGiornataDett>();
-		List<FcGiornataDett> itemsPanchina = new ArrayList<FcGiornataDett>();
-		List<FcGiornataDett> itemsTribuna = new ArrayList<FcGiornataDett>();
+		List<FcGiornataDett> itemsTitolari = new ArrayList<>();
+		List<FcGiornataDett> itemsPanchina = new ArrayList<>();
+		List<FcGiornataDett> itemsTribuna = new ArrayList<>();
 		for (FcGiornataDett gd2 : items) {
 			if (gd2.getOrdinamento() < 12) {
 				itemsTitolari.add(gd2);
@@ -377,36 +379,17 @@ public class FormazioniView extends VerticalLayout{
 		map.put("itemsTribuna", itemsTribuna);
 		map.put("schema", schema);
 
-		LOG.info("END buildData " + attore.getDescAttore());
+		log.info("END buildData " + attore.getDescAttore());
 
 		return map;
 	}
 
-	private Grid<FcGiornataDett> buildResultSquadra(List<FcGiornataDett> items,
-			String statoGiocatore, String schema) {
+	private Grid<FcGiornataDett> buildResultSquadra(List<FcGiornataDett> items, String statoGiocatore, String schema) {
 
 		Grid<FcGiornataDett> grid = new Grid<>();
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-
-//		Column<FcGiornataDett> ruoloColumn = grid.addColumn(new ComponentRenderer<>(f -> {
-//			HorizontalLayout cellLayout = new HorizontalLayout();
-//			cellLayout.setMargin(false);
-//			cellLayout.setPadding(false);
-//			cellLayout.setSpacing(false);
-//			cellLayout.setAlignItems(Alignment.STRETCH);
-//			// cellLayout.setSizeFull();
-//			if (f != null && f.getFcGiocatore() != null) {
-//				Image img = buildImage("classpath:images/", f.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png", f.getFcGiocatore().getFcRuolo().getDescRuolo());
-//				cellLayout.add(img);
-//			}
-//			return cellLayout;
-//		}));
-//		ruoloColumn.setSortable(false);
-//		ruoloColumn.setResizable(false);
-//		ruoloColumn.setHeader("");
-//		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiornataDett> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -421,11 +404,14 @@ public class FormazioniView extends VerticalLayout{
 			}
 			if (gd != null && gd.getFcGiocatore() != null) {
 
-				Image img = buildImage("classpath:images/",  gd.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",  gd.getFcGiocatore().getFcRuolo().getDescRuolo());
+				Image img = Utils.buildImage(gd.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+						resourceLoader.getResource(Costants.CLASSPATH_IMAGES
+								+ gd.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 
 				String descGiocatore = gd.getFcGiocatore().getCognGiocatore();
-				if ("S".equals(gd.getFlagAttivo()) && (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
+				if ("S".equals(gd.getFlagAttivo())
+						&& (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
 					descGiocatore = "(-0,5) " + gd.getFcGiocatore().getCognGiocatore();
 				}
 
@@ -434,15 +420,19 @@ public class FormazioniView extends VerticalLayout{
 				cellLayout.add(lblGiocatore);
 
 				ArrayList<Image> info = new ArrayList<Image>();
-				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "N".equals(gd.getFlagAttivo().toUpperCase())) {
-					info.add(buildImage("classpath:images/", "uscito_s.png", "Uscito"));
+				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo())
+						&& "N".equals(gd.getFlagAttivo().toUpperCase())) {
+					info.add(Utils.buildImage("uscito_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito_s.png")));
 				}
 
-				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "S".equals(gd.getFlagAttivo().toUpperCase())) {
-					info.add(buildImage("classpath:images/", "entrato_s.png", "Entrato"));
+				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo())
+						&& "S".equals(gd.getFlagAttivo().toUpperCase())) {
+					info.add(Utils.buildImage("entrato_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato_s.png")));
 				}
 
-				if (info.size() > 0) {
+				if (!info.isEmpty()) {
 					for (Image e : info) {
 						cellLayout.add(e);
 					}
@@ -496,44 +486,56 @@ public class FormazioniView extends VerticalLayout{
 				ArrayList<Image> info = new ArrayList<Image>();
 
 				for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
-					info.add(buildImage("classpath:images/", "amm_s.png", "Ammonizione (-0,5)"));
+					info.add(Utils.buildImage("amm_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getEspulsione(); a++) {
-					info.add(buildImage("classpath:images/", "esp_s.png", "Espulsione (-1)"));
+					info.add(Utils.buildImage("esp_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalSubito(); a++) {
-					info.add(buildImage("classpath:images/", "golsubito_s.png", "Gol subito (-1)"));
+					info.add(Utils.buildImage("golsubito_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getGoalRealizzato() - gd.getFcPagelle().getRigoreSegnato(); a++) {
-					info.add(buildImage("classpath:images/", "golfatto_s.png", "Gol fatto (+3)"));
+					info.add(Utils.buildImage("golfatto_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAutorete(); a++) {
-					info.add(buildImage("classpath:images/", "autogol_s.png", "Autogol (-2)"));
+					info.add(Utils.buildImage("autogol_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreFallito(); a++) {
-					info.add(buildImage("classpath:images/", "rigoresbagliato_s.png", "Rigore sbagliato (-3)"));
+					info.add(Utils.buildImage("rigoresbagliato_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreSegnato(); a++) {
-					info.add(buildImage("classpath:images/", "rigoresegnato_s.png", "Rigore segnato (+3)"));
+					info.add(Utils.buildImage("rigoresegnato_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getRigoreParato(); a++) {
-					info.add(buildImage("classpath:images/", "rigoreparato_s.png", "Rigore parato (+3)"));
+					info.add(Utils.buildImage("rigoreparato_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoreparato_s.png")));
 				}
 
 				for (int a = 0; a < gd.getFcPagelle().getAssist(); a++) {
-					info.add(buildImage("classpath:images/", "assist_s.png", "Assist (+1)"));
+					info.add(Utils.buildImage("assist_s.png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist_s.png")));
 				}
 
-				if ("P".equals(gd.getFcGiocatore().getFcRuolo().getIdRuolo()) && gd.getFcPagelle().getGoalSubito() == 0 && gd.getFcPagelle().getEspulsione() == 0 && gd.getFcPagelle().getVotoGiocatore() != 0) {
-					if (gd.getFcPagelle().getG() != 0 && gd.getFcPagelle().getCs() != 0 && gd.getFcPagelle().getTs() != 0) {
-						info.add(buildImage("classpath:images/", "portiereImbattuto_s.png", "Portiere imbattuto (+1)"));
+				if ("P".equals(gd.getFcGiocatore().getFcRuolo().getIdRuolo()) && gd.getFcPagelle().getGoalSubito() == 0
+						&& gd.getFcPagelle().getEspulsione() == 0 && gd.getFcPagelle().getVotoGiocatore() != 0) {
+					if (gd.getFcPagelle().getG() != 0 && gd.getFcPagelle().getCs() != 0
+							&& gd.getFcPagelle().getTs() != 0) {
+						info.add(Utils.buildImage("portiereImbattuto_s.png",
+								resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "portiereImbattuto_s.png")));
 					}
 				}
 				if (info.size() > 0) {
@@ -648,7 +650,7 @@ public class FormazioniView extends VerticalLayout{
 
 		HeaderRow headerRow = grid.prependHeaderRow();
 
-		HeaderCell headerCellStatoGiocatore = headerRow.join(cognGiocatoreColumn,nomeSquadraColumn);
+		HeaderCell headerCellStatoGiocatore = headerRow.join(cognGiocatoreColumn, nomeSquadraColumn);
 		headerCellStatoGiocatore.setText(statoGiocatore);
 
 		HeaderCell headerCellModulo = headerRow.join(csColumn, tsColumn);
@@ -659,11 +661,10 @@ public class FormazioniView extends VerticalLayout{
 		return grid;
 	}
 
-	private Grid<FcProperties> buildAltriPunteggiInfo(FcCampionato campionato,
-			FcAttore attore, FcGiornataInfo giornataInfo, boolean fc, String md,
-			List<FcGiornataDett> itemsPanchina) {
+	private Grid<FcProperties> buildAltriPunteggiInfo(FcCampionato campionato, FcAttore attore,
+			FcGiornataInfo giornataInfo, boolean fc, String md, List<FcGiornataDett> itemsPanchina) {
 
-		List<FcProperties> items = new ArrayList<FcProperties>();
+		List<FcProperties> items = new ArrayList<>();
 		FcProperties b = null;
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
@@ -715,7 +716,8 @@ public class FormazioniView extends VerticalLayout{
 
 		double malus = 0.0;
 		for (FcGiornataDett gd : itemsPanchina) {
-			if ("S".equals(gd.getFlagAttivo()) && (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
+			if ("S".equals(gd.getFlagAttivo())
+					&& (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
 				malus += 0.5;
 			}
 		}
@@ -731,8 +733,8 @@ public class FormazioniView extends VerticalLayout{
 		Grid<FcProperties> grid = new Grid<>();
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.setAllRowsVisible(true);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-		// grid.setSizeFull();
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
+				GridVariant.LUMO_ROW_STRIPES);
 		grid.setItems(items);
 
 		grid.addColumn(proprieta -> proprieta.getKey());
@@ -741,15 +743,15 @@ public class FormazioniView extends VerticalLayout{
 		return grid;
 	}
 
-	private VerticalLayout buildTotaliInfo(FcCampionato campionato,
-			FcAttore attore, FcGiornataInfo giornataInfo,
+	private VerticalLayout buildTotaliInfo(FcCampionato campionato, FcAttore attore, FcGiornataInfo giornataInfo,
 			Double puntiGiornata) {
 
 		VerticalLayout layoutMain = new VerticalLayout();
 		layoutMain.setWidth("100%");
 
 		FcGiornataDettInfo info = giornataDettInfoController.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
-		FcClassificaTotPt totPunti = classificaTotalePuntiController.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
+		FcClassificaTotPt totPunti = classificaTotalePuntiController
+				.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 		String totG = "0";
@@ -761,7 +763,8 @@ public class FormazioniView extends VerticalLayout{
 		String totPuntiTvsT = "0";
 		try {
 			if (totPunti != null && totPunti.getTotPtRosa() != null) {
-				totPuntiRosa = formatter.format(totPunti.getTotPtRosa() == 0 ? "0" : totPunti.getTotPtRosa() / Costants.DIVISORE_100);
+				totPuntiRosa = formatter
+						.format(totPunti.getTotPtRosa() == 0 ? "0" : totPunti.getTotPtRosa() / Costants.DIVISORE_100);
 				totPuntiTvsT = "" + totPunti.getPtTvsT();
 			}
 		} catch (Exception e) {
@@ -769,24 +772,25 @@ public class FormazioniView extends VerticalLayout{
 
 		Span lblTotGiornata = new Span();
 		lblTotGiornata.setText("Totale Giornata: " + totG);
-		lblTotGiornata.getStyle().set("font-size", "24px");
-		lblTotGiornata.getStyle().set("background", Costants.LIGHT_BLUE);
+		lblTotGiornata.getStyle().set(Costants.FONT_SIZE, "24px");
+		lblTotGiornata.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_BLUE);
 		lblTotGiornata.setSizeFull();
 
 		Span lblTotPuntiRosa = new Span();
 		lblTotPuntiRosa.setText("Totale Punteggio Rosa: " + totPuntiRosa);
-		lblTotPuntiRosa.getStyle().set("font-size", "16px");
-		lblTotPuntiRosa.getStyle().set("background", Costants.LIGHT_YELLOW);
+		lblTotPuntiRosa.getStyle().set(Costants.FONT_SIZE, "16px");
+		lblTotPuntiRosa.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 		lblTotPuntiRosa.setSizeFull();
 
 		Span lblTotPuntiTvsT = new Span();
 		lblTotPuntiTvsT.setText("Totale Punteggio TvsT: " + totPuntiTvsT);
-		lblTotPuntiTvsT.getStyle().set("font-size", "16px");
-		lblTotPuntiTvsT.getStyle().set("background", Costants.LIGHT_GRAY);
+		lblTotPuntiTvsT.getStyle().set(Costants.FONT_SIZE, "16px");
+		lblTotPuntiTvsT.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_GRAY);
 		lblTotPuntiTvsT.setSizeFull();
 
 		Span lblInvio = new Span();
-		lblInvio.setText("Inviata alle: " + (info == null ? "" : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss")));
+		lblInvio.setText(
+				"Inviata alle: " + (info == null ? "" : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss")));
 		lblInvio.setSizeFull();
 
 		layoutMain.add(lblTotGiornata);
@@ -800,7 +804,7 @@ public class FormazioniView extends VerticalLayout{
 	private FormLayout buildLegenda() {
 
 		FormLayout layout = new FormLayout();
-		layout.getStyle().set("border", Costants.BORDER_COLOR);
+		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
 		layout.addFormItem(iconGolfatto_, "Gol Fatto (+3)");
 		layout.addFormItem(iconGolsubito_, "Gol Subito (-1)");
@@ -815,69 +819,8 @@ public class FormazioniView extends VerticalLayout{
 		layout.addFormItem(iconEntrato_, "Entrato");
 		layout.addFormItem(iconUscito_, "Uscito");
 
-		layout.setResponsiveSteps(new ResponsiveStep("1px",1), new ResponsiveStep("600px",2), new ResponsiveStep("700px",3), new ResponsiveStep("800px",4));
-
-		// VerticalLayout layout = new VerticalLayout();
-		// layout.getStyle().set("border", Costants.BORDER_COLOR);
-		// // layout.setSizeFull();
-		// layout.setMargin(false);
-		//
-		// HorizontalLayout horizontalLayout1 = new HorizontalLayout();
-		// horizontalLayout1.setSpacing(true);
-		//
-		// horizontalLayout1.add(iconGolfatto_);
-		// Label lbl = new Label("Gol Fatto");
-		// horizontalLayout1.add(lbl);
-		//
-		// horizontalLayout1.add(iconGolsubito_);
-		// lbl = new Label("Gol Subito");
-		// horizontalLayout1.add(lbl);
-		//
-		// horizontalLayout1.add(iconAmm_);
-		// lbl = new Label("Ammonizione");
-		// horizontalLayout1.add(lbl);
-		//
-		// horizontalLayout1.add(iconEsp_);
-		// lbl = new Label("Espulsione");
-		// horizontalLayout1.add(lbl);
-		//
-		// horizontalLayout1.add(iconAssist_);
-		// lbl = new Label("Assist");
-		// horizontalLayout1.add(lbl);
-		//
-		// horizontalLayout1.add(iconEntrato_);
-		// lbl = new Label("Entrato");
-		// horizontalLayout1.add(lbl);
-		//
-		// HorizontalLayout horizontalLayout2 = new HorizontalLayout();
-		// horizontalLayout2.setSpacing(true);
-		//
-		// horizontalLayout2.add(iconUscito_);
-		// lbl = new Label("Uscito");
-		// horizontalLayout2.add(lbl);
-		//
-		// horizontalLayout2.add(iconAutogol_);
-		// lbl = new Label("Autogol");
-		// horizontalLayout2.add(lbl);
-		//
-		// horizontalLayout2.add(iconRigoreSegnato_);
-		// lbl = new Label("Rigore segnato");
-		// horizontalLayout2.add(lbl);
-		//
-		// horizontalLayout2.add(iconRigoreSbagliato_);
-		// lbl = new Label("Rigore sbagliato");
-		// horizontalLayout2.add(lbl);
-		//
-		// horizontalLayout2.add(iconRigoreParato_);
-		// lbl = new Label("Rigore parato");
-		// horizontalLayout2.add(lbl);
-		//
-		// horizontalLayout2.add(iconBonusPortiere_);
-		// lbl = new Label("Bonus Portiere");
-		// horizontalLayout2.add(lbl);
-		//
-		// layout.add(horizontalLayout1);
-		// layout.add(horizontalLayout2);
+		layout.setResponsiveSteps(new ResponsiveStep("1px", 1), new ResponsiveStep("600px", 2),
+				new ResponsiveStep("700px", 3), new ResponsiveStep("800px", 4));
 
 		return layout;
 
@@ -901,23 +844,6 @@ public class FormazioniView extends VerticalLayout{
 		}
 
 		return ret;
-	}
-
-	private Image buildImage(String path, String nomeImg, String title) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		img.setTitle(title);
-		return img;
 	}
 
 }

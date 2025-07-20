@@ -24,7 +24,7 @@ import jakarta.persistence.Table;
 public class FcGiocatore implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int idGiocatore;
@@ -37,12 +37,12 @@ public class FcGiocatore implements java.io.Serializable{
 	private Integer quotazione;
 	private Blob img;
 	private Blob imgSmall;
-	private Set<FcPagelle> fcPagelles = new HashSet<FcPagelle>(0);
-	private Set<FcFormazione> fcFormaziones = new HashSet<FcFormazione>(0);
-	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<FcGiornataDett>(0);
+	private Set<FcPagelle> fcPagelles = new HashSet<>(0);
+	private Set<FcFormazione> fcFormaziones = new HashSet<>(0);
+	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
 	private FcStatistiche fcStatistiche;
-	private Set<FcMercatoDett> fcMercatoDettsForIdGiocVen = new HashSet<FcMercatoDett>(0);
-	private Set<FcMercatoDett> fcMercatoDettsForIdGiocAcq = new HashSet<FcMercatoDett>(0);
+	private Set<FcMercatoDett> fcMercatoDettsForIdGiocVen = new HashSet<>(0);
+	private Set<FcMercatoDett> fcMercatoDettsForIdGiocAcq = new HashSet<>(0);
 
 	public FcGiocatore() {
 	}
@@ -224,12 +224,12 @@ public class FcGiocatore implements java.io.Serializable{
 			Set<FcMercatoDett> fcMercatoDettsForIdGiocAcq) {
 		this.fcMercatoDettsForIdGiocAcq = fcMercatoDettsForIdGiocAcq;
 	}
-	
-	
+
+
 	@Column(name = "data", nullable = false)
 	private LocalDateTime data;
 
-	
+
 	public LocalDateTime getData() {
 		return data;
 	}

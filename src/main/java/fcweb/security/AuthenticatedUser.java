@@ -70,8 +70,8 @@ public class AuthenticatedUser{
 
 	@Autowired
 	private GiornataInfoRepository giornataInfoRepository;
-	
-	private String type = null; 
+
+	private String type = null;
 
 	private boolean setSession(FcAttore attore) {
 
@@ -108,7 +108,7 @@ public class AuthenticatedUser{
 		}
 		LOG.info("CurrentGG: " + giornataInfo.getCodiceGiornata());
 
-		String fusoOrario = (String) properties.getProperty("FUSO_ORARIO");
+		String fusoOrario = properties.getProperty("FUSO_ORARIO");
 		String nextDate = Utils.getNextDate(giornataInfo);
 
 		long millisDiff = 0;
@@ -164,7 +164,7 @@ public class AuthenticatedUser{
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
+
+
 
 }

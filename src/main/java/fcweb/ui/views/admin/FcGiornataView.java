@@ -38,7 +38,7 @@ public class FcGiornataView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataService giornataController;
@@ -59,12 +59,12 @@ public class FcGiornataView extends VerticalLayout{
 	private AccessoService accessoController;
 
 	public FcGiornataView() {
-		LOG.info("FcGiornataView()");
+		log.info("FcGiornataView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -88,9 +88,6 @@ public class FcGiornataView extends VerticalLayout{
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa", "fcAttoreByIdAttoreFuori", "golCasa", "golFuori", "totCasa", "totFuori");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa", "fcAttoreByIdAttoreFuori", "golCasa", "golFuori", "totCasa", "totFuori");
 		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa");
-
-		// crud.getGrid().setColumns("id", "fcAttoreByIdAttoreCasa",
-		// "fcAttoreByIdAttoreFuori", "golCasa", "golFuori");
 
 		crud.getGrid().removeAllColumns();
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getIdGiornata() : "")).setHeader("Id Giornata");

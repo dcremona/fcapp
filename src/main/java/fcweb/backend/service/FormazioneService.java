@@ -30,23 +30,23 @@ public class FormazioneService{
 	}
 
 	public List<FcFormazione> findByFcCampionato(FcCampionato campionato) {
-		List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findByFcCampionato(campionato);
+		List<FcFormazione> l = formazioneRepository.findByFcCampionato(campionato);
 		return l;
 	}
 
 	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
 			FcCampionato campionato, FcAttore attore) {
-		List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
+		List<FcFormazione> l = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
 		return l;
 	}
 
 	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
 			FcCampionato campionato, FcAttore attore, boolean view) {
-		List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore);
+		List<FcFormazione> l = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore);
 
 		if (view) {
 
-			List<FcFormazione> lNew = new ArrayList<FcFormazione>();
+			List<FcFormazione> lNew = new ArrayList<>();
 			for (FcFormazione f : l) {
 				if (f.getFcGiocatore() != null) {
 					lNew.add(f);
@@ -65,7 +65,7 @@ public class FormazioneService{
 					gNew.setQuotazione(Integer.valueOf(0));
 
 					FcFormazione fNew = new FcFormazione();
-					fNew.setTotPagato(Double.valueOf(0));
+					fNew.setTotPagato(Integer.valueOf(0));
 					fNew.setFcGiocatore(gNew);
 
 					fNew.setFcAttore(f.getFcAttore());
@@ -91,7 +91,7 @@ public class FormazioneService{
 
 	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
 			FcAttore attore) {
-		List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
+		List<FcFormazione> l = formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
 		return l;
 	}
 

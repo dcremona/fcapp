@@ -14,10 +14,10 @@ public interface GiornataInfoRepository extends CrudRepository<FcGiornataInfo, L
 	Iterable<FcGiornataInfo> findAll(Sort sort);
 
 	public FcGiornataInfo findByCodiceGiornata(Integer codiceGiornata);
-	
+
 	public FcGiornataInfo findByDescGiornataFc(String descGiornataFc);
 
 	Iterable<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(Integer from,Integer to);
 
-	
+
 }

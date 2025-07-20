@@ -30,7 +30,7 @@ public class MercatoInfoService{
 
 	public List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(
 			FcAttore fcAttore) {
-		List<FcMercatoDettInfo> l = (List<FcMercatoDettInfo>) mercatoInfoRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
+		List<FcMercatoDettInfo> l = mercatoInfoRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
 
 		return l;
 	}

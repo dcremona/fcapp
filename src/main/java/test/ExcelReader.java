@@ -77,7 +77,7 @@ public class ExcelReader{
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT4,SAMPLE_XLSX_FILE_PATH_OUTPUT4);
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT5,SAMPLE_XLSX_FILE_PATH_OUTPUT5);
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT6,SAMPLE_XLSX_FILE_PATH_OUTPUT6);
-		
+
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT7, SAMPLE_XLSX_FILE_PATH_OUTPUT7);
 	    // processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT8, SAMPLE_XLSX_FILE_PATH_OUTPUT8);
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT9,SAMPLE_XLSX_FILE_PATH_OUTPUT9);
@@ -218,7 +218,7 @@ public class ExcelReader{
 			newStyleR.cloneStyleFrom(r.getCellStyle());
 
 			Row rowDomanda = sheet2.createRow(++rowCount);
-		
+
 			Cell cellDomA = rowDomanda.createCell(0);
 			cellDomA.setCellValue("");
 
@@ -457,61 +457,61 @@ public class ExcelReader{
 	}
 
 	/*
-	 * 
-	 * 
+	 *
+	 *
 	 * public static void test(String[] args) throws
 	 * DatatypeConfigurationException {
-	 * 
+	 *
 	 * // Create a new list of student to be filled by CSV file data Map<String,
 	 * Domanda> domande = new HashMap<>();
-	 * 
+	 *
 	 * FileReader fileReader = null; CSVParser csvFileParser = null;
-	 * 
+	 *
 	 * // Create the CSVFormat object with the header mapping CSVFormat
 	 * csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
-	 * 
+	 *
 	 * try {
-	 * 
+	 *
 	 * // initialize FileReader object fileReader = new
 	 * FileReader("c:\\temp\\test.csv");
-	 * 
+	 *
 	 * // initialize CSVParser object csvFileParser = new
 	 * CSVParser(fileReader,csvFileFormat);
-	 * 
+	 *
 	 * // Get a list of CSV file records List<CSVRecord> csvRecords =
 	 * csvFileParser.getRecords();
-	 * 
+	 *
 	 * int conta = 1; Domanda domanda = null; for (int i = 1; i <
 	 * csvRecords.size(); i++) { CSVRecord record = csvRecords.get(i);
-	 * 
+	 *
 	 * String a = record.get(0); String b = record.get(1); String c =
 	 * record.get(2); String d = record.get(3);
-	 * 
+	 *
 	 * if (StringUtils.isEmpty(a) && StringUtils.isEmpty(b) &&
 	 * StringUtils.isEmpty(c) && StringUtils.isEmpty(d)) { continue; }
-	 * 
+	 *
 	 * if ("a".equals(a) || "b".equals(a) || "c".equals(a) || "d".equals(a)) {
-	 * 
+	 *
 	 * if ("X".equals(c.toUpperCase())) { Risposta risposta = new Risposta();
 	 * risposta.setId(1); risposta.setDescrizione(b);
-	 * 
+	 *
 	 * domanda.setRisposta(risposta); } else { if (StringUtils.isNotEmpty(c)) {
 	 * LOGGER.info("scarto risposta " + c); Risposta risposta = new Risposta();
 	 * risposta.setId(1); risposta.setDescrizione(b);
-	 * 
+	 *
 	 * domanda.setRisposta(risposta); } }
-	 * 
+	 *
 	 * } else {
-	 * 
+	 *
 	 * if (StringUtils.isNotEmpty(a) && StringUtils.isEmpty(b) &&
 	 * StringUtils.isEmpty(c) && StringUtils.isEmpty(d)) { // DOMANDA int idx =
 	 * a.indexOf(" "); a = a.substring(idx + 1, a.length());
-	 * 
+	 *
 	 * domanda = new Domanda(); domanda.setId(conta);
 	 * domanda.setDescrizione(a.toUpperCase().trim());
-	 * 
+	 *
 	 * domande.put(domanda.getDescrizione(), domanda); conta++; } } }
-	 * 
+	 *
 	 * // // not yet sorted // List<Domanda> domandeByDesc = new
 	 * ArrayList<>(domande.values()); // Collections.sort(domandeByDesc, //
 	 * Comparator.comparing(Domanda::getDescrizione)); // for (Domanda d :
@@ -520,17 +520,17 @@ public class ExcelReader{
 	 * d.getRisposta(); // if (r != null) { // LOGGER.info(" --> " +
 	 * r.getDescrizione()); // data += r.getDescrizione() + ";"; // data +=
 	 * "\n"; // } // }
-	 * 
+	 *
 	 * LOGGER.info("END");
-	 * 
+	 *
 	 * } catch (Exception e) { e.printStackTrace(); } finally { if (fileReader
 	 * != null) { try { fileReader.close(); } catch (IOException e) {
-	 * 
+	 *
 	 * e.printStackTrace(); } } if (csvFileParser != null) { try {
 	 * csvFileParser.close(); } catch (IOException e) {
-	 * 
+	 *
 	 * e.printStackTrace(); } } }
-	 * 
+	 *
 	 * // String path_csv = "c:\\temp\\"; // String fileName = "output"; //
 	 * BufferedWriter output = null; // try { // // Create temp file. // File
 	 * temp = File.createTempFile("temp_" + fileName, ".csv"); // // Delete temp
@@ -546,46 +546,46 @@ public class ExcelReader{
 	 * (Exception e) { // // } finally { // if (output != null) { // try { //
 	 * output.close(); // } catch (IOException e) { // // e.printStackTrace();
 	 * // } // } // }
-	 * 
+	 *
 	 * workbook = new XSSFWorkbook(); XSSFSheet sheet =
 	 * workbook.createSheet("Java Books");
-	 * 
+	 *
 	 * // Object[][] bookData = { { "Head First Java", "Kathy Serria", 79 }, {
 	 * // "Effective Java", "Joshua Bloch", 36 }, { "Clean Code", "Robert //
 	 * martin", 42 }, { "Thinking in Java", "Bruce Eckel", 35 }, };
-	 * 
+	 *
 	 * // int rowCount = 0;
-	 * 
+	 *
 	 * // for (Object[] aBook : bookData) { // Row row =
 	 * sheet.createRow(++rowCount); // int columnCount = 0; // // for (Object
 	 * field : aBook) { // Cell cell = row.createCell(++columnCount); // if
 	 * (field instanceof String) { // cell.setCellValue((String) field); // }
 	 * else if (field instanceof Integer) { // cell.setCellValue((Integer)
 	 * field); // } // } // }
-	 * 
+	 *
 	 * int rowCount = 0; List<Domanda> domandeByDesc = new
 	 * ArrayList<>(domande.values()); Collections.sort(domandeByDesc,
 	 * Comparator.comparing(Domanda::getDescrizione)); for (Domanda d :
 	 * domandeByDesc) { LOGGER.info(d.getDescrizione() + "\t" + d.getId());
-	 * 
+	 *
 	 * Row row1 = sheet.createRow(++rowCount); Cell cell1 = row1.createCell(0);
 	 * cell1.setCellValue(d.getDescrizione());
-	 * 
+	 *
 	 * Risposta r = d.getRisposta(); if (r != null) {
 	 * LOGGER.info("                     --> " + r.getDescrizione()); Row row2 =
 	 * sheet.createRow(++rowCount); Cell cell2 = row2.createCell(0);
 	 * cell2.setCellValue(r.getDescrizione()); } }
-	 * 
+	 *
 	 * try (FileOutputStream outputStream = new
 	 * FileOutputStream("c:\\temp\\JavaTest.xlsx")) { try {
 	 * workbook.write(outputStream); } catch (IOException e) {
-	 * 
+	 *
 	 * e.printStackTrace(); } } catch (FileNotFoundException e1) {
-	 * 
+	 *
 	 * e1.printStackTrace(); } catch (IOException e1) {
-	 * 
+	 *
 	 * e1.printStackTrace(); } }
-	 * 
+	 *
 	 */
 
 }

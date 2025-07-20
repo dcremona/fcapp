@@ -128,7 +128,7 @@ public class JobProcessFileCsv{
 						nomegic = null;
 					}
 					Elements children = tdRow.children();
-					
+
 					for (Element c : children) {
 						String href = c.attr("href");
 						if (StringUtils.isNotEmpty(href)) {
@@ -147,7 +147,7 @@ public class JobProcessFileCsv{
 				}
 			}
 		}
-		
+
 		FileOutputStream outputStream = null;
 		try {
 			// DELETE
@@ -158,7 +158,7 @@ public class JobProcessFileCsv{
 			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
 			byte[] strToBytes = data.getBytes();
 			outputStream.write(strToBytes);
-			
+
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		} finally {
@@ -173,15 +173,18 @@ public class JobProcessFileCsv{
 
 		// Create a new trust manager that trust all certificates
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager(){
+			@Override
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
 			}
 
+			@Override
 			public void checkClientTrusted(
 					java.security.cert.X509Certificate[] certs,
 					String authType) {
 			}
 
+			@Override
 			public void checkServerTrusted(
 					java.security.cert.X509Certificate[] certs,
 					String authType) {

@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 public class FcAccesso implements Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class FcAccesso implements Serializable{
 
 	@Column(name = "data", nullable = false)
 	private LocalDateTime data;
-	
+
 	@Column(name = "note")
 	private String note;
 

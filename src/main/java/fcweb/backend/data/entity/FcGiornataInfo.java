@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 public class FcGiornataInfo implements java.io.Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int codiceGiornata;
@@ -31,13 +31,13 @@ public class FcGiornataInfo implements java.io.Serializable{
 	private String descGiornata;
 	private String descGiornataFc;
 	private int idGiornataFc;
-	private Set<FcGiornataRis> fcGiornataRises = new HashSet<FcGiornataRis>(0);
-	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<FcGiornataDett>(0);
-	private Set<FcPagelle> fcPagelles = new HashSet<FcPagelle>(0);
-	private Set<FcGiornataDettInfo> fcGiornataDettInfos = new HashSet<FcGiornataDettInfo>(0);
-	private Set<FcGiornata> fcGiornatas = new HashSet<FcGiornata>(0);
-	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<FcClassificaTotPt>(0);
-	private Set<FcMercatoDett> fcMercatoDetts = new HashSet<FcMercatoDett>(0);
+	private Set<FcGiornataRis> fcGiornataRises = new HashSet<>(0);
+	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
+	private Set<FcPagelle> fcPagelles = new HashSet<>(0);
+	private Set<FcGiornataDettInfo> fcGiornataDettInfos = new HashSet<>(0);
+	private Set<FcGiornata> fcGiornatas = new HashSet<>(0);
+	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<>(0);
+	private Set<FcMercatoDett> fcMercatoDetts = new HashSet<>(0);
 
 	public FcGiornataInfo() {
 	}

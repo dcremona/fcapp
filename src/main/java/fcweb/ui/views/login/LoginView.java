@@ -22,7 +22,7 @@ import fcweb.security.AuthenticatedUser;
 public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 
 	private Logger LOG = LoggerFactory.getLogger(this.getClass());
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private final AuthenticatedUser authenticatedUser;
@@ -40,7 +40,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 //
 //        setForgotPasswordButtonVisible(false);
 //        setOpened(true);
-		
+
 		this.authenticatedUser = authenticatedUser;
 		setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
 
@@ -57,7 +57,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 		i18nForm.setSubmit("Login");
 		i18nForm.setForgotPassword("Password dimenticata?");
 		i18nForm.setSubmit("Login");
-		
+
 		LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
 		i18nErrorMessage.setTitle("Email o password non valide");
 		i18nErrorMessage.setMessage("Verifica di aver inserito l'email e la password corrette e riprova.");
@@ -81,7 +81,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 				LOG.info("small screen detected ");
 			}
 		});
-		
+
 	}
 
 	@Override

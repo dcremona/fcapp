@@ -1,7 +1,5 @@
 package fcweb.ui.views.em;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,7 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import com.flowingcode.vaadin.addons.gridexporter.GridExporter;
@@ -29,7 +26,6 @@ import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -42,6 +38,7 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.ExpRoseAService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
@@ -57,7 +54,7 @@ public class EmDownloadView extends VerticalLayout
 
 	private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-	private Grid<FcExpRosea> gridRosea = new Grid<FcExpRosea>();
+	private Grid<FcExpRosea> gridRosea = new Grid<>();
 
 	@Autowired
 	private ExpRoseAService expRoseAController;
@@ -77,7 +74,7 @@ public class EmDownloadView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
+	public List<FcAttore> squadre = new ArrayList<>();
 
 	private Button salvaRoseA = null;
 	private Button salvaStat = null;
@@ -133,12 +130,12 @@ public class EmDownloadView extends VerticalLayout
 //		PagedTabs tabs = new PagedTabs(container);
 //		tabs.add("Rose Nazionali", layout1, false);
 //		add(tabs, container);
-		
+
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Rose Nazionali", layout1);
 		tabSheet.setSizeFull();
 		add(tabSheet);
-		
+
 	}
 
 	private void setRoseA(VerticalLayout layout) {
@@ -278,7 +275,7 @@ public class EmDownloadView extends VerticalLayout
 			}
 
 			if (ruolo != null && ("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
-				Image img = buildImage("classpath:images/", ruolo.toLowerCase() + ".png");
+				Image img = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+ruolo.toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}
 			return cellLayout;
@@ -345,26 +342,26 @@ public class EmDownloadView extends VerticalLayout
 //			cellLayout.setAlignItems(Alignment.STRETCH);
 //			cellLayout.setSizeFull();
 //			if (g != null && g.getIdRuolo() != null) {
-//				Image img = buildImage("classpath:images/", g.getIdRuolo().toLowerCase() + ".png");
+//				Image img = buildImage(Costants.CLASSPATH_IMAGES, g.getIdRuolo().toLowerCase() + ".png");
 //				cellLayout.add(img);
 //			}
 //			return cellLayout;
 //		}));
-//		ruoloColumn.setKey("ruolo");
+//		ruoloColumn.setKey(Costants.RUOLO);
 //		ruoloColumn.setSortable(true);
 //		ruoloColumn.setHeader("R");
 //		ruoloColumn.setAutoWidth(true);
 //
-//		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey("giocatore");
+//		Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey(Costants.GIOCATORE);
 //		giocatoreColumn.setSortable(true);
-//		giocatoreColumn.setHeader("Giocatore");
+//		giocatoreColumn.setHeader(Costants.GIOCATORE);
 //		giocatoreColumn.setWidth("150px");
 //		giocatoreColumn.setAutoWidth(true);
 //
 //		// Column<FcStatistiche> squadraColumn = grid.addColumn(s ->
-//		// s.getNomeSquadra()).setKey("squadra");
+//		// s.getNomeSquadra()).setKey(Costants.SQUADRA);
 //		// squadraColumn.setSortable(true);
-//		// squadraColumn.setHeader("Squadra");
+//		// squadraColumn.setHeader(Costants.SQUADRA);
 //
 //		Column<FcStatistiche> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 //
@@ -392,7 +389,7 @@ public class EmDownloadView extends VerticalLayout
 //				img.setSrc(resource);
 //
 //				Label lblSquadra = new Label(s.getNomeSquadra());
-//				// lblSquadra.getStyle().set("font-size", "11px");
+//				// lblSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 //
 //				cellLayout.add(img);
 //				cellLayout.add(lblSquadra);
@@ -404,7 +401,7 @@ public class EmDownloadView extends VerticalLayout
 //		nomeSquadraColumn.setSortable(true);
 //		nomeSquadraColumn.setComparator((p1,
 //				p2) -> p1.getNomeSquadra().compareTo(p2.getNomeSquadra()));
-//		nomeSquadraColumn.setHeader("Squadra");
+//		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 //		nomeSquadraColumn.setWidth("100px");
 //		nomeSquadraColumn.setAutoWidth(true);
 //
@@ -435,7 +432,7 @@ public class EmDownloadView extends VerticalLayout
 //						imgThink = "3.png";
 //					}
 //				}
-//				Image img = buildImage("classpath:images/", imgThink);
+//				Image img = buildImage(Costants.CLASSPATH_IMAGES, imgThink);
 //
 //				DecimalFormat myFormatter = new DecimalFormat("#0.00");
 //				Double d = Double.valueOf(0);
@@ -520,26 +517,11 @@ public class EmDownloadView extends VerticalLayout
 			} else if (event.getSource() == salvaStat) {
 				jobProcessGiornata.statistiche(campionato);
 			}
-			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);	
+			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC,e.getMessage());
 		}
 	}
 
-	private Image buildImage(String path, String nomeImg) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			Resource r = resourceLoader.getResource(path + nomeImg);
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return inputStream;
-		});
-
-		Image img = new Image(resource,"");
-		return img;
-	}
 
 }

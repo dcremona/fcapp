@@ -1,6 +1,5 @@
 package fcweb.ui.views.seriea;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import common.util.Utils;
@@ -38,7 +36,6 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.GiornataService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -51,7 +48,7 @@ public class CalendarioView extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataService giornataController;
@@ -64,16 +61,16 @@ public class CalendarioView extends VerticalLayout{
 
 	@Autowired
 	private AccessoService accessoController;
-	
-	private List<FcGiornata> model = new ArrayList<FcGiornata>();
+
+	private List<FcGiornata> model = new ArrayList<>();
 
 	public CalendarioView() {
-		LOG.info("CalendarioView()");
+		log.info("CalendarioView()");
 	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
@@ -86,8 +83,8 @@ public class CalendarioView extends VerticalLayout{
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-		List<FcGiornata> model1 = new ArrayList<FcGiornata>();
-		List<FcGiornata> model2 = new ArrayList<FcGiornata>();
+		List<FcGiornata> model1 = new ArrayList<>();
+		List<FcGiornata> model2 = new ArrayList<>();
 
 		List<FcGiornata> all = giornataController.findAll();
 		for (FcGiornata g : all) {
@@ -113,26 +110,26 @@ public class CalendarioView extends VerticalLayout{
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
 		VerticalLayout gridPrimaFaseAndata = new VerticalLayout();
-		gridPrimaFaseAndata.getStyle().set("border", Costants.BORDER_COLOR);
-		gridPrimaFaseAndata.getStyle().set("background", Costants.GREEN);
+		gridPrimaFaseAndata.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridPrimaFaseAndata.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
 		VerticalLayout gridPrimaFaseRitorno = new VerticalLayout();
-		gridPrimaFaseRitorno.getStyle().set("border", Costants.BORDER_COLOR);
-		gridPrimaFaseRitorno.getStyle().set("background", Costants.GREEN);
+		gridPrimaFaseRitorno.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridPrimaFaseRitorno.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
 		VerticalLayout gridQuarti = new VerticalLayout();
-		gridQuarti.getStyle().set("border", Costants.BORDER_COLOR);
-		gridQuarti.getStyle().set("background", Costants.MISTYROSE);
+		gridQuarti.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridQuarti.getStyle().set(Costants.BACKGROUND, Costants.MISTYROSE);
 
 		VerticalLayout gridSemi = new VerticalLayout();
-		gridSemi.getStyle().set("border", Costants.BORDER_COLOR);
-		gridSemi.getStyle().set("background", Costants.LIGHT_YELLOW);
+		gridSemi.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridSemi.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 
 		VerticalLayout gridFinali = new VerticalLayout();
-		gridFinali.getStyle().set("border", Costants.BORDER_COLOR);
-		gridFinali.getStyle().set("background", Costants.POWDERBLUE);
+		gridFinali.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridFinali.getStyle().set(Costants.BACKGROUND, Costants.POWDERBLUE);
 
-		List<FcGiornata> beanContainer = new ArrayList<FcGiornata>();
+		List<FcGiornata> beanContainer = new ArrayList<>();
 		int conta = 1;
 		int partite = 4;
 		for (int i = 0; i < model.size(); i++) {
@@ -149,17 +146,16 @@ public class CalendarioView extends VerticalLayout{
 			if (conta == partite) {
 
 				String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(), "dd/MM/yyyy HH:mm");
-				//String dataG = Utils.formatDate(bean.getFcGiornataInfo().getDataGiornata(), "dd/MM/yyyy HH:mm");
-				
+
 				String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
 				if (gg > 16) {
 					descG = bean.getFcTipoGiornata().getDescTipoGiornata() + " - " + bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
 				}
-				Grid<FcGiornata> tableGiornata = getTableCalendar(descG, beanContainer);
+				Grid<FcGiornata> tableGiornata = getTableCalendar(beanContainer);
 
 				final VerticalLayout layout = new VerticalLayout();
 				Span lblInfoSx = new Span(descG);
-				lblInfoSx.getStyle().set("font-size", "14px");
+				lblInfoSx.getStyle().set(Costants.FONT_SIZE, "14px");
 				layout.add(lblInfoSx);
 				layout.add(tableGiornata);
 
@@ -176,17 +172,17 @@ public class CalendarioView extends VerticalLayout{
 				}
 
 				conta = 1;
-				beanContainer = new ArrayList<FcGiornata>();
+				beanContainer = new ArrayList<>();
 
 			} else {
 				conta++;
 			}
 		}
-		
+
 		try {
 			this.add(buildButtonCalendarioPdf(campionato));
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -234,58 +230,35 @@ public class CalendarioView extends VerticalLayout{
 
 	private HorizontalLayout buildButtonCalendarioPdf(FcCampionato campionato) {
 
-//		LazyDownloadButton stampapdf = new LazyDownloadButton("Calendario pdf",() -> "Calendario.pdf",() -> {			
-//			byte[] b = null;
-//			try {
-//				String START = campionato.getStart().toString();
-//				String END = campionato.getEnd().toString();
-//				Map<String, Object> hm = new HashMap<String, Object>();
-//				hm.put("START", START);
-//				hm.put("END", END);
-//				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
-//				InputStream inputStream = resource.getInputStream();
-//				Connection conn = jdbcTemplate.getDataSource().getConnection();
-//				b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
-//			} catch (JRException ex) {
-//				ex.printStackTrace();
-//			} catch (Exception ex2) {
-//				ex2.printStackTrace();
-//			}
-//			return new ByteArrayInputStream(b);
-//		});
-//		HorizontalLayout horLayout = new HorizontalLayout();
-//		horLayout.setSpacing(true);
-//		horLayout.add(stampapdf);
-
-		Button stampapdf = new Button("Calendario pdf");
-		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Calendario.pdf",() -> {
-			try {
-				String START = campionato.getStart().toString();
-				String END = campionato.getEnd().toString();
-				Map<String, Object> hm = new HashMap<String, Object>();
-				hm.put("START", START);
-				hm.put("END", END);
-				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
-				InputStream inputStream = resource.getInputStream();
-				Connection conn = jdbcTemplate.getDataSource().getConnection();
-				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-			} catch (Exception ex2) {
-			}
-			return null;
-		}));
-		button1Wrapper.wrapComponent(stampapdf);
-
 		HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
-		horLayout.add(button1Wrapper);
+		
+		try {
+			Button stampapdf = new Button("Calendario pdf");
+			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
+			if (jdbcTemplate.getDataSource() != null) {
+				Connection conn = jdbcTemplate.getDataSource().getConnection();
+				Map<String, Object> hm = new HashMap<String, Object>();
+				String start = campionato.getStart().toString();
+				String end = campionato.getEnd().toString();
+				hm.put("START", start);
+				hm.put("END", end);
+				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
+				FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
+				button1Wrapper.wrapComponent(stampapdf);
+				horLayout.add(button1Wrapper);
+			}
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
 
 		return horLayout;
 	}
 
-	private Grid<FcGiornata> getTableCalendar(String caption,
-			List<FcGiornata> items) {
+	private Grid<FcGiornata> getTableCalendar(List<FcGiornata> items) {
 
 		Grid<FcGiornata> grid = new Grid<>();
 		grid.setItems(items);

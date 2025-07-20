@@ -12,6 +12,6 @@ public interface AccessoRepository extends CrudRepository<FcAccesso, Long>{
 	Page<FcAccesso> findAll(Pageable pageable);
 
 	Iterable<FcAccesso> findAll(Sort sort);
-	
+
 
 }
