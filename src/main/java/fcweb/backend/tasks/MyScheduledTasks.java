@@ -149,8 +149,8 @@ public class MyScheduledTasks{
 
 		String rootPathOutputPdf = (String) p.get("PATH_OUTPUT_PDF");
 		String idCampionato = "" + campionato.getIdCampionato();
-		String pathCampionato = env.getProperty("spring.datasource.username");
-		String pathOutput = rootPathOutputPdf + pathCampionato + fileSep + "Campionato" + idCampionato;
+		String folderPdf = env.getProperty("folderPdf");
+		String pathOutput = rootPathOutputPdf + folderPdf + fileSep + "Campionato" + idCampionato;
 
 		int ggFc = giornataInfo.getCodiceGiornata();
 		if (idCampionato.equals("2")) {

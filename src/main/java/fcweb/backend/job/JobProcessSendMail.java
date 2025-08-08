@@ -124,16 +124,6 @@ public class JobProcessSendMail{
 		l.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
 		String destFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
 
-		// final String fileSep = System.getProperty("file.separator");
-		// String rootPathOutputPdf = (String) p.get("PATH_OUTPUT_PDF");
-		// byte[] cr =
-		// JasperCompileManager.compileReportToFile(rootPathOutputPdf+fileSep+"jasper"+fileSep+"risultati.jrxml").getBytes();
-		// ByteArrayInputStream is = new ByteArrayInputStream(cr);
-		// FileOutputStream outputStream = new FileOutputStream(new
-		// File(destFileName1));
-		// JasperRunManager.runReportToPdfStream(is, outputStream, params, new
-		// JRBeanCollectionDataSource(l));
-
 		Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 		InputStream inputStream = resource.getInputStream();
 		FileOutputStream outputStream = new FileOutputStream(new File(destFileName1));
