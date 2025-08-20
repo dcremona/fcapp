@@ -261,6 +261,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 		GridExporter<FcExpRosea> exporter = GridExporter.createFor(gridRosea);
 		exporter.setAutoAttachExportButtons(false);
+	    exporter.setAutoSizeColumns(false);
 		exporter.setTitle("roseA");
 		exporter.setFileName("roseA" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
 		Anchor excelLink = new Anchor("", "Export to Excel");
@@ -334,6 +335,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
 
 		GridExporter<FcExpFreePl> exporter = GridExporter.createFor(gridFreePl);
 		exporter.setAutoAttachExportButtons(false);
+		exporter.setAutoSizeColumns(false);
 		exporter.setTitle("freePlayers");
 		exporter.setFileName("freePlayers" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
 		Anchor excelLink = new Anchor("", "Export to Excel");
