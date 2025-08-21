@@ -9,22 +9,22 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcRuolo;
 
 @Service
-public class RuoloService{
+public class RuoloService {
 
-	private final RuoloRepository ruoloRepository;
+    private final RuoloRepository ruoloRepository;
 
-	@Autowired
-	public RuoloService(RuoloRepository ruoloRepository) {
-		this.ruoloRepository = ruoloRepository;
-	}
+    @Autowired
+    public RuoloService(RuoloRepository ruoloRepository) {
+        this.ruoloRepository = ruoloRepository;
+    }
 
-	public List<FcRuolo> findAll() {
-		List<FcRuolo> l = (List<FcRuolo>) ruoloRepository.findAll(sortByIdRuoloDesc());
-		return l;
-	}
+    public List<FcRuolo> findAll() {
+        List<FcRuolo> l = (List<FcRuolo>) ruoloRepository.findAll(sortByIdRuoloDesc());
+        return l;
+    }
 
-	private Sort sortByIdRuoloDesc() {
-		return Sort.by(Sort.Direction.DESC, "idRuolo");
-	}
+    private Sort sortByIdRuoloDesc() {
+        return Sort.by(Sort.Direction.DESC, "idRuolo");
+    }
 
 }

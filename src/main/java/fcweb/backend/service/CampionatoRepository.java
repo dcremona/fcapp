@@ -7,13 +7,13 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcCampionato;
 
-public interface CampionatoRepository extends CrudRepository<FcCampionato, Long>{
+public interface CampionatoRepository extends CrudRepository<FcCampionato, Long> {
 
-	Page<FcCampionato> findAll(Pageable pageable);
+    Page<FcCampionato> findAll(Pageable pageable);
 
-	Iterable<FcCampionato> findAll(Sort sort);
+    Iterable<FcCampionato> findAll(Sort sort);
 
-	public FcCampionato findByIdCampionato(Integer idCampionato);
+    public FcCampionato findByIdCampionato(Integer idCampionato);
 
-	public FcCampionato findByActive(boolean active);
+    public FcCampionato findByActive(boolean active);
 }

@@ -37,131 +37,158 @@ import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-
-
 @PageTitle("GiornataDett")
 @Route(value = "giornatadett", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcGiornataDettView extends VerticalLayout{
+public class FcGiornataDettView extends VerticalLayout {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private AttoreService attoreController;
+    @Autowired
+    private AttoreService attoreController;
 
-	@Autowired
-	private GiornataInfoService giornataInfoController;
+    @Autowired
+    private GiornataInfoService giornataInfoController;
 
-	@Autowired
-	private GiocatoreService giocatoreController;
+    @Autowired
+    private GiocatoreService giocatoreController;
 
-	@Autowired
-	private StatoGiocatoreService statoGiocatoreController;
+    @Autowired
+    private StatoGiocatoreService statoGiocatoreController;
 
-	@Autowired
-	private GiornataDettService giornataDettController;
+    @Autowired
+    private GiornataDettService giornataDettController;
 
-	@Autowired
-	public Environment env;
+    @Autowired
+    public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+    @Autowired
+    private AccessoService accessoController;
 
-	private ComboBox<FcAttore> attoreFilter = new ComboBox<>();
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
-	private TextField flagAttivoFilter = new TextField();
+    private ComboBox<FcAttore> attoreFilter = new ComboBox<>();
+    private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+    private TextField flagAttivoFilter = new TextField();
 
-	public FcGiornataDettView() {
-		log.info("FcGiornataDettView()");
-	}
+    public FcGiornataDettView() {
+        log.info("FcGiornataDettView()");
+    }
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoController.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    @PostConstruct
+    void init() {
+        log.info("init");
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
+        accessoController.insertAccesso(this.getClass().getName());
+        initLayout();
+    }
 
-	private void initLayout() {
+    private void initLayout() {
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+        this.setMargin(true);
+        this.setSpacing(true);
+        this.setSizeFull();
 
-		GridCrud<FcGiornataDett> crud = new GridCrud<>(FcGiornataDett.class,new HorizontalSplitCrudLayout());
-		DefaultCrudFormFactory<FcGiornataDett> formFactory = new DefaultCrudFormFactory<>(FcGiornataDett.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        GridCrud<FcGiornataDett> crud = new GridCrud<>(FcGiornataDett.class, new HorizontalSplitCrudLayout());
+        DefaultCrudFormFactory<FcGiornataDett> formFactory = new DefaultCrudFormFactory<>(FcGiornataDett.class);
+        crud.setCrudFormFactory(formFactory);
+        formFactory.setUseBeanValidation(false);
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "ordinamento", "fcGiornataInfo", "fcAttore", "fcGiocatore", "fcStatoGiocatore", "voto", "flagAttivo");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "ordinamento", "fcGiornataInfo", "fcAttore", "fcGiocatore", "fcStatoGiocatore", "voto", "flagAttivo");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "ordinamento", "fcStatoGiocatore", "voto", "flagAttivo");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "ordinamento", "fcGiornataInfo", "fcAttore","fcGiocatore");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "ordinamento", "fcGiornataInfo", "fcAttore",
+                "fcGiocatore", "fcStatoGiocatore", "voto", "flagAttivo");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "ordinamento", "fcGiornataInfo", "fcAttore",
+                "fcGiocatore", "fcStatoGiocatore", "voto", "flagAttivo");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "ordinamento", "fcStatoGiocatore", "voto",
+                "flagAttivo");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "ordinamento", "fcGiornataInfo",
+                "fcAttore", "fcGiocatore");
 
-		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getOrdinamento() : "")).setHeader("Ordinamento");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcStatoGiocatore() != null ? f.getFcStatoGiocatore().getDescStatoGiocatore() : "")).setHeader("Stato");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getVoto() != null ? f.getVoto().toString() : "")).setHeader("Voto");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFlagAttivo() != null ? f.getFlagAttivo() : "")).setHeader("Attivo");
+        crud.getGrid().removeAllColumns();
+        crud.getGrid().addColumn(new TextRenderer<>(
+                f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : ""))
+                .setHeader("Giornata");
+        crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getOrdinamento() : ""))
+                .setHeader("Ordinamento");
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(
+                        f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : ""))
+                .setHeader("Attore");
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(
+                        f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : ""))
+                .setHeader(Costants.GIOCATORE);
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(f -> f != null && f.getFcStatoGiocatore() != null
+                        ? f.getFcStatoGiocatore().getDescStatoGiocatore()
+                        : ""))
+                .setHeader("Stato");
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(f -> f != null && f.getVoto() != null ? f.getVoto().toString() : ""))
+                .setHeader("Voto");
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(f -> f != null && f.getFlagAttivo() != null ? f.getFlagAttivo() : ""))
+                .setHeader("Attivo");
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+        crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoController.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
-		crud.getCrudFormFactory().setFieldProvider("fcStatoGiocatore", new ComboBoxProvider<>("Stato",statoGiocatoreController.findAll(),new TextRenderer<>(FcStatoGiocatore::getDescStatoGiocatore),FcStatoGiocatore::getDescStatoGiocatore));
+        crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo",
+                new ComboBoxProvider<>("Giornata", giornataInfoController.findAll(),
+                        new TextRenderer<>(FcGiornataInfo::getDescGiornataFc), FcGiornataInfo::getDescGiornataFc));
+        crud.getCrudFormFactory().setFieldProvider("fcAttore",
+                new ComboBoxProvider<>("Attore", attoreController.findByActive(true),
+                        new TextRenderer<>(FcAttore::getDescAttore), FcAttore::getDescAttore));
+        crud.getCrudFormFactory().setFieldProvider("fcGiocatore",
+                new ComboBoxProvider<>(Costants.GIOCATORE, giocatoreController.findAll(),
+                        new TextRenderer<>(FcGiocatore::getCognGiocatore), FcGiocatore::getCognGiocatore));
+        crud.getCrudFormFactory().setFieldProvider("fcStatoGiocatore",
+                new ComboBoxProvider<>("Stato", statoGiocatoreController.findAll(),
+                        new TextRenderer<>(FcStatoGiocatore::getDescStatoGiocatore),
+                        FcStatoGiocatore::getDescStatoGiocatore));
 
-		crud.setRowCountCaption("%d Giornata(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        crud.setRowCountCaption("%d Giornata(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		giornataInfoFilter.setPlaceholder("Giornata");
-		giornataInfoFilter.setItems(giornataInfoController.findAll());
-		if ("1".equals(campionato.getType())) {
-			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
-		} else {
-			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g,campionato));
-		}
-		giornataInfoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		giornataInfoFilter.setClearButtonVisible(true);
-		crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
+        FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+        giornataInfoFilter.setPlaceholder("Giornata");
+        giornataInfoFilter.setItems(giornataInfoController.findAll());
+        if ("1".equals(campionato.getType())) {
+            giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
+        } else {
+            giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
+        }
+        giornataInfoFilter.addValueChangeListener(e -> crud.refreshGrid());
+        giornataInfoFilter.setClearButtonVisible(true);
+        crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
 
-		attoreFilter.setPlaceholder("Attore");
-		attoreFilter.setItems(attoreController.findByActive(true));
-		attoreFilter.setItemLabelGenerator(FcAttore::getDescAttore);
-		attoreFilter.addValueChangeListener(e -> crud.refreshGrid());
-		attoreFilter.setClearButtonVisible(true);
-		crud.getCrudLayout().addFilterComponent(attoreFilter);
+        attoreFilter.setPlaceholder("Attore");
+        attoreFilter.setItems(attoreController.findByActive(true));
+        attoreFilter.setItemLabelGenerator(FcAttore::getDescAttore);
+        attoreFilter.addValueChangeListener(e -> crud.refreshGrid());
+        attoreFilter.setClearButtonVisible(true);
+        crud.getCrudLayout().addFilterComponent(attoreFilter);
 
-		flagAttivoFilter.setPlaceholder("filter by flag...");
-		flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
+        flagAttivoFilter.setPlaceholder("filter by flag...");
+        flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
+        crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
 
-		Button clearFilters = new Button("clear");
-		clearFilters.addClickListener(event -> {
-			flagAttivoFilter.clear();
-			attoreFilter.clear();
-		});
-		crud.getCrudLayout().addFilterComponent(clearFilters);
+        Button clearFilters = new Button("clear");
+        clearFilters.addClickListener(event -> {
+            flagAttivoFilter.clear();
+            attoreFilter.clear();
+        });
+        crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		crud.setFindAllOperation(() -> giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attoreFilter.getValue(), giornataInfoFilter.getValue()));
-		crud.setAddOperation(g -> giornataDettController.insertGiornataDett(g));
-		crud.setUpdateOperation(g -> giornataDettController.updateGiornataDett(g));
-		crud.setDeleteOperation(g -> giornataDettController.deleteGiornataDett(g));
+        crud.setFindAllOperation(() -> giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(
+                attoreFilter.getValue(), giornataInfoFilter.getValue()));
+        crud.setAddOperation(g -> giornataDettController.insertGiornataDett(g));
+        crud.setUpdateOperation(g -> giornataDettController.updateGiornataDett(g));
+        crud.setDeleteOperation(g -> giornataDettController.deleteGiornataDett(g));
 
-		add(crud);
+        add(crud);
 
-
-	}
-
+    }
 
 }

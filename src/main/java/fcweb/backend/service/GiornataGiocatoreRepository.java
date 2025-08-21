@@ -12,23 +12,21 @@ import fcweb.backend.data.entity.FcGiornataGiocatore;
 import fcweb.backend.data.entity.FcGiornataGiocatoreId;
 import fcweb.backend.data.entity.FcGiornataInfo;
 
-public interface GiornataGiocatoreRepository
-		extends CrudRepository<FcGiornataGiocatore, FcGiornataGiocatoreId>{
+public interface GiornataGiocatoreRepository extends CrudRepository<FcGiornataGiocatore, FcGiornataGiocatoreId> {
 
-	Page<FcGiornataGiocatore> findAll(Pageable pageable);
+    Page<FcGiornataGiocatore> findAll(Pageable pageable);
 
-	Iterable<FcGiornataGiocatore> findAll(Sort sort);
+    Iterable<FcGiornataGiocatore> findAll(Sort sort);
 
-	FcGiornataGiocatore findFirstByOrderByFcGiornataInfoAsc();
+    FcGiornataGiocatore findFirstByOrderByFcGiornataInfoAsc();
 
-	FcGiornataGiocatore findTopByOrderByFcGiornataInfoDesc();
+    FcGiornataGiocatore findTopByOrderByFcGiornataInfoDesc();
 
-	public List<FcGiornataGiocatore> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
-			FcGiornataInfo giornataInfo);
+    public List<FcGiornataGiocatore> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
+            FcGiornataInfo giornataInfo);
 
-	public List<FcGiornataGiocatore> findByFcGiocatore(FcGiocatore giocatore);
+    public List<FcGiornataGiocatore> findByFcGiocatore(FcGiocatore giocatore);
 
-	public FcGiornataGiocatore findByFcGiornataInfoAndFcGiocatore(
-			FcGiornataInfo giornataInfo, FcGiocatore giocatore);
+    public FcGiornataGiocatore findByFcGiornataInfoAndFcGiocatore(FcGiornataInfo giornataInfo, FcGiocatore giocatore);
 
 }

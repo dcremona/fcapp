@@ -13,46 +13,46 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "fc_regolamento")
-public class FcRegolamento implements Serializable{
+public class FcRegolamento implements Serializable {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Integer id;
 
-	@Column(name = "data", nullable = false)
-	private LocalDateTime data;
+    @Column(name = "data", nullable = false)
+    private LocalDateTime data;
 
-	@Column(name = "src")
-	private Clob src;
+    @Column(name = "src")
+    private Clob src;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public LocalDateTime getData() {
-		return data;
-	}
+    public LocalDateTime getData() {
+        return data;
+    }
 
-	public void setData(LocalDateTime data) {
-		this.data = data;
-	}
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
 
-	public Clob getSrc() {
-		return src;
-	}
+    public Clob getSrc() {
+        return src;
+    }
 
-	public void setSrc(Clob src) {
-		this.src = src;
-	}
+    public void setSrc(Clob src) {
+        this.src = src;
+    }
 
 }

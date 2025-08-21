@@ -9,23 +9,23 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcExpFreePl;
 
 @Service
-public class ExpFreePlService{
+public class ExpFreePlService {
 
-	private final ExpFreePlRepository expFreePlRepository;
+    private final ExpFreePlRepository expFreePlRepository;
 
-	@Autowired
-	public ExpFreePlService(ExpFreePlRepository expFreePlRepository) {
-		this.expFreePlRepository = expFreePlRepository;
-	}
+    @Autowired
+    public ExpFreePlService(ExpFreePlRepository expFreePlRepository) {
+        this.expFreePlRepository = expFreePlRepository;
+    }
 
-	public List<FcExpFreePl> findAll() {
-		List<FcExpFreePl> l = (List<FcExpFreePl>) expFreePlRepository.findAll(sortByIdAsc());
+    public List<FcExpFreePl> findAll() {
+        List<FcExpFreePl> l = (List<FcExpFreePl>) expFreePlRepository.findAll(sortByIdAsc());
 
-		return l;
-	}
+        return l;
+    }
 
-	private Sort sortByIdAsc() {
-		return Sort.by(Sort.Direction.ASC, "id");
-	}
+    private Sort sortByIdAsc() {
+        return Sort.by(Sort.Direction.ASC, "id");
+    }
 
 }

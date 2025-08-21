@@ -7,12 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcStatoGiocatore;
 
+public interface StatoGiocatoreRepository extends CrudRepository<FcStatoGiocatore, Long> {
 
-public interface StatoGiocatoreRepository extends CrudRepository<FcStatoGiocatore, Long>{
+    Page<FcStatoGiocatore> findAll(Pageable pageable);
 
-	Page<FcStatoGiocatore> findAll(Pageable pageable);
+    Iterable<FcStatoGiocatore> findAll(Sort sort);
 
-	Iterable<FcStatoGiocatore> findAll(Sort sort);
-
-	public FcStatoGiocatore findByDescStatoGiocatore(String descStatoGiocatore);
+    public FcStatoGiocatore findByDescStatoGiocatore(String descStatoGiocatore);
 }

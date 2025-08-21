@@ -9,22 +9,22 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcExpStat;
 
 @Service
-public class AlboService{
+public class AlboService {
 
-	private final AlboRepository alboRepository;
+    private final AlboRepository alboRepository;
 
-	@Autowired
-	public AlboService(AlboRepository alboRepository) {
-		this.alboRepository = alboRepository;
-	}
+    @Autowired
+    public AlboService(AlboRepository alboRepository) {
+        this.alboRepository = alboRepository;
+    }
 
-	public List<FcExpStat> findAll() {
-		List<FcExpStat> l = (List<FcExpStat>) alboRepository.findAll(sortByIdAsc());
-		return l;
-	}
+    public List<FcExpStat> findAll() {
+        List<FcExpStat> l = (List<FcExpStat>) alboRepository.findAll(sortByIdAsc());
+        return l;
+    }
 
-	private Sort sortByIdAsc() {
-		return Sort.by(Sort.Direction.DESC, "id");
-	}
+    private Sort sortByIdAsc() {
+        return Sort.by(Sort.Direction.DESC, "id");
+    }
 
 }

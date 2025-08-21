@@ -7,11 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcRegolamento;
 
-public interface RegolamentoRepository extends CrudRepository<FcRegolamento, Long>{
+public interface RegolamentoRepository extends CrudRepository<FcRegolamento, Long> {
 
-	Page<FcRegolamento> findAll(Pageable pageable);
+    Page<FcRegolamento> findAll(Pageable pageable);
 
-	Iterable<FcRegolamento> findAll(Sort sort);
-
+    Iterable<FcRegolamento> findAll(Sort sort);
 
 }

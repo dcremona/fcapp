@@ -14,64 +14,63 @@ import fcweb.backend.service.ProprietaService;
 import jakarta.annotation.PostConstruct;
 
 @Configuration
-public class LocaleConfig{
+public class LocaleConfig {
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private ProprietaService proprietaController;
+    @Autowired
+    private ProprietaService proprietaController;
 
+    @PostConstruct
+    public void init() {
 
-	@PostConstruct
-	public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Berlin"));
 
-		TimeZone.setDefault(TimeZone.getTimeZone("Europe/Berlin"));
+        LOG.info("Date in Europe/Berlin: " + new Date().toString());
 
-		LOG.info("Date in Europe/Berlin: " + new Date().toString());
+        String basePathData = System.getProperty("user.dir");
+        LOG.info("basePathData " + basePathData);
 
-		String basePathData = System.getProperty("user.dir");
-		LOG.info("basePathData " + basePathData);
+    }
 
-	}
+    @Bean
+    public String getCronValueUfficiosi() {
+        FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
+        if (p != null) {
+            LOG.info("Ufficiosi cron " + p.getValue());
+            return p.getValue();
+        } else {
+            return "0 0 9 * * *";
+        }
+    }
 
-	@Bean
-	public String getCronValueUfficiosi() {
-		FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
-		if (p != null) {
-			LOG.info("Ufficiosi cron " + p.getValue());
-			return p.getValue();
-		} else {
-			return "0 0 9 * * *";
-		}
-	}
+    @Bean
+    public String getCronValueUfficiali() {
+        FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
+        if (p != null) {
+            LOG.info("Ufficiali cron " + p.getValue());
+            return p.getValue();
+        } else {
+            return "0 30 16 * * *";
+        }
+    }
 
-	@Bean
-	public String getCronValueUfficiali() {
-		FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
-		if (p != null) {
-			LOG.info("Ufficiali cron " + p.getValue());
-			return p.getValue();
-		} else {
-			return "0 30 16 * * *";
-		}
-	}
-
-//	public static String createFolderData() {
-//		String basePathData = System.getProperty("user.dir");
-//		// LOG.info("user.dir " + basePathData);
-//		if (!basePathData.equals("/")) {
-//			basePathData = basePathData + "/data/";
-//		}
-//		// LOG.info("basePathData " + basePathData);
-//		File f = new File(basePathData);
-//		if (!f.exists()) {
-//			boolean flag = f.mkdir();
-//			if (!flag) {
-//				// LOG.info("ERROR mkdir - NOT exist " + basePathData);
-//			}
-//		}
-//		basePathData = "/home/myuser/";
-//		return basePathData;
-//	}
+    // public static String createFolderData() {
+    // String basePathData = System.getProperty("user.dir");
+    // // LOG.info("user.dir " + basePathData);
+    // if (!basePathData.equals("/")) {
+    // basePathData = basePathData + "/data/";
+    // }
+    // // LOG.info("basePathData " + basePathData);
+    // File f = new File(basePathData);
+    // if (!f.exists()) {
+    // boolean flag = f.mkdir();
+    // if (!flag) {
+    // // LOG.info("ERROR mkdir - NOT exist " + basePathData);
+    // }
+    // }
+    // basePathData = "/home/myuser/";
+    // return basePathData;
+    // }
 
 }

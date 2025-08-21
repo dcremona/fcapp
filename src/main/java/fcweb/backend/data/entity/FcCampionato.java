@@ -19,131 +19,129 @@ import jakarta.persistence.TemporalType;
  */
 @Entity
 @Table(name = "fc_campionato")
-public class FcCampionato implements java.io.Serializable{
+public class FcCampionato implements java.io.Serializable {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	private int idCampionato;
-	private Date dataFine;
-	private Date dataInizio;
-	private String descCampionato;
-	private String type;
-	private Integer start;
-	private Integer end;
-	private boolean active;
-	private Set<FcClassifica> fcClassificas = new HashSet<>(0);
-	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<>(0);
-	private Set<FcFormazione> fcFormaziones = new HashSet<>(0);
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private int idCampionato;
+    private Date dataFine;
+    private Date dataInizio;
+    private String descCampionato;
+    private String type;
+    private Integer start;
+    private Integer end;
+    private boolean active;
+    private Set<FcClassifica> fcClassificas = new HashSet<>(0);
+    private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<>(0);
+    private Set<FcFormazione> fcFormaziones = new HashSet<>(0);
 
-	public FcCampionato() {
-	}
+    public FcCampionato() {
+    }
 
-	public FcCampionato(int idCampionato, String descCampionato) {
-		this.idCampionato = idCampionato;
-		this.descCampionato = descCampionato;
-	}
+    public FcCampionato(int idCampionato, String descCampionato) {
+        this.idCampionato = idCampionato;
+        this.descCampionato = descCampionato;
+    }
 
-	@Id
+    @Id
 
-	@Column(name = "id_campionato", unique = true, nullable = false)
-	public int getIdCampionato() {
-		return this.idCampionato;
-	}
+    @Column(name = "id_campionato", unique = true, nullable = false)
+    public int getIdCampionato() {
+        return this.idCampionato;
+    }
 
-	public void setIdCampionato(int idCampionato) {
-		this.idCampionato = idCampionato;
-	}
+    public void setIdCampionato(int idCampionato) {
+        this.idCampionato = idCampionato;
+    }
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "data_fine", length = 10)
-	public Date getDataFine() {
-		return this.dataFine;
-	}
+    @Temporal(TemporalType.DATE)
+    @Column(name = "data_fine", length = 10)
+    public Date getDataFine() {
+        return this.dataFine;
+    }
 
-	public void setDataFine(Date dataFine) {
-		this.dataFine = dataFine;
-	}
+    public void setDataFine(Date dataFine) {
+        this.dataFine = dataFine;
+    }
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "data_inizio", length = 10)
-	public Date getDataInizio() {
-		return this.dataInizio;
-	}
+    @Temporal(TemporalType.DATE)
+    @Column(name = "data_inizio", length = 10)
+    public Date getDataInizio() {
+        return this.dataInizio;
+    }
 
-	public void setDataInizio(Date dataInizio) {
-		this.dataInizio = dataInizio;
-	}
+    public void setDataInizio(Date dataInizio) {
+        this.dataInizio = dataInizio;
+    }
 
-	@Column(name = "desc_campionato", nullable = false)
-	public String getDescCampionato() {
-		return this.descCampionato;
-	}
+    @Column(name = "desc_campionato", nullable = false)
+    public String getDescCampionato() {
+        return this.descCampionato;
+    }
 
-	public void setDescCampionato(String descCampionato) {
-		this.descCampionato = descCampionato;
-	}
+    public void setDescCampionato(String descCampionato) {
+        this.descCampionato = descCampionato;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
-	public Set<FcClassifica> getFcClassificas() {
-		return this.fcClassificas;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
+    public Set<FcClassifica> getFcClassificas() {
+        return this.fcClassificas;
+    }
 
-	public void setFcClassificas(Set<FcClassifica> fcClassificas) {
-		this.fcClassificas = fcClassificas;
-	}
+    public void setFcClassificas(Set<FcClassifica> fcClassificas) {
+        this.fcClassificas = fcClassificas;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
-	public Set<FcClassificaTotPt> getFcClassificaTotPts() {
-		return this.fcClassificaTotPts;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
+    public Set<FcClassificaTotPt> getFcClassificaTotPts() {
+        return this.fcClassificaTotPts;
+    }
 
-	public void setFcClassificaTotPts(
-			Set<FcClassificaTotPt> fcClassificaTotPts) {
-		this.fcClassificaTotPts = fcClassificaTotPts;
-	}
+    public void setFcClassificaTotPts(Set<FcClassificaTotPt> fcClassificaTotPts) {
+        this.fcClassificaTotPts = fcClassificaTotPts;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
-	public Set<FcFormazione> getFcFormaziones() {
-		return this.fcFormaziones;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
+    public Set<FcFormazione> getFcFormaziones() {
+        return this.fcFormaziones;
+    }
 
-	public void setFcFormaziones(Set<FcFormazione> fcFormaziones) {
-		this.fcFormaziones = fcFormaziones;
-	}
+    public void setFcFormaziones(Set<FcFormazione> fcFormaziones) {
+        this.fcFormaziones = fcFormaziones;
+    }
 
-	public Integer getStart() {
-		return start;
-	}
+    public Integer getStart() {
+        return start;
+    }
 
-	public void setStart(Integer start) {
-		this.start = start;
-	}
+    public void setStart(Integer start) {
+        this.start = start;
+    }
 
-	public Integer getEnd() {
-		return end;
-	}
+    public Integer getEnd() {
+        return end;
+    }
 
-	public void setEnd(Integer end) {
-		this.end = end;
-	}
+    public void setEnd(Integer end) {
+        this.end = end;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public boolean isActive() {
+        return active;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
+    public void setType(String type) {
+        this.type = type;
+    }
 
 }

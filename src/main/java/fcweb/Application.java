@@ -26,9 +26,9 @@ import fcweb.backend.service.AttoreRepository;
 @EnableScheduling
 public class Application implements AppShellConfigurator {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 

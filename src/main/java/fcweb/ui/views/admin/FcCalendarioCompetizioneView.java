@@ -49,294 +49,303 @@ import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-
 @PageTitle("Calendario Competizione")
 @Route(value = "calelndarioCompetizione", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcCalendarioCompetizioneView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class FcCalendarioCompetizioneView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private CalendarioCompetizioneService calendarioTimController;
+    @Autowired
+    private CalendarioCompetizioneService calendarioTimController;
 
-	@Autowired
-	public Environment env;
+    @Autowired
+    public Environment env;
 
-	private Button initDb;
-	private Button updateGiornata;
+    private Button initDb;
+    private Button updateGiornata;
 
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
+    @Autowired
+    private JobProcessGiornata jobProcessGiornata;
 
-	@Autowired
-	private GiornataInfoService giornataInfoController;
+    @Autowired
+    private GiornataInfoService giornataInfoController;
 
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+    private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 
-	@Autowired
-	private AccessoService accessoController;
+    @Autowired
+    private AccessoService accessoController;
 
-	@Autowired
-	private SquadraService squadraController;
+    @Autowired
+    private SquadraService squadraController;
 
-	public FcCalendarioCompetizioneView() {
-		log.info("FcCalendarioCompetizioneView()");
-	}
+    public FcCalendarioCompetizioneView() {
+        log.info("FcCalendarioCompetizioneView()");
+    }
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoController.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    @PostConstruct
+    void init() {
+        log.info("init");
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
+        accessoController.insertAccesso(this.getClass().getName());
+        initLayout();
+    }
 
-	private void initLayout() {
+    private void initLayout() {
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+        this.setMargin(true);
+        this.setSpacing(true);
+        this.setSizeFull();
 
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+        FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+        FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
-		initDb = new Button("Init Db Calendario");
-		initDb.setIcon(VaadinIcon.START_COG.create());
-		initDb.addClickListener(this);
+        initDb = new Button("Init Db Calendario");
+        initDb.setIcon(VaadinIcon.START_COG.create());
+        initDb.addClickListener(this);
 
-		updateGiornata = new Button("Aggiorna Giornata");
-		updateGiornata.setIcon(VaadinIcon.START_COG.create());
-		updateGiornata.addClickListener(this);
+        updateGiornata = new Button("Aggiorna Giornata");
+        updateGiornata.setIcon(VaadinIcon.START_COG.create());
+        updateGiornata.addClickListener(this);
 
-		GridCrud<FcCalendarioCompetizione> crud = new GridCrud<>(FcCalendarioCompetizione.class,new HorizontalSplitCrudLayout());
+        GridCrud<FcCalendarioCompetizione> crud = new GridCrud<>(FcCalendarioCompetizione.class,
+                new HorizontalSplitCrudLayout());
 
-		DefaultCrudFormFactory<FcCalendarioCompetizione> formFactory = new DefaultCrudFormFactory<>(FcCalendarioCompetizione.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        DefaultCrudFormFactory<FcCalendarioCompetizione> formFactory = new DefaultCrudFormFactory<>(
+                FcCalendarioCompetizione.class);
+        crud.setCrudFormFactory(formFactory);
+        formFactory.setUseBeanValidation(false);
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "idGiornata", "data", "idSquadraCasa", "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "idGiornata", "data", "idSquadraCasa", "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "idGiornata", "data", "idSquadraCasa", "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "idGiornata");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "idGiornata", "data", "idSquadraCasa",
+                "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "idGiornata", "data", "idSquadraCasa",
+                "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "idGiornata", "data",
+                "idSquadraCasa", "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "idGiornata");
 
-		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornata()));
-		Column<FcCalendarioCompetizione> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
-		dataColumn.setSortable(false);
-		dataColumn.setAutoWidth(true);
-		dataColumn.setFlexGrow(2);
+        crud.getGrid().removeAllColumns();
+        crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornata()));
+        Column<FcCalendarioCompetizione> dataColumn = crud.getGrid()
+                .addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,
+                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+        dataColumn.setSortable(false);
+        dataColumn.setAutoWidth(true);
+        dataColumn.setFlexGrow(2);
 
-		Column<FcCalendarioCompetizione> sqCasaColumn = crud.getGrid().addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			if (s != null && s.getSquadraCasa() != null) {
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraCasa());
-				if (sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-				Span lblSquadra = new Span(s.getSquadraCasa());
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
-		}));
-		sqCasaColumn.setSortable(false);
-		sqCasaColumn.setAutoWidth(true);
+        Column<FcCalendarioCompetizione> sqCasaColumn = crud.getGrid().addColumn(new ComponentRenderer<>(s -> {
+            HorizontalLayout cellLayout = new HorizontalLayout();
+            cellLayout.setMargin(false);
+            cellLayout.setPadding(false);
+            cellLayout.setSpacing(false);
+            cellLayout.setAlignItems(Alignment.STRETCH);
+            if (s != null && s.getSquadraCasa() != null) {
+                FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraCasa());
+                if (sq.getImg() != null) {
+                    try {
+                        Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+                        cellLayout.add(img);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Span lblSquadra = new Span(s.getSquadraCasa());
+                cellLayout.add(lblSquadra);
+            }
+            return cellLayout;
+        }));
+        sqCasaColumn.setSortable(false);
+        sqCasaColumn.setAutoWidth(true);
 
-		Column<FcCalendarioCompetizione> sqFuoriColumn = crud.getGrid().addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			if (s != null && s.getSquadraFuori() != null) {
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraFuori());
-				if (sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-				Span lblSquadra = new Span(s.getSquadraFuori());
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
-		}));
-		sqFuoriColumn.setSortable(false);
-		sqFuoriColumn.setAutoWidth(true);
+        Column<FcCalendarioCompetizione> sqFuoriColumn = crud.getGrid().addColumn(new ComponentRenderer<>(s -> {
+            HorizontalLayout cellLayout = new HorizontalLayout();
+            cellLayout.setMargin(false);
+            cellLayout.setPadding(false);
+            cellLayout.setSpacing(false);
+            cellLayout.setAlignItems(Alignment.STRETCH);
+            if (s != null && s.getSquadraFuori() != null) {
+                FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraFuori());
+                if (sq.getImg() != null) {
+                    try {
+                        Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+                        cellLayout.add(img);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Span lblSquadra = new Span(s.getSquadraFuori());
+                cellLayout.add(lblSquadra);
+            }
+            return cellLayout;
+        }));
+        sqFuoriColumn.setSortable(false);
+        sqFuoriColumn.setAutoWidth(true);
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+        crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("data", a -> {
-			return new DateTimePicker();
-		});
+        crud.getCrudFormFactory().setFieldProvider("data", a -> {
+            return new DateTimePicker();
+        });
 
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null || g.getRisultato() == null ? "" : "" + g.getRisultato()));
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(g -> g == null || g.getRisultato() == null ? "" : "" + g.getRisultato()));
 
-		crud.setRowCountCaption("%d GiornataInfo(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        crud.setRowCountCaption("%d GiornataInfo(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		giornataInfoFilter.setPlaceholder("Giornata");
-		giornataInfoFilter.setItems(giornataInfoController.findAll());
-		if ("1".equals(campionato.getType())) {
-			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
-		} else {
-			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
-		}
+        giornataInfoFilter.setPlaceholder("Giornata");
+        giornataInfoFilter.setItems(giornataInfoController.findAll());
+        if ("1".equals(campionato.getType())) {
+            giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
+        } else {
+            giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
+        }
 
-		giornataInfoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		giornataInfoFilter.setClearButtonVisible(true);
-		giornataInfoFilter.setValue(giornataInfo);
-		crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
+        giornataInfoFilter.addValueChangeListener(e -> crud.refreshGrid());
+        giornataInfoFilter.setClearButtonVisible(true);
+        giornataInfoFilter.setValue(giornataInfo);
+        crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
 
-		Button clearFilters = new Button("clear");
-		clearFilters.addClickListener(event -> {
-			giornataInfoFilter.clear();
-		});
-		crud.getCrudLayout().addFilterComponent(clearFilters);
+        Button clearFilters = new Button("clear");
+        clearFilters.addClickListener(event -> {
+            giornataInfoFilter.clear();
+        });
+        crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		crud.setFindAllOperation(() -> calendarioTimController.findCustom(giornataInfoFilter.getValue()));
-		crud.setAddOperation(user -> calendarioTimController.updateCalendarioTim(user));
-		crud.setUpdateOperation(user -> calendarioTimController.updateCalendarioTim(user));
-		crud.setDeleteOperation(user -> calendarioTimController.deleteCalendarioTim(user));
+        crud.setFindAllOperation(() -> calendarioTimController.findCustom(giornataInfoFilter.getValue()));
+        crud.setAddOperation(user -> calendarioTimController.updateCalendarioTim(user));
+        crud.setUpdateOperation(user -> calendarioTimController.updateCalendarioTim(user));
+        crud.setDeleteOperation(user -> calendarioTimController.deleteCalendarioTim(user));
 
-		add(initDb);
-		add(updateGiornata);
-		add(crud);
-	}
+        add(initDb);
+        add(updateGiornata);
+        add(crud);
+    }
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
 
-		try {
-			Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+        try {
+            Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
+            FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-			String basePathData = (String) p.get("PATH_TMP");
-			log.info("basePathData " + basePathData);
-			File f = new File(basePathData);
-			if (!f.exists()) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Impossibile trovare il percorso specificato " + basePathData);
-				return;
-			}
+            String basePathData = (String) p.get("PATH_TMP");
+            log.info("basePathData " + basePathData);
+            File f = new File(basePathData);
+            if (!f.exists()) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC,
+                        "Impossibile trovare il percorso specificato " + basePathData);
+                return;
+            }
 
-			if (event.getSource() == initDb) {
+            if (event.getSource() == initDb) {
 
-				if ("1".equals(campionato.getType())) {
+                if ("1".equals(campionato.getType())) {
 
-					jobProcessGiornata.deleteAllCalendarioTim();
+                    jobProcessGiornata.deleteAllCalendarioTim();
 
-					for (int g = 1; g <= 38; g++) {
-						// **************************************
-						// DOWNLOAD FILE TIM
-						// **************************************
-						String giornata = "" + g;
-						String urlFanta = (String) p.get("URL_FANTA");
-						String basePath = basePathData;
-						String calendario = "Serie-A-Calendario";
-						String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornata + "&Tipolink=0";
-						log.info("httpUrl " + httpUrl);
-						String fileName = "TIM_" + giornata;
-						JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-						jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
+                    for (int g = 1; g <= 38; g++) {
+                        // **************************************
+                        // DOWNLOAD FILE TIM
+                        // **************************************
+                        String giornata = "" + g;
+                        String urlFanta = (String) p.get("URL_FANTA");
+                        String basePath = basePathData;
+                        String calendario = "Serie-A-Calendario";
+                        String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornata + "&Tipolink=0";
+                        log.info("httpUrl " + httpUrl);
+                        String fileName = "TIM_" + giornata;
+                        JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+                        jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
 
-						fileName = basePathData + fileName + ".csv";
-						jobProcessGiornata.insertCalendarioTim(fileName, g);
+                        fileName = basePathData + fileName + ".csv";
+                        jobProcessGiornata.insertCalendarioTim(fileName, g);
 
-					}
+                    }
 
-				} else {
+                } else {
 
-					jobProcessGiornata.initDbCalendarioCompetizione(basePathData + "calendarioMondiale2022.csv");
+                    jobProcessGiornata.initDbCalendarioCompetizione(basePathData + "calendarioMondiale2022.csv");
 
-//					jobProcessGiornata.deleteAllCalendarioTim();
-//					for (int g = 1; g <= 7; g++) {
-//						// **************************************
-//						// DOWNLOAD FILE MONDIALE
-//						// **************************************
-//						String giornata = "" + g;
-//						String urlFanta = (String) p.get("URL_FANTA");
-//						String basePath = basePathData;
-//						String calendario = "Mondiale-Calendario";
-//						String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornata + "&Tipolink=0";
-//						LOG.info("httpUrl " + httpUrl);
-//						String fileName = "MONDIALE_" + giornata;
-//						JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-//						jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
-//
-//						fileName = basePathData + fileName + ".csv";
-//						jobProcessGiornata.insertCalendarioTim(fileName, g);
-//
-//					}
-				}
+                    // jobProcessGiornata.deleteAllCalendarioTim();
+                    // for (int g = 1; g <= 7; g++) {
+                    // // **************************************
+                    // // DOWNLOAD FILE MONDIALE
+                    // // **************************************
+                    // String giornata = "" + g;
+                    // String urlFanta = (String) p.get("URL_FANTA");
+                    // String basePath = basePathData;
+                    // String calendario = "Mondiale-Calendario";
+                    // String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornata +
+                    // "&Tipolink=0";
+                    // LOG.info("httpUrl " + httpUrl);
+                    // String fileName = "MONDIALE_" + giornata;
+                    // JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+                    // jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
+                    //
+                    // fileName = basePathData + fileName + ".csv";
+                    // jobProcessGiornata.insertCalendarioTim(fileName, g);
+                    //
+                    // }
+                }
 
-			} else if (event.getSource() == updateGiornata) {
+            } else if (event.getSource() == updateGiornata) {
 
-				if ("1".equals(campionato.getType())) {
+                if ("1".equals(campionato.getType())) {
 
-					// **************************************
-					// DOWNLOAD FILE TIM
-					// **************************************
-					String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
-					String urlFanta = (String) p.get("URL_FANTA");
-					String basePath = basePathData;
-					String quotaz = "Serie-A-Calendario";
-					String httpUrl = urlFanta + quotaz + ".asp?GiornataA=" + giornata + "&Tipolink=0";
-					// ="https://www.pianetafanta.it/Serie-A-Calendario.asp?GiornataA=5&Tipolink=0";
-					log.info("httpUrl " + httpUrl);
-					String fileName = "TIM_" + giornata;
-					JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-					jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
+                    // **************************************
+                    // DOWNLOAD FILE TIM
+                    // **************************************
+                    String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
+                    String urlFanta = (String) p.get("URL_FANTA");
+                    String basePath = basePathData;
+                    String quotaz = "Serie-A-Calendario";
+                    String httpUrl = urlFanta + quotaz + ".asp?GiornataA=" + giornata + "&Tipolink=0";
+                    // ="https://www.pianetafanta.it/Serie-A-Calendario.asp?GiornataA=5&Tipolink=0";
+                    log.info("httpUrl " + httpUrl);
+                    String fileName = "TIM_" + giornata;
+                    JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+                    jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
 
-					fileName = basePathData + fileName + ".csv";
+                    fileName = basePathData + fileName + ".csv";
 
-					jobProcessGiornata.updateCalendarioTim(fileName, giornataInfoFilter.getValue().getCodiceGiornata());
+                    jobProcessGiornata.updateCalendarioTim(fileName, giornataInfoFilter.getValue().getCodiceGiornata());
 
-				} else {
+                } else {
 
-					// **************************************
-					// DOWNLOAD FILE MONDIALE
-					// **************************************
-					String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
-					String urlFanta = (String) p.get("URL_FANTA");
-					String basePath = basePathData;
-					//String quotaz = "Mondiale-Calendario";
-					String quotaz = "europei-calendario";
-					String httpUrl = urlFanta + quotaz + ".asp?GiornataAM=" + giornata + "&Tipolink=0";
-					log.info("httpUrl " + httpUrl);
-					//String fileName = "MONDIALE_" + giornata;
-					String fileName = "EUROPEI_" + giornata;
-					JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-					jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
+                    // **************************************
+                    // DOWNLOAD FILE MONDIALE
+                    // **************************************
+                    String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
+                    String urlFanta = (String) p.get("URL_FANTA");
+                    String basePath = basePathData;
+                    // String quotaz = "Mondiale-Calendario";
+                    String quotaz = "europei-calendario";
+                    String httpUrl = urlFanta + quotaz + ".asp?GiornataAM=" + giornata + "&Tipolink=0";
+                    log.info("httpUrl " + httpUrl);
+                    // String fileName = "MONDIALE_" + giornata;
+                    String fileName = "EUROPEI_" + giornata;
+                    JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+                    jobCsv.downloadCsv(httpUrl, basePath, fileName, 0);
 
-					fileName = basePathData + fileName + ".csv";
+                    fileName = basePathData + fileName + ".csv";
 
-					jobProcessGiornata.updateCalendarioMondiale(fileName,giornataInfoFilter.getValue().getCodiceGiornata());
+                    jobProcessGiornata.updateCalendarioMondiale(fileName,
+                            giornataInfoFilter.getValue().getCodiceGiornata());
 
-				}
+                }
 
-			}
-			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
+            }
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+        }
 
-	}
+    }
 
 }

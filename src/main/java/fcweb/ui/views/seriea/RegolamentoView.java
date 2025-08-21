@@ -40,144 +40,144 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 public class RegolamentoView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private AccessoService accessoController;
+    @Autowired
+    private AccessoService accessoController;
 
-	@Autowired
-	private RegolamentoService regolamentoController;
+    @Autowired
+    private RegolamentoService regolamentoController;
 
-	@Autowired
-	private ResourceLoader resourceLoader;
-	private String html = "";
-	private FcRegolamento regolamento = null;
+    @Autowired
+    private ResourceLoader resourceLoader;
+    private String html = "";
+    private FcRegolamento regolamento = null;
 
-	private VaadinCKEditor decoupledEditor = null;
+    private VaadinCKEditor decoupledEditor = null;
 
-	private Button salvaDb;
+    private Button salvaDb;
 
-	public RegolamentoView() {
-		log.info("RegolamentoView()");
-	}
+    public RegolamentoView() {
+        log.info("RegolamentoView()");
+    }
 
-	@PostConstruct
-	void init() {
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoController.insertAccesso(this.getClass().getName());
-		initData();
-		initLayout();
-	}
+    @PostConstruct
+    void init() {
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
+        accessoController.insertAccesso(this.getClass().getName());
+        initData();
+        initLayout();
+    }
 
-	private void initData() {
-		List<FcRegolamento> l = regolamentoController.findAll();
-		try {
+    private void initData() {
+        List<FcRegolamento> l = regolamentoController.findAll();
+        try {
 
-			BufferedReader br = null;
-			BufferedReader br2 = null;
-			if (l != null && !l.isEmpty()) {
-				FcRegolamento r = l.get(0);
-				regolamento = r;
-				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
-				br2 = new BufferedReader(isr2);
+            BufferedReader br = null;
+            BufferedReader br2 = null;
+            if (l != null && !l.isEmpty()) {
+                FcRegolamento r = l.get(0);
+                regolamento = r;
+                InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
+                br2 = new BufferedReader(isr2);
 
-				if (br2 != null) {
-					String line2 = null;
-					html = "";
-					while ((line2 = br2.readLine()) != null) {
-						html += line2;
-					}
-				}
+                if (br2 != null) {
+                    String line2 = null;
+                    html = "";
+                    while ((line2 = br2.readLine()) != null) {
+                        html += line2;
+                    }
+                }
 
-			} else {
-				Resource resource = resourceLoader.getResource("classpath:html/regolamento3.html");
-				InputStreamReader isr = new InputStreamReader(resource.getInputStream());
-				br = new BufferedReader(isr);
+            } else {
+                Resource resource = resourceLoader.getResource("classpath:html/regolamento3.html");
+                InputStreamReader isr = new InputStreamReader(resource.getInputStream());
+                br = new BufferedReader(isr);
 
-				if (br != null) {
-					String line = null;
-					html = "";
-					while ((line = br.readLine()) != null) {
-						html += line;
-					}
-				}
-			}
-			log.debug(html);
+                if (br != null) {
+                    String line = null;
+                    html = "";
+                    while ((line = br.readLine()) != null) {
+                        html += line;
+                    }
+                }
+            }
+            log.debug(html);
 
-		} catch (Exception ex2) {
-			log.error("ex2 " + ex2.getMessage());
-		}
-	}
+        } catch (Exception ex2) {
+            log.error("ex2 " + ex2.getMessage());
+        }
+    }
 
-	private void initLayout() {
+    private void initLayout() {
 
-		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+        FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 
-		boolean isAdmin = false;
-		for (Role r : attore.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				isAdmin = true;
-				break;
-			}
-		}
+        boolean isAdmin = false;
+        for (Role r : attore.getRoles()) {
+            if (r.equals(Role.ADMIN)) {
+                isAdmin = true;
+                break;
+            }
+        }
 
-		salvaDb = new Button("Salva");
-		salvaDb.setIcon(VaadinIcon.DATABASE.create());
-		salvaDb.addClickListener(this);
-		salvaDb.setVisible(isAdmin);
+        salvaDb = new Button("Salva");
+        salvaDb.setIcon(VaadinIcon.DATABASE.create());
+        salvaDb.addClickListener(this);
+        salvaDb.setVisible(isAdmin);
 
-		this.add(salvaDb);
+        this.add(salvaDb);
 
-		/** Document Editor */
-		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
-			builder.editorType = EditorType.DECOUPLED;
-			// builder.editorData = html;
-		}).createVaadinCKEditor();
-		decoupledEditor.setVisible(isAdmin);
-		decoupledEditor.setValue(html);
+        /** Document Editor */
+        decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
+            builder.editorType = EditorType.DECOUPLED;
+            // builder.editorData = html;
+        }).createVaadinCKEditor();
+        decoupledEditor.setVisible(isAdmin);
+        decoupledEditor.setValue(html);
 
-		this.add(decoupledEditor);
+        this.add(decoupledEditor);
 
-		VerticalLayout previewHtml = new VerticalLayout();
-		try {
-			previewHtml.getElement().setProperty("innerHTML", html);
-			this.add(previewHtml);
-		} catch (Exception ex2) {
-			log.error("ex2 " + ex2.getMessage());
-		}
-	}
+        VerticalLayout previewHtml = new VerticalLayout();
+        try {
+            previewHtml.getElement().setProperty("innerHTML", html);
+            this.add(previewHtml);
+        } catch (Exception ex2) {
+            log.error("ex2 " + ex2.getMessage());
+        }
+    }
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-		try {
-			if (event.getSource() == salvaDb) {
-				log.info("SALVA");
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            if (event.getSource() == salvaDb) {
+                log.info("SALVA");
 
-				String valueHtml = null;
-				valueHtml = decoupledEditor.getValue();
-				log.info(valueHtml);
-				// valueHtml = StringUtils.encodeHtml(valueHtml);
-				// Encoder encoder = Base64.getEncoder();
-				// String encodedString =
-				// encoder.encodeToString(valueHtml.getBytes());
-				// LOG.debug(encodedString);
-				if (regolamento == null) {
-					regolamento = new FcRegolamento();
-				}
-				regolamento.setData(LocalDateTime.now());
-				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+                String valueHtml = null;
+                valueHtml = decoupledEditor.getValue();
+                log.info(valueHtml);
+                // valueHtml = StringUtils.encodeHtml(valueHtml);
+                // Encoder encoder = Base64.getEncoder();
+                // String encodedString =
+                // encoder.encodeToString(valueHtml.getBytes());
+                // LOG.debug(encodedString);
+                if (regolamento == null) {
+                    regolamento = new FcRegolamento();
+                }
+                regolamento.setData(LocalDateTime.now());
+                regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
 
-				regolamentoController.insertRegolamento(regolamento);
+                regolamentoController.insertRegolamento(regolamento);
 
-				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			}
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
+                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            }
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+        }
+    }
 
 }

@@ -7,11 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcAccesso;
 
-public interface AccessoRepository extends CrudRepository<FcAccesso, Long>{
+public interface AccessoRepository extends CrudRepository<FcAccesso, Long> {
 
-	Page<FcAccesso> findAll(Pageable pageable);
+    Page<FcAccesso> findAll(Pageable pageable);
 
-	Iterable<FcAccesso> findAll(Sort sort);
-
+    Iterable<FcAccesso> findAll(Sort sort);
 
 }

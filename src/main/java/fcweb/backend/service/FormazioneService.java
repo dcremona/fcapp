@@ -15,124 +15,125 @@ import fcweb.backend.data.entity.FcRuolo;
 import fcweb.backend.data.entity.FcStatistiche;
 
 @Service
-public class FormazioneService{
+public class FormazioneService {
 
-	private final FormazioneRepository formazioneRepository;
+    private final FormazioneRepository formazioneRepository;
 
-	@Autowired
-	public FormazioneService(FormazioneRepository formazioneRepository) {
-		this.formazioneRepository = formazioneRepository;
-	}
+    @Autowired
+    public FormazioneService(FormazioneRepository formazioneRepository) {
+        this.formazioneRepository = formazioneRepository;
+    }
 
-	public List<FcFormazione> findAll() {
-		List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findAll();
-		return l;
-	}
+    public List<FcFormazione> findAll() {
+        List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findAll();
+        return l;
+    }
 
-	public List<FcFormazione> findByFcCampionato(FcCampionato campionato) {
-		List<FcFormazione> l = formazioneRepository.findByFcCampionato(campionato);
-		return l;
-	}
+    public List<FcFormazione> findByFcCampionato(FcCampionato campionato) {
+        List<FcFormazione> l = formazioneRepository.findByFcCampionato(campionato);
+        return l;
+    }
 
-	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
-			FcCampionato campionato, FcAttore attore) {
-		List<FcFormazione> l = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
-		return l;
-	}
+    public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(FcCampionato campionato,
+            FcAttore attore) {
+        List<FcFormazione> l = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato,
+                attore);
+        return l;
+    }
 
-	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
-			FcCampionato campionato, FcAttore attore, boolean view) {
-		List<FcFormazione> l = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore);
+    public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
+            FcCampionato campionato, FcAttore attore, boolean view) {
+        List<FcFormazione> l = formazioneRepository
+                .findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore);
 
-		if (view) {
+        if (view) {
 
-			List<FcFormazione> lNew = new ArrayList<>();
-			for (FcFormazione f : l) {
-				if (f.getFcGiocatore() != null) {
-					lNew.add(f);
-				} else {
+            List<FcFormazione> lNew = new ArrayList<>();
+            for (FcFormazione f : l) {
+                if (f.getFcGiocatore() != null) {
+                    lNew.add(f);
+                } else {
 
-					FcStatistiche sNew = new FcStatistiche();
-					sNew.setMediaVoto(Double.valueOf(0));
-					sNew.setFantaMedia(Double.valueOf(0));
+                    FcStatistiche sNew = new FcStatistiche();
+                    sNew.setMediaVoto(Double.valueOf(0));
+                    sNew.setFantaMedia(Double.valueOf(0));
 
-					FcRuolo rNew = new FcRuolo();
+                    FcRuolo rNew = new FcRuolo();
 
-					FcGiocatore gNew = new FcGiocatore();
-					gNew.setFcStatistiche(sNew);
-					gNew.setFcRuolo(rNew);
-					gNew.setIdGiocatore(-1);
-					gNew.setQuotazione(Integer.valueOf(0));
+                    FcGiocatore gNew = new FcGiocatore();
+                    gNew.setFcStatistiche(sNew);
+                    gNew.setFcRuolo(rNew);
+                    gNew.setIdGiocatore(-1);
+                    gNew.setQuotazione(Integer.valueOf(0));
 
-					FcFormazione fNew = new FcFormazione();
-					fNew.setTotPagato(Integer.valueOf(0));
-					fNew.setFcGiocatore(gNew);
+                    FcFormazione fNew = new FcFormazione();
+                    fNew.setTotPagato(Integer.valueOf(0));
+                    fNew.setFcGiocatore(gNew);
 
-					fNew.setFcAttore(f.getFcAttore());
-					fNew.setFcCampionato(f.getFcCampionato());
+                    fNew.setFcAttore(f.getFcAttore());
+                    fNew.setFcCampionato(f.getFcCampionato());
 
-					lNew.add(fNew);
-				}
-			}
+                    lNew.add(fNew);
+                }
+            }
 
-			return lNew;
+            return lNew;
 
-		}
+        }
 
-		return l;
+        return l;
 
-	}
+    }
 
-	public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(
-			FcCampionato campionato, FcAttore attore, FcGiocatore giocatore) {
-		FcFormazione l = formazioneRepository.findByFcCampionatoAndFcAttoreAndFcGiocatore(campionato, attore, giocatore);
-		return l;
-	}
+    public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(FcCampionato campionato, FcAttore attore,
+            FcGiocatore giocatore) {
+        FcFormazione l = formazioneRepository.findByFcCampionatoAndFcAttoreAndFcGiocatore(campionato, attore,
+                giocatore);
+        return l;
+    }
 
-	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
-			FcAttore attore) {
-		List<FcFormazione> l = formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
-		return l;
-	}
+    public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(FcAttore attore) {
+        List<FcFormazione> l = formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
+        return l;
+    }
 
-	public String createFormazione(FcAttore attore, Integer idCampionato,
-			Integer ordinamento) {
-		String id = "";
-		try {
-			FcFormazione formazione = new FcFormazione();
-			FcFormazioneId formazionePK = new FcFormazioneId();
-			formazionePK.setIdCampionato(idCampionato);
-			formazionePK.setIdAttore(attore.getIdAttore());
-			formazionePK.setOrdinamento(ordinamento);
-			formazione.setId(formazionePK);
-			formazioneRepository.save(formazione);
-			id = formazionePK.getOrdinamento() + " " + formazionePK.getIdAttore();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return "Error creating the formazione: " + ex.toString();
-		}
-		return "formazione succesfully created with id = " + id;
-	}
+    public String createFormazione(FcAttore attore, Integer idCampionato, Integer ordinamento) {
+        String id = "";
+        try {
+            FcFormazione formazione = new FcFormazione();
+            FcFormazioneId formazionePK = new FcFormazioneId();
+            formazionePK.setIdCampionato(idCampionato);
+            formazionePK.setIdAttore(attore.getIdAttore());
+            formazionePK.setOrdinamento(ordinamento);
+            formazione.setId(formazionePK);
+            formazioneRepository.save(formazione);
+            id = formazionePK.getOrdinamento() + " " + formazionePK.getIdAttore();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "Error creating the formazione: " + ex.toString();
+        }
+        return "formazione succesfully created with id = " + id;
+    }
 
-	public FcFormazione updateFormazione(FcFormazione c) {
-		FcFormazione giocatore = null;
-		try {
-			giocatore = formazioneRepository.save(c);
-		} catch (Exception ex) {
-			return giocatore;
-		}
-		return giocatore;
-	}
+    public FcFormazione updateFormazione(FcFormazione c) {
+        FcFormazione giocatore = null;
+        try {
+            giocatore = formazioneRepository.save(c);
+        } catch (Exception ex) {
+            return giocatore;
+        }
+        return giocatore;
+    }
 
-	public String deleteFormazione(FcFormazione c) {
-		String id = "";
-		try {
-			formazioneRepository.delete(c);
-			id = "" + c.getId().getOrdinamento();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
-		}
-		return "Formazione succesfully delete with id = " + id;
-	}
+    public String deleteFormazione(FcFormazione c) {
+        String id = "";
+        try {
+            formazioneRepository.delete(c);
+            id = "" + c.getId().getOrdinamento();
+        } catch (Exception ex) {
+            return "Error delete : " + ex.toString();
+        }
+        return "Formazione succesfully delete with id = " + id;
+    }
 
 }

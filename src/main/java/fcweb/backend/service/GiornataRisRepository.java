@@ -12,20 +12,19 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcGiornataRis;
 import fcweb.backend.data.entity.FcGiornataRisId;
 
-public interface GiornataRisRepository
-		extends CrudRepository<FcGiornataRis, FcGiornataRisId>{
+public interface GiornataRisRepository extends CrudRepository<FcGiornataRis, FcGiornataRisId> {
 
-	Page<FcGiornataRis> findAll(Pageable pageable);
+    Page<FcGiornataRis> findAll(Pageable pageable);
 
-	Iterable<FcGiornataRis> findAll(Sort sort);
+    Iterable<FcGiornataRis> findAll(Sort sort);
 
-	public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoAsc(FcAttore fcAttore);
+    public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoAsc(FcAttore fcAttore);
 
-	public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoDesc(FcAttore fcAttore);
+    public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoDesc(FcAttore fcAttore);
 
-	public List<FcGiornataRis> findByFcGiornataInfoOrderByFcGiornataInfo(FcGiornataInfo giornataInfo);
+    public List<FcGiornataRis> findByFcGiornataInfoOrderByFcGiornataInfo(FcGiornataInfo giornataInfo);
 
-	public List<FcGiornataRis> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(
-			FcGiornataInfo start, FcGiornataInfo end);
+    public List<FcGiornataRis> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(FcGiornataInfo start,
+            FcGiornataInfo end);
 
 }

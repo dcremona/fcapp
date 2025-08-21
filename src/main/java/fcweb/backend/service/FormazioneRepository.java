@@ -13,27 +13,25 @@ import fcweb.backend.data.entity.FcFormazione;
 import fcweb.backend.data.entity.FcFormazioneId;
 import fcweb.backend.data.entity.FcGiocatore;
 
-public interface FormazioneRepository extends CrudRepository<FcFormazione, FcFormazioneId>{
+public interface FormazioneRepository extends CrudRepository<FcFormazione, FcFormazioneId> {
 
-	Page<FcFormazione> findAll(Pageable pageable);
+    Page<FcFormazione> findAll(Pageable pageable);
 
-	Iterable<FcFormazione> findAll(Sort sort);
+    Iterable<FcFormazione> findAll(Sort sort);
 
-	public List<FcFormazione> findByFcCampionato(FcCampionato campionato);
+    public List<FcFormazione> findByFcCampionato(FcCampionato campionato);
 
-	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
-			FcCampionato campionato, FcAttore attore);
+    public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(FcCampionato campionato,
+            FcAttore attore);
 
-	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
-			FcCampionato campionato, FcAttore attore);
+    public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
+            FcCampionato campionato, FcAttore attore);
 
-	public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(FcCampionato campionato,
-			FcAttore attore,FcGiocatore giocatore);
+    public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(FcCampionato campionato, FcAttore attore,
+            FcGiocatore giocatore);
 
-	public List<FcFormazione> findByFcCampionatoAndFcGiocatore(FcCampionato campionato,
-			FcGiocatore giocatore);
+    public List<FcFormazione> findByFcCampionatoAndFcGiocatore(FcCampionato campionato, FcGiocatore giocatore);
 
-	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
-			FcAttore attore);
+    public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(FcAttore attore);
 
 }

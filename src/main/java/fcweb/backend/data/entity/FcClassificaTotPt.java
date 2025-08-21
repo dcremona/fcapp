@@ -16,169 +16,167 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_classifica_tot_pt")
-public class FcClassificaTotPt implements java.io.Serializable{
+public class FcClassificaTotPt implements java.io.Serializable {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	private FcClassificaTotPtId id;
-	private FcAttore fcAttore;
-	private FcCampionato fcCampionato;
-	private FcGiornataInfo fcGiornataInfo;
-	private int score;
-	private int scoreGrandPrix;
-	private int scoreOld;
-	private Double totPt;
-	private Double totPtOld;
-	private Double totPtRosa;
-	private int goal;
-	private int ptTvsT;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private FcClassificaTotPtId id;
+    private FcAttore fcAttore;
+    private FcCampionato fcCampionato;
+    private FcGiornataInfo fcGiornataInfo;
+    private int score;
+    private int scoreGrandPrix;
+    private int scoreOld;
+    private Double totPt;
+    private Double totPtOld;
+    private Double totPtRosa;
+    private int goal;
+    private int ptTvsT;
 
-	public FcClassificaTotPt() {
-	}
+    public FcClassificaTotPt() {
+    }
 
-	public FcClassificaTotPt(FcClassificaTotPtId id, FcAttore fcAttore,
-			FcCampionato fcCampionato, FcGiornataInfo fcGiornataInfo, int score,
-			int scoreGrandPrix, int scoreOld) {
-		this.id = id;
-		this.fcAttore = fcAttore;
-		this.fcCampionato = fcCampionato;
-		this.fcGiornataInfo = fcGiornataInfo;
-		this.score = score;
-		this.scoreGrandPrix = scoreGrandPrix;
-		this.scoreOld = scoreOld;
-	}
+    public FcClassificaTotPt(FcClassificaTotPtId id, FcAttore fcAttore, FcCampionato fcCampionato,
+            FcGiornataInfo fcGiornataInfo, int score, int scoreGrandPrix, int scoreOld) {
+        this.id = id;
+        this.fcAttore = fcAttore;
+        this.fcCampionato = fcCampionato;
+        this.fcGiornataInfo = fcGiornataInfo;
+        this.score = score;
+        this.scoreGrandPrix = scoreGrandPrix;
+        this.scoreOld = scoreOld;
+    }
 
-	public FcClassificaTotPt(FcClassificaTotPtId id, FcAttore fcAttore,
-			FcCampionato fcCampionato, FcGiornataInfo fcGiornataInfo, int score,
-			int scoreGrandPrix, int scoreOld, Double totPt, Double totPtOld,
-			Double totPtRosa) {
-		this.id = id;
-		this.fcAttore = fcAttore;
-		this.fcCampionato = fcCampionato;
-		this.fcGiornataInfo = fcGiornataInfo;
-		this.score = score;
-		this.scoreGrandPrix = scoreGrandPrix;
-		this.scoreOld = scoreOld;
-		this.totPt = totPt;
-		this.totPtOld = totPtOld;
-		this.totPtRosa = totPtRosa;
-	}
+    public FcClassificaTotPt(FcClassificaTotPtId id, FcAttore fcAttore, FcCampionato fcCampionato,
+            FcGiornataInfo fcGiornataInfo, int score, int scoreGrandPrix, int scoreOld, Double totPt, Double totPtOld,
+            Double totPtRosa) {
+        this.id = id;
+        this.fcAttore = fcAttore;
+        this.fcCampionato = fcCampionato;
+        this.fcGiornataInfo = fcGiornataInfo;
+        this.score = score;
+        this.scoreGrandPrix = scoreGrandPrix;
+        this.scoreOld = scoreOld;
+        this.totPt = totPt;
+        this.totPtOld = totPtOld;
+        this.totPtRosa = totPtRosa;
+    }
 
-	@EmbeddedId
+    @EmbeddedId
 
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
-	public FcClassificaTotPtId getId() {
-		return this.id;
-	}
+    @AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)),
+            @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)),
+            @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
+    public FcClassificaTotPtId getId() {
+        return this.id;
+    }
 
-	public void setId(FcClassificaTotPtId id) {
-		this.id = id;
-	}
+    public void setId(FcClassificaTotPtId id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
-	public FcAttore getFcAttore() {
-		return this.fcAttore;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
+    public FcAttore getFcAttore() {
+        return this.fcAttore;
+    }
 
-	public void setFcAttore(FcAttore fcAttore) {
-		this.fcAttore = fcAttore;
-	}
+    public void setFcAttore(FcAttore fcAttore) {
+        this.fcAttore = fcAttore;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
-	public FcCampionato getFcCampionato() {
-		return this.fcCampionato;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
+    public FcCampionato getFcCampionato() {
+        return this.fcCampionato;
+    }
 
-	public void setFcCampionato(FcCampionato fcCampionato) {
-		this.fcCampionato = fcCampionato;
-	}
+    public void setFcCampionato(FcCampionato fcCampionato) {
+        this.fcCampionato = fcCampionato;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
-	public FcGiornataInfo getFcGiornataInfo() {
-		return this.fcGiornataInfo;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
+    public FcGiornataInfo getFcGiornataInfo() {
+        return this.fcGiornataInfo;
+    }
 
-	public void setFcGiornataInfo(FcGiornataInfo fcGiornataInfo) {
-		this.fcGiornataInfo = fcGiornataInfo;
-	}
+    public void setFcGiornataInfo(FcGiornataInfo fcGiornataInfo) {
+        this.fcGiornataInfo = fcGiornataInfo;
+    }
 
-	@Column(name = "score", nullable = false, columnDefinition = "int default 0")
-	public int getScore() {
-		return this.score;
-	}
+    @Column(name = "score", nullable = false, columnDefinition = "int default 0")
+    public int getScore() {
+        return this.score;
+    }
 
-	public void setScore(int score) {
-		this.score = score;
-	}
+    public void setScore(int score) {
+        this.score = score;
+    }
 
-	@Column(name = "score_grand_prix", nullable = false, columnDefinition = "int default 0")
-	public int getScoreGrandPrix() {
-		return this.scoreGrandPrix;
-	}
+    @Column(name = "score_grand_prix", nullable = false, columnDefinition = "int default 0")
+    public int getScoreGrandPrix() {
+        return this.scoreGrandPrix;
+    }
 
-	public void setScoreGrandPrix(int scoreGrandPrix) {
-		this.scoreGrandPrix = scoreGrandPrix;
-	}
+    public void setScoreGrandPrix(int scoreGrandPrix) {
+        this.scoreGrandPrix = scoreGrandPrix;
+    }
 
-	@Column(name = "score_old", nullable = false, columnDefinition = "int default 0")
-	public int getScoreOld() {
-		return this.scoreOld;
-	}
+    @Column(name = "score_old", nullable = false, columnDefinition = "int default 0")
+    public int getScoreOld() {
+        return this.scoreOld;
+    }
 
-	public void setScoreOld(int scoreOld) {
-		this.scoreOld = scoreOld;
-	}
+    public void setScoreOld(int scoreOld) {
+        this.scoreOld = scoreOld;
+    }
 
-	@Column(name = "tot_pt", precision = 22, scale = 0)
-	public Double getTotPt() {
-		return this.totPt;
-	}
+    @Column(name = "tot_pt", precision = 22, scale = 0)
+    public Double getTotPt() {
+        return this.totPt;
+    }
 
-	public void setTotPt(Double totPt) {
-		this.totPt = totPt;
-	}
+    public void setTotPt(Double totPt) {
+        this.totPt = totPt;
+    }
 
-	@Column(name = "tot_pt_old", precision = 22, scale = 0)
-	public Double getTotPtOld() {
-		return this.totPtOld;
-	}
+    @Column(name = "tot_pt_old", precision = 22, scale = 0)
+    public Double getTotPtOld() {
+        return this.totPtOld;
+    }
 
-	public void setTotPtOld(Double totPtOld) {
-		this.totPtOld = totPtOld;
-	}
+    public void setTotPtOld(Double totPtOld) {
+        this.totPtOld = totPtOld;
+    }
 
-	@Column(name = "tot_pt_rosa", precision = 22, scale = 0)
-	public Double getTotPtRosa() {
-		return this.totPtRosa;
-	}
+    @Column(name = "tot_pt_rosa", precision = 22, scale = 0)
+    public Double getTotPtRosa() {
+        return this.totPtRosa;
+    }
 
-	public void setTotPtRosa(Double totPtRosa) {
-		this.totPtRosa = totPtRosa;
-	}
+    public void setTotPtRosa(Double totPtRosa) {
+        this.totPtRosa = totPtRosa;
+    }
 
-	@Column(name = "goal", nullable = false, columnDefinition = "int default 0")
-	public int getGoal() {
-		return this.goal;
-	}
+    @Column(name = "goal", nullable = false, columnDefinition = "int default 0")
+    public int getGoal() {
+        return this.goal;
+    }
 
-	public void setGoal(int goal) {
-		this.goal = goal;
-	}
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
 
-	@Column(name = "ptTvsT", nullable = false, columnDefinition = "int default 0")
-	public int getPtTvsT() {
-		return ptTvsT;
-	}
+    @Column(name = "ptTvsT", nullable = false, columnDefinition = "int default 0")
+    public int getPtTvsT() {
+        return ptTvsT;
+    }
 
-	public void setPtTvsT(int ptTvsT) {
-		this.ptTvsT = ptTvsT;
-	}
-
-
+    public void setPtTvsT(int ptTvsT) {
+        this.ptTvsT = ptTvsT;
+    }
 
 }

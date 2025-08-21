@@ -10,21 +10,18 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcCalendarioCompetizione;
 
-public interface CalendarioCompetizioneRepository
-		extends CrudRepository<FcCalendarioCompetizione, Long>{
+public interface CalendarioCompetizioneRepository extends CrudRepository<FcCalendarioCompetizione, Long> {
 
-	Page<FcCalendarioCompetizione> findAll(Pageable pageable);
+    Page<FcCalendarioCompetizione> findAll(Pageable pageable);
 
-	Iterable<FcCalendarioCompetizione> findAll(Sort sort);
+    Iterable<FcCalendarioCompetizione> findAll(Sort sort);
 
-	public List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata);
+    public List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata);
 
-	public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(int idGiornata);
+    public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(int idGiornata);
 
-	public List<FcCalendarioCompetizione> findByIdGiornataAndDataGreaterThanEqual(
-			int idGiornata, LocalDateTime data);
+    public List<FcCalendarioCompetizione> findByIdGiornataAndDataGreaterThanEqual(int idGiornata, LocalDateTime data);
 
-	public List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(
-			int idGiornata, LocalDateTime data);
+    public List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(int idGiornata, LocalDateTime data);
 
 }

@@ -3,11 +3,13 @@ package fcweb.backend.job;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -24,211 +26,211 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class JobProcessFileCsv{
+public class JobProcessFileCsv {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JobProcessFileCsv.class);
+    private static final Logger log = LoggerFactory.getLogger(JobProcessFileCsv.class);
 
-	final static int size = 1024;
+    private static final int SIZE = 1024;
 
-	public void downloadCsv(String http_url, String path_csv, String fileName,
-			int headCount) throws Exception {
+    private static final String EXT_HTML = ".html";
+    private static final String EXT_CSV = ".csv";
 
-		LOG.info("downloadCsv START");
+    public void downloadCsv(String httpUrl, String pathCsv, String fileName, int headCount) throws Exception {
 
-		File input = null;
-		try {
-			fileDownload(http_url, fileName + ".html", path_csv);
-			input = new File(path_csv + fileName + ".html");
-			// input = new File(path_csv + "Quotazioni Giocatori - 15 giornata -
-			// 2022_2023 - QATAR 2022.html");
-		} catch (Exception ex) {
-			LOG.error(ex.getMessage());
-		}
+        log.info("downloadCsv START");
 
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        File input = null;
+        try {
+            fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
+            input = new File(pathCsv + fileName + EXT_HTML);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
 
-		// select all <tr> or Table Row Elements
-		Elements tableRows = doc.select("table");
+        StringBuilder data = new StringBuilder();
 
-		String data = "";
-		// Load ArrayList with table row strings
-		for (Element tableRow : tableRows) {
+        Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
 
-			Elements trRows = tableRow.select("tr");
-			int conta = 0;
-			for (Element trRow : trRows) {
-				conta++;
-				if (conta > headCount) {
-					Elements tdRows = trRow.select("td");
-					for (Element tdRow : tdRows) {
-						String rowData = tdRow.text();
-						if (StringUtils.isEmpty(rowData)) {
-							Elements img = tdRow.select("img");
-							rowData = img.attr("title");
-							if (StringUtils.isEmpty(rowData)) {
-								rowData = img.attr("alt");
-							}
-						}
-						// LOG.debug(rowData);
-						data += rowData + ";";
-					}
-					data += "\n";
-				}
-			}
-		}
+        // select all <tr> or Table Row Elements
+        Elements tableRows = doc.select("table");
 
-		FileOutputStream outputStream = null;
-		try {
-			// DELETE
-			File f = new File(path_csv + fileName + ".csv");
-			if (f.exists()) {
-				f.delete();
-			}
-			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
-			byte[] strToBytes = data.getBytes();
-			outputStream.write(strToBytes);
+        // Load ArrayList with table row strings
+        for (Element tableRow : tableRows) {
 
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
-		}
-	}
+            Elements trRows = tableRow.select("tr");
+            int conta = 0;
+            for (Element trRow : trRows) {
+                conta++;
+                if (conta > headCount) {
+                    Elements tdRows = trRow.select("td");
+                    for (Element tdRow : tdRows) {
+                        String rowData = tdRow.text();
+                        if (StringUtils.isEmpty(rowData)) {
+                            Elements img = tdRow.select("img");
+                            rowData = img.attr("title");
+                            if (StringUtils.isEmpty(rowData)) {
+                                rowData = img.attr("alt");
+                            }
+                        }
+                        data.append(rowData);
+                        data.append(";");
+                    }
+                    data.append("\n");
+                }
+            }
+        }
 
-	public void downloadCsvSqualificatiInfortunati(String http_url,
-			String path_csv, String fileName) throws Exception {
+        FileOutputStream outputStream = null;
+        try {
+            Path path = Paths.get(pathCsv + fileName + EXT_CSV);
+            Files.delete(path);
 
-		String data = "";
+            outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+            byte[] strToBytes = data.toString().getBytes();
+            outputStream.write(strToBytes);
 
-		LOG.info("downloadCsvSqualificatiInfortunati START");
-		File input = null;
-		try {
-			fileDownload(http_url, fileName + ".html", path_csv);
-			input = new File(path_csv + fileName + ".html");
-		} catch (Exception ex) {
-			LOG.error(ex.getMessage());
-		}
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
-		// select all <tr> or Table Row Elements
-		Elements tableRows = doc.select("table");
-		// Load ArrayList with table row strings
-		for (Element tableRow : tableRows) {
-			Elements trRows = tableRow.select("tr");
-			for (Element trRow : trRows) {
-				Elements tdRows = trRow.select("td");
-				boolean bFind = false;
-				String nomegic = null;
-				for (Element tdRow : tdRows) {
-					if (bFind) {
-						String rowData = tdRow.text();
-						data += nomegic + ";"+rowData+"\n";
-						bFind = false;
-						nomegic = null;
-					}
-					Elements children = tdRow.children();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
 
-					for (Element c : children) {
-						String href = c.attr("href");
-						if (StringUtils.isNotEmpty(href)) {
-							int idx = href.indexOf("nomegio=");
-							if (idx != -1) {
-								href = href.substring(idx, href.length());
-								idx = href.indexOf("=");
-								if (idx != -1) {
-									nomegic = href.substring(idx + 1, href.length());
-									LOG.info(nomegic);
-									bFind = true ;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+        log.info("downloadCsv END");
+    }
 
-		FileOutputStream outputStream = null;
-		try {
-			// DELETE
-			File f = new File(path_csv + fileName + ".csv");
-			if (f.exists()) {
-				f.delete();
-			}
-			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
-			byte[] strToBytes = data.getBytes();
-			outputStream.write(strToBytes);
+    public void downloadCsvSqualificatiInfortunati(String httpUrl, String pathCsv, String fileName) throws Exception {
 
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
-		}
-	}
+        log.info("downloadCsvSqualificatiInfortunati START");
 
-	private void fileDownload(String fAddress, String localFileName,
-			String destinationDir) throws Exception {
+        File input = null;
+        try {
+            fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
+            input = new File(pathCsv + fileName + EXT_HTML);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
 
-		// Create a new trust manager that trust all certificates
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager(){
-			@Override
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
+        StringBuilder data = new StringBuilder();
 
-			@Override
-			public void checkClientTrusted(
-					java.security.cert.X509Certificate[] certs,
-					String authType) {
-			}
+        Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        // select all <tr> or Table Row Elements
+        Elements tableRows = doc.select("table");
+        // Load ArrayList with table row strings
+        for (Element tableRow : tableRows) {
+            Elements trRows = tableRow.select("tr");
+            for (Element trRow : trRows) {
+                Elements tdRows = trRow.select("td");
+                boolean bFind = false;
+                String nomegic = null;
+                for (Element tdRow : tdRows) {
+                    if (bFind) {
+                        String rowData = tdRow.text();
+                        data.append(nomegic);
+                        data.append(";");
+                        data.append(rowData);
+                        data.append("\n");
+                        bFind = false;
+                        nomegic = null;
+                    }
+                    Elements children = tdRow.children();
 
-			@Override
-			public void checkServerTrusted(
-					java.security.cert.X509Certificate[] certs,
-					String authType) {
-			}
-		} };
+                    for (Element c : children) {
+                        String href = c.attr("href");
+                        if (StringUtils.isNotEmpty(href)) {
+                            int idx = href.indexOf("nomegio=");
+                            if (idx != -1) {
+                                href = href.substring(idx, href.length());
+                                idx = href.indexOf("=");
+                                if (idx != -1) {
+                                    nomegic = href.substring(idx + 1, href.length());
+                                    log.info(nomegic);
+                                    bFind = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		// Activate the new trust manager
-		try {
-			SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, trustAllCerts, new java.security.SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch (Exception e) {
-		}
+        FileOutputStream outputStream = null;
+        try {
+            Path path = Paths.get(pathCsv + fileName + EXT_CSV);
+            Files.delete(path);
 
-		OutputStream outStream = null;
-		URLConnection uCon = null;
+            outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+            byte[] strToBytes = data.toString().getBytes();
+            outputStream.write(strToBytes);
 
-		InputStream is = null;
-		try {
-			URL Url;
-			byte[] buf;
-			int ByteRead,ByteWritten = 0;
-			Url = new URL(fAddress);
-			outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
 
-			uCon = Url.openConnection();
-			is = uCon.getInputStream();
-			buf = new byte[size];
-			while ((ByteRead = is.read(buf)) != -1) {
-				outStream.write(buf, 0, ByteRead);
-				ByteWritten += ByteRead;
-			}
-			LOG.info("Downloaded Successfully.");
-			LOG.debug("File name:\"" + localFileName + "\"\nNo ofbytes :" + ByteWritten);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-				outStream.close();
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
-			}
-		}
-	}
+        log.info("downloadCsvSqualificatiInfortunati END");
+    }
+
+    private void fileDownload(String fAddress, String localFileName, String destinationDir) throws Exception {
+
+        // Create a new trust manager that trust all certificates
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+            }
+        } };
+
+        // Activate the new trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+        }
+
+        OutputStream outStream = null;
+        URLConnection uCon = null;
+        InputStream is = null;
+
+        try {
+            byte[] buf;
+            int byteRead = 0;
+            int byteWritten = 0;
+            URL url = new URL(fAddress);
+            outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName));
+
+            uCon = url.openConnection();
+            is = uCon.getInputStream();
+            buf = new byte[SIZE];
+            while ((byteRead = is.read(buf)) != -1) {
+                outStream.write(buf, 0, byteRead);
+                byteWritten += byteRead;
+            }
+            log.info("File name: " + localFileName + " bytes: " + byteWritten);
+            log.info("Downloaded Successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+            if (outStream != null) {
+                outStream.close();
+            }
+        }
+    }
 
 }
