@@ -38,12 +38,15 @@ import common.util.Utils;
 import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcFormazione;
 import fcweb.backend.data.entity.FcGiocatore;
+import fcweb.backend.data.entity.FcGiornataGiocatore;
+import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcRuolo;
 import fcweb.backend.data.entity.FcSquadra;
 import fcweb.backend.data.entity.FcStatistiche;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.GiocatoreService;
+import fcweb.backend.service.GiornataGiocatoreService;
 import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
@@ -79,6 +82,13 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
     @Autowired
     private AccessoService accessoController;
 
+    @Autowired
+    private GiornataGiocatoreService giornataGiocatoreService;
+
+    private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<>();
+
+    private FcGiornataInfo giornataInfo = null;
+
     public FreePlayersView() {
     }
 
@@ -90,6 +100,15 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         }
         accessoController.insertAccesso(this.getClass().getName());
         initLayout();
+
+        initData();
+    }
+
+    private void initData() {
+
+        giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+
+        listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
     }
 
     private void initLayout() {
@@ -252,7 +271,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "-");
         cognGiocatoreColumn.setKey("cognGiocatore");
         cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
-        cognGiocatoreColumn.setSortable(false);
+        cognGiocatoreColumn.setSortable(true);
         cognGiocatoreColumn.setAutoWidth(true);
 
         Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
@@ -288,6 +307,32 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         quotazioneColumn.setHeader("Quotazione");
         quotazioneColumn.setAutoWidth(true);
         quotazioneColumn.setSortable(true);
+
+        Column<FcGiocatore> nomeGiocatoreColumn = grid.addColumn(g -> g != null ? g.getNomeGiocatore() : "-");
+        nomeGiocatoreColumn.setKey("nomeGiocatore");
+        nomeGiocatoreColumn.setHeader(Costants.INFO);
+        nomeGiocatoreColumn.setSortable(true);
+        nomeGiocatoreColumn.setAutoWidth(true);
+
+        Column<FcGiocatore> probabileGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+            HorizontalLayout cellLayout = new HorizontalLayout();
+            cellLayout.setMargin(false);
+            cellLayout.setPadding(false);
+            cellLayout.setSpacing(false);
+            cellLayout.setAlignItems(Alignment.STRETCH);
+            if (g != null) {
+                FcGiornataGiocatore gg = isGiocatoreOut(g);
+                if (gg != null) {
+                    cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
+                    cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+                    cellLayout.add(getImageGiocatoreOut(gg));
+                }
+            }
+            return cellLayout;
+        }));
+        probabileGiocatoreColumn.setHeader("");
+        probabileGiocatoreColumn.setSortable(false);
+        probabileGiocatoreColumn.setAutoWidth(true);
 
         Column<FcGiocatore> giocateColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGiocate() : 0);
@@ -465,6 +510,39 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         } catch (Exception e) {
             CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
         }
+    }
+
+    private FcGiornataGiocatore isGiocatoreOut(FcGiocatore giocatore) {
+        for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
+            if (gg.getFcGiocatore().getIdGiocatore() == giocatore.getIdGiocatore()) {
+                return gg;
+            }
+        }
+        return null;
+    }
+
+    private Image getImageGiocatoreOut(FcGiornataGiocatore gg) {
+        Image img = null;
+        if (gg != null) {
+            if (gg.isInfortunato()) {
+                if (gg.getNote().indexOf("INCERTO") != -1) {
+                    img = Utils.buildImage("help.png",
+                            resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/" + "help.png"));
+                    img.setTitle(gg.getNote());
+                } else {
+                    img = Utils.buildImage("ospedale_s.png",
+                            resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png"));
+                    img.setTitle(gg.getNote());
+                }
+
+            } else if (gg.isSqualificato()) {
+                img = Utils.buildImage("esp_s.png",
+                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png"));
+                img.setTitle(gg.getNote());
+
+            }
+        }
+        return img;
     }
 
 }

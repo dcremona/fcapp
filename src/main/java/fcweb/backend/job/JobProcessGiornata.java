@@ -3919,7 +3919,8 @@ public class JobProcessGiornata {
             Integer idGiornata = g.getId().getIdGiornata();
             Integer idAttoreCasa = g.getFcAttoreByIdAttoreCasa().getIdAttore();
             Integer idAttoreFuori = g.getFcAttoreByIdAttoreFuori().getIdAttore();
-            //log.debug(idGiornata + " " + mapSquadre.get(idAttoreCasa) + "  " + mapSquadre.get(idAttoreFuori));
+            // log.debug(idGiornata + " " + mapSquadre.get(idAttoreCasa) + " " +
+            // mapSquadre.get(idAttoreFuori));
 
             String sqlA = "insert into fc_giornata (ID_GIORNATA,ID_ATTORE_CASA,ID_ATTORE_FUORI,ID_TIPO_GIORNATA) Values  ("
                     + idGiornata + "," + idAttoreCasa + "," + idAttoreFuori + ",0) ";
@@ -4367,4 +4368,73 @@ public class JobProcessGiornata {
             }
         }
     }
+
+    public void initDbProbabili(FcGiornataInfo giornataInfo, String fileName) throws Exception {
+
+        log.info("START initDbProbabili");
+
+        FileReader fileReader = null;
+        CSVParser csvFileParser = null;
+
+        // Create the CSVFormat object with the header mapping
+        @SuppressWarnings("deprecation")
+        CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
+
+        try {
+
+            // initialize FileReader object
+            fileReader = new FileReader(fileName);
+
+            // initialize CSVParser object
+            csvFileParser = new CSVParser(fileReader, csvFileFormat);
+
+            // Get a list of CSV file records
+            List<CSVRecord> csvRecords = csvFileParser.getRecords();
+
+            boolean boolPanchina = false;
+            for (CSVRecord record : csvRecords) {
+                String cognGiocatore = record.get(0);
+
+                if (Costants.TITOLARI.equals(cognGiocatore) || Costants.PANCHINA.equals(cognGiocatore)) {
+
+                    if (Costants.PANCHINA.equals(cognGiocatore)) {
+                        boolPanchina = true;
+                    } else if (Costants.TITOLARI.equals(cognGiocatore)) {
+                        boolPanchina = false;
+                    }
+                    continue;
+                }
+
+                List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+                if (listGiocatore != null && !listGiocatore.isEmpty()) {
+                    FcGiocatore giocatore = listGiocatore.get(0);
+                    if (giocatore != null) {
+                        giocatore.setNomeGiocatore(boolPanchina ? Costants.PANCHINA : Costants.TITOLARE);
+                        giocatoreRepository.save(giocatore);
+                    } else {
+                        log.info("cognGiocatore " + cognGiocatore);        
+                    }
+
+                } else {
+                    log.info("cognGiocatore " + cognGiocatore);        
+                }
+            }
+
+            log.info("END initDbProbabili");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Error in initDbProbabili !!!");
+            throw e;
+        } finally {
+
+            if (fileReader != null) {
+                fileReader.close();
+            }
+            if (csvFileParser != null) {
+                csvFileParser.close();
+            }
+        }
+    }
+
 }

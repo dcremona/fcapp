@@ -104,6 +104,7 @@ public class Costants {
     public static final String R = "R";
     public static final String Q = "Q";
     public static final String TOTALE = "Totale";
+    public static final String INFO = "Info";
 
     public static final String P = "P";
     public static final String D = "C";
@@ -118,5 +119,9 @@ public class Costants {
     public static final String WIDTH_190 = "190px";
     public static final String WIDTH_205 = "205px";
     public static final String WIDTH_240 = "240px";
+
+    public static final String TITOLARE = "TITOLARE";
+    public static final String TITOLARI = "TITOLARI";
+    public static final String PANCHINA = "PANCHINA";
 
 }

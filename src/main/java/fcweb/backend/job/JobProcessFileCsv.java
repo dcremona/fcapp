@@ -7,9 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -24,6 +21,8 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+
+import fcweb.utils.Costants;
 
 @Controller
 public class JobProcessFileCsv {
@@ -82,8 +81,11 @@ public class JobProcessFileCsv {
 
         FileOutputStream outputStream = null;
         try {
-            Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-            Files.delete(path);
+            // DELETE
+            File f = new File(pathCsv + fileName + EXT_CSV);
+            if (f.exists()) {
+                f.delete();
+            }
 
             outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
             byte[] strToBytes = data.toString().getBytes();
@@ -157,8 +159,11 @@ public class JobProcessFileCsv {
 
         FileOutputStream outputStream = null;
         try {
-            Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-            Files.delete(path);
+            // DELETE
+            File f = new File(pathCsv + fileName + EXT_CSV);
+            if (f.exists()) {
+                f.delete();
+            }
 
             outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
             byte[] strToBytes = data.toString().getBytes();
@@ -173,6 +178,74 @@ public class JobProcessFileCsv {
         }
 
         log.info("downloadCsvSqualificatiInfortunati END");
+    }
+
+    public void downloadCsvProbabili(String httpUrl, String pathCsv, String fileName) throws Exception {
+
+        log.info("downloadCsvProbabili START");
+
+        File input = null;
+        try {
+            fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
+            input = new File(pathCsv + fileName + EXT_HTML);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
+
+        StringBuilder data = new StringBuilder();
+
+        Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        // select all <tr> or Table Row Elements
+        Elements tableRows = doc.select("table");
+        // Load ArrayList with table row strings
+        for (Element tableRow : tableRows) {
+            Elements trRows = tableRow.select("tr");
+            for (Element trRow : trRows) {
+                Elements thRows = trRow.select("th");
+                for (Element tdRow : thRows) {
+                    String rowData = tdRow.text();
+                    if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && (Costants.TITOLARI.equals(rowData) || Costants.PANCHINA.equals(rowData))) {
+                        data.append(rowData);
+                        data.append(";");
+                        data.append(rowData);
+                        data.append("\n");
+                    }
+                }
+                
+                Elements tdRows = trRow.select("td");
+                for (Element tdRow : tdRows) {
+                    String rowData = tdRow.text();
+                    if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1) {
+                        data.append(rowData);
+                        data.append(";");
+                        data.append(rowData);
+                        data.append("\n");
+                    }
+                }
+            }
+        }
+
+        FileOutputStream outputStream = null;
+        try {
+            // DELETE
+            File f = new File(pathCsv + fileName + EXT_CSV);
+            if (f.exists()) {
+                f.delete();
+            }
+
+            outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+            byte[] strToBytes = data.toString().getBytes();
+            outputStream.write(strToBytes);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+
+        log.info("downloadCsvProbabili END");
     }
 
     private void fileDownload(String fAddress, String localFileName, String destinationDir) throws Exception {

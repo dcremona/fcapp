@@ -214,6 +214,19 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
                 tableInfortunati.setItems(listInfortunati);
                 tableInfortunati.getDataProvider().refreshAll();
 
+                
+                // **************************************
+                // DOWNLOAD FILE PROBABILI
+                // **************************************
+
+                String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
+                log.info("httpUrlProbabili " + httpUrlProbabili);
+                String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
+                jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+
+                fileName = basePathData + fileName3 + ".csv";
+                jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+
             }
         } catch (Exception e) {
             CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
