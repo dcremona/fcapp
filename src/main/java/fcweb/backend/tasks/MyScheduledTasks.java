@@ -264,5 +264,14 @@ public class MyScheduledTasks {
 
         log.info("jobSqualificaInfortunati end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
     }
+    
+    
+//    @Scheduled(cron = "*/120 * * * * *")
+//    public void jobTest() throws Exception {
+//
+//        log.info("jobTest start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//
+//        log.info("jobTest end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//    }
 
 }

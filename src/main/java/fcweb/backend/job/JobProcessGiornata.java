@@ -746,9 +746,8 @@ public class JobProcessGiornata {
                 if (StringUtils.isNotEmpty(idGiocatore)) {
                     giocatore = this.giocatoreRepository.findByIdGiocatore(Integer.parseInt(idGiocatore));
                     if (giocatore == null) {
-                        List<FcGiocatore> listGiocatore = this.giocatoreRepository
-                                .findByCognGiocatoreContaining(cognGiocatore);
-                        if (listGiocatore != null && listGiocatore.size() == 1) {
+                        List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+                        if (listGiocatore != null && !listGiocatore.isEmpty() && listGiocatore.size() == 1) {
                             giocatore = listGiocatore.get(0);
                         }
                     }
@@ -4309,6 +4308,9 @@ public class JobProcessGiornata {
 
         log.info("START initDbGiornataGiocatore");
 
+        log.info("bSqualificato " + bSqualificato);
+        log.info("bInfortunato " + bInfortunato);
+        
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
 
@@ -4334,24 +4336,31 @@ public class JobProcessGiornata {
                 String note = record.get(1);
 
                 List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
-                FcGiocatore giocatore = listGiocatore.get(0);
+                if (listGiocatore != null && !listGiocatore.isEmpty() && listGiocatore.size() == 1) {
+                    FcGiocatore giocatore = listGiocatore.get(0);
+                    if (giocatore != null) {
+                        FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
+                        FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
+                        giornataGiocatorePK.setIdGiornata(giornataInfo.getCodiceGiornata());
+                        giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
+                        giornataGiocatore.setId(giornataGiocatorePK);
+                        giornataGiocatore.setInfortunato(bInfortunato);
+                        giornataGiocatore.setSqualificato(bSqualificato);
+                        if (bInfortunato) {
+                            giornataGiocatore.setNote("Infortunato: " + note);
+                        } else if (bSqualificato) {
+                            giornataGiocatore.setNote("Squalificato: " + note);
+                        }
+                        this.giornataGiocatoreRepository.save(giornataGiocatore);
 
-                FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
-                FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
-                giornataGiocatorePK.setIdGiornata(giornataInfo.getCodiceGiornata());
-                giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
-                giornataGiocatore.setId(giornataGiocatorePK);
-                giornataGiocatore.setInfortunato(bInfortunato);
-                giornataGiocatore.setSqualificato(bSqualificato);
-                if (bInfortunato) {
-                    giornataGiocatore.setNote("Infortunato: " + note);
-                } else if (bSqualificato) {
-                    giornataGiocatore.setNote("Squalificato: " + note);
+                    } else {
+                        log.info("cognGiocatore " + cognGiocatore);        
+                    }
+
+                } else {
+                    log.info("cognGiocatore " + cognGiocatore);        
                 }
-                this.giornataGiocatoreRepository.save(giornataGiocatore);
-
             }
-
             log.info("END initDbGiornataGiocatore");
 
         } catch (Exception e) {
@@ -4406,7 +4415,7 @@ public class JobProcessGiornata {
                 }
 
                 List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
-                if (listGiocatore != null && !listGiocatore.isEmpty()) {
+                if (listGiocatore != null && !listGiocatore.isEmpty() && listGiocatore.size() == 1) {
                     FcGiocatore giocatore = listGiocatore.get(0);
                     if (giocatore != null) {
                         giocatore.setNomeGiocatore(boolPanchina ? Costants.PANCHINA : Costants.TITOLARE);
