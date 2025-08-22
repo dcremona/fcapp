@@ -23,6 +23,7 @@ import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.job.JobProcessSendMail;
 import fcweb.backend.service.CampionatoService;
 import fcweb.backend.service.GiornataGiocatoreService;
+import fcweb.backend.service.GiornataInfoRepository;
 import fcweb.backend.service.PagelleService;
 import fcweb.backend.service.ProprietaService;
 
@@ -56,17 +57,9 @@ public class MyScheduledTasks {
 
     @Autowired
     private GiornataGiocatoreService giornataGiocatoreService;
-
-    // @Bean
-    // public String getCronValueUfficiosi() {
-    // FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
-    // if (p != null) {
-    // LOG.info("Ufficiosi cron " + p.getValue());
-    // return p.getValue();
-    // } else {
-    // return "0 30 16 * * *";
-    // }
-    // }
+    
+    @Autowired
+    private GiornataInfoRepository giornataInfoRepository;
 
     @Scheduled(cron = "#{@getCronValueUfficiosi}")
     // @Scheduled(cron = "${ufficiosi.cron.expression}")
@@ -80,17 +73,6 @@ public class MyScheduledTasks {
 
         log.info("jobUfficiosi end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
     }
-
-    // @Bean
-    // public String getCronValueUfficiali() {
-    // FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
-    // if (p != null) {
-    // log.info("Ufficiali cron " + p.getValue());
-    // return p.getValue();
-    // } else {
-    // return "0 30 16 * * *";
-    // }
-    // }
 
     @Scheduled(cron = "#{@getCronValueUfficiali}")
     // @Scheduled(cron = "${ufficiali.cron.expression}")
@@ -108,18 +90,18 @@ public class MyScheduledTasks {
     private void processResult(boolean flagUfficiali) throws Exception {
 
         Calendar cal = Calendar.getInstance();
-        int day_of_week = cal.get(Calendar.DAY_OF_WEEK);
-        log.info("DAY_OF_WEEK " + day_of_week);
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        log.info("dayOfWeek " +  dayOfWeek);
 
         String votiExcel = "Voti-Ufficiosi-Excel";
-        String info_result = "UFFICIOSI";
+        String infoResult = "UFFICIOSI";
         if (flagUfficiali) {
             votiExcel = "Voti-Ufficiali-Excel";
-            info_result = "UFFICIALI";
+            infoResult = "UFFICIALI";
         }
 
         List<FcProperties> lProprieta = proprietaController.findAll();
-        if (lProprieta.size() == 0) {
+        if (lProprieta.isEmpty()) {
             log.error("error lProprieta size" + lProprieta.size());
             return;
         }
@@ -127,12 +109,9 @@ public class MyScheduledTasks {
         for (FcProperties prop : lProprieta) {
             p.setProperty(prop.getKey(), prop.getValue());
         }
-        p.setProperty("INFO_RESULT", info_result);
+        p.setProperty("INFO_RESULT", infoResult);
 
-        // String springMailPassword = (String) env.getProperty("spring.mail.password");
-        // p.setProperty("mail.password", springMailPassword);
-
-        String startJob = day_of_week + "_" + info_result;
+        String startJob =  dayOfWeek + "_" + infoResult;
         log.info("startJob " + startJob);
         String valueStart = p.getProperty(startJob);
         log.info("VALUE_START " + valueStart);
@@ -200,13 +179,14 @@ public class MyScheduledTasks {
     }
 
     // @Scheduled(cron = "*/60 * * * * *")
-    @Scheduled(cron = "0 0 6 * * *")
+    //@Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(cron = "#{@getCronValueInfoGiocatore}")
     public void jobSqualificaInfortunati() throws Exception {
 
         log.info("jobSqualificaInfortunati start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 
         List<FcProperties> lProprieta = proprietaController.findAll();
-        if (!lProprieta.isEmpty()) {
+        if (lProprieta.isEmpty()) {
             log.error("error lProprieta size" + lProprieta.size());
             return;
         }
@@ -218,9 +198,13 @@ public class MyScheduledTasks {
         String basePathData = (String) p.get("PATH_TMP");
 
         FcPagelle currentGG = pagelleController.findCurrentGiornata();
-        FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
-
-        log.info("currentGG: " + giornataInfo.getCodiceGiornata());
+        FcGiornataInfo giornataInfo = null;
+        if (currentGG != null) {
+            giornataInfo = currentGG.getFcGiornataInfo();
+            log.info("currentGG: " + giornataInfo.getCodiceGiornata());
+        } else {
+            giornataInfo = giornataInfoRepository.findByCodiceGiornata(Integer.valueOf(1));
+        }
 
         String fusoOrario = p.getProperty("FUSO_ORARIO");
         String nextDate = Utils.getNextDate(giornataInfo);
@@ -269,7 +253,6 @@ public class MyScheduledTasks {
         // **************************************
         // DOWNLOAD FILE PROBABILI
         // **************************************
-
         String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
         log.info("httpUrlProbabili " + httpUrlProbabili);
         String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();

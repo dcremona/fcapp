@@ -345,7 +345,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
             HorizontalLayout cellLayout = new HorizontalLayout();
             cellLayout.setMargin(false);
             cellLayout.setPadding(false);
-            cellLayout.setSpacing(true);
+            cellLayout.setSpacing(false);
             if (g != null) {
                 FcStatistiche s = g.getFcStatistiche();
                 String imgThink = "2.png";
@@ -356,8 +356,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
                         imgThink = "3.png";
                     }
                 }
-                Image img = Utils.buildImage(imgThink,
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+                Image img = Utils.buildImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
                 DecimalFormat myFormatter = new DecimalFormat("#0.00");
                 Double d = Double.valueOf(0);
@@ -384,7 +383,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
             HorizontalLayout cellLayout = new HorizontalLayout();
             cellLayout.setMargin(false);
             cellLayout.setPadding(false);
-            cellLayout.setSpacing(true);
+            cellLayout.setSpacing(false);
             if (g != null) {
                 FcStatistiche s = g.getFcStatistiche();
                 String imgThink = "2.png";
@@ -395,8 +394,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
                         imgThink = "3.png";
                     }
                 }
-                Image img = Utils.buildImage(imgThink,
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+                Image img = Utils.buildImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
                 DecimalFormat myFormatter = new DecimalFormat("#0.00");
                 Double d = Double.valueOf(0);
@@ -462,7 +460,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         espulsColumn.setKey("fcStatistiche.espulsione");
 
         // Sets the max number of items to be rendered on the grid for each page
-        grid.setPageSize(16);
+        grid.setPageSize(25);
 
         // Sets how many pages should be visible on the pagination before and/or
         // after the current selected page

@@ -723,8 +723,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     }
                 }
 
-                Image imgMv = Utils.buildImage(imgThink,
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+                Image imgMv = Utils.buildImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
                 imgMv.setTitle(title);
                 cellLayoutImg.add(imgMv);
 

@@ -505,7 +505,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
             HorizontalLayout cellLayout = new HorizontalLayout();
             cellLayout.setMargin(false);
             cellLayout.setPadding(false);
-            cellLayout.setSpacing(true);
+            cellLayout.setSpacing(false);
             if (s != null && s.getFcGiocatore() != null) {
                 String imgThink = "2.png";
                 if (s != null && s.getMediaVoto() != 0) {
@@ -541,7 +541,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
             HorizontalLayout cellLayout = new HorizontalLayout();
             cellLayout.setMargin(false);
             cellLayout.setPadding(false);
-            cellLayout.setSpacing(true);
+            cellLayout.setSpacing(false);
             if (s != null && s.getFcGiocatore() != null) {
                 String imgThink = "2.png";
                 if (s != null && s.getFantaMedia() != 0) {
@@ -598,7 +598,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         espulsioneColumn.setAutoWidth(true);
 
         // Sets the max number of items to be rendered on the grid for each page
-        grid.setPageSize(16);
+        grid.setPageSize(25);
 
         // Sets how many pages should be visible on the pagination before and/or
         // after the current selected page

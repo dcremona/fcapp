@@ -16,7 +16,7 @@ import jakarta.annotation.PostConstruct;
 @Configuration
 public class LocaleConfig {
 
-    private Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ProprietaService proprietaController;
@@ -25,11 +25,9 @@ public class LocaleConfig {
     public void init() {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Berlin"));
-
-        LOG.info("Date in Europe/Berlin: " + new Date().toString());
-
+        log.info("Date in Europe/Berlin: " + new Date().toString());
         String basePathData = System.getProperty("user.dir");
-        LOG.info("basePathData " + basePathData);
+        log.info("basePathData " + basePathData);
 
     }
 
@@ -37,7 +35,7 @@ public class LocaleConfig {
     public String getCronValueUfficiosi() {
         FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
         if (p != null) {
-            LOG.info("Ufficiosi cron " + p.getValue());
+            log.info("Ufficiosi cron " + p.getValue());
             return p.getValue();
         } else {
             return "0 0 9 * * *";
@@ -48,29 +46,21 @@ public class LocaleConfig {
     public String getCronValueUfficiali() {
         FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
         if (p != null) {
-            LOG.info("Ufficiali cron " + p.getValue());
+            log.info("Ufficiali cron " + p.getValue());
             return p.getValue();
         } else {
             return "0 30 16 * * *";
         }
     }
 
-    // public static String createFolderData() {
-    // String basePathData = System.getProperty("user.dir");
-    // // LOG.info("user.dir " + basePathData);
-    // if (!basePathData.equals("/")) {
-    // basePathData = basePathData + "/data/";
-    // }
-    // // LOG.info("basePathData " + basePathData);
-    // File f = new File(basePathData);
-    // if (!f.exists()) {
-    // boolean flag = f.mkdir();
-    // if (!flag) {
-    // // LOG.info("ERROR mkdir - NOT exist " + basePathData);
-    // }
-    // }
-    // basePathData = "/home/myuser/";
-    // return basePathData;
-    // }
-
+    @Bean
+    public String getCronValueInfoGiocatore() {
+        FcProperties p = proprietaController.findByKey("infoGiocatore.cron.expression");
+        if (p != null) {
+            log.info("infoGiocatore cron " + p.getValue());
+            return p.getValue();
+        } else {
+            return "0 0 6 * * *";
+        }
+    }
 }
