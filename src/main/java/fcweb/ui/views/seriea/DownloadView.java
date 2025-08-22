@@ -212,51 +212,56 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
             Column<FcExpRosea> sxColumn = null;
             Column<FcExpRosea> qxColumn = null;
             if (i == 1) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR1());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS1());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ1());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR1);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS1);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ1);
             } else if (i == 2) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR2());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS2());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ2());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR2);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS2);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ2);
             } else if (i == 3) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR3());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS3());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ3());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR3);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS3);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ3);
             } else if (i == 4) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR4());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS4());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ4());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR4);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS4);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ4);
             } else if (i == 5) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR5());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS5());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ5());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR5);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS5);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ5);
             } else if (i == 6) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR6());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS6());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ6());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR6);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS6);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ6);
             } else if (i == 7) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR7());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS7());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ7());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR7);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS7);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ7);
             } else if (i == 8) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR8());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS8());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ8());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR8);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS8);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ8);
             } else if (i == 9) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR9());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS9());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ9());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR9);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS9);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ9);
             } else if (i == 10) {
-                rxColumn = gridRosea.addColumn(expRosea -> expRosea.getR10());
-                sxColumn = gridRosea.addColumn(expRosea -> expRosea.getS10());
-                qxColumn = gridRosea.addColumn(expRosea -> expRosea.getQ10());
+                rxColumn = gridRosea.addColumn(FcExpRosea::getR10);
+                sxColumn = gridRosea.addColumn(FcExpRosea::getS10);
+                qxColumn = gridRosea.addColumn(FcExpRosea::getQ10);
             }
-
-            rxColumn.setKey("r" + i);
-            sxColumn.setKey("s" + i);
-            sxColumn.setAutoWidth(true);
-            qxColumn.setKey("q" + i);
+            if (rxColumn != null) {
+                rxColumn.setKey("r" + i);
+            }
+            if (sxColumn != null) {
+                sxColumn.setKey("s" + i);
+                sxColumn.setAutoWidth(true);
+            }
+            if (qxColumn != null) {
+                qxColumn.setKey("q" + i);
+            }
         }
 
         GridExporter<FcExpRosea> exporter = GridExporter.createFor(gridRosea);
@@ -286,51 +291,57 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
             Column<FcExpFreePl> sxColumn = null;
             Column<FcExpFreePl> qxColumn = null;
             if (i == 1) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR1());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS1());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ1());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR1);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS1);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ1);
             } else if (i == 2) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR2());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS2());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ2());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR2);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS2);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ2);
             } else if (i == 3) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR3());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS3());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ3());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR3);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS3);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ3);
             } else if (i == 4) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR4());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS4());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ4());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR4);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS4);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ4);
             } else if (i == 5) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR5());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS5());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ5());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR5);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS5);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ5);
             } else if (i == 6) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR6());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS6());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ6());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR6);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS6);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ6);
             } else if (i == 7) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR7());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS7());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ7());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR7);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS7);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ7);
             } else if (i == 8) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR8());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS8());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ8());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR8);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS8);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ8);
             } else if (i == 9) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR9());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS9());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ9());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR9);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS9);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ9);
             } else if (i == 10) {
-                rxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getR10());
-                sxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getS10());
-                qxColumn = gridFreePl.addColumn(expFreePl -> expFreePl.getQ10());
+                rxColumn = gridFreePl.addColumn(FcExpFreePl::getR10);
+                sxColumn = gridFreePl.addColumn(FcExpFreePl::getS10);
+                qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ10);
             }
 
-            rxColumn.setKey("r" + i);
-            sxColumn.setKey("s" + i);
-            sxColumn.setAutoWidth(true);
-            qxColumn.setKey("q" + i);
+            if (rxColumn != null) {
+                rxColumn.setKey("r" + i);
+            }
+            if (sxColumn != null) {
+                sxColumn.setKey("s" + i);
+                sxColumn.setAutoWidth(true);
+            }
+            if (qxColumn != null) {
+                qxColumn.setKey("q" + i);
+            }
         }
 
         GridExporter<FcExpFreePl> exporter = GridExporter.createFor(gridFreePl);

@@ -97,23 +97,23 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
     private static final String WIDTH = "100px";
     private static final String HEIGHT = "130px";
 
-    private static final int _P = 210;
-    private static final int _D = 360;
-    private static final int _C = 510;
-    private static final int _A = 660;
+    private static final int PX_P = 210;
+    private static final int PX_D = 360;
+    private static final int PX_C = 510;
+    private static final int PX_A = 660;
 
-    private static final int _350px = 350;
-    private static final int _400px = 400;
-    private static final int _450px = 450;
-    private static final int _500px = 500;
-    private static final int _550px = 550;
-    private static final int _600px = 600;
-    private static final int _650px = 650;
-    private static final int _700px = 700;
-    private static final int _750px = 750;
-    private static final int _900px = 860;
-    private static final int _960px = 960;
-    private static final int _1080px = 1080;
+    private static final int PX_350 = 350;
+    private static final int PX_400 = 400;
+    private static final int PX_450 = 450;
+    private static final int PX_500 = 500;
+    private static final int PX_550 = 550;
+    private static final int PX_600 = 600;
+    private static final int PX_650 = 650;
+    private static final int PX_700 = 700;
+    private static final int PX_750 = 750;
+    private static final int PX_900 = 860;
+    private static final int PX_960 = 960;
+    private static final int PX_1080 = 1080;
 
     private FcAttore attore = null;
     private FcGiornataInfo giornataInfo = null;
@@ -128,7 +128,6 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
     private Button save;
     private ToggleButton checkMail;
     private ComboBox<String> comboModulo;
-    private Grid<FcCalendarioCompetizione> tablePartite;
     private List<FcCalendarioCompetizione> listPartiteGiocate = new ArrayList<>();
     private List<FcCalendarioCompetizione> listPartite = new ArrayList<>();
 
@@ -261,124 +260,124 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
                 String modulo = evt.getValue();
 
-                absLayout.add(tablePlayer1, _550px, _P);
+                absLayout.add(tablePlayer1, PX_550, PX_P);
 
-                absLayout.add(tablePlayer12, _900px, _P);
+                absLayout.add(tablePlayer12, PX_900, PX_P);
 
-                absLayout.add(tablePlayer13, _900px, _D);
-                absLayout.add(tablePlayer14, _960px, _D);
+                absLayout.add(tablePlayer13, PX_900, PX_D);
+                absLayout.add(tablePlayer14, PX_960, PX_D);
 
-                absLayout.add(tablePlayer15, _900px, _C);
-                absLayout.add(tablePlayer16, _960px, _C);
+                absLayout.add(tablePlayer15, PX_900, PX_C);
+                absLayout.add(tablePlayer16, PX_960, PX_C);
 
-                absLayout.add(tablePlayer17, _900px, _A);
-                absLayout.add(tablePlayer18, _960px, _A);
+                absLayout.add(tablePlayer17, PX_900, PX_A);
+                absLayout.add(tablePlayer18, PX_960, PX_A);
 
                 // 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
                 if (modulo.equals("5-4-1")) {
 
-                    absLayout.add(tablePlayer2, _350px, _D);
-                    absLayout.add(tablePlayer3, _450px, _D);
-                    absLayout.add(tablePlayer4, _550px, _D);
-                    absLayout.add(tablePlayer5, _650px, _D);
-                    absLayout.add(tablePlayer6, _750px, _D);
+                    absLayout.add(tablePlayer2, PX_350, PX_D);
+                    absLayout.add(tablePlayer3, PX_450, PX_D);
+                    absLayout.add(tablePlayer4, PX_550, PX_D);
+                    absLayout.add(tablePlayer5, PX_650, PX_D);
+                    absLayout.add(tablePlayer6, PX_750, PX_D);
 
-                    absLayout.add(tablePlayer7, _400px, _C);
-                    absLayout.add(tablePlayer8, _500px, _C);
-                    absLayout.add(tablePlayer9, _600px, _C);
-                    absLayout.add(tablePlayer10, _700px, _C);
+                    absLayout.add(tablePlayer7, PX_400, PX_C);
+                    absLayout.add(tablePlayer8, PX_500, PX_C);
+                    absLayout.add(tablePlayer9, PX_600, PX_C);
+                    absLayout.add(tablePlayer10, PX_700, PX_C);
 
-                    absLayout.add(tablePlayer11, _550px, _A);
+                    absLayout.add(tablePlayer11, PX_550, PX_A);
 
                 } else if (modulo.equals("5-3-2")) {
 
-                    absLayout.add(tablePlayer2, _350px, _D);
-                    absLayout.add(tablePlayer3, _450px, _D);
-                    absLayout.add(tablePlayer4, _550px, _D);
-                    absLayout.add(tablePlayer5, _650px, _D);
-                    absLayout.add(tablePlayer6, _750px, _D);
+                    absLayout.add(tablePlayer2, PX_350, PX_D);
+                    absLayout.add(tablePlayer3, PX_450, PX_D);
+                    absLayout.add(tablePlayer4, PX_550, PX_D);
+                    absLayout.add(tablePlayer5, PX_650, PX_D);
+                    absLayout.add(tablePlayer6, PX_750, PX_D);
 
-                    absLayout.add(tablePlayer7, _450px, _C);
-                    absLayout.add(tablePlayer8, _550px, _C);
-                    absLayout.add(tablePlayer9, _650px, _C);
+                    absLayout.add(tablePlayer7, PX_450, PX_C);
+                    absLayout.add(tablePlayer8, PX_550, PX_C);
+                    absLayout.add(tablePlayer9, PX_650, PX_C);
 
-                    absLayout.add(tablePlayer10, _500px, _A);
-                    absLayout.add(tablePlayer11, _600px, _A);
+                    absLayout.add(tablePlayer10, PX_500, PX_A);
+                    absLayout.add(tablePlayer11, PX_600, PX_A);
 
                 } else if (modulo.equals("4-5-1")) {
 
-                    absLayout.add(tablePlayer2, _400px, _D);
-                    absLayout.add(tablePlayer3, _500px, _D);
-                    absLayout.add(tablePlayer4, _600px, _D);
-                    absLayout.add(tablePlayer5, _700px, _D);
+                    absLayout.add(tablePlayer2, PX_400, PX_D);
+                    absLayout.add(tablePlayer3, PX_500, PX_D);
+                    absLayout.add(tablePlayer4, PX_600, PX_D);
+                    absLayout.add(tablePlayer5, PX_700, PX_D);
 
-                    absLayout.add(tablePlayer6, _350px, _C);
-                    absLayout.add(tablePlayer7, _450px, _C);
-                    absLayout.add(tablePlayer8, _550px, _C);
-                    absLayout.add(tablePlayer9, _650px, _C);
-                    absLayout.add(tablePlayer10, _750px, _C);
+                    absLayout.add(tablePlayer6, PX_350, PX_C);
+                    absLayout.add(tablePlayer7, PX_450, PX_C);
+                    absLayout.add(tablePlayer8, PX_550, PX_C);
+                    absLayout.add(tablePlayer9, PX_650, PX_C);
+                    absLayout.add(tablePlayer10, PX_750, PX_C);
 
-                    absLayout.add(tablePlayer11, _550px, _A);
+                    absLayout.add(tablePlayer11, PX_550, PX_A);
 
                 } else if (modulo.equals("4-4-2")) {
 
-                    absLayout.add(tablePlayer2, _400px, _D);
-                    absLayout.add(tablePlayer3, _500px, _D);
-                    absLayout.add(tablePlayer4, _600px, _D);
-                    absLayout.add(tablePlayer5, _700px, _D);
+                    absLayout.add(tablePlayer2, PX_400, PX_D);
+                    absLayout.add(tablePlayer3, PX_500, PX_D);
+                    absLayout.add(tablePlayer4, PX_600, PX_D);
+                    absLayout.add(tablePlayer5, PX_700, PX_D);
 
-                    absLayout.add(tablePlayer6, _400px, _C);
-                    absLayout.add(tablePlayer7, _500px, _C);
-                    absLayout.add(tablePlayer8, _600px, _C);
-                    absLayout.add(tablePlayer9, _700px, _C);
+                    absLayout.add(tablePlayer6, PX_400, PX_C);
+                    absLayout.add(tablePlayer7, PX_500, PX_C);
+                    absLayout.add(tablePlayer8, PX_600, PX_C);
+                    absLayout.add(tablePlayer9, PX_700, PX_C);
 
-                    absLayout.add(tablePlayer10, _500px, _A);
-                    absLayout.add(tablePlayer11, _600px, _A);
+                    absLayout.add(tablePlayer10, PX_500, PX_A);
+                    absLayout.add(tablePlayer11, PX_600, PX_A);
 
                 } else if (modulo.equals("4-3-3")) {
 
-                    absLayout.add(tablePlayer2, _400px, _D);
-                    absLayout.add(tablePlayer3, _500px, _D);
-                    absLayout.add(tablePlayer4, _600px, _D);
-                    absLayout.add(tablePlayer5, _700px, _D);
+                    absLayout.add(tablePlayer2, PX_400, PX_D);
+                    absLayout.add(tablePlayer3, PX_500, PX_D);
+                    absLayout.add(tablePlayer4, PX_600, PX_D);
+                    absLayout.add(tablePlayer5, PX_700, PX_D);
 
-                    absLayout.add(tablePlayer6, _450px, _C);
-                    absLayout.add(tablePlayer7, _550px, _C);
-                    absLayout.add(tablePlayer8, _650px, _C);
+                    absLayout.add(tablePlayer6, PX_450, PX_C);
+                    absLayout.add(tablePlayer7, PX_550, PX_C);
+                    absLayout.add(tablePlayer8, PX_650, PX_C);
 
-                    absLayout.add(tablePlayer9, _450px, _A);
-                    absLayout.add(tablePlayer10, _550px, _A);
-                    absLayout.add(tablePlayer11, _650px, _A);
+                    absLayout.add(tablePlayer9, PX_450, PX_A);
+                    absLayout.add(tablePlayer10, PX_550, PX_A);
+                    absLayout.add(tablePlayer11, PX_650, PX_A);
 
                 } else if (modulo.equals("3-5-2")) {
 
-                    absLayout.add(tablePlayer2, _450px, _D);
-                    absLayout.add(tablePlayer3, _550px, _D);
-                    absLayout.add(tablePlayer4, _650px, _D);
+                    absLayout.add(tablePlayer2, PX_450, PX_D);
+                    absLayout.add(tablePlayer3, PX_550, PX_D);
+                    absLayout.add(tablePlayer4, PX_650, PX_D);
 
-                    absLayout.add(tablePlayer5, _350px, _C);
-                    absLayout.add(tablePlayer6, _450px, _C);
-                    absLayout.add(tablePlayer7, _550px, _C);
-                    absLayout.add(tablePlayer8, _650px, _C);
-                    absLayout.add(tablePlayer9, _750px, _C);
+                    absLayout.add(tablePlayer5, PX_350, PX_C);
+                    absLayout.add(tablePlayer6, PX_450, PX_C);
+                    absLayout.add(tablePlayer7, PX_550, PX_C);
+                    absLayout.add(tablePlayer8, PX_650, PX_C);
+                    absLayout.add(tablePlayer9, PX_750, PX_C);
 
-                    absLayout.add(tablePlayer10, _500px, _A);
-                    absLayout.add(tablePlayer11, _600px, _A);
+                    absLayout.add(tablePlayer10, PX_500, PX_A);
+                    absLayout.add(tablePlayer11, PX_600, PX_A);
 
                 } else if (modulo.equals("3-4-3")) {
 
-                    absLayout.add(tablePlayer2, _450px, _D);
-                    absLayout.add(tablePlayer3, _550px, _D);
-                    absLayout.add(tablePlayer4, _650px, _D);
+                    absLayout.add(tablePlayer2, PX_450, PX_D);
+                    absLayout.add(tablePlayer3, PX_550, PX_D);
+                    absLayout.add(tablePlayer4, PX_650, PX_D);
 
-                    absLayout.add(tablePlayer5, _400px, _C);
-                    absLayout.add(tablePlayer6, _500px, _C);
-                    absLayout.add(tablePlayer7, _600px, _C);
-                    absLayout.add(tablePlayer8, _700px, _C);
+                    absLayout.add(tablePlayer5, PX_400, PX_C);
+                    absLayout.add(tablePlayer6, PX_500, PX_C);
+                    absLayout.add(tablePlayer7, PX_600, PX_C);
+                    absLayout.add(tablePlayer8, PX_700, PX_C);
 
-                    absLayout.add(tablePlayer9, _450px, _A);
-                    absLayout.add(tablePlayer10, _550px, _A);
-                    absLayout.add(tablePlayer11, _650px, _A);
+                    absLayout.add(tablePlayer9, PX_450, PX_A);
+                    absLayout.add(tablePlayer10, PX_550, PX_A);
+                    absLayout.add(tablePlayer11, PX_650, PX_A);
                 }
 
                 String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
@@ -413,7 +412,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         tablePlayer17 = getTableGiocatore(modelPlayer17);
         tablePlayer18 = getTableGiocatore(modelPlayer18);
 
-        tablePartite = getTablePartite(listPartite);
+        Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
 
         final VerticalLayout layoutAvviso = new VerticalLayout();
         layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
@@ -437,12 +436,12 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
         absLayout.add(save, 20, 5);
         absLayout.add(checkMail, 115, 10);
-        absLayout.add(layoutAvviso, _350px, 5);
-        absLayout.add(panchina, _900px, 5);
-        absLayout.add(tablePartite, _1080px, 5);
+        absLayout.add(layoutAvviso, PX_350, 5);
+        absLayout.add(panchina, PX_900, 5);
+        absLayout.add(tablePartite, PX_1080, 5);
         absLayout.add(comboModulo, 20, 50);
         absLayout.add(tableFormazione, 10, 150);
-        absLayout.add(campo, _350px, 150);
+        absLayout.add(campo, PX_350, 150);
 
         this.add(absLayout);
 
@@ -723,7 +722,8 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     }
                 }
 
-                Image imgMv = Utils.buildImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+                Image imgMv = Utils.buildImage(imgThink,
+                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
                 imgMv.setTitle(title);
                 cellLayoutImg.add(imgMv);
 
@@ -1750,9 +1750,13 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         StringBuilder formazioneHtml = new StringBuilder();
         formazioneHtml.append("<html><head><title>FC</title></head>\n");
         formazioneHtml.append("<body>\n");
-        formazioneHtml.append("<p>" + descGiornata + "</p>\n");
+        formazioneHtml.append("<p>");
+        formazioneHtml.append(descGiornata);
+        formazioneHtml.append("</p>\n");
         formazioneHtml.append("<br>\n");
-        formazioneHtml.append("<p>" + modulo + "</p>\n");
+        formazioneHtml.append("<p>");
+        formazioneHtml.append(modulo);
+        formazioneHtml.append("</p>\n");
         formazioneHtml.append("<br>\n");
 
         formazioneHtml.append("<table>");
@@ -1842,19 +1846,23 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 color = "BGCOLOR=\"" + Costants.BG_R + "\"";
             }
 
-            formazioneHtml.append("<tr " + color + ">");
+            formazioneHtml.append("<tr ");
+            formazioneHtml.append(color);
+            formazioneHtml.append(">");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ordinamento);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td><img src=\"cid:");
-            formazioneHtml.append(cidNomeImg + "\" />");
+            formazioneHtml.append(cidNomeImg);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(nomeGiocatore);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ruolo);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td><img src=\"cid:");
-            formazioneHtml.append(cidNomeSq + "\" />");
+            formazioneHtml.append(cidNomeSq);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(squadra);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
@@ -1898,17 +1906,23 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 color = "BGCOLOR=\"" + Costants.BG_R + "\"";
             }
 
-            formazioneHtml.append("<tr " + color + ">");
+            formazioneHtml.append("<tr ");
+            formazioneHtml.append(color);
+            formazioneHtml.append(">");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ordinamento);
             formazioneHtml.append("</td>");
-            formazioneHtml.append("<td><img src=\"cid:" + cidNomeImg + "\" />");
+            formazioneHtml.append("<td><img src=\"cid:");
+            formazioneHtml.append(cidNomeImg);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(nomeGiocatore);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ruolo);
             formazioneHtml.append("</td>");
-            formazioneHtml.append("<td><img src=\"cid:" + cidNomeSq + "\" />");
+            formazioneHtml.append("<td><img src=\"cid:");
+            formazioneHtml.append(cidNomeSq);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(squadra);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
@@ -1923,7 +1937,9 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
         formazioneHtml.append("<br>\n");
         formazioneHtml.append("<br>\n");
-        formazioneHtml.append("<p>Ciao " + descAttore + "</p>\n");
+        formazioneHtml.append("<p>Ciao ");
+        formazioneHtml.append(descAttore);
+        formazioneHtml.append("</p>\n");
         formazioneHtml.append("</body>\n");
         formazioneHtml.append("<html");
 
@@ -1933,7 +1949,8 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
             List<FcAttore> attori = attoreController.findByActive(true);
             for (FcAttore a : attori) {
                 if (a.isNotifiche()) {
-                    emailDestinatario.append(a.getEmail() + ";");
+                    emailDestinatario.append(a.getEmail());
+                    emailDestinatario.append(";");
                 }
             }
         } else {

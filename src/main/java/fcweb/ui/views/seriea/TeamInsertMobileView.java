@@ -96,28 +96,28 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
     @Autowired
     private AttoreService attoreController;
 
-    private int WIN_WIDTH = 400;
-    private int WIN_HEIGHT = 800;
+    private static final int WINWIDTH = 400;
+    private static final int WINHEIGHT = 800;
 
-    private static final String width = "85px";
-    private static final String height = "105px";
+    private static final String WIDTH = "85px";
+    private static final String HEIGHT = "105px";
 
-    private static final int _P = 60;
-    private static final int _D = 180;
-    private static final int _C = 300;
-    private static final int _A = 420;
+    private static final int PX_P = 60;
+    private static final int PX_D = 180;
+    private static final int PX_C = 300;
+    private static final int PX_A = 420;
 
-    private static final int _0px = 0;
-    private static final int _20px = 20;
-    private static final int _70px = 70;
-    private static final int _80px = 80;
-    private static final int _110px = 110;
-    private static final int _160px = 160;
-    private static final int _240px = 240;
-    private static final int _250px = 250;
-    private static final int _200px = 200;
-    private static final int _290px = 290;
-    private static final int _320px = 320;
+    private static final int PX_0 = 0;
+    private static final int PX_20 = 20;
+    private static final int PX_70 = 70;
+    private static final int PX_80 = 80;
+    private static final int PX_110 = 110;
+    private static final int PX_160 = 160;
+    private static final int PX_200 = 200;
+    private static final int PX_240 = 240;
+    private static final int PX_250 = 250;
+    private static final int PX_290 = 290;
+    private static final int PX_320 = 320;
 
     private FcAttore attore = null;
     private FcGiornataInfo giornataInfo = null;
@@ -129,8 +129,6 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
     private Properties p = null;
 
     // COMPONENT
-    private Button cancelButtonPartite;
-    private Button cancelButtonTribuna;
     private Button rosa;
     private Button save;
     private Button viewPartite;
@@ -141,7 +139,6 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
     private Grid<FcGiocatore> tableFormazione;
 
     private Dialog dialogPartite = null;
-    private Grid<FcCalendarioCompetizione> tablePartite;
     private List<FcCalendarioCompetizione> listPartiteGiocate = new ArrayList<>();
     private List<FcCalendarioCompetizione> listPartite = new ArrayList<>();
 
@@ -250,7 +247,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
     private void initLayout() throws Exception {
 
-        absLayout = new AbsoluteLayout(WIN_WIDTH, WIN_HEIGHT);
+        absLayout = new AbsoluteLayout(WINWIDTH, WINHEIGHT);
         dialogTribuna = new Dialog();
         dialogPartite = new Dialog();
 
@@ -267,11 +264,11 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
             absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
             absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
-            dialogTribuna.setWidth(WIN_WIDTH - 50 + "px");
-            dialogTribuna.setHeight(WIN_HEIGHT - 150 + "px");
+            dialogTribuna.setWidth(WINWIDTH - 50 + "px");
+            dialogTribuna.setHeight(WINHEIGHT - 150 + "px");
 
-            dialogPartite.setWidth(WIN_WIDTH - 50 + "px");
-            dialogPartite.setHeight(WIN_HEIGHT - 250 + "px");
+            dialogPartite.setWidth(WINWIDTH - 50 + "px");
+            dialogPartite.setHeight(WINHEIGHT - 250 + "px");
         });
 
         UI.getCurrent().getPage().addBrowserWindowResizeListener(e -> {
@@ -293,11 +290,11 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
             }
         });
 
-        cancelButtonPartite = new Button("Chiudi", event -> {
+        Button cancelButtonPartite = new Button("Chiudi", event -> {
             dialogPartite.close();
         });
 
-        cancelButtonTribuna = new Button("Chiudi", event -> {
+        Button cancelButtonTribuna = new Button("Chiudi", event -> {
             dialogTribuna.close();
         });
 
@@ -330,121 +327,121 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
                 String modulo = evt.getValue();
 
-                absLayout.add(tablePlayer1, _160px, _P);
+                absLayout.add(tablePlayer1, PX_160, PX_P);
 
-                absLayout.add(tablePlayer12, _80px, 600);
-                absLayout.add(tablePlayer13, _160px, 600);
-                absLayout.add(tablePlayer14, _240px, 600);
-                absLayout.add(tablePlayer15, _320px, 600);
-                absLayout.add(tablePlayer16, _80px, 700);
-                absLayout.add(tablePlayer17, _160px, 700);
-                absLayout.add(tablePlayer18, _240px, 700);
+                absLayout.add(tablePlayer12, PX_80, 600);
+                absLayout.add(tablePlayer13, PX_160, 600);
+                absLayout.add(tablePlayer14, PX_240, 600);
+                absLayout.add(tablePlayer15, PX_320, 600);
+                absLayout.add(tablePlayer16, PX_80, 700);
+                absLayout.add(tablePlayer17, PX_160, 700);
+                absLayout.add(tablePlayer18, PX_240, 700);
 
                 // 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
                 if (modulo.equals("5-4-1")) {
 
-                    absLayout.add(tablePlayer2, _0px, _D);
-                    absLayout.add(tablePlayer3, _80px, _D);
-                    absLayout.add(tablePlayer4, _160px, _D);
-                    absLayout.add(tablePlayer5, _240px, _D);
-                    absLayout.add(tablePlayer6, _320px, _D);
+                    absLayout.add(tablePlayer2, PX_0, PX_D);
+                    absLayout.add(tablePlayer3, PX_80, PX_D);
+                    absLayout.add(tablePlayer4, PX_160, PX_D);
+                    absLayout.add(tablePlayer5, PX_240, PX_D);
+                    absLayout.add(tablePlayer6, PX_320, PX_D);
 
-                    absLayout.add(tablePlayer7, _20px, _C);
-                    absLayout.add(tablePlayer8, _110px, _C);
-                    absLayout.add(tablePlayer9, _200px, _C);
-                    absLayout.add(tablePlayer10, _290px, _C);
+                    absLayout.add(tablePlayer7, PX_20, PX_C);
+                    absLayout.add(tablePlayer8, PX_110, PX_C);
+                    absLayout.add(tablePlayer9, PX_200, PX_C);
+                    absLayout.add(tablePlayer10, PX_290, PX_C);
 
-                    absLayout.add(tablePlayer11, _160px, _A);
+                    absLayout.add(tablePlayer11, PX_160, PX_A);
 
                 } else if (modulo.equals("5-3-2")) {
 
-                    absLayout.add(tablePlayer2, _0px, _D);
-                    absLayout.add(tablePlayer3, _80px, _D);
-                    absLayout.add(tablePlayer4, _160px, _D);
-                    absLayout.add(tablePlayer5, _240px, _D);
-                    absLayout.add(tablePlayer6, _320px, _D);
+                    absLayout.add(tablePlayer2, PX_0, PX_D);
+                    absLayout.add(tablePlayer3, PX_80, PX_D);
+                    absLayout.add(tablePlayer4, PX_160, PX_D);
+                    absLayout.add(tablePlayer5, PX_240, PX_D);
+                    absLayout.add(tablePlayer6, PX_320, PX_D);
 
-                    absLayout.add(tablePlayer7, _70px, _C);
-                    absLayout.add(tablePlayer8, _160px, _C);
-                    absLayout.add(tablePlayer9, _250px, _C);
+                    absLayout.add(tablePlayer7, PX_70, PX_C);
+                    absLayout.add(tablePlayer8, PX_160, PX_C);
+                    absLayout.add(tablePlayer9, PX_250, PX_C);
 
-                    absLayout.add(tablePlayer10, _110px, _A);
-                    absLayout.add(tablePlayer11, _200px, _A);
+                    absLayout.add(tablePlayer10, PX_110, PX_A);
+                    absLayout.add(tablePlayer11, PX_200, PX_A);
 
                 } else if (modulo.equals("4-5-1")) {
 
-                    absLayout.add(tablePlayer2, _20px, _D);
-                    absLayout.add(tablePlayer3, _110px, _D);
-                    absLayout.add(tablePlayer4, _200px, _D);
-                    absLayout.add(tablePlayer5, _290px, _D);
+                    absLayout.add(tablePlayer2, PX_20, PX_D);
+                    absLayout.add(tablePlayer3, PX_110, PX_D);
+                    absLayout.add(tablePlayer4, PX_200, PX_D);
+                    absLayout.add(tablePlayer5, PX_290, PX_D);
 
-                    absLayout.add(tablePlayer6, _0px, _C);
-                    absLayout.add(tablePlayer7, _80px, _C);
-                    absLayout.add(tablePlayer8, _160px, _C);
-                    absLayout.add(tablePlayer9, _240px, _C);
-                    absLayout.add(tablePlayer10, _320px, _C);
+                    absLayout.add(tablePlayer6, PX_0, PX_C);
+                    absLayout.add(tablePlayer7, PX_80, PX_C);
+                    absLayout.add(tablePlayer8, PX_160, PX_C);
+                    absLayout.add(tablePlayer9, PX_240, PX_C);
+                    absLayout.add(tablePlayer10, PX_320, PX_C);
 
-                    absLayout.add(tablePlayer11, _160px, _A);
+                    absLayout.add(tablePlayer11, PX_160, PX_A);
 
                 } else if (modulo.equals("4-4-2")) {
 
-                    absLayout.add(tablePlayer2, _20px, _D);
-                    absLayout.add(tablePlayer3, _110px, _D);
-                    absLayout.add(tablePlayer4, _200px, _D);
-                    absLayout.add(tablePlayer5, _290px, _D);
+                    absLayout.add(tablePlayer2, PX_20, PX_D);
+                    absLayout.add(tablePlayer3, PX_110, PX_D);
+                    absLayout.add(tablePlayer4, PX_200, PX_D);
+                    absLayout.add(tablePlayer5, PX_290, PX_D);
 
-                    absLayout.add(tablePlayer6, _20px, _C);
-                    absLayout.add(tablePlayer7, _110px, _C);
-                    absLayout.add(tablePlayer8, _200px, _C);
-                    absLayout.add(tablePlayer9, _290px, _C);
+                    absLayout.add(tablePlayer6, PX_20, PX_C);
+                    absLayout.add(tablePlayer7, PX_110, PX_C);
+                    absLayout.add(tablePlayer8, PX_200, PX_C);
+                    absLayout.add(tablePlayer9, PX_290, PX_C);
 
-                    absLayout.add(tablePlayer10, _110px, _A);
-                    absLayout.add(tablePlayer11, _200px, _A);
+                    absLayout.add(tablePlayer10, PX_110, PX_A);
+                    absLayout.add(tablePlayer11, PX_200, PX_A);
 
                 } else if (modulo.equals("4-3-3")) {
 
-                    absLayout.add(tablePlayer2, _20px, _D);
-                    absLayout.add(tablePlayer3, _110px, _D);
-                    absLayout.add(tablePlayer4, _200px, _D);
-                    absLayout.add(tablePlayer5, _290px, _D);
+                    absLayout.add(tablePlayer2, PX_20, PX_D);
+                    absLayout.add(tablePlayer3, PX_110, PX_D);
+                    absLayout.add(tablePlayer4, PX_200, PX_D);
+                    absLayout.add(tablePlayer5, PX_290, PX_D);
 
-                    absLayout.add(tablePlayer6, _70px, _C);
-                    absLayout.add(tablePlayer7, _160px, _C);
-                    absLayout.add(tablePlayer8, _250px, _C);
+                    absLayout.add(tablePlayer6, PX_70, PX_C);
+                    absLayout.add(tablePlayer7, PX_160, PX_C);
+                    absLayout.add(tablePlayer8, PX_250, PX_C);
 
-                    absLayout.add(tablePlayer9, _70px, _A);
-                    absLayout.add(tablePlayer10, _160px, _A);
-                    absLayout.add(tablePlayer11, _250px, _A);
+                    absLayout.add(tablePlayer9, PX_70, PX_A);
+                    absLayout.add(tablePlayer10, PX_160, PX_A);
+                    absLayout.add(tablePlayer11, PX_250, PX_A);
 
                 } else if (modulo.equals("3-5-2")) {
 
-                    absLayout.add(tablePlayer2, _70px, _D);
-                    absLayout.add(tablePlayer3, _160px, _D);
-                    absLayout.add(tablePlayer4, _250px, _D);
+                    absLayout.add(tablePlayer2, PX_70, PX_D);
+                    absLayout.add(tablePlayer3, PX_160, PX_D);
+                    absLayout.add(tablePlayer4, PX_250, PX_D);
 
-                    absLayout.add(tablePlayer5, _0px, _C);
-                    absLayout.add(tablePlayer6, _80px, _C);
-                    absLayout.add(tablePlayer7, _160px, _C);
-                    absLayout.add(tablePlayer8, _240px, _C);
-                    absLayout.add(tablePlayer9, _320px, _C);
+                    absLayout.add(tablePlayer5, PX_0, PX_C);
+                    absLayout.add(tablePlayer6, PX_80, PX_C);
+                    absLayout.add(tablePlayer7, PX_160, PX_C);
+                    absLayout.add(tablePlayer8, PX_240, PX_C);
+                    absLayout.add(tablePlayer9, PX_320, PX_C);
 
-                    absLayout.add(tablePlayer10, _110px, _A);
-                    absLayout.add(tablePlayer11, _200px, _A);
+                    absLayout.add(tablePlayer10, PX_110, PX_A);
+                    absLayout.add(tablePlayer11, PX_200, PX_A);
 
                 } else if (modulo.equals("3-4-3")) {
 
-                    absLayout.add(tablePlayer2, _70px, _D);
-                    absLayout.add(tablePlayer3, _160px, _D);
-                    absLayout.add(tablePlayer4, _250px, _D);
+                    absLayout.add(tablePlayer2, PX_70, PX_D);
+                    absLayout.add(tablePlayer3, PX_160, PX_D);
+                    absLayout.add(tablePlayer4, PX_250, PX_D);
 
-                    absLayout.add(tablePlayer5, _20px, _C);
-                    absLayout.add(tablePlayer6, _110px, _C);
-                    absLayout.add(tablePlayer7, _200px, _C);
-                    absLayout.add(tablePlayer8, _290px, _C);
+                    absLayout.add(tablePlayer5, PX_20, PX_C);
+                    absLayout.add(tablePlayer6, PX_110, PX_C);
+                    absLayout.add(tablePlayer7, PX_200, PX_C);
+                    absLayout.add(tablePlayer8, PX_290, PX_C);
 
-                    absLayout.add(tablePlayer9, _70px, _A);
-                    absLayout.add(tablePlayer10, _160px, _A);
-                    absLayout.add(tablePlayer11, _250px, _A);
+                    absLayout.add(tablePlayer9, PX_70, PX_A);
+                    absLayout.add(tablePlayer10, PX_160, PX_A);
+                    absLayout.add(tablePlayer11, PX_250, PX_A);
                 }
 
                 String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
@@ -509,7 +506,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
         cssLayout2.add(lblInfo2);
         layoutPartite.add(cssLayout2);
 
-        tablePartite = getTablePartite(listPartite);
+        Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
 
         VerticalLayout mainLayoutPartite = new VerticalLayout();
         mainLayoutPartite.setMargin(false);
@@ -792,8 +789,8 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
         grid.setSelectionMode(Grid.SelectionMode.NONE);
         grid.getStyle().set("--_lumo-grid-border-width", "0px");
         grid.setAllRowsVisible(true);
-        grid.setWidth(width);
-        grid.setHeight(height);
+        grid.setWidth(WIDTH);
+        grid.setHeight(HEIGHT);
 
         Column<FcGiocatore> giocatoreColumn = grid.addColumn(new ComponentRenderer<>(p -> {
 
@@ -1897,9 +1894,13 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
         StringBuilder formazioneHtml = new StringBuilder();
         formazioneHtml.append("<html><head><title>FC</title></head>\n");
         formazioneHtml.append("<body>\n");
-        formazioneHtml.append("<p>" + descGiornata + "</p>\n");
+        formazioneHtml.append("<p>");
+        formazioneHtml.append(descGiornata);
+        formazioneHtml.append("</p>\n");
         formazioneHtml.append("<br>\n");
-        formazioneHtml.append("<p>" + modulo + "</p>\n");
+        formazioneHtml.append("<p>");
+        formazioneHtml.append(modulo);
+        formazioneHtml.append("</p>\n");
         formazioneHtml.append("<br>\n");
 
         formazioneHtml.append("<table>");
@@ -1989,19 +1990,23 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 color = "BGCOLOR=\"" + Costants.BG_R + "\"";
             }
 
-            formazioneHtml.append("<tr " + color + ">");
+            formazioneHtml.append("<tr ");
+            formazioneHtml.append(color);
+            formazioneHtml.append(">");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ordinamento);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td><img src=\"cid:");
-            formazioneHtml.append(cidNomeImg + "\" />");
+            formazioneHtml.append(cidNomeImg);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(nomeGiocatore);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ruolo);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td><img src=\"cid:");
-            formazioneHtml.append(cidNomeSq + "\" />");
+            formazioneHtml.append(cidNomeSq);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(squadra);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
@@ -2045,17 +2050,23 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 color = "BGCOLOR=\"" + Costants.BG_R + "\"";
             }
 
-            formazioneHtml.append("<tr " + color + ">");
+            formazioneHtml.append("<tr ");
+            formazioneHtml.append(color);
+            formazioneHtml.append(">");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ordinamento);
             formazioneHtml.append("</td>");
-            formazioneHtml.append("<td><img src=\"cid:" + cidNomeImg + "\" />");
+            formazioneHtml.append("<td><img src=\"cid:");
+            formazioneHtml.append(cidNomeImg);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(nomeGiocatore);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
             formazioneHtml.append(ruolo);
             formazioneHtml.append("</td>");
-            formazioneHtml.append("<td><img src=\"cid:" + cidNomeSq + "\" />");
+            formazioneHtml.append("<td><img src=\"cid:");
+            formazioneHtml.append(cidNomeSq);
+            formazioneHtml.append("\" />");
             formazioneHtml.append(squadra);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
@@ -2070,7 +2081,9 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
         formazioneHtml.append("<br>\n");
         formazioneHtml.append("<br>\n");
-        formazioneHtml.append("<p>Ciao " + descAttore + "</p>\n");
+        formazioneHtml.append("<p>Ciao ");
+        formazioneHtml.append(descAttore);
+        formazioneHtml.append("</p>\n");
         formazioneHtml.append("</body>\n");
         formazioneHtml.append("<html");
 
@@ -2200,7 +2213,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
     private void impostaGiocatoriConVoto(String modulo) throws Exception {
 
-        if (listPartiteGiocate != null && listPartiteGiocate.size() > 0) {
+        if (listPartiteGiocate != null && !listPartiteGiocate.isEmpty()) {
 
             enabledComponent(true);
 
