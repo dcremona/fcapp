@@ -298,7 +298,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
         Column<FcGiornataGiocatore> noteColumn = grid.addColumn(g -> g.getNote());
         noteColumn.setSortable(false);
-        noteColumn.setHeader("Note");
+        noteColumn.setHeader(Costants.NOTE);
         noteColumn.setAutoWidth(true);
 
         return grid;

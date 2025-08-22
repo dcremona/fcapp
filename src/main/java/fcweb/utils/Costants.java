@@ -105,7 +105,19 @@ public class Costants {
     public static final String Q = "Q";
     public static final String TOTALE = "Totale";
     public static final String INFO = "Info";
-
+    public static final String QUOTAZIONE = "Quotazione";
+    public static final String ASSIST = "Assist";
+    public static final String GF = "Gf";
+    public static final String GS = "Gs";
+    public static final String RS = "Rs";
+    public static final String AMM = "Amm";
+    public static final String ESP = "Esp";
+    public static final String G = "G";
+    public static final String NOTE = "Note";
+    public static final String FV = "Fv";
+    public static final String TS = "Ts";
+    public static final String CS = "Cs";
+    
     public static final String P = "P";
     public static final String D = "C";
     public static final String C = "D";

@@ -234,7 +234,7 @@ public class CalendarioView extends VerticalLayout {
         horLayout.setSpacing(true);
 
         try {
-            Button stampapdf = new Button("Calendario pdf");
+            Button stampapdf = new Button("Calendario Pdf");
             stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
             if (jdbcTemplate.getDataSource() != null) {

@@ -538,7 +538,7 @@ public class FormazioniView extends VerticalLayout {
                                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "portiereImbattuto_s.png")));
                     }
                 }
-                if (info.size() > 0) {
+                if (!info.isEmpty()) {
                     for (Image e : info) {
                         cellLayout.add(e);
                     }
@@ -574,7 +574,7 @@ public class FormazioniView extends VerticalLayout {
         }));
         votoColumn.setSortable(false);
         votoColumn.setResizable(false);
-        votoColumn.setHeader("FV");
+        votoColumn.setHeader(Costants.FV);
         votoColumn.setAutoWidth(true);
 
         Column<FcGiornataDett> gColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
@@ -598,7 +598,7 @@ public class FormazioniView extends VerticalLayout {
         }));
         gColumn.setSortable(false);
         gColumn.setResizable(false);
-        gColumn.setHeader("G");
+        gColumn.setHeader(Costants.G);
         gColumn.setAutoWidth(true);
 
         Column<FcGiornataDett> csColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
@@ -622,7 +622,7 @@ public class FormazioniView extends VerticalLayout {
         }));
         csColumn.setSortable(false);
         csColumn.setResizable(false);
-        csColumn.setHeader("Cs");
+        csColumn.setHeader(Costants.CS);
         csColumn.setAutoWidth(true);
 
         Column<FcGiornataDett> tsColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
@@ -645,7 +645,7 @@ public class FormazioniView extends VerticalLayout {
         }));
         tsColumn.setSortable(false);
         tsColumn.setResizable(false);
-        tsColumn.setHeader("Ts");
+        tsColumn.setHeader(Costants.TS);
         tsColumn.setAutoWidth(true);
 
         HeaderRow headerRow = grid.prependHeaderRow();

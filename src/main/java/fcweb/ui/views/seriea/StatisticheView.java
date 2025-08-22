@@ -454,7 +454,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         }));
         ruoloColumn.setKey(Costants.RUOLO);
         ruoloColumn.setSortable(true);
-        ruoloColumn.setHeader("R");
+        ruoloColumn.setHeader(Costants.R);
         ruoloColumn.setAutoWidth(true);
 
         Column<FcStatistiche> giocatoreColumn = grid.addColumn(s -> s.getCognGiocatore()).setKey(Costants.GIOCATORE);
@@ -488,7 +488,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         Column<FcStatistiche> quotazioneColumn = grid
                 .addColumn(s -> s.getFcGiocatore() != null ? s.getFcGiocatore().getQuotazione() : 0);
         quotazioneColumn.setSortable(true);
-        quotazioneColumn.setHeader("Q");
+        quotazioneColumn.setHeader(Costants.Q);
         quotazioneColumn.setAutoWidth(true);
 
         Column<FcStatistiche> proprietarioColumn = grid.addColumn(s -> s.getProprietario()).setKey(Costants.PROPETARIO);
@@ -534,7 +534,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         }));
         mediaVotoColumn.setSortable(true);
         mediaVotoColumn.setComparator((p1, p2) -> p1.getMediaVoto().compareTo(p2.getMediaVoto()));
-        mediaVotoColumn.setHeader("Mv");
+        mediaVotoColumn.setHeader(Costants.MV);
         mediaVotoColumn.setAutoWidth(true);
 
         Column<FcStatistiche> fantaMediaColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -569,32 +569,32 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         }));
         fantaMediaColumn.setSortable(true);
         fantaMediaColumn.setComparator((p1, p2) -> p1.getFantaMedia().compareTo(p2.getFantaMedia()));
-        fantaMediaColumn.setHeader("FMv");
+        fantaMediaColumn.setHeader(Costants.FMV);
         fantaMediaColumn.setAutoWidth(true);
 
         Column<FcStatistiche> golFattoColumn = grid.addColumn(s -> s.getGoalFatto()).setKey("golFatto");
         golFattoColumn.setSortable(true);
-        golFattoColumn.setHeader("G+");
+        golFattoColumn.setHeader(Costants.G + "+");
         golFattoColumn.setAutoWidth(true);
 
         Column<FcStatistiche> golSubitoColumn = grid.addColumn(s -> s.getGoalSubito()).setKey("golSubito");
         golSubitoColumn.setSortable(true);
-        golSubitoColumn.setHeader("G-");
+        golSubitoColumn.setHeader(Costants.G + "-");
         golSubitoColumn.setAutoWidth(true);
 
         Column<FcStatistiche> assistColumn = grid.addColumn(s -> s.getAssist()).setKey("assist");
         assistColumn.setSortable(true);
-        assistColumn.setHeader("Ass");
+        assistColumn.setHeader(Costants.ASSIST);
         assistColumn.setAutoWidth(true);
 
         Column<FcStatistiche> ammonizioneColumn = grid.addColumn(s -> s.getAmmonizione()).setKey("ammonizione");
         ammonizioneColumn.setSortable(true);
-        ammonizioneColumn.setHeader("Amm");
+        ammonizioneColumn.setHeader(Costants.AMM);
         ammonizioneColumn.setAutoWidth(true);
 
         Column<FcStatistiche> espulsioneColumn = grid.addColumn(s -> s.getEspulsione()).setKey("espulsione");
         espulsioneColumn.setSortable(true);
-        espulsioneColumn.setHeader("Esp");
+        espulsioneColumn.setHeader(Costants.ESP);
         espulsioneColumn.setAutoWidth(true);
 
         // Sets the max number of items to be rendered on the grid for each page

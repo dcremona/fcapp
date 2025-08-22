@@ -140,11 +140,11 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         this.add(layoutButton);
 
         final VerticalLayout layoutP = new VerticalLayout();
-        gridP = getTableGiocatore(getModelAsta("P"));
+        gridP = getTableGiocatore(getModelAsta(Costants.P));
         GridExporter<FcGiocatore> exporterP = GridExporter.createFor(gridP);
         exporterP.setAutoAttachExportButtons(false);
-        exporterP.setTitle("P");
-        exporterP.setFileName("P" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
+        exporterP.setTitle(Costants.P);
+        exporterP.setFileName(Costants.P + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
         Anchor excelLinkP = new Anchor("", "Export to Excel P");
         excelLinkP.setHref(exporterP.getExcelStreamResource());
         excelLinkP.getElement().setAttribute("download", true);
@@ -152,11 +152,11 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         layoutP.add(gridP);
 
         final VerticalLayout layoutD = new VerticalLayout();
-        gridD = getTableGiocatore(getModelAsta("D"));
+        gridD = getTableGiocatore(getModelAsta(Costants.D));
         GridExporter<FcGiocatore> exporterD = GridExporter.createFor(gridD);
         exporterD.setAutoAttachExportButtons(false);
-        exporterD.setTitle("D");
-        exporterD.setFileName("D" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
+        exporterD.setTitle(Costants.D);
+        exporterD.setFileName(Costants.D + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
         Anchor excelLinkD = new Anchor("", "Export to Excel D");
         excelLinkD.setHref(exporterD.getExcelStreamResource());
         excelLinkD.getElement().setAttribute("download", true);
@@ -164,11 +164,11 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         layoutD.add(gridD);
 
         final VerticalLayout layoutC = new VerticalLayout();
-        gridC = getTableGiocatore(getModelAsta("C"));
+        gridC = getTableGiocatore(getModelAsta(Costants.C));
         GridExporter<FcGiocatore> exporterC = GridExporter.createFor(gridC);
         exporterC.setAutoAttachExportButtons(false);
-        exporterC.setTitle("C");
-        exporterC.setFileName("C" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
+        exporterC.setTitle(Costants.C);
+        exporterC.setFileName(Costants.C + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
         Anchor excelLinkC = new Anchor("", "Export to Excel C");
         excelLinkC.setHref(exporterC.getExcelStreamResource());
         excelLinkC.getElement().setAttribute("download", true);
@@ -176,11 +176,11 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         layoutC.add(gridC);
 
         final VerticalLayout layoutA = new VerticalLayout();
-        gridA = getTableGiocatore(getModelAsta("A"));
+        gridA = getTableGiocatore(getModelAsta(Costants.A));
         GridExporter<FcGiocatore> exporterA = GridExporter.createFor(gridA);
         exporterA.setAutoAttachExportButtons(false);
-        exporterA.setTitle("A");
-        exporterA.setFileName("A" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
+        exporterA.setTitle(Costants.A);
+        exporterA.setFileName(Costants.A + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
         Anchor excelLinkA = new Anchor("", "Export to Excel A");
         excelLinkA.setHref(exporterA.getExcelStreamResource());
         excelLinkA.getElement().setAttribute("download", true);
@@ -264,7 +264,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
             return cellLayout;
         }));
         ruoloColumn.setKey("fcRuolo.idRuolo");
-        ruoloColumn.setHeader("R");
+        ruoloColumn.setHeader(Costants.R);
         ruoloColumn.setSortable(true);
         ruoloColumn.setAutoWidth(true);
 
@@ -304,7 +304,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 
         Column<FcGiocatore> quotazioneColumn = grid.addColumn(g -> g != null ? g.getQuotazione() : 0);
         quotazioneColumn.setKey("quotazione");
-        quotazioneColumn.setHeader("Quotazione");
+        quotazioneColumn.setHeader(Costants.QUOTAZIONE);
         quotazioneColumn.setAutoWidth(true);
         quotazioneColumn.setSortable(true);
 
@@ -336,7 +336,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 
         Column<FcGiocatore> giocateColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGiocate() : 0);
-        giocateColumn.setHeader("Giocate");
+        giocateColumn.setHeader(Costants.GIOCATE);
         giocateColumn.setKey("fcStatistiche.giocate");
         giocateColumn.setAutoWidth(true);
         giocateColumn.setSortable(true);
@@ -375,7 +375,7 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         mediaVotoColumn.setSortable(true);
         mediaVotoColumn.setComparator(
                 (p1, p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
-        mediaVotoColumn.setHeader("Mv");
+        mediaVotoColumn.setHeader(Costants.MV);
         mediaVotoColumn.setAutoWidth(true);
         mediaVotoColumn.setKey("fcStatistiche.mediaVoto");
 
@@ -413,49 +413,49 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         fmVotoColumn.setSortable(true);
         fmVotoColumn.setComparator(
                 (p1, p2) -> p1.getFcStatistiche().getFantaMedia().compareTo(p2.getFcStatistiche().getFantaMedia()));
-        fmVotoColumn.setHeader("FMv");
+        fmVotoColumn.setHeader(Costants.FMV);
         fmVotoColumn.setAutoWidth(true);
         fmVotoColumn.setKey("fcStatistiche.fantaMedia");
 
         Column<FcGiocatore> assistColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getAssist() : 0);
         assistColumn.setSortable(true);
-        assistColumn.setHeader("Assist");
+        assistColumn.setHeader(Costants.ASSIST);
         assistColumn.setAutoWidth(true);
         assistColumn.setKey("fcStatistiche.assist");
 
         Column<FcGiocatore> gfColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGoalFatto() : 0);
         gfColumn.setSortable(true);
-        gfColumn.setHeader("GF");
+        gfColumn.setHeader(Costants.GF);
         gfColumn.setAutoWidth(true);
         gfColumn.setKey("fcStatistiche.goalFatto");
 
         Column<FcGiocatore> gsColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getGoalSubito() : 0);
         gsColumn.setSortable(true);
-        gsColumn.setHeader("GS");
+        gsColumn.setHeader(Costants.GS);
         gsColumn.setAutoWidth(true);
         gsColumn.setKey("fcStatistiche.goalSubito");
 
         Column<FcGiocatore> rsColumn = grid.addColumn(
                 g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getRigoreSegnato() : 0);
         rsColumn.setSortable(true);
-        rsColumn.setHeader("RS");
+        rsColumn.setHeader(Costants.RS);
         rsColumn.setAutoWidth(true);
         rsColumn.setKey("RS");
 
         Column<FcGiocatore> ammonizColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getAmmonizione() : 0);
         ammonizColumn.setSortable(true);
-        ammonizColumn.setHeader("A");
+        ammonizColumn.setHeader(Costants.AMM);
         ammonizColumn.setAutoWidth(true);
         ammonizColumn.setKey("fcStatistiche.ammonizione");
 
         Column<FcGiocatore> espulsColumn = grid
                 .addColumn(g -> g != null && g.getFcStatistiche() != null ? g.getFcStatistiche().getEspulsione() : 0);
         espulsColumn.setSortable(true);
-        espulsColumn.setHeader("E");
+        espulsColumn.setHeader(Costants.ESP);
         espulsColumn.setAutoWidth(true);
         espulsColumn.setKey("fcStatistiche.espulsione");
 
@@ -479,27 +479,27 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
                 String selTab = tabs.getSelectedTab().getLabel();
                 log.info("selTab " + selTab);
                 if ("Portieri".equals(selTab)) {
-                    gridP.setItems(getModelAsta("P"));
+                    gridP.setItems(getModelAsta(Costants.P));
                     gridP.getDataProvider().refreshAll();
                 } else if ("Difensori".equals(selTab)) {
-                    gridD.setItems(getModelAsta("D"));
+                    gridD.setItems(getModelAsta(Costants.D));
                     gridD.getDataProvider().refreshAll();
                 } else if ("Centrocampisti".equals(selTab)) {
-                    gridC.setItems(getModelAsta("C"));
+                    gridC.setItems(getModelAsta(Costants.C));
                     gridC.getDataProvider().refreshAll();
                 } else if ("Attaccanti".equals(selTab)) {
-                    gridA.setItems(getModelAsta("A"));
+                    gridA.setItems(getModelAsta(Costants.A));
                     gridA.getDataProvider().refreshAll();
                 }
 
             } else {
-                gridP.setItems(getModelAsta("P"));
+                gridP.setItems(getModelAsta(Costants.P));
                 gridP.getDataProvider().refreshAll();
-                gridD.setItems(getModelAsta("D"));
+                gridD.setItems(getModelAsta(Costants.D));
                 gridD.getDataProvider().refreshAll();
-                gridC.setItems(getModelAsta("C"));
+                gridC.setItems(getModelAsta(Costants.C));
                 gridC.getDataProvider().refreshAll();
-                gridA.setItems(getModelAsta("A"));
+                gridA.setItems(getModelAsta(Costants.A));
                 gridA.getDataProvider().refreshAll();
             }
 
