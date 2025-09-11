@@ -640,10 +640,10 @@ public class JobProcessGiornata {
             formazioneHtml.append(Costants.GIOCATORE);
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
-            formazioneHtml.append("count_sv ");
+            formazioneHtml.append("CountSv ");
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
-            formazioneHtml.append("New_Voto ");
+            formazioneHtml.append("NewVoto ");
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
             formazioneHtml.append("G");
@@ -655,7 +655,7 @@ public class JobProcessGiornata {
             formazioneHtml.append("TS");
             formazioneHtml.append("</td>");
             formazioneHtml.append("<td>");
-            formazioneHtml.append("Minuti Giocati");
+            formazioneHtml.append("Minuti_Giocati");
             formazioneHtml.append("</td>");
             formazioneHtml.append("</tr>");
 
@@ -864,7 +864,7 @@ public class JobProcessGiornata {
                     long newVoto = bdRis.longValue();
 
                     if (countSv == 1 || countSv == 2) {
-                        log.info("new_voto - count_sv " + countSv + " - " + giocatore.getCognGiocatore() + " newVoto "
+                        log.info("NewNoto - CountSv " + countSv + " - " + giocatore.getCognGiocatore() + " newVoto "
                                 + newVoto + " G = " + g + " CS " + cs + " TS " + ts);
 
                         formazioneHtml.append("<tr>");
@@ -1265,7 +1265,7 @@ public class JobProcessGiornata {
 
             fcGiocatore = p.getFcGiocatore();
             int idGiocatore = fcGiocatore.getIdGiocatore();
-            // log.info("idGiocatore " + idGiocatore);
+            log.info("idGiocatore " + idGiocatore);
 
             if (idGiocatore == appoIdGiocatore) {
 
@@ -1322,12 +1322,10 @@ public class JobProcessGiornata {
                 statistiche.setFantaMedia(fantaMediaVoto);
                 statistiche.setRigoreSbagliato(rigoreFallito);
                 statistiche.setRigoreSegnato(rigoreSegnato);
-                statistiche.setFcGiocatore(appoFcGiocatore);
+                //statistiche.setFcGiocatore(appoFcGiocatore);
                 statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
-                // log.debug("SAVE STATISTICA GIOCATORE " +
-                // appoFcGiocatore.getIdGiocatore() + " " +
-                // appoFcGiocatore.getCognGiocatore() + " " + proprietario);
+                log.debug("SAVE STATISTICA GIOCATORE " +appoFcGiocatore.getIdGiocatore() + " " +  appoFcGiocatore.getCognGiocatore() + " " + proprietario);
 
                 statisticheRepository.save(statistiche);
 
@@ -1387,7 +1385,7 @@ public class JobProcessGiornata {
         statistiche.setFantaMedia(fantaMediaVoto);
         statistiche.setRigoreSbagliato(rigoreFallito);
         statistiche.setRigoreSegnato(rigoreSegnato);
-        statistiche.setFcGiocatore(appoFcGiocatore);
+        //statistiche.setFcGiocatore(appoFcGiocatore);
         statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
         statisticheRepository.save(statistiche);
