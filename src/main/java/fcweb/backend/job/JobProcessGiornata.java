@@ -746,7 +746,8 @@ public class JobProcessGiornata {
                 if (StringUtils.isNotEmpty(idGiocatore)) {
                     giocatore = this.giocatoreRepository.findByIdGiocatore(Integer.parseInt(idGiocatore));
                     if (giocatore == null) {
-                        List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+                        List<FcGiocatore> listGiocatore = this.giocatoreRepository
+                                .findByCognGiocatoreContaining(cognGiocatore);
                         if (listGiocatore != null && !listGiocatore.isEmpty() && listGiocatore.size() == 1) {
                             giocatore = listGiocatore.get(0);
                         }
@@ -1322,10 +1323,11 @@ public class JobProcessGiornata {
                 statistiche.setFantaMedia(fantaMediaVoto);
                 statistiche.setRigoreSbagliato(rigoreFallito);
                 statistiche.setRigoreSegnato(rigoreSegnato);
-                //statistiche.setFcGiocatore(appoFcGiocatore);
+                // statistiche.setFcGiocatore(appoFcGiocatore);
                 statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
-                log.debug("SAVE STATISTICA GIOCATORE " +appoFcGiocatore.getIdGiocatore() + " " +  appoFcGiocatore.getCognGiocatore() + " " + proprietario);
+                log.debug("SAVE STATISTICA GIOCATORE " + appoFcGiocatore.getIdGiocatore() + " "
+                        + appoFcGiocatore.getCognGiocatore() + " " + proprietario);
 
                 statisticheRepository.save(statistiche);
 
@@ -1385,7 +1387,7 @@ public class JobProcessGiornata {
         statistiche.setFantaMedia(fantaMediaVoto);
         statistiche.setRigoreSbagliato(rigoreFallito);
         statistiche.setRigoreSegnato(rigoreSegnato);
-        //statistiche.setFcGiocatore(appoFcGiocatore);
+        // statistiche.setFcGiocatore(appoFcGiocatore);
         statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
         statisticheRepository.save(statistiche);
@@ -1430,48 +1432,179 @@ public class JobProcessGiornata {
         String query = " DELETE FROM fc_giornata_dett WHERE ID_GIORNATA=" + giornata + " AND ID_ATTORE=" + idAttore;
         jdbcTemplate.update(query);
 
-        List<FcFormazione> listFormazione = formazioneRepository
-                .findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
+        List<FcFormazione> listFormazione = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
+
+        ArrayList<FcFormazione> listTitP = new ArrayList<>();
+        ArrayList<FcFormazione> listTitD = new ArrayList<>();
+        ArrayList<FcFormazione> listTitC = new ArrayList<>();
+        ArrayList<FcFormazione> listTitA = new ArrayList<>();
+
+        ArrayList<FcFormazione> listRisP = new ArrayList<>();
+        ArrayList<FcFormazione> listRisD = new ArrayList<>();
+        ArrayList<FcFormazione> listRisC = new ArrayList<>();
+        ArrayList<FcFormazione> listRisA = new ArrayList<>();
 
         ArrayList<FcFormazione> listTribuna = new ArrayList<>();
-        boolean bInsert18 = false;
+
         for (FcFormazione f : listFormazione) {
 
-            int ord = f.getId().getOrdinamento();
-            if (f.getFcGiocatore() == null) {
+            FcGiocatore g = f.getFcGiocatore();
+            if (g == null) {
                 continue;
             }
-            if (ord == 2) {
-                ord = 12;
-            } else if (ord == 3 || ord == 4 || ord == 5 || ord == 6 || ord == 7 || ord == 8 || ord == 9 || ord == 10
-                    || ord == 11 || ord == 12) {
-                ord--;
-            } else if (ord == 13 || ord == 14 || ord == 15 || ord == 16 || ord == 17) {
+            String r = g.getFcRuolo().getIdRuolo();
 
-            } else if (ord > 17) {
-                if (!bInsert18 && "A".equals(f.getFcGiocatore().getFcRuolo().getIdRuolo())) {
-                    ord = 18;
-                    bInsert18 = true;
+            if ("P".equals(r)) {
+
+                if (listTitP.isEmpty()) {
+                    listTitP.add(f);
+                } else if (listRisP.isEmpty()) {
+                    listRisP.add(f);
                 } else {
                     listTribuna.add(f);
-                    continue;
                 }
-            }
 
-            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
-            int ordinamento = ord;
-            String idStatoGiocatore = "T";
-            if (ord > 11) {
-                idStatoGiocatore = "R";
+            } else if ("D".equals(r)) {
+
+                if (listTitD.isEmpty() || listTitD.size() < 4) {
+                    listTitD.add(f);
+                } else if (listRisD.isEmpty() || listRisD.size() < 2) {
+                    listRisD.add(f);
+                } else {
+                    listTribuna.add(f);
+                }
+
+            } else if ("C".equals(r)) {
+
+                if (listTitC.isEmpty() || listTitC.size() < 4) {
+                    listTitC.add(f);
+                } else if (listRisC.isEmpty() || listRisC.size() < 2) {
+                    listRisC.add(f);
+                } else {
+                    listTribuna.add(f);
+                }
+
+            } else if ("A".equals(r)) {
+
+                if (listTitA.isEmpty() || listTitA.size() < 2) {
+                    listTitA.add(f);
+                } else if (listRisA.isEmpty() || listRisA.size() < 2) {
+                    listRisA.add(f);
+                } else {
+                    listTribuna.add(f);
+                }
+
             }
+        }
+
+        // TITOLARI
+        int ord = 1;
+        for (FcFormazione f : listTitP) {
+
+            String idStatoGiocatore = "T";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
 
             query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
                     + giornata + ",";
-            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ordinamento + ",0)";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
             jdbcTemplate.update(query);
 
         }
 
+        for (FcFormazione f : listTitD) {
+
+            ord++;
+            String idStatoGiocatore = "T";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+
+        for (FcFormazione f : listTitC) {
+
+            ord++;
+            String idStatoGiocatore = "T";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+
+        for (FcFormazione f : listTitA) {
+
+            ord++;
+            String idStatoGiocatore = "T";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+
+        // RISERVE
+        for (FcFormazione f : listRisP) {
+
+            ord++;
+            String idStatoGiocatore = "R";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+
+        for (FcFormazione f : listRisD) {
+
+            ord++;
+            String idStatoGiocatore = "R";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+
+        for (FcFormazione f : listRisC) {
+
+            ord++;
+            String idStatoGiocatore = "R";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+
+        for (FcFormazione f : listRisA) {
+
+            ord++;
+            String idStatoGiocatore = "R";
+            int idGiocatore = f.getFcGiocatore().getIdGiocatore();
+
+            query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES ("
+                    + giornata + ",";
+            query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ord + ",0)";
+            jdbcTemplate.update(query);
+
+        }
+        
+        
+        // TRIBUNA
         int ordTrib = 19;
         for (FcFormazione f : listTribuna) {
             int ordinamento = ordTrib;
@@ -2680,6 +2813,8 @@ public class JobProcessGiornata {
             ArrayList<String> listaIdGiocatoriCambiati, List<FcGiornataDett> lGiocatori, int ordinamento,
             String ruologiocatore, int somma) throws Exception {
 
+        log.info("START effettuaCambio");
+
         HashMap<String, String> mapResult = new HashMap<>();
         boolean bChange = false;
         for (FcGiornataDett gd : lGiocatori) {
@@ -2739,6 +2874,7 @@ public class JobProcessGiornata {
                 break;
             }
         }
+        log.info("END effettuaCambio");
 
         return mapResult;
     }
@@ -4308,7 +4444,7 @@ public class JobProcessGiornata {
 
         log.info("bSqualificato " + bSqualificato);
         log.info("bInfortunato " + bInfortunato);
-        
+
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
 
@@ -4352,11 +4488,11 @@ public class JobProcessGiornata {
                         this.giornataGiocatoreRepository.save(giornataGiocatore);
 
                     } else {
-                        log.info("cognGiocatore " + cognGiocatore);        
+                        log.info("cognGiocatore " + cognGiocatore);
                     }
 
                 } else {
-                    log.info("cognGiocatore " + cognGiocatore);        
+                    log.info("cognGiocatore " + cognGiocatore);
                 }
             }
             log.info("END initDbGiornataGiocatore");
@@ -4419,11 +4555,11 @@ public class JobProcessGiornata {
                         giocatore.setNomeGiocatore(boolPanchina ? Costants.PANCHINA : Costants.TITOLARE);
                         giocatoreRepository.save(giocatore);
                     } else {
-                        log.info("cognGiocatore " + cognGiocatore);        
+                        log.info("cognGiocatore " + cognGiocatore);
                     }
 
                 } else {
-                    log.info("cognGiocatore " + cognGiocatore);        
+                    log.info("cognGiocatore " + cognGiocatore);
                 }
             }
 
