@@ -19,6 +19,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -230,7 +231,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
             randomSaveButton = new Button("Random Save");
             randomSaveButton.addClickListener(this);
-            randomSaveButton.setVisible(false);
+            randomSaveButton.setVisible(true);
 
             lblError = new Span();
             lblError.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
@@ -344,8 +345,24 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
 
         try {
             if (event.getSource() == randomSaveButton) {
-                randomFormazioni();
-                CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
+                
+                String msg = "Confermi inserimento giocatori random? ";
+                
+                ConfirmDialog dialog = new ConfirmDialog();
+                dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
+                dialog.setText(msg);
+                dialog.setCancelable(true);
+                dialog.setCancelText("Annulla");
+                dialog.setRejectable(false);
+                dialog.setConfirmText("Conferma");
+                dialog.addConfirmListener(e -> {
+                    
+                    randomFormazioni();
+                    CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
+                    
+                });
+                dialog.open();
+                
             } else if (event.getSource() == saveButton) {
                 int att = 0;
                 for (FcAttore a : squadre) {

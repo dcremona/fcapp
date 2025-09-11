@@ -22,6 +22,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
@@ -275,7 +276,7 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
         formazione422 = new Button("Formazione 422");
         formazione422.setIcon(VaadinIcon.PLUS_SQUARE_O.create());
         formazione422.addClickListener(this);
-        formazione422.setEnabled(false);
+        formazione422.setEnabled(true);
 
         HorizontalLayout layoutUpdateRow1 = new HorizontalLayout();
         layoutUpdateRow1.setMargin(true);
@@ -656,11 +657,35 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
                     CustomMessageDialog.showMessageError("Giornata obbligaria");
                     return;
                 }
-
-                for (FcAttore a : squadre) {
-                    jobProcessGiornata.inserisciFormazione442(campionato, a, codiceGiornata);
-                }
-
+                
+                String msg = "Confermi inserimento formazioni 422 per la giornata "+codiceGiornata;
+                
+                ConfirmDialog dialog = new ConfirmDialog();
+                dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
+                dialog.setText(msg);
+                dialog.setCancelable(true);
+                dialog.setCancelText("Annulla");
+                dialog.setRejectable(false);
+                dialog.setConfirmText("Conferma");
+                dialog.addConfirmListener(e -> {
+                    try {
+                        int giornata = 0;
+                        if (!comboGiornata.isEmpty()) {
+                            FcGiornataInfo ggInfo = comboGiornata.getValue();
+                            giornata = ggInfo.getCodiceGiornata();
+                        }
+                        log.info("giornata " + giornata);
+                        for (FcAttore a : squadre) {
+                            jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
+                        }
+                    } catch (Exception excpt) {
+                        CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
+                    }
+                });
+                dialog.open();
+                
+                return;
+                
             } else if (event.getSource() == resetFormazione) {
 
                 if (codiceGiornata == 0) {
