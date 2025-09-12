@@ -678,6 +678,8 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
                         for (FcAttore a : squadre) {
                             jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
                         }
+                        
+                        CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
                     } catch (Exception excpt) {
                         CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
                     }

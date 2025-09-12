@@ -119,8 +119,8 @@ public class Costants {
     public static final String CS = "Cs";
     
     public static final String P = "P";
-    public static final String D = "C";
-    public static final String C = "D";
+    public static final String D = "D";
+    public static final String C = "C";
     public static final String A = "A";
 
     public static final String WIDTH_50 = "50px";
