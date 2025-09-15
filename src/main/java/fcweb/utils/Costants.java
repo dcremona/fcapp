@@ -2,7 +2,9 @@ package fcweb.utils;
 
 public class Costants {
 
-    public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/small/";
+    public static final String HTTP_URL_IMG_OLD = "https://content.fantacalcio.it/web/campioncini/small/";
+    public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/20/small/";
+    
     public static final String HTTP_URL_IMG_CARD = "https://content.fantacalcio.it/web/campioncini/card/";
 
     public static final String FONT_SIZE = "font-size";

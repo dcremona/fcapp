@@ -1,6 +1,8 @@
 package fcweb.ui.views.seriea;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -34,10 +36,13 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.InMemoryUploadHandler;
+import com.vaadin.flow.server.streams.UploadHandler;
 
 import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
@@ -302,7 +307,7 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
 
         chkUpdateQuotaz = new Checkbox("Update Quotazioni");
         chkUpdateImg = new Checkbox("Update Img");
-
+        
         HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
         layoutUpdateRow2.setMargin(true);
 
@@ -340,6 +345,27 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
         layoutUpdate.add(layoutUpdateRow4);
         layoutUpdate.add(testMailPrimary);
         layoutUpdate.add(testMailSecondary);
+
+        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory(
+                (metadata, data) -> {
+                    // Get other information about the file.
+                    //String fileName = metadata.fileName();
+                    //String mimeType = metadata.contentType();
+                    //long contentLength = metadata.contentLength();
+
+                    try {
+                    	InputStream is = new ByteArrayInputStream(data);
+						jobProcessGiornata.updateImgGiocatore(is);
+					} catch (Exception e) {
+						
+						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
+					}
+                    // Do something with the file data...
+                    // processFile(data, fileName);
+                });
+        Upload upload = new Upload(inMemoryHandler);
+        
+        layoutUpdate.add(upload);
 
         Details panelUpdate = new Details("Update", layoutUpdate);
         panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
