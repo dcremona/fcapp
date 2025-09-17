@@ -307,7 +307,7 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
 
         chkUpdateQuotaz = new Checkbox("Update Quotazioni");
         chkUpdateImg = new Checkbox("Update Img");
-        
+
         HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
         layoutUpdateRow2.setMargin(true);
 
@@ -346,25 +346,23 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
         layoutUpdate.add(testMailPrimary);
         layoutUpdate.add(testMailSecondary);
 
-        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory(
-                (metadata, data) -> {
-                    // Get other information about the file.
-                    //String fileName = metadata.fileName();
-                    //String mimeType = metadata.contentType();
-                    //long contentLength = metadata.contentLength();
+        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
+            // Get other information about the file.
+            // String fileName = metadata.fileName();
+            // String mimeType = metadata.contentType();
+            // long contentLength = metadata.contentLength();
 
-                    try {
-                    	InputStream is = new ByteArrayInputStream(data);
-						jobProcessGiornata.updateImgGiocatore(is);
-					} catch (Exception e) {
-						
-						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
-					}
-                    // Do something with the file data...
-                    // processFile(data, fileName);
-                });
+            try {
+                InputStream is = new ByteArrayInputStream(data);
+                jobProcessGiornata.updateImgGiocatore(is);
+
+                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            } catch (Exception e) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+            }
+        });
         Upload upload = new Upload(inMemoryHandler);
-        
+
         layoutUpdate.add(upload);
 
         Details panelUpdate = new Details("Update", layoutUpdate);
@@ -683,9 +681,9 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
                     CustomMessageDialog.showMessageError("Giornata obbligaria");
                     return;
                 }
-                
-                String msg = "Confermi inserimento formazioni 422 per la giornata "+codiceGiornata;
-                
+
+                String msg = "Confermi inserimento formazioni 422 per la giornata " + codiceGiornata;
+
                 ConfirmDialog dialog = new ConfirmDialog();
                 dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
                 dialog.setText(msg);
@@ -704,16 +702,17 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
                         for (FcAttore a : squadre) {
                             jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
                         }
-                        
+
                         CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
                     } catch (Exception excpt) {
-                        CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
+                        CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC,
+                                excpt.getMessage());
                     }
                 });
                 dialog.open();
-                
+
                 return;
-                
+
             } else if (event.getSource() == resetFormazione) {
 
                 if (codiceGiornata == 0) {
@@ -930,13 +929,13 @@ public class ImpostazioniView extends VerticalLayout implements ComponentEventLi
         formazioneHtml.append("<br>");
         formazioneHtml.append("<br>");
         formazioneHtml.append("<p>Data Anticipo1:  " + (ggInfo.getDataAnticipo1() == null ? ""
-                : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), "dd/MM/yyyy HH:mm")) + "</p>");
+                : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), Costants.DATA_FORMATTED)) + "</p>");
         formazioneHtml.append("<p>Data Anticipo2:  " + (ggInfo.getDataAnticipo2() == null ? ""
-                : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), "dd/MM/yyyy HH:mm")) + "</p>");
+                : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), Costants.DATA_FORMATTED)) + "</p>");
         formazioneHtml.append("<p>Data Giornata:  " + (ggInfo.getDataGiornata() == null ? ""
-                : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), "dd/MM/yyyy HH:mm")) + "</p>");
+                : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), Costants.DATA_FORMATTED)) + "</p>");
         formazioneHtml.append("<p>Data Posticipo: " + (ggInfo.getDataPosticipo() == null ? ""
-                : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), "dd/MM/yyyy HH:mm")) + "</p>");
+                : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), Costants.DATA_FORMATTED)) + "</p>");
         formazioneHtml.append("<br>");
         formazioneHtml.append("<br>");
         formazioneHtml.append("<p>Ciao Davide</p>");

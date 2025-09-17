@@ -605,26 +605,25 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
     }
 
     private String getInfoPlayer(FcGiocatore bean) {
-        String info = "N.D.";
-        if (bean != null && bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
+        String info = bean.getCognGiocatore() + "\n";
+        info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
+        info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
+        if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
             NumberFormat formatter = new DecimalFormat("#0.00");
             String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / Costants.DIVISORE_100);
             String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / Costants.DIVISORE_100);
 
-            info = bean.getCognGiocatore() + "\n";
-            info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
-            info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
             info += "MV: " + mv + "\n";
             info += "FV: " + fv + "\n";
             info += "Goal: " + bean.getFcStatistiche().getGoalFatto() + "\n";
             info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
             info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
             info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-            if ("P".equals(bean.getFcRuolo().getIdRuolo().toUpperCase())) {
+            if ("P".equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
                 info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
             }
         }
-
+        info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
         return info;
     }
 

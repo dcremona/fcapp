@@ -2609,7 +2609,7 @@ public class EmMercatoView extends VerticalLayout implements ComponentEventListe
                         }
                     }
 
-                    String DATA_CAMBIO = Utils.formatLocalDateTime(m.getDataCambio(), "dd/MM/yyyy HH:mm");
+                    String DATA_CAMBIO = Utils.formatLocalDateTime(m.getDataCambio(), Costants.DATA_FORMATTED);
 
                     formazioneHtml += "<tr " + color + ">";
 

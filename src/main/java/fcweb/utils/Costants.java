@@ -137,5 +137,8 @@ public class Costants {
     public static final String TITOLARE = "TITOLARE";
     public static final String TITOLARI = "TITOLARI";
     public static final String PANCHINA = "PANCHINA";
+    
+    
+    public static final String DATA_FORMATTED = "dd/MM/yyyy HH:mm";
 
 }

@@ -144,7 +144,7 @@ public class CalendarioView extends VerticalLayout {
             if (conta == partite) {
 
                 String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(),
-                        "dd/MM/yyyy HH:mm");
+                        Costants.DATA_FORMATTED);
 
                 String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
                 if (gg > 16) {

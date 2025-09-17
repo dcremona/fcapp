@@ -853,7 +853,7 @@ public class EmImpostazioniView extends VerticalLayout implements ComponentEvent
         formazioneHtml += "<p>Prossima Giornata: " + ggInfo.getDescGiornataFc() + "</p>\n";
         formazioneHtml += "<br>\n";
         formazioneHtml += "<br>\n";
-        formazioneHtml += "<p>Data Giornata: " + Utils.formatLocalDateTime(ggInfo.getDataGiornata(), "dd/MM/yyyy HH:mm")
+        formazioneHtml += "<p>Data Giornata: " + Utils.formatLocalDateTime(ggInfo.getDataGiornata(), Costants.DATA_FORMATTED)
                 + "</p>\n";
         formazioneHtml += "<br>\n";
         formazioneHtml += "<br>\n";

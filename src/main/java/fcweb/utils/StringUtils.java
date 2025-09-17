@@ -284,35 +284,35 @@ public class StringUtils {
             return source;
         }
 
-        StringBuffer encoded_string = null;
-        char[] string_to_encode_array = source.toCharArray();
-        int last_match = -1;
+        StringBuffer encodedString = null;
+        char[] stringtoencodearray = source.toCharArray();
+        int lastmatch = -1;
         int difference = 0;
 
-        for (int i = 0; i < string_to_encode_array.length; i++) {
-            char char_to_encode = string_to_encode_array[i];
+        for (int i = 0; i < stringtoencodearray.length; i++) {
+            char charToEncode = stringtoencodearray[i];
 
-            if (encodingTable.containsKey(char_to_encode)) {
-                if (null == encoded_string) {
-                    encoded_string = new StringBuffer(source.length());
+            if (encodingTable.containsKey(charToEncode)) {
+                if (null == encodedString) {
+                    encodedString = new StringBuffer(source.length());
                 }
-                difference = i - (last_match + 1);
+                difference = i - (lastmatch + 1);
                 if (difference > 0) {
-                    encoded_string.append(string_to_encode_array, last_match + 1, difference);
+                    encodedString.append(stringtoencodearray, lastmatch + 1, difference);
                 }
-                encoded_string.append(encodingTable.get(char_to_encode));
-                last_match = i;
+                encodedString.append(encodingTable.get(charToEncode));
+                lastmatch = i;
             }
         }
 
-        if (null == encoded_string) {
+        if (null == encodedString) {
             return source;
         } else {
-            difference = string_to_encode_array.length - (last_match + 1);
+            difference = stringtoencodearray.length - (lastmatch + 1);
             if (difference > 0) {
-                encoded_string.append(string_to_encode_array, last_match + 1, difference);
+                encodedString.append(stringtoencodearray, lastmatch + 1, difference);
             }
-            return encoded_string.toString();
+            return encodedString.toString();
         }
     }
 

@@ -4523,9 +4523,12 @@ public class JobProcessGiornata {
     }
 
     public void initDbProbabili(FcGiornataInfo giornataInfo, String fileName) throws Exception {
-
+        
         log.info("START initDbProbabili");
 
+        String sql = "UPDATE fc_giocatore SET NOME_GIOCATORE=null";
+        this.jdbcTemplate.execute(sql);
+        
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
 
@@ -4592,7 +4595,7 @@ public class JobProcessGiornata {
 
     public void updateImgGiocatore(InputStream is) throws Exception {
 
-        log.info("START initDbGiocatoriExcel");
+        log.info("START updateImgGiocatore");
 
         try {
 
@@ -4643,8 +4646,6 @@ public class JobProcessGiornata {
                         nomeSquadra = cellValue.toUpperCase();
                     } else if (cell.getColumnIndex() == 5) {
                         quotazioneAttuale = cellValue;
-                    } else if (cell.getColumnIndex() == 6) {
-
                     }
                 }
 
@@ -4656,7 +4657,8 @@ public class JobProcessGiornata {
 
                 if (StringUtils.isNotEmpty(idGiocatore)) {
 
-                    List<FcGiocatore> lgiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+                    List<FcGiocatore> lgiocatore = this.giocatoreRepository
+                            .findByCognGiocatoreContaining(cognGiocatore);
                     for (FcGiocatore g : lgiocatore) {
                         if (!g.getFcSquadra().getNomeSquadra().equals(nomeSquadra)) {
                             log.info("ATTENZIONE SQUADRA DIFFERENTE ");
@@ -4698,11 +4700,11 @@ public class JobProcessGiornata {
                 }
             }
 
-            log.info("END initDbGiocatoriExcel");
+            log.info("END updateImgGiocatore");
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("Error in initDbGiocatoriExcel !!!");
+            log.error("Error in updateImgGiocatore !!!");
             throw e;
         }
     }
