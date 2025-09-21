@@ -1569,7 +1569,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                     countD++;
                 } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.C)) {
                     countC++;
-                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.P)) {
+                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.A)) {
                     countA++;
                 }
             }
