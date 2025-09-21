@@ -69,18 +69,18 @@ public class FormazioniView extends VerticalLayout {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Image iconAmm_ = null;
-    private Image iconEsp_ = null;
-    private Image iconAssist_ = null;
-    private Image iconAutogol_ = null;
-    private Image iconEntrato_ = null;
-    private Image iconGolfatto_ = null;
-    private Image iconGolsubito_ = null;
-    private Image iconUscito_ = null;
-    private Image iconRigoreSbagliato_ = null;
-    private Image iconRigoreSegnato_ = null;
-    private Image iconRigoreParato_ = null;
-    private Image iconBonusPortiere_ = null;
+    private Image iconAmm = null;
+    private Image iconEsp = null;
+    private Image iconAssist = null;
+    private Image iconAutogol = null;
+    private Image iconEntrato = null;
+    private Image iconGolfatto = null;
+    private Image iconGolsubito = null;
+    private Image iconUscito = null;
+    private Image iconRigoreSbagliato = null;
+    private Image iconRigoreSegnato = null;
+    private Image iconRigoreParato = null;
+    private Image iconBonusPortiere = null;
 
     @Autowired
     private GiornataInfoService giornataInfoController;
@@ -130,27 +130,27 @@ public class FormazioniView extends VerticalLayout {
 
         log.info("initImg()");
 
-        iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm.png"));
-        iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp.png"));
-        iconAssist_ = Utils.buildImage("assist.png",
+        iconAmm = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm.png"));
+        iconEsp = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp.png"));
+        iconAssist = Utils.buildImage("assist.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
-        iconAutogol_ = Utils.buildImage("autogol.png",
+        iconAutogol = Utils.buildImage("autogol.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
-        iconEntrato_ = Utils.buildImage("entrato.png",
+        iconEntrato = Utils.buildImage("entrato.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
-        iconGolfatto_ = Utils.buildImage("golfatto.png",
+        iconGolfatto = Utils.buildImage("golfatto.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
-        iconGolsubito_ = Utils.buildImage("golsubito.png",
+        iconGolsubito = Utils.buildImage("golsubito.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
-        iconUscito_ = Utils.buildImage("uscito.png",
+        iconUscito = Utils.buildImage("uscito.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
-        iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png",
+        iconRigoreSbagliato = Utils.buildImage("rigoresbagliato.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato.png"));
-        iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png",
+        iconRigoreSegnato = Utils.buildImage("rigoresegnato.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato.png"));
-        iconRigoreParato_ = Utils.buildImage("rigoreparato.png",
+        iconRigoreParato = Utils.buildImage("rigoreparato.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoreparato.png"));
-        iconBonusPortiere_ = Utils.buildImage("portiereImbattuto.png",
+        iconBonusPortiere = Utils.buildImage("portiereImbattuto.png",
                 resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "portiereImbattuto.png"));
     }
 
@@ -337,11 +337,11 @@ public class FormazioniView extends VerticalLayout {
         for (FcGiornataDett gd : all) {
             items.add(gd);
             if (gd.getOrdinamento() < 12) {
-                if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("D")) {
+                if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.D)) {
                     countD++;
-                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("C")) {
+                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.C)) {
                     countC++;
-                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("A")) {
+                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.A)) {
                     countA++;
                 }
             }
@@ -421,13 +421,13 @@ public class FormazioniView extends VerticalLayout {
 
                 ArrayList<Image> info = new ArrayList<Image>();
                 if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo())
-                        && "N".equals(gd.getFlagAttivo().toUpperCase())) {
+                        && "N".equalsIgnoreCase(gd.getFlagAttivo())) {
                     info.add(Utils.buildImage("uscito_s.png",
                             resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito_s.png")));
                 }
 
                 if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo())
-                        && "S".equals(gd.getFlagAttivo().toUpperCase())) {
+                        && "S".equalsIgnoreCase(gd.getFlagAttivo())) {
                     info.add(Utils.buildImage("entrato_s.png",
                             resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato_s.png")));
                 }
@@ -530,7 +530,7 @@ public class FormazioniView extends VerticalLayout {
                             resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist_s.png")));
                 }
 
-                if ("P".equals(gd.getFcGiocatore().getFcRuolo().getIdRuolo()) && gd.getFcPagelle().getGoalSubito() == 0
+                if (Costants.P.equals(gd.getFcGiocatore().getFcRuolo().getIdRuolo()) && gd.getFcPagelle().getGoalSubito() == 0
                         && gd.getFcPagelle().getEspulsione() == 0 && gd.getFcPagelle().getVotoGiocatore() != 0) {
                     if (gd.getFcPagelle().getG() != 0 && gd.getFcPagelle().getCs() != 0
                             && gd.getFcPagelle().getTs() != 0) {
@@ -554,7 +554,7 @@ public class FormazioniView extends VerticalLayout {
         resultGiocatoreColumn.setAutoWidth(true);
 
         Column<FcGiornataDett> votoColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
-            DecimalFormat myFormatter = new DecimalFormat("#0.00");
+            DecimalFormat myFormatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
             Double d = Double.valueOf(0);
             if (gd.getVoto() != null) {
                 d = gd.getVoto() / Costants.DIVISORE_100;
@@ -578,7 +578,7 @@ public class FormazioniView extends VerticalLayout {
         votoColumn.setAutoWidth(true);
 
         Column<FcGiornataDett> gColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
-            DecimalFormat myFormatter = new DecimalFormat("#0.00");
+            DecimalFormat myFormatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
             Double dg = Double.valueOf(0);
             if (gd.getFcPagelle() != null && gd.getFcPagelle().getG() != null) {
                 dg = gd.getFcPagelle().getG() / Costants.DIVISORE_100;
@@ -602,7 +602,7 @@ public class FormazioniView extends VerticalLayout {
         gColumn.setAutoWidth(true);
 
         Column<FcGiornataDett> csColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
-            DecimalFormat myFormatter = new DecimalFormat("#0.00");
+            DecimalFormat myFormatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
             Double dcs = Double.valueOf(0);
             if (gd.getFcPagelle() != null && gd.getFcPagelle().getCs() != null) {
                 dcs = gd.getFcPagelle().getCs() / Costants.DIVISORE_100;
@@ -768,6 +768,7 @@ public class FormazioniView extends VerticalLayout {
                 totPuntiTvsT = "" + totPunti.getPtTvsT();
             }
         } catch (Exception e) {
+            log.error(e.getMessage());
         }
 
         Span lblTotGiornata = new Span();
@@ -806,18 +807,18 @@ public class FormazioniView extends VerticalLayout {
         FormLayout layout = new FormLayout();
         layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
-        layout.addFormItem(iconGolfatto_, "Gol Fatto (+3)");
-        layout.addFormItem(iconGolsubito_, "Gol Subito (-1)");
-        layout.addFormItem(iconAmm_, "Ammonizione (-0.5)");
-        layout.addFormItem(iconEsp_, "Espulsione (-1)");
-        layout.addFormItem(iconAssist_, "Assist (+1)");
-        layout.addFormItem(iconAutogol_, "Autogol (-2)");
-        layout.addFormItem(iconRigoreSegnato_, "Rigore segnato (+3)");
-        layout.addFormItem(iconRigoreParato_, "Rigore parato (+3)");
-        layout.addFormItem(iconRigoreSbagliato_, "Rigore sbagliato (-3)");
-        layout.addFormItem(iconBonusPortiere_, "Portiere imbattuto (+1)");
-        layout.addFormItem(iconEntrato_, "Entrato");
-        layout.addFormItem(iconUscito_, "Uscito");
+        layout.addFormItem(iconGolfatto, "Gol Fatto (+3)");
+        layout.addFormItem(iconGolsubito, "Gol Subito (-1)");
+        layout.addFormItem(iconAmm, "Ammonizione (-0.5)");
+        layout.addFormItem(iconEsp, "Espulsione (-1)");
+        layout.addFormItem(iconAssist, "Assist (+1)");
+        layout.addFormItem(iconAutogol, "Autogol (-2)");
+        layout.addFormItem(iconRigoreSegnato, "Rigore segnato (+3)");
+        layout.addFormItem(iconRigoreParato, "Rigore parato (+3)");
+        layout.addFormItem(iconRigoreSbagliato, "Rigore sbagliato (-3)");
+        layout.addFormItem(iconBonusPortiere, "Portiere imbattuto (+1)");
+        layout.addFormItem(iconEntrato, "Entrato");
+        layout.addFormItem(iconUscito, "Uscito");
 
         layout.setResponsiveSteps(new ResponsiveStep("1px", 1), new ResponsiveStep("600px", 2),
                 new ResponsiveStep("700px", 3), new ResponsiveStep("800px", 4));
@@ -829,15 +830,15 @@ public class FormazioniView extends VerticalLayout {
     private String getModificatoreDifesa(String value) {
         String ret = "";
 
-        if (value.equals("5-4-1")) {
+        if (Costants.SCHEMA_541.equals(value)) {
             ret = "2";
-        } else if (value.equals("5-3-2")) {
+        } else if (Costants.SCHEMA_532.equals(value)) {
             ret = "1";
-        } else if (value.equals("4-5-1")) {
+        } else if (Costants.SCHEMA_451.equals(value)) {
             ret = "1";
-        } else if (value.equals("4-3-3")) {
+        } else if (Costants.SCHEMA_433.equals(value)) {
             ret = "-1";
-        } else if (value.equals("3-4-3")) {
+        } else if (Costants.SCHEMA_343.equals(value)) {
             ret = "-2";
         } else {
             ret = "0";

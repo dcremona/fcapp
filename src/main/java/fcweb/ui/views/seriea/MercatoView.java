@@ -120,13 +120,13 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
                 continue;
             }
 
-            if ("P".equals(g.getFcRuolo().getIdRuolo())) {
+            if (Costants.P.equals(g.getFcRuolo().getIdRuolo())) {
                 p.add(g.getIdGiocatore());
-            } else if ("D".equals(g.getFcRuolo().getIdRuolo())) {
+            } else if (Costants.D.equals(g.getFcRuolo().getIdRuolo())) {
                 d.add(g.getIdGiocatore());
-            } else if ("C".equals(g.getFcRuolo().getIdRuolo())) {
+            } else if (Costants.C.equals(g.getFcRuolo().getIdRuolo())) {
                 c.add(g.getIdGiocatore());
-            } else if ("A".equals(g.getFcRuolo().getIdRuolo())) {
+            } else if (Costants.A.equals(g.getFcRuolo().getIdRuolo())) {
                 a.add(g.getIdGiocatore());
             }
         }
@@ -436,13 +436,13 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
                 descAttore = "[" + f.getFcAttore().getDescAttore() + "]";
                 if (bean != null && f.getTotPagato() != null) {
                     somma += f.getTotPagato();
-                    if (bean.getFcRuolo().getIdRuolo().equals("P")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.P)) {
                         countP++;
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         countD++;
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         countC++;
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         countA++;
                     }
                     refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
@@ -466,7 +466,7 @@ public class MercatoView extends VerticalLayout implements ComponentEventListene
                         int countPSq = 0;
                         for (FcFormazione f : data) {
                             FcGiocatore bean = f.getFcGiocatore();
-                            if (bean != null && f.getTotPagato() != null && "P".equals(bean.getFcRuolo().getIdRuolo())
+                            if (bean != null && f.getTotPagato() != null && Costants.P.equals(bean.getFcRuolo().getIdRuolo())
                                     && sq.equals(bean.getFcSquadra().getNomeSquadra())) {
                                 countPSq++;
                             }

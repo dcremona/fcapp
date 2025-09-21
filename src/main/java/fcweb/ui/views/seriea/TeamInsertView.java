@@ -156,8 +156,6 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
     private Grid<FcGiocatore> tablePlayer18;
 
     // DATA
-    private static final String[] SCHEMI = new String[] { "5-4-1", "5-3-2", "4-5-1", "4-4-2", "4-3-3", "3-5-2",
-            "3-4-3" };
     private List<FcGiocatore> modelFormazione = new ArrayList<>();
     private List<FcGiocatore> modelPlayer1 = new ArrayList<>();
     private List<FcGiocatore> modelPlayer2 = new ArrayList<>();
@@ -249,7 +247,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         checkMail.setValue(true);
 
         comboModulo = new ComboBox<>();
-        comboModulo.setItems(SCHEMI);
+        comboModulo.setItems(Costants.SCHEMI);
         comboModulo.setClearButtonVisible(true);
         comboModulo.setPlaceholder("Modulo");
         comboModulo.addValueChangeListener(evt -> {
@@ -274,7 +272,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 absLayout.add(tablePlayer18, PX_960, PX_A);
 
                 // 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
-                if (modulo.equals("5-4-1")) {
+                if (Costants.SCHEMA_541.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_350, PX_D);
                     absLayout.add(tablePlayer3, PX_450, PX_D);
@@ -289,7 +287,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
                     absLayout.add(tablePlayer11, PX_550, PX_A);
 
-                } else if (modulo.equals("5-3-2")) {
+                } else if (Costants.SCHEMA_532.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_350, PX_D);
                     absLayout.add(tablePlayer3, PX_450, PX_D);
@@ -304,7 +302,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     absLayout.add(tablePlayer10, PX_500, PX_A);
                     absLayout.add(tablePlayer11, PX_600, PX_A);
 
-                } else if (modulo.equals("4-5-1")) {
+                } else if (Costants.SCHEMA_451.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_400, PX_D);
                     absLayout.add(tablePlayer3, PX_500, PX_D);
@@ -319,7 +317,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
                     absLayout.add(tablePlayer11, PX_550, PX_A);
 
-                } else if (modulo.equals("4-4-2")) {
+                } else if (Costants.SCHEMA_442.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_400, PX_D);
                     absLayout.add(tablePlayer3, PX_500, PX_D);
@@ -334,7 +332,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     absLayout.add(tablePlayer10, PX_500, PX_A);
                     absLayout.add(tablePlayer11, PX_600, PX_A);
 
-                } else if (modulo.equals("4-3-3")) {
+                } else if (Costants.SCHEMA_433.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_400, PX_D);
                     absLayout.add(tablePlayer3, PX_500, PX_D);
@@ -349,7 +347,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     absLayout.add(tablePlayer10, PX_550, PX_A);
                     absLayout.add(tablePlayer11, PX_650, PX_A);
 
-                } else if (modulo.equals("3-5-2")) {
+                } else if (Costants.SCHEMA_352.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_450, PX_D);
                     absLayout.add(tablePlayer3, PX_550, PX_D);
@@ -364,7 +362,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     absLayout.add(tablePlayer10, PX_500, PX_A);
                     absLayout.add(tablePlayer11, PX_600, PX_A);
 
-                } else if (modulo.equals("3-4-3")) {
+                } else if (Costants.SCHEMA_343.equals(modulo)) {
 
                     absLayout.add(tablePlayer2, PX_450, PX_D);
                     absLayout.add(tablePlayer3, PX_550, PX_D);
@@ -489,7 +487,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
             info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
             info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
             info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-            if ("P".equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
+            if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
                 info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
             }
         }
@@ -675,13 +673,13 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 String title = getInfoPlayer(p);
 
                 String ruolo = p.getFcRuolo().getIdRuolo();
-                if ("P".equals(ruolo)) {
+                if (Costants.P.equals(ruolo)) {
                     cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
-                } else if ("D".equals(ruolo)) {
+                } else if (Costants.D.equals(ruolo)) {
                     cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
-                } else if ("C".equals(ruolo)) {
+                } else if (Costants.C.equals(ruolo)) {
                     cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
-                } else if ("A".equals(ruolo)) {
+                } else if (Costants.A.equals(ruolo)) {
                     cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
                 }
 
@@ -976,7 +974,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 }
 
                 boolean bDel = false;
-                if (bean.getFcRuolo().getIdRuolo().equals("P")) {
+                if (bean.getFcRuolo().getIdRuolo().equals(Costants.P)) {
                     if (modelPlayer1.isEmpty()) {
                         modelPlayer1.add(bean);
                         tablePlayer1.getDataProvider().refreshAll();
@@ -989,9 +987,9 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                         }
                     }
 
-                } else if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
 
-                    if (valModulo.equals("5-4-1") || valModulo.equals("5-3-2")) {
+                    if (Costants.SCHEMA_541.equals(valModulo) || Costants.SCHEMA_532.equals(valModulo)) {
 
                         if (modelPlayer2.isEmpty()) {
                             modelPlayer2.add(bean);
@@ -1025,7 +1023,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("4-5-1") || valModulo.equals("4-4-2") || valModulo.equals("4-3-3")) {
+                    } else if (Costants.SCHEMA_451.equals(valModulo) || Costants.SCHEMA_442.equals(valModulo) || Costants.SCHEMA_433.equals(valModulo)) {
 
                         if (modelPlayer2.isEmpty()) {
                             modelPlayer2.add(bean);
@@ -1055,7 +1053,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("3-5-2") || valModulo.equals("3-4-3")) {
+                    } else if (Costants.SCHEMA_352.equals(valModulo) || Costants.SCHEMA_343.equals(valModulo)) {
 
                         if (modelPlayer2.isEmpty()) {
                             modelPlayer2.add(bean);
@@ -1082,9 +1080,9 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                         }
                     }
 
-                } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
 
-                    if (valModulo.equals("4-5-1")) {
+                    if (Costants.SCHEMA_451.equals(valModulo)) {
 
                         if (modelPlayer6.isEmpty()) {
                             modelPlayer6.add(bean);
@@ -1118,7 +1116,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("3-5-2")) {
+                    } else if (Costants.SCHEMA_352.equals(valModulo)) {
 
                         if (modelPlayer5.isEmpty()) {
                             modelPlayer5.add(bean);
@@ -1152,7 +1150,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("5-4-1")) {
+                    } else if (Costants.SCHEMA_541.equals(valModulo)) {
 
                         if (modelPlayer7.isEmpty()) {
                             modelPlayer7.add(bean);
@@ -1182,7 +1180,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("4-4-2")) {
+                    } else if (Costants.SCHEMA_442.equals(valModulo)) {
 
                         if (modelPlayer6.isEmpty()) {
                             modelPlayer6.add(bean);
@@ -1212,7 +1210,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("3-4-3")) {
+                    } else if (Costants.SCHEMA_343.equals(valModulo)) {
 
                         if (modelPlayer5.isEmpty()) {
                             modelPlayer5.add(bean);
@@ -1242,7 +1240,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("5-3-2")) {
+                    } else if (Costants.SCHEMA_532.equals(valModulo)) {
 
                         if (modelPlayer7.isEmpty()) {
                             modelPlayer7.add(bean);
@@ -1268,7 +1266,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("4-3-3")) {
+                    } else if (Costants.SCHEMA_433.equals(valModulo)) {
                         if (modelPlayer6.isEmpty()) {
                             modelPlayer6.add(bean);
                             tablePlayer6.getDataProvider().refreshAll();
@@ -1294,9 +1292,9 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                         }
                     }
 
-                } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
 
-                    if (valModulo.equals("4-5-1") || valModulo.equals("5-4-1")) {
+                    if (Costants.SCHEMA_451.equals(valModulo) || Costants.SCHEMA_541.equals(valModulo)) {
 
                         if (modelPlayer11.isEmpty()) {
                             modelPlayer11.add(bean);
@@ -1314,7 +1312,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("3-5-2") || valModulo.equals("4-4-2") || valModulo.equals("5-3-2")) {
+                    } else if (Costants.SCHEMA_352.equals(valModulo) || Costants.SCHEMA_442.equals(valModulo) || Costants.SCHEMA_532.equals(valModulo)) {
 
                         if (modelPlayer10.isEmpty()) {
                             modelPlayer10.add(bean);
@@ -1336,7 +1334,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                             }
                         }
 
-                    } else if (valModulo.equals("3-4-3") || valModulo.equals("4-3-3")) {
+                    } else if (Costants.SCHEMA_343.equals(valModulo) || Costants.SCHEMA_433.equals(valModulo)) {
 
                         if (modelPlayer9.isEmpty()) {
                             modelPlayer9.add(bean);
@@ -1436,11 +1434,11 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         for (FcGiornataDett gd : lGiocatori) {
 
             if (gd.getOrdinamento() < 12) {
-                if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("D")) {
+                if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.D)) {
                     countD++;
-                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("C")) {
+                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.C)) {
                     countC++;
-                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("A")) {
+                } else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals(Costants.A)) {
                     countA++;
                 }
             }
@@ -2101,83 +2099,83 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     modelPlayer1.add(bean);
                     tablePlayer1.getDataProvider().refreshAll();
                 } else if (gd.getOrdinamento() == 2) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 3) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 4) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 5) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 6) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 7) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 8) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 9) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 10) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 11) {
-                    if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
                         lGiocatoriD.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
                         lGiocatoriC.add(bean);
-                    } else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
+                    } else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
                         lGiocatoriA.add(bean);
                     }
                 } else if (gd.getOrdinamento() == 12) {
@@ -2212,7 +2210,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
             }
 
             // 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
-            if (modulo.equals("5-4-1")) {
+            if (Costants.SCHEMA_541.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {
@@ -2278,7 +2276,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     countA++;
                 }
 
-            } else if (modulo.equals("5-3-2")) {
+            } else if (Costants.SCHEMA_532.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {
@@ -2344,7 +2342,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     countA++;
                 }
 
-            } else if (modulo.equals("4-5-1")) {
+            } else if (Costants.SCHEMA_451.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {
@@ -2410,7 +2408,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     countA++;
                 }
 
-            } else if (modulo.equals("4-4-2")) {
+            } else if (Costants.SCHEMA_442.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {
@@ -2476,7 +2474,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     countA++;
                 }
 
-            } else if (modulo.equals("4-3-3")) {
+            } else if (Costants.SCHEMA_433.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {
@@ -2542,7 +2540,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     countA++;
                 }
 
-            } else if (modulo.equals("3-5-2")) {
+            } else if (Costants.SCHEMA_352.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {
@@ -2608,7 +2606,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     countA++;
                 }
 
-            } else if (modulo.equals("3-4-3")) {
+            } else if (Costants.SCHEMA_343.equals(modulo)) {
 
                 int countD = 1;
                 for (FcGiocatore g : lGiocatoriD) {

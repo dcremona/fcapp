@@ -4,7 +4,7 @@ public class Costants {
 
     public static final String HTTP_URL_IMG_OLD = "https://content.fantacalcio.it/web/campioncini/small/";
     public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/20/small/";
-    
+
     public static final String HTTP_URL_IMG_CARD = "https://content.fantacalcio.it/web/campioncini/card/";
 
     public static final String FONT_SIZE = "font-size";
@@ -119,7 +119,7 @@ public class Costants {
     public static final String FV = "Fv";
     public static final String TS = "Ts";
     public static final String CS = "Cs";
-    
+
     public static final String P = "P";
     public static final String D = "D";
     public static final String C = "C";
@@ -133,12 +133,23 @@ public class Costants {
     public static final String WIDTH_190 = "190px";
     public static final String WIDTH_205 = "205px";
     public static final String WIDTH_240 = "240px";
+    public static final String WIDTH_300 = "300px";
 
     public static final String TITOLARE = "TITOLARE";
     public static final String TITOLARI = "TITOLARI";
     public static final String PANCHINA = "PANCHINA";
-    
-    
+
     public static final String DATA_FORMATTED = "dd/MM/yyyy HH:mm";
 
+    public static final String SCHEMA_541 = "5-4-1";
+    public static final String SCHEMA_532 = "5-3-2";
+    public static final String SCHEMA_451 = "4-5-1";
+    public static final String SCHEMA_442 = "4-4-2";
+    public static final String SCHEMA_433 = "4-3-3";
+    public static final String SCHEMA_352 = "3-5-2";
+    public static final String SCHEMA_343 = "3-4-3";
+    public static final String[] SCHEMI = new String[] { SCHEMA_541, SCHEMA_532, SCHEMA_451, SCHEMA_442, SCHEMA_433,
+            SCHEMA_352, SCHEMA_343 };
+
+    public static final String NUMBER_DECIMAL = "#0.00";
 }
