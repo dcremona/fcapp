@@ -176,7 +176,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
                 String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
                 log.info("httpUrlSqualificati " + httpUrlSqualificati);
                 String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
-                JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+                  JobProcessFileCsv jobCsv = new JobProcessFileCsv();
                 jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
 
                 String fileName = basePathData + fileName1 + ".csv";
@@ -218,14 +218,25 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
                 // **************************************
                 // DOWNLOAD FILE PROBABILI
                 // **************************************
+//                String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
+//                log.info("httpUrlProbabili " + httpUrlProbabili);
+//                String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
+//                jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+//                fileName = basePathData + fileName3 + ".csv";
+//                jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
 
-                String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
-                log.info("httpUrlProbabili " + httpUrlProbabili);
-                String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
-                jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+                // **************************************
+                // DOWNLOAD FILE PROBABILI FANTAGAZZETTA
+                // **************************************
 
-                fileName = basePathData + fileName3 + ".csv";
-                jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+                String httpUrlProbabiliFantaGazzetta = "https://www.fantacalcio.it/probabili-formazioni-serie-a";
+                log.info("httpUrlProbabiliFantaGazzetta " + httpUrlProbabiliFantaGazzetta);
+                String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
+                jobCsv.downloadCsvProbabiliFantaGazzetta(httpUrlProbabiliFantaGazzetta, basePath, fileName4);
+
+                fileName = basePathData + fileName4 + ".csv";
+                jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);
+
 
             }
         } catch (Exception e) {

@@ -4593,6 +4593,62 @@ public class JobProcessGiornata {
         }
     }
 
+    public void initDbProbabiliFantaGazzetta(FcGiornataInfo giornataInfo, String fileName) throws Exception {
+        
+        log.info("START initDbProbabiliFantaGazzetta");
+
+        String sql = "UPDATE fc_giocatore SET NOME_GIOCATORE=null";
+        this.jdbcTemplate.execute(sql);
+        
+        FileReader fileReader = null;
+        CSVParser csvFileParser = null;
+
+        // Create the CSVFormat object with the header mapping
+        @SuppressWarnings("deprecation")
+        CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
+
+        try {
+
+            // initialize FileReader object
+            fileReader = new FileReader(fileName);
+
+            // initialize CSVParser object
+            csvFileParser = new CSVParser(fileReader, csvFileFormat);
+
+            // Get a list of CSV file records
+            List<CSVRecord> csvRecords = csvFileParser.getRecords();
+
+            for (CSVRecord record : csvRecords) {
+                String nomeImg = record.get(0);
+                String titolarePanchina = record.get(1);
+                String percentuale = record.get(2);
+                String href = record.get(3);
+                FcGiocatore giocatore = this.giocatoreRepository.findByNomeImg(nomeImg +".png");
+                if (giocatore != null) {
+                    giocatore.setNomeGiocatore(titolarePanchina);
+                    giocatoreRepository.save(giocatore);
+                } else {
+                    log.info("href " + href);  
+                }
+            }
+
+            log.info("END initDbProbabiliFantaGazzetta");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Error in initDbProbabiliFantaGazzetta !!!");
+            throw e;
+        } finally {
+
+            if (fileReader != null) {
+                fileReader.close();
+            }
+            if (csvFileParser != null) {
+                csvFileParser.close();
+            }
+        }
+    }
+
     public void updateImgGiocatore(InputStream is) throws Exception {
 
         log.info("START updateImgGiocatore");

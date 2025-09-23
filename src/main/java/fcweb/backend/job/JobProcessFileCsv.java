@@ -204,14 +204,15 @@ public class JobProcessFileCsv {
                 Elements thRows = trRow.select("th");
                 for (Element tdRow : thRows) {
                     String rowData = tdRow.text();
-                    if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && (Costants.TITOLARI.equals(rowData) || Costants.PANCHINA.equals(rowData))) {
+                    if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1
+                            && (Costants.TITOLARI.equals(rowData) || Costants.PANCHINA.equals(rowData))) {
                         data.append(rowData);
                         data.append(";");
                         data.append(rowData);
                         data.append("\n");
                     }
                 }
-                
+
                 Elements tdRows = trRow.select("td");
                 for (Element tdRow : tdRows) {
                     String rowData = tdRow.text();
@@ -246,6 +247,100 @@ public class JobProcessFileCsv {
         }
 
         log.info("downloadCsvProbabili END");
+    }
+
+    public void downloadCsvProbabiliFantaGazzetta(String httpUrl, String pathCsv, String fileName) throws Exception {
+
+        log.info("downloadCsvProbabiliFantaGazzetta START");
+
+        File input = null;
+        try {
+            fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
+            input = new File(pathCsv + fileName + EXT_HTML);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
+
+        StringBuilder data = new StringBuilder();
+
+        Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+
+        Elements ulRows = doc.select("li");
+
+        for (Element liRow : ulRows) {
+            Element parent = liRow.parent();
+            String classNameParent = parent.className();
+            String rowData = liRow.text();
+            String className = liRow.className();
+            if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1
+                    && "player-item pill".equals(className)) {
+                String lastCharacter = rowData.substring(rowData.length() - 1);
+                if ("%".equals(lastCharacter)) {
+                    Elements children = liRow.children();
+                    String href = null;
+                    for (Element c : children) {
+                        href = c.attr("href");
+                        if (StringUtils.isNotEmpty(href) && StringUtils.length(href) > 1) {
+                            StringBuilder percentuale = new StringBuilder();
+                            char[] letters = rowData.toCharArray();
+                            for (char l : letters) {
+                                Boolean flag = Character.isDigit(l);
+                                if (flag.booleanValue()) {
+                                    percentuale.append(l);
+                                }
+                            }
+
+                            StringBuilder nomeImg = new StringBuilder();
+                            char[] letters2 = href.toCharArray();
+                            for (char l : letters2) {
+                                Boolean flag = Character.isDigit(l);
+                                if (flag.booleanValue()) {
+                                    nomeImg.append(l);
+                                }
+                            }
+
+                            log.info(" nomeImg=" + nomeImg + " percentuale=" + percentuale.toString() + " href " + href);
+
+                            data.append(nomeImg);
+                            data.append(";");
+                            if ("player-list starters".equals(classNameParent)) {
+                                data.append(Costants.TITOLARE);
+                            } else {
+                                data.append(Costants.PANCHINA);
+                            }
+                            data.append(";");
+                            data.append(percentuale.toString());
+                            data.append(";");
+                            data.append(href);
+                            data.append("\n");
+
+                        }
+                    }
+                }
+            }
+        }
+
+        FileOutputStream outputStream = null;
+        try {
+            // DELETE
+            File f = new File(pathCsv + fileName + EXT_CSV);
+            if (f.exists()) {
+                f.delete();
+            }
+
+            outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+            byte[] strToBytes = data.toString().getBytes();
+            outputStream.write(strToBytes);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+
+        log.info("downloadCsvProbabiliFantaGazzetta END");
     }
 
     private void fileDownload(String fAddress, String localFileName, String destinationDir) throws Exception {
