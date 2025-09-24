@@ -4597,7 +4597,7 @@ public class JobProcessGiornata {
         
         log.info("START initDbProbabiliFantaGazzetta");
 
-        String sql = "UPDATE fc_giocatore SET NOME_GIOCATORE=null";
+        String sql = "UPDATE fc_giocatore SET NOME_GIOCATORE=null,PERCENTUALE=null";
         this.jdbcTemplate.execute(sql);
         
         FileReader fileReader = null;

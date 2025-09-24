@@ -229,10 +229,8 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
                 // DOWNLOAD FILE PROBABILI FANTAGAZZETTA
                 // **************************************
 
-                String httpUrlProbabiliFantaGazzetta = "https://www.fantacalcio.it/probabili-formazioni-serie-a";
-                log.info("httpUrlProbabiliFantaGazzetta " + httpUrlProbabiliFantaGazzetta);
                 String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-                jobCsv.downloadCsvProbabiliFantaGazzetta(httpUrlProbabiliFantaGazzetta, basePath, fileName4);
+                jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName4);
 
                 fileName = basePathData + fileName4 + ".csv";
                 jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);

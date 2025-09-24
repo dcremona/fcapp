@@ -26,6 +26,7 @@ import fcweb.backend.service.GiornataGiocatoreService;
 import fcweb.backend.service.GiornataInfoRepository;
 import fcweb.backend.service.PagelleService;
 import fcweb.backend.service.ProprietaService;
+import fcweb.utils.Costants;
 
 @Component
 public class MyScheduledTasks {
@@ -253,15 +254,24 @@ public class MyScheduledTasks {
         // **************************************
         // DOWNLOAD FILE PROBABILI
         // **************************************
-        String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
-        log.info("httpUrlProbabili " + httpUrlProbabili);
-        String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+//        String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
+//        log.info("httpUrlProbabili " + httpUrlProbabili);
+//        String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
+//        jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+//
+//        fileName = basePathData + fileName3 + ".csv";
+//        jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
 
-        fileName = basePathData + fileName3 + ".csv";
-        jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+        // **************************************
+        // DOWNLOAD FILE PROBABILI FANTAGAZZETTA
+        // **************************************
 
+        String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
+        jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName4);
 
+        fileName = basePathData + fileName4 + ".csv";
+        jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);
+        
         log.info("jobSqualificaInfortunati end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
     }
     
