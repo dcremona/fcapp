@@ -29,6 +29,7 @@ import org.vaadin.ronny.AbsoluteLayout;
 import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -40,6 +41,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.popover.Popover;
+import com.vaadin.flow.component.popover.PopoverPosition;
+import com.vaadin.flow.component.popover.PopoverVariant;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.progressbar.ProgressBarVariant;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -475,27 +479,194 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         }
     }
 
-    private String getInfoPlayer(FcGiocatore bean) {
-        String info = bean.getCognGiocatore() + "\n";
-        info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
-        info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
-        if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
-            NumberFormat formatter = new DecimalFormat("#0.00");
-            String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / Costants.DIVISORE_100);
-            String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / Costants.DIVISORE_100);
+//    private String getInfoPlayer(FcGiocatore bean) {
+//        String info = bean.getCognGiocatore() + "\n";
+//        info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
+//        info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
+//        if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
+//            NumberFormat formatter = new DecimalFormat("#0.00");
+//            String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / Costants.DIVISORE_100);
+//            String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / Costants.DIVISORE_100);
+//
+//            info += "MV: " + mv + "\n";
+//            info += "FV: " + fv + "\n";
+//            info += "Goal: " + bean.getFcStatistiche().getGoalFatto() + "\n";
+//            info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
+//            info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
+//            info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
+//            if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
+//                info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
+//            }
+//        }
+//        info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
+//        return info;
+//    }
+    
+    private void setPopover(Component cellLayout,FcGiocatore g) {
 
-            info += "MV: " + mv + "\n";
-            info += "FV: " + fv + "\n";
-            info += "Goal: " + bean.getFcStatistiche().getGoalFatto() + "\n";
-            info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
-            info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
-            info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-            if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
-                info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
+        Popover popover = new Popover();
+        popover.addThemeVariants(PopoverVariant.ARROW);
+        popover.setPosition(PopoverPosition.TOP);
+        popover.setOpenOnClick(false);
+        popover.setOpenOnHover(true);
+        popover.setOpenOnFocus(true);
+
+        final VerticalLayout contentInfo = new VerticalLayout();
+        contentInfo.setMargin(false);
+        contentInfo.setPadding(false);
+        contentInfo.setSpacing(false);
+
+        if (g.getFcRuolo() != null) {
+            HorizontalLayout info1 = new HorizontalLayout();
+            info1.setMargin(false);
+            info1.setPadding(false);
+            info1.setSpacing(false);
+
+            Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+            info1.add(img);
+            
+            if (g.getCognGiocatore() != null) {
+                Span lblGiocatore = new Span();
+                lblGiocatore.setText(g.getCognGiocatore());
+                info1.add(lblGiocatore);
             }
+            contentInfo.add(info1);
         }
-        info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
-        return info;
+        
+        FcGiornataGiocatore gg = isGiocatoreOut(g);
+        if (gg != null) {
+            contentInfo.add(getImageGiocatoreOut(gg));
+        }
+
+        if (g.getFcSquadra() != null) {
+            HorizontalLayout info2 = new HorizontalLayout();
+            info2.setMargin(false);
+            info2.setPadding(false);
+            info2.setSpacing(false);
+
+            if (g.getImgSmall() != null) {
+                try {
+                    Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+                    info2.add(img);
+                  } catch (SQLException e) {
+                      e.printStackTrace();
+                  }
+            }
+            contentInfo.add(info2);
+        }
+        
+        if (g.getFcSquadra() != null) {
+            HorizontalLayout info3 = new HorizontalLayout();
+            info3.setMargin(false);
+            info3.setPadding(false);
+            info3.setSpacing(false);
+
+            FcSquadra sq = g.getFcSquadra();
+            if (sq.getImg() != null) {
+                try {
+                    Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+                    info3.add(img);
+                  } catch (SQLException e) {
+                      e.printStackTrace();
+                  }
+            }
+            Span lblSquadra = new Span();
+            lblSquadra.setText(sq.getNomeSquadra());
+            info3.add(lblSquadra);
+
+            contentInfo.add(info3);
+        }
+        
+        FcStatistiche s = g.getFcStatistiche();
+        
+        Span lblGiocate = new Span();
+        lblGiocate.setText("Giocate: "+s.getGiocate());
+        contentInfo.add(lblGiocate);
+
+        if (s != null && s.getMediaVoto() != 0) {
+
+            HorizontalLayout infoMv = new HorizontalLayout();
+            infoMv.setMargin(false);
+            infoMv.setPadding(false);
+            infoMv.setSpacing(false);
+
+            String imgThink = "2.png";
+            if (s.getMediaVoto() > Costants.RANGE_MAX_MV) {
+                imgThink = "1.png";
+            } else if (s.getMediaVoto() < Costants.RANGE_MIN_MV) {
+                imgThink = "3.png";
+            }
+            Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+            infoMv.add(imgMv);
+
+            NumberFormat formatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
+            String mv = formatter.format(s.getMediaVoto() / Costants.DIVISORE_100);
+
+            Span lblMv = new Span();
+            lblMv.setText("MV: " + mv );
+            infoMv.add(lblMv);
+            
+            contentInfo.add(infoMv);
+        }
+        
+
+        if (s != null && s.getFantaMedia() != 0) {
+
+            HorizontalLayout infoFv = new HorizontalLayout();
+            infoFv.setMargin(false);
+            infoFv.setPadding(false);
+            infoFv.setSpacing(false);
+
+            String imgThink = "2.png";
+            if (s.getFantaMedia() > Costants.RANGE_MAX_MV) {
+                imgThink = "1.png";
+            } else if (s.getFantaMedia() < Costants.RANGE_MIN_MV) {
+                imgThink = "3.png";
+            }
+            Image imgFv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+            infoFv.add(imgFv);
+
+            NumberFormat formatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
+            String fv = formatter.format(s.getFantaMedia() / Costants.DIVISORE_100);
+
+            Span lblFv = new Span();
+            lblFv.setText("FV: " + fv );
+            infoFv.add(lblFv);
+
+            contentInfo.add(infoFv);
+        }
+
+        Span lblGoal = new Span();
+        lblGoal.setText("Goal: "+s.getGoalFatto());
+        contentInfo.add(lblGoal);
+
+        Span lblAssist = new Span();
+        lblAssist.setText("Assist: "+s.getAssist());
+        contentInfo.add(lblAssist);
+
+        Span lblAmmonizioni = new Span();
+        lblAmmonizioni.setText("Ammonizioni: "+s.getAmmonizione());
+        contentInfo.add(lblAmmonizioni);
+
+        Span lblEspulsioni = new Span();
+        lblEspulsioni.setText("Espulsioni: "+s.getEspulsione());
+        contentInfo.add(lblEspulsioni);
+
+        if (Costants.P.equalsIgnoreCase(g.getFcRuolo().getIdRuolo())) {
+            Span lblGoalSubiti = new Span();
+            lblGoalSubiti.setText("Goal Subiti: "+s.getGoalSubito());
+            contentInfo.add(lblGoalSubiti);
+        }
+
+        Span lblProbabile = new Span();
+        lblProbabile.setText("Probabile: " + (StringUtils.isNotEmpty(g.getNomeGiocatore()) ? g.getNomeGiocatore() : "N.D."));
+        contentInfo.add(lblProbabile);
+
+        popover.add(contentInfo);
+        
+        popover.setAriaLabelledBy("cvv-heading");
+        popover.setTarget(cellLayout);                
+
     }
 
     private void refreshAndSortGridFormazione() {
@@ -673,7 +844,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
             if (p != null) {
 
-                String title = getInfoPlayer(p);
+                //String title = getInfoPlayer(p);
 
                 String ruolo = p.getFcRuolo().getIdRuolo();
                 if (Costants.P.equals(ruolo)) {
@@ -699,14 +870,14 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
                 Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader
                         .getResource(Costants.CLASSPATH_IMAGES + p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-                imgR.setTitle(title);
+                //imgR.setTitle(title);
                 cellLayoutImg.add(imgR);
 
                 FcSquadra sq = p.getFcSquadra();
                 if (sq != null && sq.getImg() != null) {
                     try {
                         Image imgSq = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-                        imgSq.setTitle(title);
+                        //imgSq.setTitle(title);
                         cellLayoutImg.add(imgSq);
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -724,7 +895,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
                 Image imgMv = Utils.buildImage(imgThink,
                         resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
-                imgMv.setTitle(title);
+                //imgMv.setTitle(title);
                 cellLayoutImg.add(imgMv);
 
                 FcGiornataGiocatore gg = isGiocatoreOut(p);
@@ -733,18 +904,20 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 }
 
                 Span lblGiocatore = new Span(p.getCognGiocatore());
-                lblGiocatore.setTitle(title);
+                //lblGiocatore.setTitle(title);
                 lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
 
                 cellLayout.add(cellLayoutImg);
                 try {
                     Image img = Utils.getImage(p.getNomeImg(), p.getImg().getBinaryStream());
-                    img.setTitle(title);
+                    //img.setTitle(title);
                     cellLayout.add(img);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
                 cellLayout.add(lblGiocatore);
+                
+                setPopover(cellLayout,p);
 
                 Element element = cellLayout.getElement(); // DOM element
                 element.addEventListener("click", e -> {
@@ -832,7 +1005,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         grid.setItems(items);
         grid.setSelectionMode(Grid.SelectionMode.NONE);
         grid.setAllRowsVisible(true);
-        grid.setWidth("330px");
+        grid.setWidth(Costants.WIDTH_330);
 
         Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
             HorizontalLayout cellLayout = new HorizontalLayout();
@@ -841,17 +1014,17 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
             cellLayout.setSpacing(false);
             cellLayout.setAlignItems(Alignment.STRETCH);
             if (g != null) {
-                String title = getInfoPlayer(g);
+                //String title = getInfoPlayer(g);
                 if (g.getFcRuolo() != null) {
                     Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
                             resourceLoader.getResource(
                                     Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-                    img.setTitle(title);
+                    //img.setTitle(title);
                     cellLayout.add(img);
                 }
                 if (g.getCognGiocatore() != null) {
                     Span lblGiocatore = new Span();
-                    lblGiocatore.setTitle(title);
+                    //lblGiocatore.setTitle(title);
                     lblGiocatore.setText(g.getCognGiocatore());
                     cellLayout.add(lblGiocatore);
                 }
@@ -861,6 +1034,8 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
                     cellLayout.add(getImageGiocatoreOut(gg));
                 }
+                
+                setPopover(cellLayout,g);
             }
             return cellLayout;
         }));
@@ -875,7 +1050,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
             cellLayout.setSpacing(false);
             cellLayout.setAlignItems(Alignment.STRETCH);
             if (g != null) {
-                String title = getInfoPlayer(g);
+                //String title = getInfoPlayer(g);
                 Integer perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
                 double value = Double.parseDouble(perc.toString()) / Double.parseDouble("100");
                 
@@ -892,6 +1067,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
                 Span lblPerc = new Span();
                 lblPerc.setText(perc+"%");
+                //lblPerc.setTitle(title);
                 
                 if (perc > 60) {
                     lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);    
@@ -900,14 +1076,16 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 } else {
                     lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
                 }
-                
                 cellLayout.add(lblPerc);
+                
+                setPopover(cellLayout,g);
+                
             }
             return cellLayout;
         }));
         infoPercColumn.setSortable(false);
         infoPercColumn.setHeader("");
-        infoPercColumn.setWidth("140px");
+        infoPercColumn.setWidth("145px");
         
 //        Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 //            HorizontalLayout cellLayout = new HorizontalLayout();
@@ -993,10 +1171,6 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
         grid.addItemClickListener(event -> {
 
-            if (comboModulo.getValue() == null) {
-                log.info("valModulo null");
-                return;
-            }
             String valModulo = comboModulo.getValue();
             if (valModulo == null) {
                 log.info("valModulo null");

@@ -134,6 +134,7 @@ public class Costants {
     public static final String WIDTH_205 = "205px";
     public static final String WIDTH_240 = "240px";
     public static final String WIDTH_300 = "300px";
+    public static final String WIDTH_330 = "330px";
 
     public static final String TITOLARE = "TITOLARE";
     public static final String TITOLARI = "TITOLARI";
