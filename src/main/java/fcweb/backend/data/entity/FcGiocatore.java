@@ -43,6 +43,7 @@ public class FcGiocatore implements java.io.Serializable {
     private FcStatistiche fcStatistiche;
     private Set<FcMercatoDett> fcMercatoDettsForIdGiocVen = new HashSet<>(0);
     private Set<FcMercatoDett> fcMercatoDettsForIdGiocAcq = new HashSet<>(0);
+    private Integer percentuale;
 
     public FcGiocatore() {
     }
@@ -230,5 +231,16 @@ public class FcGiocatore implements java.io.Serializable {
     public void setData(LocalDateTime data) {
         this.data = data;
     }
+
+    @Column(name = "percentuale")
+    public Integer getPercentuale() {
+        return percentuale;
+    }
+
+    public void setPercentuale(Integer percentuale) {
+        this.percentuale = percentuale;
+    }
+    
+    
 
 }

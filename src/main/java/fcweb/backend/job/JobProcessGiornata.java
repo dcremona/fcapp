@@ -4626,6 +4626,13 @@ public class JobProcessGiornata {
                 FcGiocatore giocatore = this.giocatoreRepository.findByNomeImg(nomeImg +".png");
                 if (giocatore != null) {
                     giocatore.setNomeGiocatore(titolarePanchina);
+                    Integer perc = null;
+                    try {
+                        perc = Integer.parseInt(percentuale);
+                    } catch (Exception e) {
+                        perc = Integer.parseInt("0");
+                    }
+                    giocatore.setPercentuale(perc);
                     giocatoreRepository.save(giocatore);
                 } else {
                     log.info("href " + href);  
