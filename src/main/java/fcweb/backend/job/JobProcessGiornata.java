@@ -4655,6 +4655,74 @@ public class JobProcessGiornata {
             }
         }
     }
+    
+    public void initDbSqualificatiInfortunatiFantaGazzetta(FcGiornataInfo giornataInfo, String fileName) throws Exception {
+        
+        log.info("START initDbSqualificatiInfortunatiFantaGazzetta");
+
+        FileReader fileReader = null;
+        CSVParser csvFileParser = null;
+
+        // Create the CSVFormat object with the header mapping
+        @SuppressWarnings("deprecation")
+        CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
+
+        try {
+
+            // initialize FileReader object
+            fileReader = new FileReader(fileName);
+
+            // initialize CSVParser object
+            csvFileParser = new CSVParser(fileReader, csvFileFormat);
+
+            // Get a list of CSV file records
+            List<CSVRecord> csvRecords = csvFileParser.getRecords();
+
+            for (CSVRecord record : csvRecords) {
+
+                String nomeImg = record.get(0);
+                String infortunatoSqualificato = record.get(1);
+                //String percentuale = record.get(2);
+                String href = record.get(3);
+                String note = record.get(4);
+
+                FcGiocatore giocatore = this.giocatoreRepository.findByNomeImg(nomeImg +".png");
+                if (giocatore != null) {
+                    FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
+                    FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();
+                    giornataGiocatorePK.setIdGiornata(giornataInfo.getCodiceGiornata());
+                    giornataGiocatorePK.setIdGiocatore(giocatore.getIdGiocatore());
+                    giornataGiocatore.setId(giornataGiocatorePK);
+                    giornataGiocatore.setInfortunato(Costants.INFORTUNATO.equals(infortunatoSqualificato));
+                    giornataGiocatore.setSqualificato(Costants.SQUALIFICATO.equals(infortunatoSqualificato));
+                    if (Costants.INFORTUNATO.equals(infortunatoSqualificato)) {
+                        giornataGiocatore.setNote("Infortunato: " + note);
+                    } else if (Costants.SQUALIFICATO.equals(infortunatoSqualificato)) {
+                        giornataGiocatore.setNote("Squalificato: " + note);
+                    }
+                    this.giornataGiocatoreRepository.save(giornataGiocatore);
+
+                } else {
+                    log.info("nomeImg " + nomeImg + " href "+ href);
+                }
+            }
+
+            log.info("END initDbSqualificatiInfortunatiFantaGazzetta");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Error in initDbSqualificatiInfortunatiFantaGazzetta !!!");
+            throw e;
+        } finally {
+
+            if (fileReader != null) {
+                fileReader.close();
+            }
+            if (csvFileParser != null) {
+                csvFileParser.close();
+            }
+        }
+    }
 
     public void updateImgGiocatore(InputStream is) throws Exception {
 

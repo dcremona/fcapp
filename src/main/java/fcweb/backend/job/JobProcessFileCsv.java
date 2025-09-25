@@ -299,7 +299,8 @@ public class JobProcessFileCsv {
                                 }
                             }
 
-                            log.info(" nomeImg=" + nomeImg + " percentuale=" + percentuale.toString() + " href " + href);
+                            log.info(
+                                    " nomeImg=" + nomeImg + " percentuale=" + percentuale.toString() + " href " + href);
 
                             data.append(nomeImg);
                             data.append(";");
@@ -341,6 +342,102 @@ public class JobProcessFileCsv {
         }
 
         log.info("downloadCsvProbabiliFantaGazzetta END");
+    }
+
+    public void downloadCsvSqualificatiInfortunatiFantaGazzetta(String httpUrl, String pathCsv, String fileName)
+            throws Exception {
+
+        log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta START");
+
+        File input = null;
+        try {
+            fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
+            input = new File(pathCsv + fileName + EXT_HTML);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
+
+        StringBuilder data = new StringBuilder();
+
+        Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+
+        Elements ulRows = doc.select("ul");
+
+        for (Element ulRow : ulRows) {
+            String rowData = ulRow.text();
+            String className = ulRow.className();
+
+            if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1
+                    && ("injured-list".equals(className) || "suspendeds-list".equals(className))) {
+                Elements children = ulRow.children();
+                String href = null;
+
+                for (Element c : children) {
+                    Elements childrenLi = c.children();
+                    for (Element li : childrenLi) {
+                        href = li.attr("href");
+                        if (StringUtils.isNotEmpty(href) && StringUtils.length(href) > 1) {
+                            StringBuilder nomeImg = new StringBuilder();
+                            char[] letters2 = href.toCharArray();
+                            for (char l : letters2) {
+                                Boolean flag = Character.isDigit(l);
+                                if (flag.booleanValue()) {
+                                    nomeImg.append(l);
+                                }
+                            }
+
+                            data.append(nomeImg);
+                            data.append(";");
+
+                            String note = "";
+                            if ("injured-list".equals(className)) {
+                                data.append(Costants.INFORTUNATO);
+                                for (Element p : childrenLi) {
+                                    String classNameNote = p.className();
+                                    if ("description".equals(classNameNote)) {
+                                        note = p.text();
+                                    }
+                                }
+                            } else if ("suspendeds-list".equals(className)) {
+                                data.append(Costants.SQUALIFICATO);
+                            }
+
+                            log.info(" nomeImg=" + nomeImg + " percentuale=0" + " href " + href);
+                            data.append(";");
+                            data.append("0");
+                            data.append(";");
+                            data.append(href);
+                            data.append(";");
+                            data.append(note);
+                            data.append("\n");
+
+                        }
+                    }
+                }
+            }
+        }
+
+        FileOutputStream outputStream = null;
+        try {
+            // DELETE
+            File f = new File(pathCsv + fileName + EXT_CSV);
+            if (f.exists()) {
+                f.delete();
+            }
+
+            outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+            byte[] strToBytes = data.toString().getBytes();
+            outputStream.write(strToBytes);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+
+        log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta END");
     }
 
     private void fileDownload(String fAddress, String localFileName, String destinationDir) throws Exception {

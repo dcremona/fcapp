@@ -58,7 +58,7 @@ public class MyScheduledTasks {
 
     @Autowired
     private GiornataGiocatoreService giornataGiocatoreService;
-    
+
     @Autowired
     private GiornataInfoRepository giornataInfoRepository;
 
@@ -92,7 +92,7 @@ public class MyScheduledTasks {
 
         Calendar cal = Calendar.getInstance();
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-        log.info("dayOfWeek " +  dayOfWeek);
+        log.info("dayOfWeek " + dayOfWeek);
 
         String votiExcel = "Voti-Ufficiosi-Excel";
         String infoResult = "UFFICIOSI";
@@ -112,7 +112,7 @@ public class MyScheduledTasks {
         }
         p.setProperty("INFO_RESULT", infoResult);
 
-        String startJob =  dayOfWeek + "_" + infoResult;
+        String startJob = dayOfWeek + "_" + infoResult;
         log.info("startJob " + startJob);
         String valueStart = p.getProperty(startJob);
         log.info("VALUE_START " + valueStart);
@@ -180,7 +180,7 @@ public class MyScheduledTasks {
     }
 
     // @Scheduled(cron = "*/60 * * * * *")
-    //@Scheduled(cron = "0 0 6 * * *")
+    // @Scheduled(cron = "0 0 6 * * *")
     @Scheduled(cron = "#{@getCronValueInfoGiocatore}")
     public void jobSqualificaInfortunati() throws Exception {
 
@@ -227,61 +227,81 @@ public class MyScheduledTasks {
         String basePath = basePathData;
         log.info("basePathData " + basePathData);
 
-        // **************************************
-        // DOWNLOAD FILE SQUALIFICATI
-        // **************************************
-        String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
-        log.info("httpUrlSqualificati " + httpUrlSqualificati);
-        String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
         JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-        jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
+        String fileName = null;
+        boolean bFantaGazzetta = true;
 
-        String fileName = basePathData + fileName1 + ".csv";
-        jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
+        if (!bFantaGazzetta) {
 
-        // **************************************
-        // DOWNLOAD FILE INFORTUNATI
-        // **************************************
-        String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
-        log.info("httpUrlInfortunati " + httpUrlInfortunati);
-        String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
+            // **************************************
+            // DOWNLOAD FILE SQUALIFICATI
+            // **************************************
+            String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
+            log.info("httpUrlSqualificati " + httpUrlSqualificati);
+            String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
+            jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
 
-        fileName = basePathData + fileName2 + ".csv";
-        jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
-        
-        
-        // **************************************
-        // DOWNLOAD FILE PROBABILI
-        // **************************************
-//        String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
-//        log.info("httpUrlProbabili " + httpUrlProbabili);
-//        String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
-//        jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
-//
-//        fileName = basePathData + fileName3 + ".csv";
-//        jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+            fileName = basePathData + fileName1 + ".csv";
+            jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
 
-        // **************************************
-        // DOWNLOAD FILE PROBABILI FANTAGAZZETTA
-        // **************************************
+            // **************************************
+            // DOWNLOAD FILE INFORTUNATI
+            // **************************************
+            String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
+            log.info("httpUrlInfortunati " + httpUrlInfortunati);
+            String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
+            jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
 
-        String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName4);
+            fileName = basePathData + fileName2 + ".csv";
+            jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
 
-        fileName = basePathData + fileName4 + ".csv";
-        jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);
-        
+            // **************************************
+            // DOWNLOAD FILE PROBABILI
+            // **************************************
+            String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
+            log.info("httpUrlProbabili " + httpUrlProbabili);
+            String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
+            jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+
+            fileName = basePathData + fileName3 + ".csv";
+            jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+
+        } else {
+
+            // ****************************************************************************
+            // DOWNLOAD FILE SQUALIFICATI_INFORTUNATI FANTAGAZZETTA
+            // ****************************************************************************
+
+            String fileName5 = "SQUALIFICATI_INFORTUNATI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
+            jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath,
+                    fileName5);
+
+            fileName = basePathData + fileName5 + ".csv";
+            jobProcessGiornata.initDbSqualificatiInfortunatiFantaGazzetta(giornataInfo, fileName);
+
+            // **************************************
+            // DOWNLOAD FILE PROBABILI FANTAGAZZETTA
+            // **************************************
+
+            String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
+            jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName4);
+
+            fileName = basePathData + fileName4 + ".csv";
+            jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);
+
+        }
+
         log.info("jobSqualificaInfortunati end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
     }
-    
-    
-//    @Scheduled(cron = "*/120 * * * * *")
-//    public void jobTest() throws Exception {
-//
-//        log.info("jobTest start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
-//
-//        log.info("jobTest end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
-//    }
+
+    // @Scheduled(cron = "*/120 * * * * *")
+    // public void jobTest() throws Exception {
+    //
+    // log.info("jobTest start at " + Utils.formatDate(new Date(), "dd/MM/yyyy
+    // HH:mm:ss"));
+    //
+    // log.info("jobTest end at " + Utils.formatDate(new Date(), "dd/MM/yyyy
+    // HH:mm:ss"));
+    // }
 
 }

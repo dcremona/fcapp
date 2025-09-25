@@ -127,7 +127,7 @@ public class MainLayout extends AppLayout {
                 }
 
                 if (accessChecker.hasAccess(TeamInsertView.class)) {
-                    nav.addItem(new SideNavItem("Schera Formazione", TeamInsertView.class,
+                    nav.addItem(new SideNavItem("Schiera Formazione", TeamInsertView.class,
                             LineAwesomeIcon.FUTBOL_SOLID.create()));
                 }
 
@@ -196,7 +196,7 @@ public class MainLayout extends AppLayout {
                 }
 
                 if (accessChecker.hasAccess(EmTeamInsertView.class)) {
-                    nav.addItem(new SideNavItem("Schera Formazione", EmTeamInsertView.class,
+                    nav.addItem(new SideNavItem("Schiera Formazione", EmTeamInsertView.class,
                             LineAwesomeIcon.FUTBOL_SOLID.create()));
                 }
 

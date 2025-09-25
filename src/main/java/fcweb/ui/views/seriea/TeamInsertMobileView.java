@@ -624,7 +624,8 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
             }
         }
-        info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
+        info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.")
+                + "\n";
         return info;
     }
 
@@ -1010,10 +1011,10 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 String title = getInfoPlayer(g);
                 Integer perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
                 double value = Double.parseDouble(perc.toString()) / Double.parseDouble("100");
-                
+
                 ProgressBar progressBarPerc = new ProgressBar();
                 if (perc > 60) {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);    
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
                 } else if (perc > 39 && perc < 61) {
                     progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
                 } else {
@@ -1023,17 +1024,17 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 cellLayout.add(progressBarPerc);
 
                 Span lblPerc = new Span();
-                lblPerc.setText(perc+"%");
+                lblPerc.setText(perc + "%");
                 lblPerc.setTitle(title);
-                
+
                 if (perc > 60) {
-                    lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);    
+                    lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
                 } else if (perc > 39 && perc < 61) {
-                    lblPerc.addClassNames(LumoUtility.TextColor.ERROR);                    
+                    lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
                 } else {
                     lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
                 }
-                
+
                 cellLayout.add(lblPerc);
             }
             return cellLayout;
@@ -1041,88 +1042,97 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
         infoPercColumn.setSortable(false);
         infoPercColumn.setHeader("");
         infoPercColumn.setWidth("135px");
-        
-//        Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
-//            HorizontalLayout cellLayout = new HorizontalLayout();
-//            cellLayout.setMargin(false);
-//            cellLayout.setPadding(false);
-//            cellLayout.setSpacing(false);
-//            cellLayout.setAlignItems(Alignment.STRETCH);
-//            if (g != null) {
-//                String title = getInfoPlayer(g);
-//                if (isGiocatoreOut(g) != null) {
-//                    cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
-//                    cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-//                }
-//                if (g.getFcSquadra() != null) {
-//                    FcSquadra sq = g.getFcSquadra();
-//                    if (sq.getImg() != null) {
-//                        try {
-//                            Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-//                            img.setTitle(title);
-//                            cellLayout.add(img);
-//                        } catch (SQLException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    Span lblSquadra = new Span();
-//                    lblSquadra.setText(sq.getNomeSquadra().substring(0, 3));
-//                    lblSquadra.setTitle(title);
-//                    cellLayout.add(lblSquadra);
-//                }
-//            }
-//            return cellLayout;
-//        }));
-//        nomeSquadraColumn.setSortable(true);
-//        nomeSquadraColumn.setComparator(
-//                (p1, p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
-//        nomeSquadraColumn.setHeader("Sq");
-//        nomeSquadraColumn.setWidth("70px");
-//
-//        Column<FcGiocatore> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(g -> {
-//            HorizontalLayout cellLayout = new HorizontalLayout();
-//            cellLayout.setMargin(false);
-//            cellLayout.setPadding(false);
-//            cellLayout.setSpacing(false);
-//            if (g != null) {
-//                String title = getInfoPlayer(g);
-//                if (isGiocatoreOut(g) != null) {
-//                    cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
-//                    cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-//                }
-//
-//                FcStatistiche s = g.getFcStatistiche();
-//                String imgThink = "2.png";
-//                if (s != null && s.getMediaVoto() != 0) {
-//                    if (s.getMediaVoto() > Costants.RANGE_MAX_MV) {
-//                        imgThink = "1.png";
-//                    } else if (s.getMediaVoto() < Costants.RANGE_MIN_MV) {
-//                        imgThink = "3.png";
-//                    }
-//                }
-//                Image img = Utils.buildImage(imgThink,
-//                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
-//                img.setTitle(title);
-//
-//                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-//                Double d = Double.valueOf(0);
-//                if (s != null) {
-//                    d = s.getMediaVoto() / Costants.DIVISORE_100;
-//                }
-//                String sTotPunti = myFormatter.format(d);
-//                Span lbl = new Span(sTotPunti);
-//                lbl.setTitle(title);
-//
-//                cellLayout.add(img);
-//                cellLayout.add(lbl);
-//            }
-//            return cellLayout;
-//        }));
-//        mediaVotoColumn.setSortable(true);
-//        mediaVotoColumn.setComparator(
-//                (p1, p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
-//        mediaVotoColumn.setHeader("Mv");
-//        mediaVotoColumn.setWidth("70px");
+
+        // Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new
+        // ComponentRenderer<>(g -> {
+        // HorizontalLayout cellLayout = new HorizontalLayout();
+        // cellLayout.setMargin(false);
+        // cellLayout.setPadding(false);
+        // cellLayout.setSpacing(false);
+        // cellLayout.setAlignItems(Alignment.STRETCH);
+        // if (g != null) {
+        // String title = getInfoPlayer(g);
+        // if (isGiocatoreOut(g) != null) {
+        // cellLayout.getElement().getStyle().set(Costants.BACKGROUND,
+        // Costants.LOWER_GRAY);
+        // cellLayout.getElement().getStyle().set("-webkit-text-fill-color",
+        // Costants.RED);
+        // }
+        // if (g.getFcSquadra() != null) {
+        // FcSquadra sq = g.getFcSquadra();
+        // if (sq.getImg() != null) {
+        // try {
+        // Image img = Utils.getImage(sq.getNomeSquadra(),
+        // sq.getImg().getBinaryStream());
+        // img.setTitle(title);
+        // cellLayout.add(img);
+        // } catch (SQLException e) {
+        // e.printStackTrace();
+        // }
+        // }
+        // Span lblSquadra = new Span();
+        // lblSquadra.setText(sq.getNomeSquadra().substring(0, 3));
+        // lblSquadra.setTitle(title);
+        // cellLayout.add(lblSquadra);
+        // }
+        // }
+        // return cellLayout;
+        // }));
+        // nomeSquadraColumn.setSortable(true);
+        // nomeSquadraColumn.setComparator(
+        // (p1, p2) ->
+        // p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
+        // nomeSquadraColumn.setHeader("Sq");
+        // nomeSquadraColumn.setWidth("70px");
+        //
+        // Column<FcGiocatore> mediaVotoColumn = grid.addColumn(new
+        // ComponentRenderer<>(g -> {
+        // HorizontalLayout cellLayout = new HorizontalLayout();
+        // cellLayout.setMargin(false);
+        // cellLayout.setPadding(false);
+        // cellLayout.setSpacing(false);
+        // if (g != null) {
+        // String title = getInfoPlayer(g);
+        // if (isGiocatoreOut(g) != null) {
+        // cellLayout.getElement().getStyle().set(Costants.BACKGROUND,
+        // Costants.LOWER_GRAY);
+        // cellLayout.getElement().getStyle().set("-webkit-text-fill-color",
+        // Costants.RED);
+        // }
+        //
+        // FcStatistiche s = g.getFcStatistiche();
+        // String imgThink = "2.png";
+        // if (s != null && s.getMediaVoto() != 0) {
+        // if (s.getMediaVoto() > Costants.RANGE_MAX_MV) {
+        // imgThink = "1.png";
+        // } else if (s.getMediaVoto() < Costants.RANGE_MIN_MV) {
+        // imgThink = "3.png";
+        // }
+        // }
+        // Image img = Utils.buildImage(imgThink,
+        // resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+        // img.setTitle(title);
+        //
+        // DecimalFormat myFormatter = new DecimalFormat("#0.00");
+        // Double d = Double.valueOf(0);
+        // if (s != null) {
+        // d = s.getMediaVoto() / Costants.DIVISORE_100;
+        // }
+        // String sTotPunti = myFormatter.format(d);
+        // Span lbl = new Span(sTotPunti);
+        // lbl.setTitle(title);
+        //
+        // cellLayout.add(img);
+        // cellLayout.add(lbl);
+        // }
+        // return cellLayout;
+        // }));
+        // mediaVotoColumn.setSortable(true);
+        // mediaVotoColumn.setComparator(
+        // (p1, p2) ->
+        // p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
+        // mediaVotoColumn.setHeader("Mv");
+        // mediaVotoColumn.setWidth("70px");
 
         grid.addItemClickListener(event -> {
             String valModulo = comboModulo.getValue();
@@ -1195,7 +1205,8 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                             }
                         }
 
-                    } else if (Costants.SCHEMA_451.equals(valModulo) || Costants.SCHEMA_442.equals(valModulo) || Costants.SCHEMA_433.equals(valModulo)) {
+                    } else if (Costants.SCHEMA_451.equals(valModulo) || Costants.SCHEMA_442.equals(valModulo)
+                            || Costants.SCHEMA_433.equals(valModulo)) {
 
                         if (modelPlayer2.isEmpty()) {
                             modelPlayer2.add(bean);
@@ -1484,7 +1495,8 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                             }
                         }
 
-                    } else if (Costants.SCHEMA_352.equals(valModulo) || Costants.SCHEMA_442.equals(valModulo) || Costants.SCHEMA_532.equals(valModulo)) {
+                    } else if (Costants.SCHEMA_352.equals(valModulo) || Costants.SCHEMA_442.equals(valModulo)
+                            || Costants.SCHEMA_532.equals(valModulo)) {
 
                         if (modelPlayer10.isEmpty()) {
                             modelPlayer10.add(bean);
