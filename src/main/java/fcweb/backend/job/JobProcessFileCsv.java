@@ -299,8 +299,7 @@ public class JobProcessFileCsv {
                                 }
                             }
 
-                            log.info(
-                                    " nomeImg=" + nomeImg + " percentuale=" + percentuale.toString() + " href " + href);
+                            //log.info(" nomeImg=" + nomeImg + " percentuale=" + percentuale.toString() + " href " + href);
 
                             data.append(nomeImg);
                             data.append(";");
@@ -402,7 +401,7 @@ public class JobProcessFileCsv {
                                 data.append(Costants.SQUALIFICATO);
                             }
 
-                            log.info(" nomeImg=" + nomeImg + " percentuale=0" + " href " + href);
+                            //log.info(" nomeImg=" + nomeImg + " percentuale=0" + " href " + href);
                             data.append(";");
                             data.append("0");
                             data.append(";");

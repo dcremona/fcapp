@@ -30,6 +30,7 @@ public class CustomMessageDialog {
     }
 
     public static void showMessageInfo(String msg) {
+
         ConfirmDialog dialog = new ConfirmDialog();
         dialog.setHeader(TITLE_MSG_INFO);
         dialog.setText(msg == null ? "ND" : msg);

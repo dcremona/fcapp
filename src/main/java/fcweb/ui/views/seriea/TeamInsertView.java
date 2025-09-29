@@ -255,6 +255,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
         comboModulo = new ComboBox<>();
         comboModulo.setItems(Costants.SCHEMI);
+        comboModulo.getElement().setAttribute("theme", "small");
         comboModulo.setClearButtonVisible(true);
         comboModulo.setPlaceholder("Modulo");
         comboModulo.addValueChangeListener(evt -> {
@@ -448,7 +449,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         absLayout.add(tableFormazione, 10, 150);
         absLayout.add(campo, PX_350, 150);
 
-        this.add(absLayout);
+        add(absLayout);
 
         try {
             loadFcGiornatadett();
@@ -475,7 +476,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
         if ("true".equals(activeCheckFormazione)) {
             log.info("showMessageStopInsert");
             setEnabled(false);
-            CustomMessageDialog.showMessageError("Impossibile inserire la formazione, tempo scaduto!");
+            CustomMessageDialog.showMessageInfo("Impossibile inserire la formazione, tempo scaduto!");
         }
     }
 
@@ -508,6 +509,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
     private void setPopover(Component cellLayout, FcGiocatore g) {
 
+        log.info("setPopover " + g);
         Popover popover = new Popover();
         popover.addThemeVariants(PopoverVariant.ARROW);
         popover.setPosition(PopoverPosition.TOP);
@@ -922,8 +924,6 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 }
                 cellLayout.add(lblGiocatore);
 
-                setPopover(cellLayout, p);
-
                 Element element = cellLayout.getElement(); // DOM element
                 element.addEventListener("click", e -> {
 
@@ -993,6 +993,10 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                         tablePlayer18.getDataProvider().refreshAll();
                     }
                 });
+                
+                if (millisDiff != 0) {
+                    setPopover(cellLayout, p);    
+                }
             }
             return cellLayout;
 
@@ -1033,14 +1037,16 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                     lblGiocatore.setText(g.getCognGiocatore());
                     cellLayout.add(lblGiocatore);
                 }
-                FcGiornataGiocatore gg = isGiocatoreOut(g);
-                if (gg != null) {
+                FcGiornataGiocatore giocatoreOut = isGiocatoreOut(g);
+                if (giocatoreOut != null) {
                     cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
                     cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-                    cellLayout.add(getImageGiocatoreOut(gg));
+                    cellLayout.add(getImageGiocatoreOut(giocatoreOut));
                 }
 
-                setPopover(cellLayout, g);
+                if (millisDiff != 0) {
+                    setPopover(cellLayout, g);    
+                }
             }
             return cellLayout;
         }));
@@ -1056,35 +1062,32 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
             cellLayout.setAlignItems(Alignment.STRETCH);
             if (g != null) {
                 // String title = getInfoPlayer(g);
+
                 Integer perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
                 double value = Double.parseDouble(perc.toString()) / Double.parseDouble("100");
-
                 ProgressBar progressBarPerc = new ProgressBar();
-                if (perc > 60) {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
-                } else if (perc > 39 && perc < 61) {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
-                } else {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-                }
                 progressBarPerc.setValue(value);
-                cellLayout.add(progressBarPerc);
-
+                
                 Span lblPerc = new Span();
                 lblPerc.setText(perc + "%");
-                // lblPerc.setTitle(title);
-
+                
                 if (perc > 60) {
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
                     lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
                 } else if (perc > 39 && perc < 61) {
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
                     lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
                 } else {
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
                     lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
                 }
+                
+                cellLayout.add(progressBarPerc);
                 cellLayout.add(lblPerc);
 
-                setPopover(cellLayout, g);
-
+                if (millisDiff != 0) {
+                    setPopover(cellLayout, g);    
+                }
             }
             return cellLayout;
         }));
@@ -1656,7 +1659,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
                 .findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
         if (lGiocatori.isEmpty()) {
-            this.comboModulo.setValue(null);
+            comboModulo.setValue(null);
             removeAllElementsList();
             return;
         }
@@ -1680,7 +1683,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
         String schema = countD + "-" + countC + "-" + countA;
 
-        this.comboModulo.setValue(schema);
+        comboModulo.setValue(schema);
 
         modelFormazione.clear();
         refreshAndSortGridFormazione();
@@ -1976,7 +1979,7 @@ public class TeamInsertView extends VerticalLayout implements ComponentEventList
 
         String subject = "Formazione " + descAttore + " - " + descGiornata;
 
-        String modulo = this.comboModulo.getValue();
+        String modulo = comboModulo.getValue();
 
         StringBuilder formazioneHtml = new StringBuilder();
         formazioneHtml.append("<html><head><title>FC</title></head>\n");

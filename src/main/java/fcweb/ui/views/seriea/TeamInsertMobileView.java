@@ -549,7 +549,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
         absLayout.add(menuHome, 0, 700);
 
-        this.add(absLayout);
+        add(absLayout);
 
         try {
             loadFcGiornatadett();
@@ -577,7 +577,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
         if ("true".equals(activeCheckFormazione)) {
             log.info("showMessageStopInsert");
             enabledComponent(false);
-            CustomMessageDialog.showMessageError("Impossibile inserire la formazione, tempo scaduto!");
+            CustomMessageDialog.showMessageInfo("Impossibile inserire la formazione, tempo scaduto!");
         }
     }
 
@@ -1013,28 +1013,24 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 double value = Double.parseDouble(perc.toString()) / Double.parseDouble("100");
 
                 ProgressBar progressBarPerc = new ProgressBar();
-                if (perc > 60) {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
-                } else if (perc > 39 && perc < 61) {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
-                } else {
-                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-                }
                 progressBarPerc.setValue(value);
-                cellLayout.add(progressBarPerc);
-
+                
                 Span lblPerc = new Span();
                 lblPerc.setText(perc + "%");
                 lblPerc.setTitle(title);
 
                 if (perc > 60) {
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
                     lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
                 } else if (perc > 39 && perc < 61) {
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
                     lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
                 } else {
+                    progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
                     lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
                 }
-
+                
+                cellLayout.add(progressBarPerc);
                 cellLayout.add(lblPerc);
             }
             return cellLayout;
@@ -1606,7 +1602,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
                 .findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
         if (lGiocatori.isEmpty()) {
-            this.comboModulo.setValue(null);
+            comboModulo.setValue(null);
             removeAllElementsList();
             return;
         }
@@ -1630,7 +1626,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
         String schema = countD + "-" + countC + "-" + countA;
 
-        this.comboModulo.setValue(schema);
+        comboModulo.setValue(schema);
 
         modelFormazione.clear();
         refreshAndSortGridFormazione();
@@ -1939,7 +1935,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
         String subject = "Formazione " + descAttore + " - " + descGiornata;
 
-        String modulo = this.comboModulo.getValue();
+        String modulo = comboModulo.getValue();
 
         StringBuilder formazioneHtml = new StringBuilder();
         formazioneHtml.append("<html><head><title>FC</title></head>\n");
