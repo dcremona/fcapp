@@ -3,7 +3,6 @@ package fcweb.ui.views.admin;
 import java.io.File;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -45,6 +44,7 @@ import fcweb.backend.service.CalendarioCompetizioneService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.SquadraService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
@@ -127,12 +127,13 @@ public class FcCalendarioCompetizioneView extends VerticalLayout implements Comp
         crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "idGiornata", "data",
                 "idSquadraCasa", "squadraCasa", "idSquadraFuori", "squadraFuori", "risultato");
         crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "idGiornata");
-
+        
+        
         crud.getGrid().removeAllColumns();
         crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornata()));
         Column<FcCalendarioCompetizione> dataColumn = crud.getGrid()
                 .addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataColumn.setSortable(false);
         dataColumn.setAutoWidth(true);
         dataColumn.setFlexGrow(2);

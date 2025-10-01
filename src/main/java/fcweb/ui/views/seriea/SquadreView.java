@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -457,7 +456,7 @@ public class SquadreView extends VerticalLayout {
 
         Column<FcMercatoDett> dataCambioColumn = grid
                 .addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataCambioColumn.setSortable(false);
         dataCambioColumn.setHeader(Costants.DATA);
         dataCambioColumn.setAutoWidth(true);

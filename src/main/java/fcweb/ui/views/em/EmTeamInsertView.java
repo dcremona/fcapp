@@ -2174,7 +2174,7 @@ public class EmTeamInsertView extends VerticalLayout implements ComponentEventLi
         // FormatStyle.SHORT).withLocale(Locale.ITALY)));
         Column<FcCalendarioCompetizione> dataColumn = grid
                 .addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataColumn.setSortable(false);
         dataColumn.setAutoWidth(true);
         dataColumn.setFlexGrow(2);

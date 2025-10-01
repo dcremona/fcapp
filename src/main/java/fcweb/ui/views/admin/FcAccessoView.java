@@ -1,7 +1,6 @@
 package fcweb.ui.views.admin;
 
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +31,7 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.CampionatoService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -98,7 +98,7 @@ public class FcAccessoView extends VerticalLayout implements ComponentEventListe
                 .setHeader("Attore");
 
         Column<FcAccesso> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcAccesso::getData,
-                () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataColumn.setSortable(false);
         dataColumn.setAutoWidth(true);
 

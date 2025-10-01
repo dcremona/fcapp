@@ -32,6 +32,7 @@ import fcweb.backend.service.GiocatoreService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.MercatoService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -118,7 +119,7 @@ public class FcMercatoDettView extends VerticalLayout {
 
         Column<FcMercatoDett> dataColumn = crud.getGrid()
                 .addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataColumn.setHeader("Data Cambio");
         dataColumn.setSortable(false);
         dataColumn.setAutoWidth(true);

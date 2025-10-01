@@ -8,7 +8,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -2234,7 +2233,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
         Column<FcCalendarioCompetizione> dataColumn = grid
                 .addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataColumn.setSortable(false);
         dataColumn.setAutoWidth(true);
         dataColumn.setFlexGrow(2);

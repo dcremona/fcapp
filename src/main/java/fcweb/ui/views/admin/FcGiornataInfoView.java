@@ -25,6 +25,7 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -86,25 +87,25 @@ public class FcGiornataInfoView extends VerticalLayout {
 
         Column<FcGiornataInfo> dataAnticipoColumn1 = crud.getGrid()
                 .addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo1,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataAnticipoColumn1.setSortable(false);
         dataAnticipoColumn1.setAutoWidth(true);
 
         Column<FcGiornataInfo> dataAnticipoColumn2 = crud.getGrid()
                 .addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo2,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataAnticipoColumn2.setSortable(false);
         dataAnticipoColumn2.setAutoWidth(true);
 
         Column<FcGiornataInfo> dataGiornataColumn = crud.getGrid()
                 .addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataGiornata,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataGiornataColumn.setSortable(false);
         dataGiornataColumn.setAutoWidth(true);
 
         Column<FcGiornataInfo> dataPosticipoColumn = crud.getGrid()
                 .addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataPosticipo,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataPosticipoColumn.setSortable(false);
         dataPosticipoColumn.setAutoWidth(true);
 

@@ -505,7 +505,7 @@ public class EmSquadreView extends VerticalLayout {
         // FormatStyle.MEDIUM).withLocale(Locale.ITALY)));
         Column<FcMercatoDett> dataCambioColumn = grid
                 .addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,
-                        () -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
         dataCambioColumn.setSortable(false);
         dataCambioColumn.setHeader("Data");
         dataCambioColumn.setAutoWidth(true);
