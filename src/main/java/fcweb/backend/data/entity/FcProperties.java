@@ -11,41 +11,41 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_properties")
-public class FcProperties implements java.io.Serializable {
+public class FcProperties implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private String key;
-    private String value;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private String key;
+	private String value;
 
-    public FcProperties() {
-    }
+	public FcProperties() {
+	}
 
-    public FcProperties(String key, String value) {
-        this.key = key;
-        this.value = value;
-    }
+	public FcProperties(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
 
-    @Id
+	@Id
 
-    @Column(name = "key_", unique = true, nullable = false)
-    public String getKey() {
-        return this.key;
-    }
+	@Column(name = "key_", unique = true, nullable = false)
+	public String getKey() {
+		return this.key;
+	}
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+	public void setKey(String key) {
+		this.key = key;
+	}
 
-    @Column(name = "value_", nullable = false)
-    public String getValue() {
-        return this.value;
-    }
+	@Column(name = "value_", nullable = false)
+	public String getValue() {
+		return this.value;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 }

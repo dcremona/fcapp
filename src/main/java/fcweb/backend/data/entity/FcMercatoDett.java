@@ -18,110 +18,111 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_mercato_dett")
-public class FcMercatoDett implements java.io.Serializable {
+public class FcMercatoDett implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
-    // @Id
-    // @GeneratedValue(strategy = IDENTITY)
-    // @Column(name = "id", unique = true, nullable = false)
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+	// @Id
+	// @GeneratedValue(strategy = IDENTITY)
+	// @Column(name = "id", unique = true, nullable = false)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_attore")
-    private FcAttore fcAttore;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore")
+	private FcAttore fcAttore;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_gioc_ven")
-    private FcGiocatore fcGiocatoreByIdGiocVen;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_gioc_ven")
+	private FcGiocatore fcGiocatoreByIdGiocVen;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_gioc_acq")
-    private FcGiocatore fcGiocatoreByIdGiocAcq;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_gioc_acq")
+	private FcGiocatore fcGiocatoreByIdGiocAcq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_giornata")
-    private FcGiornataInfo fcGiornataInfo;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata")
+	private FcGiornataInfo fcGiornataInfo;
 
-    @Column(name = "data_cambio", nullable = false)
-    private LocalDateTime dataCambio;
+	@Column(name = "data_cambio", nullable = false)
+	private LocalDateTime dataCambio;
 
-    @Column(name = "nota")
-    private String nota;
+	@Column(name = "nota")
+	private String nota;
 
-    public FcMercatoDett() {
-    }
+	public FcMercatoDett() {
+	}
 
-    public FcMercatoDett(FcAttore fcAttore, FcGiocatore fcGiocatoreByIdGiocVen, FcGiocatore fcGiocatoreByIdGiocAcq,
-            FcGiornataInfo fcGiornataInfo, LocalDateTime dataCambio, String nota) {
-        this.fcAttore = fcAttore;
-        this.fcGiocatoreByIdGiocVen = fcGiocatoreByIdGiocVen;
-        this.fcGiocatoreByIdGiocAcq = fcGiocatoreByIdGiocAcq;
-        this.fcGiornataInfo = fcGiornataInfo;
-        this.dataCambio = dataCambio;
-        this.nota = nota;
-    }
+	public FcMercatoDett(FcAttore fcAttore, FcGiocatore fcGiocatoreByIdGiocVen,
+			FcGiocatore fcGiocatoreByIdGiocAcq, FcGiornataInfo fcGiornataInfo,
+			LocalDateTime dataCambio, String nota) {
+		this.fcAttore = fcAttore;
+		this.fcGiocatoreByIdGiocVen = fcGiocatoreByIdGiocVen;
+		this.fcGiocatoreByIdGiocAcq = fcGiocatoreByIdGiocAcq;
+		this.fcGiornataInfo = fcGiornataInfo;
+		this.dataCambio = dataCambio;
+		this.nota = nota;
+	}
 
-    public Integer getId() {
-        return this.id;
-    }
+	public Integer getId() {
+		return this.id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public FcAttore getFcAttore() {
-        return this.fcAttore;
-    }
+	public FcAttore getFcAttore() {
+		return this.fcAttore;
+	}
 
-    public void setFcAttore(FcAttore fcAttore) {
-        this.fcAttore = fcAttore;
-    }
+	public void setFcAttore(FcAttore fcAttore) {
+		this.fcAttore = fcAttore;
+	}
 
-    public FcGiocatore getFcGiocatoreByIdGiocVen() {
-        return this.fcGiocatoreByIdGiocVen;
-    }
+	public FcGiocatore getFcGiocatoreByIdGiocVen() {
+		return this.fcGiocatoreByIdGiocVen;
+	}
 
-    public void setFcGiocatoreByIdGiocVen(FcGiocatore fcGiocatoreByIdGiocVen) {
-        this.fcGiocatoreByIdGiocVen = fcGiocatoreByIdGiocVen;
-    }
+	public void setFcGiocatoreByIdGiocVen(FcGiocatore fcGiocatoreByIdGiocVen) {
+		this.fcGiocatoreByIdGiocVen = fcGiocatoreByIdGiocVen;
+	}
 
-    public FcGiocatore getFcGiocatoreByIdGiocAcq() {
-        return this.fcGiocatoreByIdGiocAcq;
-    }
+	public FcGiocatore getFcGiocatoreByIdGiocAcq() {
+		return this.fcGiocatoreByIdGiocAcq;
+	}
 
-    public void setFcGiocatoreByIdGiocAcq(FcGiocatore fcGiocatoreByIdGiocAcq) {
-        this.fcGiocatoreByIdGiocAcq = fcGiocatoreByIdGiocAcq;
-    }
+	public void setFcGiocatoreByIdGiocAcq(FcGiocatore fcGiocatoreByIdGiocAcq) {
+		this.fcGiocatoreByIdGiocAcq = fcGiocatoreByIdGiocAcq;
+	}
 
-    public FcGiornataInfo getFcGiornataInfo() {
-        return this.fcGiornataInfo;
-    }
+	public FcGiornataInfo getFcGiornataInfo() {
+		return this.fcGiornataInfo;
+	}
 
-    public void setFcGiornataInfo(FcGiornataInfo fcGiornataInfo) {
-        this.fcGiornataInfo = fcGiornataInfo;
-    }
+	public void setFcGiornataInfo(FcGiornataInfo fcGiornataInfo) {
+		this.fcGiornataInfo = fcGiornataInfo;
+	}
 
-    public LocalDateTime getDataCambio() {
-        return this.dataCambio;
-    }
+	public LocalDateTime getDataCambio() {
+		return this.dataCambio;
+	}
 
-    public void setDataCambio(LocalDateTime dataCambio) {
-        this.dataCambio = dataCambio;
-    }
+	public void setDataCambio(LocalDateTime dataCambio) {
+		this.dataCambio = dataCambio;
+	}
 
-    public String getNota() {
-        return this.nota;
-    }
+	public String getNota() {
+		return this.nota;
+	}
 
-    public void setNota(String nota) {
-        this.nota = nota;
-    }
+	public void setNota(String nota) {
+		this.nota = nota;
+	}
 
 }

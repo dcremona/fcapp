@@ -16,57 +16,58 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_ruolo")
-public class FcRuolo implements java.io.Serializable {
+public class FcRuolo implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private String idRuolo;
-    private String descRuolo;
-    private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private String idRuolo;
+	private String descRuolo;
+	private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
 
-    public FcRuolo() {
-    }
+	public FcRuolo() {
+	}
 
-    public FcRuolo(String idRuolo, String descRuolo) {
-        this.idRuolo = idRuolo;
-        this.descRuolo = descRuolo;
-    }
+	public FcRuolo(String idRuolo, String descRuolo) {
+		this.idRuolo = idRuolo;
+		this.descRuolo = descRuolo;
+	}
 
-    public FcRuolo(String idRuolo, String descRuolo, Set<FcGiocatore> fcGiocatores) {
-        this.idRuolo = idRuolo;
-        this.descRuolo = descRuolo;
-        this.fcGiocatores = fcGiocatores;
-    }
+	public FcRuolo(String idRuolo, String descRuolo,
+			Set<FcGiocatore> fcGiocatores) {
+		this.idRuolo = idRuolo;
+		this.descRuolo = descRuolo;
+		this.fcGiocatores = fcGiocatores;
+	}
 
-    @Id
+	@Id
 
-    @Column(name = "id_ruolo", unique = true, nullable = false)
-    public String getIdRuolo() {
-        return this.idRuolo;
-    }
+	@Column(name = "id_ruolo", unique = true, nullable = false)
+	public String getIdRuolo() {
+		return this.idRuolo;
+	}
 
-    public void setIdRuolo(String idRuolo) {
-        this.idRuolo = idRuolo;
-    }
+	public void setIdRuolo(String idRuolo) {
+		this.idRuolo = idRuolo;
+	}
 
-    @Column(name = "desc_ruolo", nullable = false)
-    public String getDescRuolo() {
-        return this.descRuolo;
-    }
+	@Column(name = "desc_ruolo", nullable = false)
+	public String getDescRuolo() {
+		return this.descRuolo;
+	}
 
-    public void setDescRuolo(String descRuolo) {
-        this.descRuolo = descRuolo;
-    }
+	public void setDescRuolo(String descRuolo) {
+		this.descRuolo = descRuolo;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fcRuolo")
-    public Set<FcGiocatore> getFcGiocatores() {
-        return this.fcGiocatores;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcRuolo")
+	public Set<FcGiocatore> getFcGiocatores() {
+		return this.fcGiocatores;
+	}
 
-    public void setFcGiocatores(Set<FcGiocatore> fcGiocatores) {
-        this.fcGiocatores = fcGiocatores;
-    }
+	public void setFcGiocatores(Set<FcGiocatore> fcGiocatores) {
+		this.fcGiocatores = fcGiocatores;
+	}
 
 }

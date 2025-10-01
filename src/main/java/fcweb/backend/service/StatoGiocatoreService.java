@@ -8,18 +8,19 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcStatoGiocatore;
 
 @Service
-public class StatoGiocatoreService {
+public class StatoGiocatoreService{
 
-    private final StatoGiocatoreRepository statoGiocatoreRepository;
+	private final StatoGiocatoreRepository statoGiocatoreRepository;
 
-    @Autowired
-    public StatoGiocatoreService(StatoGiocatoreRepository statoGiocatoreRepository) {
-        this.statoGiocatoreRepository = statoGiocatoreRepository;
-    }
+	@Autowired
+	public StatoGiocatoreService(
+			StatoGiocatoreRepository statoGiocatoreRepository) {
+		this.statoGiocatoreRepository = statoGiocatoreRepository;
+	}
 
-    public List<FcStatoGiocatore> findAll() {
-        List<FcStatoGiocatore> l = (List<FcStatoGiocatore>) statoGiocatoreRepository.findAll();
-        return l;
-    }
+	public List<FcStatoGiocatore> findAll() {
+		List<FcStatoGiocatore> l = (List<FcStatoGiocatore>) statoGiocatoreRepository.findAll();
+		return l;
+	}
 
 }

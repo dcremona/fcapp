@@ -11,45 +11,46 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcAttore;
 
 @Service
-public class AttoreService {
+public class AttoreService{
 
-    private final AttoreRepository repository;
+	private final AttoreRepository repository;
 
-    public AttoreService(AttoreRepository repository) {
-        this.repository = repository;
-    }
+	public AttoreService(AttoreRepository repository) {
+		this.repository = repository;
+	}
 
-    public Optional<FcAttore> get(Long id) {
-        return repository.findById(id);
-    }
+	public Optional<FcAttore> get(Long id) {
+		return repository.findById(id);
+	}
 
-    public FcAttore update(FcAttore entity) {
-        return repository.save(entity);
-    }
+	public FcAttore update(FcAttore entity) {
+		return repository.save(entity);
+	}
 
-    public void delete(Long id) {
-        repository.deleteById(id);
-    }
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
 
-    public Page<FcAttore> list(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
+	public Page<FcAttore> list(Pageable pageable) {
+		return repository.findAll(pageable);
+	}
 
-    public Page<FcAttore> list(Pageable pageable, Specification<FcAttore> filter) {
-        return repository.findAll(filter, pageable);
-    }
+	public Page<FcAttore> list(Pageable pageable,
+			Specification<FcAttore> filter) {
+		return repository.findAll(filter, pageable);
+	}
 
-    public int count() {
-        return (int) repository.count();
-    }
+	public int count() {
+		return (int) repository.count();
+	}
 
-    public List<FcAttore> findAll() {
-        return repository.findAll();
-    }
+	public List<FcAttore> findAll() {
+		return repository.findAll();
+	}
 
-    public List<FcAttore> findByActive(boolean active) {
-        List<FcAttore> l = repository.findByActive(active);
-        return l;
-    }
+	public List<FcAttore> findByActive(boolean active) {
+		List<FcAttore> l = repository.findByActive(active);
+		return l;
+	}
 
 }

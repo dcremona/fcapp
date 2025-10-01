@@ -7,11 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcTipoGiornata;
 
-public interface TipoGiornataRepository extends CrudRepository<FcTipoGiornata, Long> {
+public interface TipoGiornataRepository
+		extends CrudRepository<FcTipoGiornata, Long>{
 
-    Page<FcTipoGiornata> findAll(Pageable pageable);
+	Page<FcTipoGiornata> findAll(Pageable pageable);
 
-    Iterable<FcTipoGiornata> findAll(Sort sort);
+	Iterable<FcTipoGiornata> findAll(Sort sort);
 
-    public FcTipoGiornata findByDescTipoGiornata(String descTipoGiornata);
+	public FcTipoGiornata findByDescTipoGiornata(String descTipoGiornata);
 }

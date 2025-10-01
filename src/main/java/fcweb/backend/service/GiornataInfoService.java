@@ -8,56 +8,55 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcGiornataInfo;
 
 @Service
-public class GiornataInfoService {
+public class GiornataInfoService{
 
-    private final GiornataInfoRepository giornataInfoRepository;
+	private final GiornataInfoRepository giornataInfoRepository;
 
-    @Autowired
-    public GiornataInfoService(GiornataInfoRepository giornataInfoRepository) {
-        this.giornataInfoRepository = giornataInfoRepository;
-    }
+	@Autowired
+	public GiornataInfoService(GiornataInfoRepository giornataInfoRepository) {
+		this.giornataInfoRepository = giornataInfoRepository;
+	}
 
-    public List<FcGiornataInfo> findAll() {
-        List<FcGiornataInfo> l = (List<FcGiornataInfo>) giornataInfoRepository.findAll();
-        return l;
-    }
+	public List<FcGiornataInfo> findAll() {
+		List<FcGiornataInfo> l = (List<FcGiornataInfo>) giornataInfoRepository.findAll();
+		return l;
+	}
 
-    public FcGiornataInfo findByCodiceGiornata(Integer gg) {
-        FcGiornataInfo info = giornataInfoRepository.findByCodiceGiornata(gg);
-        return info;
-    }
+	public FcGiornataInfo findByCodiceGiornata(Integer gg) {
+		FcGiornataInfo info = giornataInfoRepository.findByCodiceGiornata(gg);
+		return info;
+	}
 
-    public FcGiornataInfo findByDescGiornataFc(String descGiornataFc) {
-        FcGiornataInfo fcGiornataInfo = giornataInfoRepository.findByDescGiornataFc(descGiornataFc);
-        return fcGiornataInfo;
-    }
+	public FcGiornataInfo findByDescGiornataFc(String descGiornataFc) {
+		FcGiornataInfo fcGiornataInfo = giornataInfoRepository.findByDescGiornataFc(descGiornataFc);
+		return fcGiornataInfo;
+	}
 
-    public List<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(Integer from,
-            Integer to) {
-        List<FcGiornataInfo> l = (List<FcGiornataInfo>) giornataInfoRepository
-                .findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
-        return l;
-    }
+	public List<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(
+			Integer from, Integer to) {
+		List<FcGiornataInfo> l = (List<FcGiornataInfo>) giornataInfoRepository.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		return l;
+	}
 
-    public FcGiornataInfo updateGiornataInfo(FcGiornataInfo giornataInfo) {
-        FcGiornataInfo fcGiornataInfo = null;
-        try {
-            fcGiornataInfo = giornataInfoRepository.save(giornataInfo);
-        } catch (Exception ex) {
+	public FcGiornataInfo updateGiornataInfo(FcGiornataInfo giornataInfo) {
+		FcGiornataInfo fcGiornataInfo = null;
+		try {
+			fcGiornataInfo = giornataInfoRepository.save(giornataInfo);
+		} catch (Exception ex) {
 
-        }
-        return fcGiornataInfo;
-    }
+		}
+		return fcGiornataInfo;
+	}
 
-    public String deleteGiornataInfo(FcGiornataInfo giornataInfo) {
-        String id = "";
-        try {
-            giornataInfoRepository.delete(giornataInfo);
-            id = "" + giornataInfo.getCodiceGiornata();
-        } catch (Exception ex) {
-            return "Error delete giornataInfo: " + ex.toString();
-        }
-        return "giornataInfo succesfully delete with id = " + id;
-    }
+	public String deleteGiornataInfo(FcGiornataInfo giornataInfo) {
+		String id = "";
+		try {
+			giornataInfoRepository.delete(giornataInfo);
+			id = "" + giornataInfo.getCodiceGiornata();
+		} catch (Exception ex) {
+			return "Error delete giornataInfo: " + ex.toString();
+		}
+		return "giornataInfo succesfully delete with id = " + id;
+	}
 
 }

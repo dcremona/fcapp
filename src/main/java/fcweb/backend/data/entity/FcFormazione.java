@@ -16,86 +16,86 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_formazione")
-public class FcFormazione implements java.io.Serializable {
+public class FcFormazione implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private FcFormazioneId id;
-    private FcAttore fcAttore;
-    private FcCampionato fcCampionato;
-    private FcGiocatore fcGiocatore;
-    private Integer totPagato;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private FcFormazioneId id;
+	private FcAttore fcAttore;
+	private FcCampionato fcCampionato;
+	private FcGiocatore fcGiocatore;
+	private Integer totPagato;
 
-    public FcFormazione() {
-    }
+	public FcFormazione() {
+	}
 
-    public FcFormazione(FcFormazioneId id, FcAttore fcAttore, FcCampionato fcCampionato) {
-        this.id = id;
-        this.fcAttore = fcAttore;
-        this.fcCampionato = fcCampionato;
-    }
+	public FcFormazione(FcFormazioneId id, FcAttore fcAttore,
+			FcCampionato fcCampionato) {
+		this.id = id;
+		this.fcAttore = fcAttore;
+		this.fcCampionato = fcCampionato;
+	}
 
-    public FcFormazione(FcFormazioneId id, FcAttore fcAttore, FcCampionato fcCampionato, FcGiocatore fcGiocatore,
-            Integer totPagato) {
-        this.id = id;
-        this.fcAttore = fcAttore;
-        this.fcCampionato = fcCampionato;
-        this.fcGiocatore = fcGiocatore;
-        this.totPagato = totPagato;
-    }
+	public FcFormazione(FcFormazioneId id, FcAttore fcAttore,
+			FcCampionato fcCampionato, FcGiocatore fcGiocatore,
+			Integer totPagato) {
+		this.id = id;
+		this.fcAttore = fcAttore;
+		this.fcCampionato = fcCampionato;
+		this.fcGiocatore = fcGiocatore;
+		this.totPagato = totPagato;
+	}
 
-    @EmbeddedId
+	@EmbeddedId
 
-    @AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)),
-            @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)),
-            @AttributeOverride(name = "ordinamento", column = @Column(name = "ordinamento", nullable = false)) })
-    public FcFormazioneId getId() {
-        return this.id;
-    }
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)), @AttributeOverride(name = "ordinamento", column = @Column(name = "ordinamento", nullable = false)) })
+	public FcFormazioneId getId() {
+		return this.id;
+	}
 
-    public void setId(FcFormazioneId id) {
-        this.id = id;
-    }
+	public void setId(FcFormazioneId id) {
+		this.id = id;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
-    public FcAttore getFcAttore() {
-        return this.fcAttore;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
+	public FcAttore getFcAttore() {
+		return this.fcAttore;
+	}
 
-    public void setFcAttore(FcAttore fcAttore) {
-        this.fcAttore = fcAttore;
-    }
+	public void setFcAttore(FcAttore fcAttore) {
+		this.fcAttore = fcAttore;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
-    public FcCampionato getFcCampionato() {
-        return this.fcCampionato;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
+	public FcCampionato getFcCampionato() {
+		return this.fcCampionato;
+	}
 
-    public void setFcCampionato(FcCampionato fcCampionato) {
-        this.fcCampionato = fcCampionato;
-    }
+	public void setFcCampionato(FcCampionato fcCampionato) {
+		this.fcCampionato = fcCampionato;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_giocatore")
-    public FcGiocatore getFcGiocatore() {
-        return this.fcGiocatore;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giocatore")
+	public FcGiocatore getFcGiocatore() {
+		return this.fcGiocatore;
+	}
 
-    public void setFcGiocatore(FcGiocatore fcGiocatore) {
-        this.fcGiocatore = fcGiocatore;
-    }
+	public void setFcGiocatore(FcGiocatore fcGiocatore) {
+		this.fcGiocatore = fcGiocatore;
+	}
 
-    @Column(name = "tot_pagato")
-    public Integer getTotPagato() {
-        return this.totPagato;
-    }
+	@Column(name = "tot_pagato")
+	public Integer getTotPagato() {
+		return this.totPagato;
+	}
 
-    public void setTotPagato(Integer totPagato) {
-        this.totPagato = totPagato;
-    }
+	public void setTotPagato(Integer totPagato) {
+		this.totPagato = totPagato;
+	}
 
 }

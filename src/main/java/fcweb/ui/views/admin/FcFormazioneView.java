@@ -33,98 +33,82 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Formazione")
 @Route(value = "formazione", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcFormazioneView extends VerticalLayout {
+public class FcFormazioneView extends VerticalLayout{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private AttoreService attoreController;
+	@Autowired
+	private AttoreService attoreController;
 
-    @Autowired
-    private FormazioneService formazioneController;
+	@Autowired
+	private FormazioneService formazioneController;
 
-    @Autowired
-    private GiocatoreService giocatoreController;
+	@Autowired
+	private GiocatoreService giocatoreController;
 
-    @Autowired
-    public Environment env;
+	@Autowired
+	public Environment env;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    public FcFormazioneView() {
-        log.info("FcFormazioneView()");
-    }
+	public FcFormazioneView() {
+		log.info("FcFormazioneView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        this.setMargin(true);
-        this.setSpacing(true);
-        this.setSizeFull();
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
 
-        GridCrud<FcFormazione> crud = new GridCrud<>(FcFormazione.class, new HorizontalSplitCrudLayout());
-        DefaultCrudFormFactory<FcFormazione> formFactory = new DefaultCrudFormFactory<>(FcFormazione.class);
-        crud.setCrudFormFactory(formFactory);
-        formFactory.setUseBeanValidation(false);
+		GridCrud<FcFormazione> crud = new GridCrud<>(FcFormazione.class,new HorizontalSplitCrudLayout());
+		DefaultCrudFormFactory<FcFormazione> formFactory = new DefaultCrudFormFactory<>(FcFormazione.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
 
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcAttore", "fcGiocatore",
-                "totPagato");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcAttore", "fcGiocatore", "totPagato");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcAttore", "fcGiocatore",
-                "totPagato");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcGiocatore");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcAttore", "fcGiocatore", "totPagato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcAttore", "fcGiocatore", "totPagato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcAttore", "fcGiocatore", "totPagato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcGiocatore");
 
-        crud.getGrid().setColumns("id", "fcAttore", "fcGiocatore", "totPagato");
-        crud.getGrid().removeAllColumns();
-        crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getOrdinamento() : ""))
-                .setHeader("Id");
-        crud.getGrid()
-                .addColumn(new TextRenderer<>(
-                        f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : ""))
-                .setHeader("Attore");
-        crud.getGrid()
-                .addColumn(new TextRenderer<>(
-                        f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : ""))
-                .setHeader(Costants.GIOCATORE);
-        crud.getGrid()
-                .addColumn(new TextRenderer<>(
-                        f -> f != null && f.getTotPagato() != null ? f.getTotPagato().toString() : ""))
-                .setHeader("Pagato");
+		crud.getGrid().setColumns("id", "fcAttore", "fcGiocatore", "totPagato");
+		crud.getGrid().removeAllColumns();
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getOrdinamento() : "")).setHeader("Id");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotPagato() != null ? f.getTotPagato().toString() : "")).setHeader("Pagato");
 
-        crud.getGrid().setColumnReorderingAllowed(true);
+		crud.getGrid().setColumnReorderingAllowed(true);
 
-        crud.getCrudFormFactory().setFieldProvider("fcAttore",
-                new ComboBoxProvider<>("Attore", attoreController.findByActive(true),
-                        new TextRenderer<>(FcAttore::getDescAttore), FcAttore::getDescAttore));
-        crud.getCrudFormFactory().setFieldProvider("fcGiocatore",
-                new ComboBoxProvider<>(Costants.GIOCATORE, giocatoreController.findAll(),
-                        new TextRenderer<>(FcGiocatore::getCognGiocatore), FcGiocatore::getCognGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 
-        crud.setRowCountCaption("%d Formazione(s) found");
-        crud.setClickRowToUpdate(true);
-        crud.setUpdateOperationVisible(false);
+		crud.setRowCountCaption("%d Formazione(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(false);
 
-        FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-        crud.setFindAllOperation(() -> formazioneController.findByFcCampionato(campionato));
-        crud.setAddOperation(user -> formazioneController.updateFormazione(user));
-        crud.setUpdateOperation(user -> formazioneController.updateFormazione(user));
-        crud.setDeleteOperation(user -> formazioneController.deleteFormazione(user));
+		crud.setFindAllOperation(() -> formazioneController.findByFcCampionato(campionato));
+		crud.setAddOperation(user -> formazioneController.updateFormazione(user));
+		crud.setUpdateOperation(user -> formazioneController.updateFormazione(user));
+		crud.setDeleteOperation(user -> formazioneController.deleteFormazione(user));
 
-        add(crud);
+		add(crud);
 
-    }
+	}
 
 }

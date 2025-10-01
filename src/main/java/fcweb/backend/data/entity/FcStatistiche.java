@@ -17,226 +17,229 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_statistiche")
-public class FcStatistiche implements java.io.Serializable {
+public class FcStatistiche implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private int idGiocatore;
-    private FcGiocatore fcGiocatore;
-    private int ammonizione;
-    private int assist;
-    private String cognGiocatore;
-    private int espulsione;
-    private Double fantaMedia;
-    private int giocate;
-    private int goalFatto;
-    private int goalSubito;
-    private String idRuolo;
-    private Double mediaVoto;
-    private String nomeSquadra;
-    private String proprietario;
-    private int rigoreSbagliato;
-    private int rigoreSegnato;
-    private boolean flagAttivo;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private int idGiocatore;
+	private FcGiocatore fcGiocatore;
+	private int ammonizione;
+	private int assist;
+	private String cognGiocatore;
+	private int espulsione;
+	private Double fantaMedia;
+	private int giocate;
+	private int goalFatto;
+	private int goalSubito;
+	private String idRuolo;
+	private Double mediaVoto;
+	private String nomeSquadra;
+	private String proprietario;
+	private int rigoreSbagliato;
+	private int rigoreSegnato;
+	private boolean flagAttivo;
 
-    public FcStatistiche() {
-    }
+	public FcStatistiche() {
+	}
 
-    public FcStatistiche(FcGiocatore fcGiocatore, int ammonizione, int assist, String cognGiocatore, int espulsione,
-            int giocate, int goalFatto, int goalSubito, String idRuolo, String nomeSquadra, int rigoreSbagliato,
-            int rigoreSegnato) {
-        this.fcGiocatore = fcGiocatore;
-        this.ammonizione = ammonizione;
-        this.assist = assist;
-        this.cognGiocatore = cognGiocatore;
-        this.espulsione = espulsione;
-        this.giocate = giocate;
-        this.goalFatto = goalFatto;
-        this.goalSubito = goalSubito;
-        this.idRuolo = idRuolo;
-        this.nomeSquadra = nomeSquadra;
-        this.rigoreSbagliato = rigoreSbagliato;
-        this.rigoreSegnato = rigoreSegnato;
-    }
+	public FcStatistiche(FcGiocatore fcGiocatore, int ammonizione, int assist,
+			String cognGiocatore, int espulsione, int giocate, int goalFatto,
+			int goalSubito, String idRuolo, String nomeSquadra,
+			int rigoreSbagliato, int rigoreSegnato) {
+		this.fcGiocatore = fcGiocatore;
+		this.ammonizione = ammonizione;
+		this.assist = assist;
+		this.cognGiocatore = cognGiocatore;
+		this.espulsione = espulsione;
+		this.giocate = giocate;
+		this.goalFatto = goalFatto;
+		this.goalSubito = goalSubito;
+		this.idRuolo = idRuolo;
+		this.nomeSquadra = nomeSquadra;
+		this.rigoreSbagliato = rigoreSbagliato;
+		this.rigoreSegnato = rigoreSegnato;
+	}
 
-    public FcStatistiche(FcGiocatore fcGiocatore, int ammonizione, int assist, String cognGiocatore, int espulsione,
-            Double fantaMedia, int giocate, int goalFatto, int goalSubito, String idRuolo, Double mediaVoto,
-            String nomeSquadra, String proprietario, int rigoreSbagliato, int rigoreSegnato) {
-        this.fcGiocatore = fcGiocatore;
-        this.ammonizione = ammonizione;
-        this.assist = assist;
-        this.cognGiocatore = cognGiocatore;
-        this.espulsione = espulsione;
-        this.fantaMedia = fantaMedia;
-        this.giocate = giocate;
-        this.goalFatto = goalFatto;
-        this.goalSubito = goalSubito;
-        this.idRuolo = idRuolo;
-        this.mediaVoto = mediaVoto;
-        this.nomeSquadra = nomeSquadra;
-        this.proprietario = proprietario;
-        this.rigoreSbagliato = rigoreSbagliato;
-        this.rigoreSegnato = rigoreSegnato;
-    }
+	public FcStatistiche(FcGiocatore fcGiocatore, int ammonizione, int assist,
+			String cognGiocatore, int espulsione, Double fantaMedia,
+			int giocate, int goalFatto, int goalSubito, String idRuolo,
+			Double mediaVoto, String nomeSquadra, String proprietario,
+			int rigoreSbagliato, int rigoreSegnato) {
+		this.fcGiocatore = fcGiocatore;
+		this.ammonizione = ammonizione;
+		this.assist = assist;
+		this.cognGiocatore = cognGiocatore;
+		this.espulsione = espulsione;
+		this.fantaMedia = fantaMedia;
+		this.giocate = giocate;
+		this.goalFatto = goalFatto;
+		this.goalSubito = goalSubito;
+		this.idRuolo = idRuolo;
+		this.mediaVoto = mediaVoto;
+		this.nomeSquadra = nomeSquadra;
+		this.proprietario = proprietario;
+		this.rigoreSbagliato = rigoreSbagliato;
+		this.rigoreSegnato = rigoreSegnato;
+	}
 
-    // @GeneratedValue(generator = "generator")
-    @SuppressWarnings("deprecation")
-    @GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "fcGiocatore"))
-    @Id
-    @Column(name = "id_giocatore", unique = true, nullable = false)
-    public int getIdGiocatore() {
-        return this.idGiocatore;
-    }
+	// @GeneratedValue(generator = "generator")
+	@SuppressWarnings("deprecation")
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "fcGiocatore"))
+	@Id
+	@Column(name = "id_giocatore", unique = true, nullable = false)
+	public int getIdGiocatore() {
+		return this.idGiocatore;
+	}
 
-    public void setIdGiocatore(int idGiocatore) {
-        this.idGiocatore = idGiocatore;
-    }
+	public void setIdGiocatore(int idGiocatore) {
+		this.idGiocatore = idGiocatore;
+	}
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    public FcGiocatore getFcGiocatore() {
-        return this.fcGiocatore;
-    }
+	@OneToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumn
+	public FcGiocatore getFcGiocatore() {
+		return this.fcGiocatore;
+	}
 
-    public void setFcGiocatore(FcGiocatore fcGiocatore) {
-        this.fcGiocatore = fcGiocatore;
-    }
+	public void setFcGiocatore(FcGiocatore fcGiocatore) {
+		this.fcGiocatore = fcGiocatore;
+	}
 
-    @Column(name = "ammonizione", nullable = false)
-    public int getAmmonizione() {
-        return this.ammonizione;
-    }
+	@Column(name = "ammonizione", nullable = false)
+	public int getAmmonizione() {
+		return this.ammonizione;
+	}
 
-    public void setAmmonizione(int ammonizione) {
-        this.ammonizione = ammonizione;
-    }
+	public void setAmmonizione(int ammonizione) {
+		this.ammonizione = ammonizione;
+	}
 
-    @Column(name = "assist", nullable = false)
-    public int getAssist() {
-        return this.assist;
-    }
+	@Column(name = "assist", nullable = false)
+	public int getAssist() {
+		return this.assist;
+	}
 
-    public void setAssist(int assist) {
-        this.assist = assist;
-    }
+	public void setAssist(int assist) {
+		this.assist = assist;
+	}
 
-    @Column(name = "cogn_giocatore", nullable = false)
-    public String getCognGiocatore() {
-        return this.cognGiocatore;
-    }
+	@Column(name = "cogn_giocatore", nullable = false)
+	public String getCognGiocatore() {
+		return this.cognGiocatore;
+	}
 
-    public void setCognGiocatore(String cognGiocatore) {
-        this.cognGiocatore = cognGiocatore;
-    }
+	public void setCognGiocatore(String cognGiocatore) {
+		this.cognGiocatore = cognGiocatore;
+	}
 
-    @Column(name = "espulsione", nullable = false)
-    public int getEspulsione() {
-        return this.espulsione;
-    }
+	@Column(name = "espulsione", nullable = false)
+	public int getEspulsione() {
+		return this.espulsione;
+	}
 
-    public void setEspulsione(int espulsione) {
-        this.espulsione = espulsione;
-    }
+	public void setEspulsione(int espulsione) {
+		this.espulsione = espulsione;
+	}
 
-    @Column(name = "fanta_media", precision = 22, scale = 0)
-    public Double getFantaMedia() {
-        return this.fantaMedia;
-    }
+	@Column(name = "fanta_media", precision = 22, scale = 0)
+	public Double getFantaMedia() {
+		return this.fantaMedia;
+	}
 
-    public void setFantaMedia(Double fantaMedia) {
-        this.fantaMedia = fantaMedia;
-    }
+	public void setFantaMedia(Double fantaMedia) {
+		this.fantaMedia = fantaMedia;
+	}
 
-    @Column(name = "giocate", nullable = false)
-    public int getGiocate() {
-        return this.giocate;
-    }
+	@Column(name = "giocate", nullable = false)
+	public int getGiocate() {
+		return this.giocate;
+	}
 
-    public void setGiocate(int giocate) {
-        this.giocate = giocate;
-    }
+	public void setGiocate(int giocate) {
+		this.giocate = giocate;
+	}
 
-    @Column(name = "goal_fatto", nullable = false)
-    public int getGoalFatto() {
-        return this.goalFatto;
-    }
+	@Column(name = "goal_fatto", nullable = false)
+	public int getGoalFatto() {
+		return this.goalFatto;
+	}
 
-    public void setGoalFatto(int goalFatto) {
-        this.goalFatto = goalFatto;
-    }
+	public void setGoalFatto(int goalFatto) {
+		this.goalFatto = goalFatto;
+	}
 
-    @Column(name = "goal_subito", nullable = false)
-    public int getGoalSubito() {
-        return this.goalSubito;
-    }
+	@Column(name = "goal_subito", nullable = false)
+	public int getGoalSubito() {
+		return this.goalSubito;
+	}
 
-    public void setGoalSubito(int goalSubito) {
-        this.goalSubito = goalSubito;
-    }
+	public void setGoalSubito(int goalSubito) {
+		this.goalSubito = goalSubito;
+	}
 
-    @Column(name = "id_ruolo", nullable = false)
-    public String getIdRuolo() {
-        return this.idRuolo;
-    }
+	@Column(name = "id_ruolo", nullable = false)
+	public String getIdRuolo() {
+		return this.idRuolo;
+	}
 
-    public void setIdRuolo(String idRuolo) {
-        this.idRuolo = idRuolo;
-    }
+	public void setIdRuolo(String idRuolo) {
+		this.idRuolo = idRuolo;
+	}
 
-    @Column(name = "media_voto", precision = 22, scale = 0)
-    public Double getMediaVoto() {
-        return this.mediaVoto;
-    }
+	@Column(name = "media_voto", precision = 22, scale = 0)
+	public Double getMediaVoto() {
+		return this.mediaVoto;
+	}
 
-    public void setMediaVoto(Double mediaVoto) {
-        this.mediaVoto = mediaVoto;
-    }
+	public void setMediaVoto(Double mediaVoto) {
+		this.mediaVoto = mediaVoto;
+	}
 
-    @Column(name = "nome_squadra", nullable = false)
-    public String getNomeSquadra() {
-        return this.nomeSquadra;
-    }
+	@Column(name = "nome_squadra", nullable = false)
+	public String getNomeSquadra() {
+		return this.nomeSquadra;
+	}
 
-    public void setNomeSquadra(String nomeSquadra) {
-        this.nomeSquadra = nomeSquadra;
-    }
+	public void setNomeSquadra(String nomeSquadra) {
+		this.nomeSquadra = nomeSquadra;
+	}
 
-    @Column(name = "proprietario")
-    public String getProprietario() {
-        return this.proprietario;
-    }
+	@Column(name = "proprietario")
+	public String getProprietario() {
+		return this.proprietario;
+	}
 
-    public void setProprietario(String proprietario) {
-        this.proprietario = proprietario;
-    }
+	public void setProprietario(String proprietario) {
+		this.proprietario = proprietario;
+	}
 
-    @Column(name = "rigore_sbagliato", nullable = false)
-    public int getRigoreSbagliato() {
-        return this.rigoreSbagliato;
-    }
+	@Column(name = "rigore_sbagliato", nullable = false)
+	public int getRigoreSbagliato() {
+		return this.rigoreSbagliato;
+	}
 
-    public void setRigoreSbagliato(int rigoreSbagliato) {
-        this.rigoreSbagliato = rigoreSbagliato;
-    }
+	public void setRigoreSbagliato(int rigoreSbagliato) {
+		this.rigoreSbagliato = rigoreSbagliato;
+	}
 
-    @Column(name = "rigore_segnato", nullable = false)
-    public int getRigoreSegnato() {
-        return this.rigoreSegnato;
-    }
+	@Column(name = "rigore_segnato", nullable = false)
+	public int getRigoreSegnato() {
+		return this.rigoreSegnato;
+	}
 
-    public void setRigoreSegnato(int rigoreSegnato) {
-        this.rigoreSegnato = rigoreSegnato;
-    }
+	public void setRigoreSegnato(int rigoreSegnato) {
+		this.rigoreSegnato = rigoreSegnato;
+	}
 
-    @Column(name = "flag_attivo", columnDefinition = "boolean default true")
-    public boolean isFlagAttivo() {
-        return this.flagAttivo;
-    }
+	@Column(name = "flag_attivo", columnDefinition = "boolean default true")
+	public boolean isFlagAttivo() {
+		return this.flagAttivo;
+	}
 
-    public void setFlagAttivo(boolean flagAttivo) {
-        this.flagAttivo = flagAttivo;
-    }
+	public void setFlagAttivo(boolean flagAttivo) {
+		this.flagAttivo = flagAttivo;
+	}
 
 }

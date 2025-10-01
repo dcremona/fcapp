@@ -44,149 +44,150 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Squadre")
 @Route(value = "squadra", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcSquadraView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
+public class FcSquadraView extends VerticalLayout
+		implements ComponentEventListener<ClickEvent<Button>>{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private SquadraService squadraController;
+	@Autowired
+	private SquadraService squadraController;
 
-    @Autowired
-    public Environment env;
+	@Autowired
+	public Environment env;
 
-    private Button initDb;
+	private Button initDb;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+	@Autowired
+	private ResourceLoader resourceLoader;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    public FcSquadraView() {
-        log.info("FcSquadraView()");
-    }
+	public FcSquadraView() {
+		log.info("FcSquadraView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        initDb = new Button("Update Img Squadre");
-        initDb.setIcon(VaadinIcon.START_COG.create());
-        initDb.addClickListener(this);
+		initDb = new Button("Update Img Squadre");
+		initDb.setIcon(VaadinIcon.START_COG.create());
+		initDb.addClickListener(this);
 
-        this.setMargin(true);
-        this.setSpacing(true);
-        this.setSizeFull();
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
 
-        GridCrud<FcSquadra> crud = new GridCrud<>(FcSquadra.class, new HorizontalSplitCrudLayout());
+		GridCrud<FcSquadra> crud = new GridCrud<>(FcSquadra.class,new HorizontalSplitCrudLayout());
 
-        DefaultCrudFormFactory<FcSquadra> formFactory = new DefaultCrudFormFactory<>(FcSquadra.class);
-        crud.setCrudFormFactory(formFactory);
-        formFactory.setUseBeanValidation(false);
+		DefaultCrudFormFactory<FcSquadra> formFactory = new DefaultCrudFormFactory<>(FcSquadra.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
 
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "idSquadra", "nomeSquadra", "nomeImg");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "idSquadra", "nomeSquadra", "nomeImg");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "idSquadra", "nomeSquadra", "nomeImg");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "idSquadra");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "idSquadra", "nomeSquadra", "nomeImg");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "idSquadra", "nomeSquadra", "nomeImg");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "idSquadra", "nomeSquadra", "nomeImg");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "idSquadra");
 
-        crud.getGrid().removeAllColumns();
-        crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getIdSquadra())).setHeader("Id");
-        crud.getGrid().addColumn(new ComponentRenderer<>(f -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
+		crud.getGrid().removeAllColumns();
+		crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getIdSquadra())).setHeader("Id");
+		crud.getGrid().addColumn(new ComponentRenderer<>(f -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
 
-            if (f != null) {
-                try {
-                    if (f.getImg() != null && f.getImg().getBinaryStream() != null) {
-                        Image img = Utils.getImage(f.getNomeSquadra(), f.getImg().getBinaryStream());
-                        cellLayout.add(img);
-                    }
-                    Span lblSquadra = new Span(f.getNomeSquadra());
-                    cellLayout.add(lblSquadra);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            return cellLayout;
-        }));
-        crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getNomeImg())).setHeader("Nome Img");
+			if (f != null) {
+				try {
+					if (f.getImg() != null && f.getImg().getBinaryStream() != null) {
+						Image img = Utils.getImage(f.getNomeSquadra(), f.getImg().getBinaryStream());
+						cellLayout.add(img);
+					}
+					Span lblSquadra = new Span(f.getNomeSquadra());
+					cellLayout.add(lblSquadra);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return cellLayout;
+		}));
+		crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getNomeImg())).setHeader("Nome Img");
 
-        crud.getGrid().addColumn(new ComponentRenderer<>(f -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            if (f != null) {
-                try {
-                    if (f.getImg40() != null && f.getImg40().getBinaryStream() != null) {
-                        Image img2 = Utils.getImage(f.getNomeSquadra(), f.getImg40().getBinaryStream());
-                        cellLayout.add(img2);
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            return cellLayout;
-        }));
-        crud.getGrid().setColumnReorderingAllowed(true);
+		crud.getGrid().addColumn(new ComponentRenderer<>(f -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			if (f != null) {
+				try {
+					if (f.getImg40() != null && f.getImg40().getBinaryStream() != null) {
+						Image img2 = Utils.getImage(f.getNomeSquadra(), f.getImg40().getBinaryStream());
+						cellLayout.add(img2);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return cellLayout;
+		}));
+		crud.getGrid().setColumnReorderingAllowed(true);
 
-        crud.setRowCountCaption("%d squadra(s) found");
-        crud.setClickRowToUpdate(true);
-        crud.setUpdateOperationVisible(true);
+		crud.setRowCountCaption("%d squadra(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(true);
 
-        crud.setFindAllOperation(() -> squadraController.findAll());
-        crud.setAddOperation(p -> squadraController.updateSquadra(p));
-        crud.setUpdateOperation(p -> squadraController.updateSquadra(p));
-        crud.setDeleteOperation(p -> squadraController.deleteSquadra(p));
+		crud.setFindAllOperation(() -> squadraController.findAll());
+		crud.setAddOperation(p -> squadraController.updateSquadra(p));
+		crud.setUpdateOperation(p -> squadraController.updateSquadra(p));
+		crud.setDeleteOperation(p -> squadraController.deleteSquadra(p));
 
-        add(initDb);
-        add(crud);
-    }
+		add(initDb);
+		add(crud);
+	}
 
-    @Override
-    public void onComponentEvent(ClickEvent<Button> event) {
-        FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-        try {
-            if (event.getSource() == initDb) {
-                List<FcSquadra> squadreSerieA = squadraController.findAll();
-                for (FcSquadra s : squadreSerieA) {
-                    Resource r = null;
-                    Resource r2 = null;
-                    if ("1".equals(campionato.getType())) {
-                        r = resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeImg());
-                        InputStream inputStream = r.getInputStream();
-                        byte[] targetArray = IOUtils.toByteArray(inputStream);
-                        s.setImg(BlobProxy.generateProxy(targetArray));
+	@Override
+	public void onComponentEvent(ClickEvent<Button> event) {
+		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+		try {
+			if (event.getSource() == initDb) {
+				List<FcSquadra> squadreSerieA = squadraController.findAll();
+				for (FcSquadra s : squadreSerieA) {
+					Resource r = null;
+					Resource r2 = null;
+					if ("1".equals(campionato.getType())) {
+						r = resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeImg());
+						InputStream inputStream = r.getInputStream();
+						byte[] targetArray = IOUtils.toByteArray(inputStream);
+						s.setImg(BlobProxy.generateProxy(targetArray));
 
-                    } else {
-                        r = resourceLoader.getResource("classpath:/img/nazioni/w20/" + s.getNomeImg());
-                        InputStream inputStream = r.getInputStream();
-                        byte[] targetArray = IOUtils.toByteArray(inputStream);
-                        s.setImg(BlobProxy.generateProxy(targetArray));
+					} else {
+						r = resourceLoader.getResource("classpath:/img/nazioni/w20/" + s.getNomeImg());
+						InputStream inputStream = r.getInputStream();
+						byte[] targetArray = IOUtils.toByteArray(inputStream);
+						s.setImg(BlobProxy.generateProxy(targetArray));
 
-                        r2 = resourceLoader.getResource("classpath:/img/nazioni/w40/" + s.getNomeImg());
-                        InputStream inputStream2 = r2.getInputStream();
-                        byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
-                        s.setImg40(BlobProxy.generateProxy(targetArray2));
-                    }
-                    squadraController.updateSquadra(s);
-                }
-                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-            }
-        } catch (Exception e) {
-            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-        }
-    }
+						r2 = resourceLoader.getResource("classpath:/img/nazioni/w40/" + s.getNomeImg());
+						InputStream inputStream2 = r2.getInputStream();
+						byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
+						s.setImg40(BlobProxy.generateProxy(targetArray2));
+					}
+					squadraController.updateSquadra(s);
+				}
+				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+			}
+		} catch (Exception e) {
+			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+		}
+	}
 }

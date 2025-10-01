@@ -33,540 +33,542 @@ import jakarta.annotation.security.RolesAllowed;;
 @PageTitle("Albo")
 @Route(value = "albo", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class AlboView extends VerticalLayout {
+public class AlboView extends VerticalLayout{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private AlboService alboController;
+	@Autowired
+	private AlboService alboController;
 
-    @Autowired
-    private AttoreService attoreController;
+	@Autowired
+	private AttoreService attoreController;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    public AlboView() {
-        log.info("AlboView()");
-    }
+	public AlboView() {
+		log.info("AlboView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.debug("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
+	@PostConstruct
+	void init() {
+		log.debug("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
 
-        initLayout();
-    }
+		initLayout();
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        List<FcExpStat> items = alboController.findAll();
-        this.add(getGrid(items));
+		List<FcExpStat> items = alboController.findAll();
+		this.add(getGrid(items));
 
-        List<FcExpStat> modelCrosstab = getModelCrosstab(items);
-        modelCrosstab.sort((p1, p2) -> p2.getScudetto().compareToIgnoreCase(p1.getScudetto()));
-        this.add(getGrid2(modelCrosstab));
+		List<FcExpStat> modelCrosstab = getModelCrosstab(items);
+		modelCrosstab.sort((p1,
+				p2) -> p2.getScudetto().compareToIgnoreCase(p1.getScudetto()));
+		this.add(getGrid2(modelCrosstab));
 
-    }
+	}
 
-    private Grid<FcExpStat> getGrid(List<FcExpStat> items) {
+	private Grid<FcExpStat> getGrid(List<FcExpStat> items) {
 
-        Grid<FcExpStat> grid = new Grid<>();
-        grid.setItems(items);
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-                GridVariant.LUMO_ROW_STRIPES);
-        grid.setAllRowsVisible(true);
+		Grid<FcExpStat> grid = new Grid<>();
+		grid.setItems(items);
+		grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.setAllRowsVisible(true);
 
-        Column<FcExpStat> campionatoColumn = grid.addColumn(s -> s.getAnno() + " " + s.getCampionato());
-        campionatoColumn.setSortable(false);
-        campionatoColumn.setResizable(false);
-        campionatoColumn.setHeader("Campionato");
-        campionatoColumn.setWidth("150px");
+		Column<FcExpStat> campionatoColumn = grid.addColumn(s -> s.getAnno() + " " + s.getCampionato());
+		campionatoColumn.setSortable(false);
+		campionatoColumn.setResizable(false);
+		campionatoColumn.setHeader("Campionato");
+		campionatoColumn.setWidth("150px");
 
-        Column<FcExpStat> scudettoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+		Column<FcExpStat> scudettoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
 
-            Span lblAttore = new Span(s.getScudetto());
-            if (att.getDescAttore().equals(s.getScudetto())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-                lblAttore.getElement().getThemeList().add("badge success");
-            } else {
-                lblAttore.getStyle().set("fontSize", "smaller");
-            }
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        scudettoColumn.setSortable(false);
-        scudettoColumn.setResizable(false);
-        scudettoColumn.setHeader("Scudetto");
+			Span lblAttore = new Span(s.getScudetto());
+			if (att.getDescAttore().equals(s.getScudetto())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");
+			}
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		scudettoColumn.setSortable(false);
+		scudettoColumn.setResizable(false);
+		scudettoColumn.setHeader("Scudetto");
 
-        Column<FcExpStat> p2Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            Span lblAttore = new Span(s.getP2());
-            if (att.getDescAttore().equals(s.getP2())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-                lblAttore.getElement().getThemeList().add("badge pill");
-            } else {
-                lblAttore.getStyle().set("fontSize", "smaller");
-            }
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p2Column.setSortable(false);
-        p2Column.setResizable(false);
-        p2Column.setHeader("Finalista");
+		Column<FcExpStat> p2Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getP2());
+			if (att.getDescAttore().equals(s.getP2())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge pill");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");
+			}
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p2Column.setSortable(false);
+		p2Column.setResizable(false);
+		p2Column.setHeader("Finalista");
 
-        Column<FcExpStat> p3Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            if (att.getDescAttore().equals(s.getP3())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-            }
-            Span lblAttore = new Span(s.getP3());
-            lblAttore.getStyle().set("fontSize", "smaller");
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p3Column.setSortable(false);
-        p3Column.setResizable(false);
-        p3Column.setHeader("3 Posto");
+		Column<FcExpStat> p3Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			if (att.getDescAttore().equals(s.getP3())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
+			Span lblAttore = new Span(s.getP3());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p3Column.setSortable(false);
+		p3Column.setResizable(false);
+		p3Column.setHeader("3 Posto");
 
-        Column<FcExpStat> p4Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            if (att.getDescAttore().equals(s.getP4())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-            }
-            Span lblAttore = new Span(s.getP4());
-            lblAttore.getStyle().set("fontSize", "smaller");
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p4Column.setSortable(false);
-        p4Column.setResizable(false);
-        p4Column.setHeader("4 Posto");
+		Column<FcExpStat> p4Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			if (att.getDescAttore().equals(s.getP4())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
+			Span lblAttore = new Span(s.getP4());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p4Column.setSortable(false);
+		p4Column.setResizable(false);
+		p4Column.setHeader("4 Posto");
 
-        Column<FcExpStat> p5Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            if (att.getDescAttore().equals(s.getP5())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-            }
-            Span lblAttore = new Span(s.getP5());
-            lblAttore.getStyle().set("fontSize", "smaller");
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p5Column.setSortable(false);
-        p5Column.setResizable(false);
-        p5Column.setHeader("5 Posto");
+		Column<FcExpStat> p5Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			if (att.getDescAttore().equals(s.getP5())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
+			Span lblAttore = new Span(s.getP5());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p5Column.setSortable(false);
+		p5Column.setResizable(false);
+		p5Column.setHeader("5 Posto");
 
-        Column<FcExpStat> p6Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            if (att.getDescAttore().equals(s.getP6())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-            }
-            Span lblAttore = new Span(s.getP6());
-            lblAttore.getStyle().set("fontSize", "smaller");
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p6Column.setSortable(false);
-        p6Column.setResizable(false);
-        p6Column.setHeader("6 Posto");
+		Column<FcExpStat> p6Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			if (att.getDescAttore().equals(s.getP6())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
+			Span lblAttore = new Span(s.getP6());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p6Column.setSortable(false);
+		p6Column.setResizable(false);
+		p6Column.setHeader("6 Posto");
 
-        Column<FcExpStat> p7Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            if (att.getDescAttore().equals(s.getP7())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-            }
-            Span lblAttore = new Span(s.getP7());
-            lblAttore.getStyle().set("fontSize", "smaller");
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p7Column.setSortable(false);
-        p7Column.setResizable(false);
-        p7Column.setHeader("7 Posto");
+		Column<FcExpStat> p7Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			if (att.getDescAttore().equals(s.getP7())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
+			Span lblAttore = new Span(s.getP7());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p7Column.setSortable(false);
+		p7Column.setResizable(false);
+		p7Column.setHeader("7 Posto");
 
-        Column<FcExpStat> p8Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            Span lblAttore = new Span(s.getP8());
-            if (att.getDescAttore().equals(s.getP8())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-                lblAttore.getElement().getThemeList().add("badge error");
-            } else {
-                lblAttore.getStyle().set("fontSize", "smaller");
-            }
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        p8Column.setSortable(false);
-        p8Column.setResizable(false);
-        p8Column.setHeader("8 Posto");
+		Column<FcExpStat> p8Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getP8());
+			if (att.getDescAttore().equals(s.getP8())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge error");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");
+			}
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		p8Column.setSortable(false);
+		p8Column.setResizable(false);
+		p8Column.setHeader("8 Posto");
 
-        Column<FcExpStat> winClasPtColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            Span lblAttore = new Span(s.getWinClasPt());
-            if (att.getDescAttore().equals(s.getWinClasPt())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-                lblAttore.getElement().getThemeList().add("badge success");
-            } else {
-                lblAttore.getStyle().set("fontSize", "smaller");
-            }
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        winClasPtColumn.setSortable(false);
-        winClasPtColumn.setResizable(false);
-        winClasPtColumn.setHeader("Clas Punti");
+		Column<FcExpStat> winClasPtColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getWinClasPt());
+			if (att.getDescAttore().equals(s.getWinClasPt())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");
+			}
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		winClasPtColumn.setSortable(false);
+		winClasPtColumn.setResizable(false);
+		winClasPtColumn.setHeader("Clas Punti");
 
-        Column<FcExpStat> winClasRegColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            Span lblAttore = new Span(s.getWinClasReg());
-            if (att.getDescAttore().equals(s.getWinClasReg())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-                lblAttore.getElement().getThemeList().add("badge success");
-            } else {
-                lblAttore.getStyle().set("fontSize", "smaller");
-            }
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        winClasRegColumn.setSortable(false);
-        winClasRegColumn.setResizable(false);
-        winClasRegColumn.setHeader("Clas Regolare");
+		Column<FcExpStat> winClasRegColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getWinClasReg());
+			if (att.getDescAttore().equals(s.getWinClasReg())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");
+			}
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		winClasRegColumn.setSortable(false);
+		winClasRegColumn.setResizable(false);
+		winClasRegColumn.setHeader("Clas Regolare");
 
-        Column<FcExpStat> winTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            Span lblAttore = new Span(s.getWinClasTvsT());
-            if (att.getDescAttore().equals(s.getWinClasTvsT())) {
-                cellLayout.getStyle().set("color", Costants.GRAY);
-                lblAttore.getElement().getThemeList().add("badge success");
-            } else {
-                lblAttore.getStyle().set("fontSize", "smaller");
-            }
-            cellLayout.add(lblAttore);
-            return cellLayout;
-        }));
-        winTvsTColumn.setSortable(false);
-        winTvsTColumn.setResizable(false);
-        winTvsTColumn.setHeader("Clas TvsT");
+		Column<FcExpStat> winTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			Span lblAttore = new Span(s.getWinClasTvsT());
+			if (att.getDescAttore().equals(s.getWinClasTvsT())) {
+				cellLayout.getStyle().set("color", Costants.GRAY);
+				lblAttore.getElement().getThemeList().add("badge success");
+			} else {
+				lblAttore.getStyle().set("fontSize", "smaller");
+			}
+			cellLayout.add(lblAttore);
+			return cellLayout;
+		}));
+		winTvsTColumn.setSortable(false);
+		winTvsTColumn.setResizable(false);
+		winTvsTColumn.setHeader("Clas TvsT");
 
-        Column<FcExpStat> tripleteColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            cellLayout.setMargin(false);
-            cellLayout.setPadding(false);
-            cellLayout.setSpacing(false);
-            Span lblAttore = null;
-            if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
-                lblAttore = new Span(s.getScudetto());
-                lblAttore.getStyle().set("fontSize", "smaller");
-                cellLayout.add(lblAttore);
-            }
+		Column<FcExpStat> tripleteColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			Span lblAttore = null;
+			if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
+				lblAttore = new Span(s.getScudetto());
+				lblAttore.getStyle().set("fontSize", "smaller");
+				cellLayout.add(lblAttore);
+			}
 
-            cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-            FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-            if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt())
-                    && att.getDescAttore().equals(s.getWinClasReg())) {
-                lblAttore.getElement().getThemeList().add("badge contrast pill");
-                cellLayout.getStyle().set("color", Costants.GRAY);
-            }
+			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+			if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt()) && att.getDescAttore().equals(s.getWinClasReg())) {
+				lblAttore.getElement().getThemeList().add("badge contrast pill");
+				cellLayout.getStyle().set("color", Costants.GRAY);
+			}
 
-            return cellLayout;
-        }));
-        tripleteColumn.setSortable(false);
-        tripleteColumn.setResizable(false);
-        tripleteColumn.setHeader("Triplete");
+			return cellLayout;
+		}));
+		tripleteColumn.setSortable(false);
+		tripleteColumn.setResizable(false);
+		tripleteColumn.setHeader("Triplete");
 
-        return grid;
-    }
+		return grid;
+	}
 
-    private Grid<FcExpStat> getGrid2(List<FcExpStat> items) {
+	private Grid<FcExpStat> getGrid2(List<FcExpStat> items) {
 
-        Grid<FcExpStat> grid = new Grid<>();
-        grid.setItems(items);
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-                GridVariant.LUMO_ROW_STRIPES);
-        grid.setAllRowsVisible(true);
+		Grid<FcExpStat> grid = new Grid<>();
+		grid.setItems(items);
+		grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.setAllRowsVisible(true);
 
-        Column<FcExpStat> annoColumn = grid.addColumn(s -> s.getAnno());
-        annoColumn.setSortable(true);
-        annoColumn.setHeader(Costants.SQUADRA);
+		Column<FcExpStat> annoColumn = grid.addColumn(s -> s.getAnno());
+		annoColumn.setSortable(true);
+		annoColumn.setHeader(Costants.SQUADRA);
 
-        Column<FcExpStat> scudettoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getScudetto())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getScudetto()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        scudettoColumn.setSortable(true);
-        scudettoColumn.setComparator((p1, p2) -> p1.getScudetto().compareTo(p2.getScudetto()));
-        scudettoColumn.setHeader("Scudetto");
+		Column<FcExpStat> scudettoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getScudetto())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getScudetto()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		scudettoColumn.setSortable(true);
+		scudettoColumn.setComparator((p1,
+				p2) -> p1.getScudetto().compareTo(p2.getScudetto()));
+		scudettoColumn.setHeader("Scudetto");
 
-        Column<FcExpStat> p2Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP2())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP2()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p2Column.setSortable(true);
-        p2Column.setComparator((p1, p2) -> p1.getP2().compareTo(p2.getP2()));
-        p2Column.setHeader("Finalista");
+		Column<FcExpStat> p2Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP2())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP2()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p2Column.setSortable(true);
+		p2Column.setComparator((p1, p2) -> p1.getP2().compareTo(p2.getP2()));
+		p2Column.setHeader("Finalista");
 
-        Column<FcExpStat> p3Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP3())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP3()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p3Column.setSortable(true);
-        p3Column.setComparator((p1, p2) -> p1.getP3().compareTo(p2.getP3()));
-        p3Column.setHeader("3 Posto");
+		Column<FcExpStat> p3Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP3())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP3()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p3Column.setSortable(true);
+		p3Column.setComparator((p1, p2) -> p1.getP3().compareTo(p2.getP3()));
+		p3Column.setHeader("3 Posto");
 
-        Column<FcExpStat> p4Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP4())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP4()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p4Column.setSortable(true);
-        p4Column.setComparator((p1, p2) -> p1.getP4().compareTo(p2.getP4()));
-        p4Column.setHeader("4 Posto");
+		Column<FcExpStat> p4Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP4())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP4()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p4Column.setSortable(true);
+		p4Column.setComparator((p1, p2) -> p1.getP4().compareTo(p2.getP4()));
+		p4Column.setHeader("4 Posto");
 
-        Column<FcExpStat> p5Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP5())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP5()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p5Column.setSortable(true);
-        p5Column.setComparator((p1, p2) -> p1.getP5().compareTo(p2.getP5()));
-        p5Column.setHeader("5 Posto");
+		Column<FcExpStat> p5Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP5())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP5()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p5Column.setSortable(true);
+		p5Column.setComparator((p1, p2) -> p1.getP5().compareTo(p2.getP5()));
+		p5Column.setHeader("5 Posto");
 
-        Column<FcExpStat> p6Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP6())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP6()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p6Column.setSortable(true);
-        p6Column.setComparator((p1, p2) -> p1.getP6().compareTo(p2.getP6()));
-        p6Column.setHeader("6 Posto");
+		Column<FcExpStat> p6Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP6())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP6()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p6Column.setSortable(true);
+		p6Column.setComparator((p1, p2) -> p1.getP6().compareTo(p2.getP6()));
+		p6Column.setHeader("6 Posto");
 
-        Column<FcExpStat> p7Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP7())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP7()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p7Column.setSortable(true);
-        p7Column.setComparator((p1, p2) -> p1.getP7().compareTo(p2.getP7()));
-        p7Column.setHeader("7 Posto");
+		Column<FcExpStat> p7Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP7())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP7()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p7Column.setSortable(true);
+		p7Column.setComparator((p1, p2) -> p1.getP7().compareTo(p2.getP7()));
+		p7Column.setHeader("7 Posto");
 
-        Column<FcExpStat> p8Column = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getP8())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getP8()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        p8Column.setSortable(true);
-        p8Column.setComparator((p1, p2) -> p1.getP8().compareTo(p2.getP8()));
-        p8Column.setHeader("8 Posto");
+		Column<FcExpStat> p8Column = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getP8())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getP8()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		p8Column.setSortable(true);
+		p8Column.setComparator((p1, p2) -> p1.getP8().compareTo(p2.getP8()));
+		p8Column.setHeader("8 Posto");
 
-        Column<FcExpStat> winClasPtColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getWinClasPt())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getWinClasPt()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        winClasPtColumn.setSortable(true);
-        winClasPtColumn.setComparator((p1, p2) -> p1.getWinClasPt().compareTo(p2.getWinClasPt()));
-        winClasPtColumn.setHeader("Clas Punti");
+		Column<FcExpStat> winClasPtColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getWinClasPt())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getWinClasPt()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		winClasPtColumn.setSortable(true);
+		winClasPtColumn.setComparator((p1,
+				p2) -> p1.getWinClasPt().compareTo(p2.getWinClasPt()));
+		winClasPtColumn.setHeader("Clas Punti");
 
-        Column<FcExpStat> winClasRegColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getWinClasReg())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getWinClasReg()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        winClasRegColumn.setSortable(true);
-        winClasRegColumn.setComparator((p1, p2) -> p1.getWinClasReg().compareTo(p2.getWinClasReg()));
-        winClasRegColumn.setHeader("Clas Regolare");
+		Column<FcExpStat> winClasRegColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getWinClasReg())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getWinClasReg()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		winClasRegColumn.setSortable(true);
+		winClasRegColumn.setComparator((p1,
+				p2) -> p1.getWinClasReg().compareTo(p2.getWinClasReg()));
+		winClasRegColumn.setHeader("Clas Regolare");
 
-        Column<FcExpStat> winClasTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-            HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && !StringUtils.isEmpty(s.getWinClasTvsT())) {
-                Span lbl = new Span("" + Integer.parseInt(s.getWinClasTvsT()));
-                cellLayout.add(lbl);
-            }
-            return cellLayout;
-        }));
-        winClasTvsTColumn.setSortable(true);
-        winClasTvsTColumn.setComparator((p1, p2) -> p1.getWinClasTvsT().compareTo(p2.getWinClasTvsT()));
-        winClasTvsTColumn.setHeader("Clas TvsT");
+		Column<FcExpStat> winClasTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			if (s != null && !StringUtils.isEmpty(s.getWinClasTvsT())) {
+				Span lbl = new Span("" + Integer.parseInt(s.getWinClasTvsT()));
+				cellLayout.add(lbl);
+			}
+			return cellLayout;
+		}));
+		winClasTvsTColumn.setSortable(true);
+		winClasTvsTColumn.setComparator((p1,
+				p2) -> p1.getWinClasTvsT().compareTo(p2.getWinClasTvsT()));
+		winClasTvsTColumn.setHeader("Clas TvsT");
 
-        return grid;
+		return grid;
 
-    }
+	}
 
-    private List<FcExpStat> getModelCrosstab(List<FcExpStat> all) {
+	private List<FcExpStat> getModelCrosstab(List<FcExpStat> all) {
 
-        List<FcExpStat> beans = new ArrayList<>();
+		List<FcExpStat> beans = new ArrayList<>();
 
-        List<FcAttore> squadre = attoreController.findAll();
+		List<FcAttore> squadre = attoreController.findAll();
 
-        for (FcAttore attore : squadre) {
+		for (FcAttore attore : squadre) {
 
-            String squadra = attore.getDescAttore();
+			String squadra = attore.getDescAttore();
 
-            int countScudetto = 0;
-            int countP2 = 0;
-            int countP3 = 0;
-            int countP4 = 0;
-            int countP5 = 0;
-            int countP6 = 0;
-            int countP7 = 0;
-            int countP8 = 0;
-            int countWinClasPt = 0;
-            int countWinClasReg = 0;
-            int countWinClasTvst = 0;
+			int countScudetto = 0;
+			int countP2 = 0;
+			int countP3 = 0;
+			int countP4 = 0;
+			int countP5 = 0;
+			int countP6 = 0;
+			int countP7 = 0;
+			int countP8 = 0;
+			int countWinClasPt = 0;
+			int countWinClasReg = 0;
+			int countWinClasTvst = 0;
 
-            for (FcExpStat bean : all) {
+			for (FcExpStat bean : all) {
 
-                if (squadra.equals(bean.getScudetto())) {
-                    countScudetto++;
-                }
-                if (bean.getP2().equals(squadra)) {
-                    countP2++;
-                }
-                if (bean.getP3().equals(squadra)) {
-                    countP3++;
-                }
-                if (bean.getP4().equals(squadra)) {
-                    countP4++;
-                }
-                if (bean.getP5().equals(squadra)) {
-                    countP5++;
-                }
-                if (bean.getP6().equals(squadra)) {
-                    countP6++;
-                }
-                if (bean.getP7().equals(squadra)) {
-                    countP7++;
-                }
-                if (bean.getP8().equals(squadra)) {
-                    countP8++;
-                }
-                if (squadra.equals(bean.getWinClasPt())) {
-                    countWinClasPt++;
-                }
-                if (squadra.equals(bean.getWinClasReg())) {
-                    countWinClasReg++;
-                }
-                if (squadra.equals(bean.getWinClasTvsT())) {
-                    countWinClasTvst++;
-                }
-            }
+				if (squadra.equals(bean.getScudetto())) {
+					countScudetto++;
+				}
+				if (bean.getP2().equals(squadra)) {
+					countP2++;
+				}
+				if (bean.getP3().equals(squadra)) {
+					countP3++;
+				}
+				if (bean.getP4().equals(squadra)) {
+					countP4++;
+				}
+				if (bean.getP5().equals(squadra)) {
+					countP5++;
+				}
+				if (bean.getP6().equals(squadra)) {
+					countP6++;
+				}
+				if (bean.getP7().equals(squadra)) {
+					countP7++;
+				}
+				if (bean.getP8().equals(squadra)) {
+					countP8++;
+				}
+				if (squadra.equals(bean.getWinClasPt())) {
+					countWinClasPt++;
+				}
+				if (squadra.equals(bean.getWinClasReg())) {
+					countWinClasReg++;
+				}
+				if (squadra.equals(bean.getWinClasTvsT())) {
+					countWinClasTvst++;
+				}
+			}
 
-            FcExpStat b = new FcExpStat();
-            b.setAnno(squadra);
-            b.setScudetto(countScudetto < 10 ? "0" + countScudetto : "" + countScudetto);
-            b.setP2(countP2 < 10 ? "0" + countP2 : "" + countP2);
-            b.setP3(countP3 < 10 ? "0" + countP3 : "" + countP3);
-            b.setP4(countP4 < 10 ? "0" + countP4 : "" + countP4);
-            b.setP5(countP5 < 10 ? "0" + countP5 : "" + countP5);
-            b.setP6(countP6 < 10 ? "0" + countP6 : "" + countP6);
-            b.setP7(countP7 < 10 ? "0" + countP7 : "" + countP7);
-            b.setP8(countP8 < 10 ? "0" + countP8 : "" + countP8);
+			FcExpStat b = new FcExpStat();
+			b.setAnno(squadra);
+			b.setScudetto(countScudetto < 10 ? "0" + countScudetto : "" + countScudetto);
+			b.setP2(countP2 < 10 ? "0" + countP2 : "" + countP2);
+			b.setP3(countP3 < 10 ? "0" + countP3 : "" + countP3);
+			b.setP4(countP4 < 10 ? "0" + countP4 : "" + countP4);
+			b.setP5(countP5 < 10 ? "0" + countP5 : "" + countP5);
+			b.setP6(countP6 < 10 ? "0" + countP6 : "" + countP6);
+			b.setP7(countP7 < 10 ? "0" + countP7 : "" + countP7);
+			b.setP8(countP8 < 10 ? "0" + countP8 : "" + countP8);
 
-            b.setWinClasPt(countWinClasPt < 10 ? "0" + countWinClasPt : "" + countWinClasPt);
-            b.setWinClasReg(countWinClasReg < 10 ? "0" + countWinClasReg : "" + countWinClasReg);
-            b.setWinClasTvsT(countWinClasTvst < 10 ? "0" + countWinClasTvst : "" + countWinClasTvst);
+			b.setWinClasPt(countWinClasPt < 10 ? "0" + countWinClasPt : "" + countWinClasPt);
+			b.setWinClasReg(countWinClasReg < 10 ? "0" + countWinClasReg : "" + countWinClasReg);
+			b.setWinClasTvsT(countWinClasTvst < 10 ? "0" + countWinClasTvst : "" + countWinClasTvst);
 
-            beans.add(b);
-        }
+			beans.add(b);
+		}
 
-        return beans;
-    }
+		return beans;
+	}
 
 }

@@ -7,11 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcRuolo;
 
-public interface RuoloRepository extends CrudRepository<FcRuolo, Long> {
+public interface RuoloRepository extends CrudRepository<FcRuolo, Long>{
 
-    Page<FcRuolo> findAll(Pageable pageable);
+	Page<FcRuolo> findAll(Pageable pageable);
 
-    Iterable<FcRuolo> findAll(Sort sort);
+	Iterable<FcRuolo> findAll(Sort sort);
 
-    public FcRuolo findByDescRuolo(String descRuolo);
+	public FcRuolo findByDescRuolo(String descRuolo);
 }

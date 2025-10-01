@@ -24,66 +24,66 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Proprieta")
 @Route(value = "proprieta", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcPropertiesView extends VerticalLayout {
+public class FcPropertiesView extends VerticalLayout{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private ProprietaService proprietaController;
+	@Autowired
+	private ProprietaService proprietaController;
 
-    @Autowired
-    public Environment env;
+	@Autowired
+	public Environment env;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    public FcPropertiesView() {
-        log.info("FcPropertiesView()");
-    }
+	public FcPropertiesView() {
+		log.info("FcPropertiesView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        this.setMargin(true);
-        this.setSpacing(true);
-        this.setSizeFull();
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
 
-        GridCrud<FcProperties> crud = new GridCrud<>(FcProperties.class, new HorizontalSplitCrudLayout());
+		GridCrud<FcProperties> crud = new GridCrud<>(FcProperties.class,new HorizontalSplitCrudLayout());
 
-        DefaultCrudFormFactory<FcProperties> formFactory = new DefaultCrudFormFactory<>(FcProperties.class);
-        crud.setCrudFormFactory(formFactory);
-        formFactory.setUseBeanValidation(false);
+		DefaultCrudFormFactory<FcProperties> formFactory = new DefaultCrudFormFactory<>(FcProperties.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
 
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "key", "value");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "key", "value");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "key", "value");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "key");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "key", "value");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "key", "value");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "key", "value");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "key");
 
-        crud.getGrid().setColumns("key", "value");
+		crud.getGrid().setColumns("key", "value");
 
-        crud.getGrid().setColumnReorderingAllowed(true);
+		crud.getGrid().setColumnReorderingAllowed(true);
 
-        crud.setRowCountCaption("%d property(s) found");
-        crud.setClickRowToUpdate(true);
-        crud.setUpdateOperationVisible(true);
+		crud.setRowCountCaption("%d property(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(true);
 
-        crud.setFindAllOperation(() -> proprietaController.findAll());
-        crud.setAddOperation(p -> proprietaController.updateProprieta(p));
-        crud.setUpdateOperation(p -> proprietaController.updateProprieta(p));
-        crud.setDeleteOperation(p -> proprietaController.deleteProprieta(p));
+		crud.setFindAllOperation(() -> proprietaController.findAll());
+		crud.setAddOperation(p -> proprietaController.updateProprieta(p));
+		crud.setUpdateOperation(p -> proprietaController.updateProprieta(p));
+		crud.setDeleteOperation(p -> proprietaController.deleteProprieta(p));
 
-        add(crud);
-    }
+		add(crud);
+	}
 
 }

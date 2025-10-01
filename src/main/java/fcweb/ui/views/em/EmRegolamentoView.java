@@ -38,151 +38,152 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Regolamento")
 @Route(value = "emregolamento", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class EmRegolamentoView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
+public class EmRegolamentoView extends VerticalLayout
+		implements ComponentEventListener<ClickEvent<Button>>{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    @Autowired
-    private RegolamentoService regolamentoController;
+	@Autowired
+	private RegolamentoService regolamentoController;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
-    private String html = "";
-    private FcRegolamento regolamento = null;
+	@Autowired
+	private ResourceLoader resourceLoader;
+	private String html = "";
+	private FcRegolamento regolamento = null;
 
-    private VaadinCKEditor decoupledEditor = null;
-    private Button salvaDb;
+	private VaadinCKEditor decoupledEditor = null;
+	private Button salvaDb;
 
-    public EmRegolamentoView() {
-        LOG.info("EmRegolamentoView()");
-    }
+	public EmRegolamentoView() {
+		LOG.info("EmRegolamentoView()");
+	}
 
-    @PostConstruct
-    void init() {
-        // LOG.debug("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initData();
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		// LOG.debug("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initData();
+		initLayout();
+	}
 
-    private void initData() {
-        List<FcRegolamento> l = regolamentoController.findAll();
-        try {
+	private void initData() {
+		List<FcRegolamento> l = regolamentoController.findAll();
+		try {
 
-            BufferedReader br = null;
-            BufferedReader br2 = null;
-            if (l != null && l.size() > 0) {
-                FcRegolamento r = l.get(0);
-                regolamento = r;
-                InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
-                br2 = new BufferedReader(isr2);
+			BufferedReader br = null;
+			BufferedReader br2 = null;
+			if (l != null && l.size() > 0) {
+				FcRegolamento r = l.get(0);
+				regolamento = r;
+				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
+				br2 = new BufferedReader(isr2);
 
-                if (br2 != null) {
-                    String line2 = null;
-                    html = "";
-                    while ((line2 = br2.readLine()) != null) {
-                        html += line2;
-                    }
-                }
+				if (br2 != null) {
+					String line2 = null;
+					html = "";
+					while ((line2 = br2.readLine()) != null) {
+						html += line2;
+					}
+				}
 
-            } else {
-                Resource resource = resourceLoader.getResource("classpath:html/fcqatar2022_regolamento.html");
-                InputStreamReader isr = new InputStreamReader(resource.getInputStream());
-                br = new BufferedReader(isr);
+			} else {
+				Resource resource = resourceLoader.getResource("classpath:html/fcqatar2022_regolamento.html");
+				InputStreamReader isr = new InputStreamReader(resource.getInputStream());
+				br = new BufferedReader(isr);
 
-                if (br != null) {
-                    String line = null;
-                    html = "";
-                    while ((line = br.readLine()) != null) {
-                        html += line;
-                    }
-                }
-            }
-            LOG.debug(html);
-            // if (l != null && l.size() > 0) {
-            // LOG.debug(html);
-            // String encodedString = html;
-            // LOG.debug(encodedString);
-            // Decoder decoder = Base64.getDecoder();
-            // byte[] bytes = decoder.decode(encodedString);
-            // html = new String(bytes);
-            // LOG.debug(html);
-            // }
+				if (br != null) {
+					String line = null;
+					html = "";
+					while ((line = br.readLine()) != null) {
+						html += line;
+					}
+				}
+			}
+			LOG.debug(html);
+			// if (l != null && l.size() > 0) {
+			// LOG.debug(html);
+			// String encodedString = html;
+			// LOG.debug(encodedString);
+			// Decoder decoder = Base64.getDecoder();
+			// byte[] bytes = decoder.decode(encodedString);
+			// html = new String(bytes);
+			// LOG.debug(html);
+			// }
 
-        } catch (Exception ex2) {
-            LOG.error("ex2 " + ex2.getMessage());
-        }
-    }
+		} catch (Exception ex2) {
+			LOG.error("ex2 " + ex2.getMessage());
+		}
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
 
-        salvaDb = new Button("Salva");
-        salvaDb.setIcon(VaadinIcon.DATABASE.create());
-        salvaDb.addClickListener(this);
-        boolean isAdmin = false;
-        for (Role r : attore.getRoles()) {
-            if (r.equals(Role.ADMIN)) {
-                isAdmin = true;
-                break;
-            }
-        }
-        salvaDb.setVisible(isAdmin);
+		salvaDb = new Button("Salva");
+		salvaDb.setIcon(VaadinIcon.DATABASE.create());
+		salvaDb.addClickListener(this);
+		boolean isAdmin = false;
+		for (Role r : attore.getRoles()) {
+			if (r.equals(Role.ADMIN)) {
+				isAdmin = true;
+				break;
+			}
+		}
+		salvaDb.setVisible(isAdmin);
 
-        this.add(salvaDb);
+		this.add(salvaDb);
 
-        /** Document Editor */
-        decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
-            builder.editorType = EditorType.DECOUPLED;
-            builder.editorData = html;
-        }).createVaadinCKEditor();
-        decoupledEditor.setReadOnly(!isAdmin);
+		/** Document Editor */
+		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
+			builder.editorType = EditorType.DECOUPLED;
+			builder.editorData = html;
+		}).createVaadinCKEditor();
+		decoupledEditor.setReadOnly(!isAdmin);
 
-        this.add(decoupledEditor);
+		this.add(decoupledEditor);
 
-        VerticalLayout previewHtml = new VerticalLayout();
-        try {
+		VerticalLayout previewHtml = new VerticalLayout();
+		try {
 
-            previewHtml.getElement().setProperty("innerHTML", html);
+			previewHtml.getElement().setProperty("innerHTML", html);
 
-            this.add(previewHtml);
+			this.add(previewHtml);
 
-        } catch (Exception ex2) {
-            LOG.error("ex2 " + ex2.getMessage());
-        }
+		} catch (Exception ex2) {
+			LOG.error("ex2 " + ex2.getMessage());
+		}
 
-    }
+	}
 
-    @Override
-    public void onComponentEvent(ClickEvent<Button> event) {
-        try {
-            if (event.getSource() == salvaDb) {
-                LOG.info("SALVA");
+	@Override
+	public void onComponentEvent(ClickEvent<Button> event) {
+		try {
+			if (event.getSource() == salvaDb) {
+				LOG.info("SALVA");
 
-                String valueHtml = decoupledEditor.getValue();
-                LOG.info(valueHtml);
-                if (regolamento == null) {
-                    regolamento = new FcRegolamento();
-                }
-                regolamento.setData(LocalDateTime.now());
-                regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+				String valueHtml = decoupledEditor.getValue();
+				LOG.info(valueHtml);
+				if (regolamento == null) {
+					regolamento = new FcRegolamento();
+				}
+				regolamento.setData(LocalDateTime.now());
+				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
 
-                regolamentoController.insertRegolamento(regolamento);
+				regolamentoController.insertRegolamento(regolamento);
 
-                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-            }
-        } catch (Exception e) {
-            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-        }
-    }
+				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+			}
+		} catch (Exception e) {
+			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+		}
+	}
 
 }

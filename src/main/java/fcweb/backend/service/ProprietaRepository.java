@@ -7,12 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcProperties;
 
-public interface ProprietaRepository extends CrudRepository<FcProperties, Long> {
+public interface ProprietaRepository extends CrudRepository<FcProperties, Long>{
 
-    Page<FcProperties> findAll(Pageable pageable);
+	Page<FcProperties> findAll(Pageable pageable);
 
-    Iterable<FcProperties> findAll(Sort sort);
+	Iterable<FcProperties> findAll(Sort sort);
 
-    public FcProperties findByKey(String key);
+	public FcProperties findByKey(String key);
 
 }

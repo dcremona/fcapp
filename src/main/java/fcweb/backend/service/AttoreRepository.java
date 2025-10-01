@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import fcweb.backend.data.entity.FcAttore;
 
-public interface AttoreRepository extends JpaRepository<FcAttore, Long>, JpaSpecificationExecutor<FcAttore> {
+public interface AttoreRepository extends JpaRepository<FcAttore, Long>,
+		JpaSpecificationExecutor<FcAttore>{
 
-    FcAttore findByUsername(String username);
+	FcAttore findByUsername(String username);
 
-    public List<FcAttore> findByActive(boolean active);
+	public List<FcAttore> findByActive(boolean active);
 }

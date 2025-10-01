@@ -42,265 +42,253 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Calendario")
 @Route(value = "calendario", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class CalendarioView extends VerticalLayout {
+public class CalendarioView extends VerticalLayout{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private GiornataService giornataController;
+	@Autowired
+	private GiornataService giornataController;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+	@Autowired
+	private ResourceLoader resourceLoader;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    private List<FcGiornata> model = new ArrayList<>();
+	private List<FcGiornata> model = new ArrayList<>();
 
-    public CalendarioView() {
-        log.info("CalendarioView()");
-    }
+	public CalendarioView() {
+		log.info("CalendarioView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initData();
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initData();
+		initLayout();
+	}
 
-    private List<FcGiornata> initData() {
+	private List<FcGiornata> initData() {
 
-        FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-        List<FcGiornata> model1 = new ArrayList<>();
-        List<FcGiornata> model2 = new ArrayList<>();
+		List<FcGiornata> model1 = new ArrayList<>();
+		List<FcGiornata> model2 = new ArrayList<>();
 
-        List<FcGiornata> all = giornataController.findAll();
-        for (FcGiornata g : all) {
-            int gg = g.getFcGiornataInfo().getCodiceGiornata();
-            if (gg < 20) {
-                model1.add(g);
-            } else {
-                model2.add(g);
-            }
-        }
+		List<FcGiornata> all = giornataController.findAll();
+		for (FcGiornata g : all) {
+			int gg = g.getFcGiornataInfo().getCodiceGiornata();
+			if (gg < 20) {
+				model1.add(g);
+			} else {
+				model2.add(g);
+			}
+		}
 
-        if (campionato.getIdCampionato() == 1) {
-            model = model1;
-        } else if (campionato.getIdCampionato() == 2) {
-            model = model2;
-        }
+		if (campionato.getIdCampionato() == 1) {
+			model = model1;
+		} else if (campionato.getIdCampionato() == 2) {
+			model = model2;
+		}
 
-        return model;
-    }
+		return model;
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-        VerticalLayout gridPrimaFaseAndata = new VerticalLayout();
-        gridPrimaFaseAndata.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-        gridPrimaFaseAndata.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
+		VerticalLayout gridPrimaFaseAndata = new VerticalLayout();
+		gridPrimaFaseAndata.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridPrimaFaseAndata.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
-        VerticalLayout gridPrimaFaseRitorno = new VerticalLayout();
-        gridPrimaFaseRitorno.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-        gridPrimaFaseRitorno.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
+		VerticalLayout gridPrimaFaseRitorno = new VerticalLayout();
+		gridPrimaFaseRitorno.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridPrimaFaseRitorno.getStyle().set(Costants.BACKGROUND, Costants.GREEN);
 
-        VerticalLayout gridQuarti = new VerticalLayout();
-        gridQuarti.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-        gridQuarti.getStyle().set(Costants.BACKGROUND, Costants.MISTYROSE);
+		VerticalLayout gridQuarti = new VerticalLayout();
+		gridQuarti.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridQuarti.getStyle().set(Costants.BACKGROUND, Costants.MISTYROSE);
 
-        VerticalLayout gridSemi = new VerticalLayout();
-        gridSemi.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-        gridSemi.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
+		VerticalLayout gridSemi = new VerticalLayout();
+		gridSemi.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridSemi.getStyle().set(Costants.BACKGROUND, Costants.LIGHT_YELLOW);
 
-        VerticalLayout gridFinali = new VerticalLayout();
-        gridFinali.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-        gridFinali.getStyle().set(Costants.BACKGROUND, Costants.POWDERBLUE);
+		VerticalLayout gridFinali = new VerticalLayout();
+		gridFinali.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		gridFinali.getStyle().set(Costants.BACKGROUND, Costants.POWDERBLUE);
 
-        List<FcGiornata> beanContainer = new ArrayList<>();
-        int conta = 1;
-        int partite = 4;
-        for (int i = 0; i < model.size(); i++) {
+		List<FcGiornata> beanContainer = new ArrayList<>();
+		int conta = 1;
+		int partite = 4;
+		for (int i = 0; i < model.size(); i++) {
 
-            FcGiornata bean = model.get(i);
-            beanContainer.add(bean);
-            int gg = bean.getFcGiornataInfo().getIdGiornataFc();
-            if (gg == 17 || gg == 18) {
-                partite = 2;
-            } else if (gg == 19) {
-                partite = 1;
-            }
+			FcGiornata bean = model.get(i);
+			beanContainer.add(bean);
+			int gg = bean.getFcGiornataInfo().getIdGiornataFc();
+			if (gg == 17 || gg == 18) {
+				partite = 2;
+			} else if (gg == 19) {
+				partite = 1;
+			}
 
-            if (conta == partite) {
+			if (conta == partite) {
 
-                String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(),
-                        Costants.DATA_FORMATTED);
+				String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(), Costants.DATA_FORMATTED);
 
-                String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
-                if (gg > 16) {
-                    descG = bean.getFcTipoGiornata().getDescTipoGiornata() + " - "
-                            + bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
-                }
-                Grid<FcGiornata> tableGiornata = getTableCalendar(beanContainer);
+				String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
+				if (gg > 16) {
+					descG = bean.getFcTipoGiornata().getDescTipoGiornata() + " - " + bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
+				}
+				Grid<FcGiornata> tableGiornata = getTableCalendar(beanContainer);
 
-                final VerticalLayout layout = new VerticalLayout();
-                Span lblInfoSx = new Span(descG);
-                lblInfoSx.getStyle().set(Costants.FONT_SIZE, "14px");
-                layout.add(lblInfoSx);
-                layout.add(tableGiornata);
+				final VerticalLayout layout = new VerticalLayout();
+				Span lblInfoSx = new Span(descG);
+				lblInfoSx.getStyle().set(Costants.FONT_SIZE, "14px");
+				layout.add(lblInfoSx);
+				layout.add(tableGiornata);
 
-                if (gg < 8) {
-                    gridPrimaFaseAndata.add(layout);
-                } else if (gg > 7 && gg < 15) {
-                    gridPrimaFaseRitorno.add(layout);
-                } else if (gg == 15 || gg == 16) {
-                    gridQuarti.add(layout);
-                } else if (gg == 17 || gg == 18) {
-                    gridSemi.add(layout);
-                } else if (gg == 19) {
-                    gridFinali.add(layout);
-                }
+				if (gg < 8) {
+					gridPrimaFaseAndata.add(layout);
+				} else if (gg > 7 && gg < 15) {
+					gridPrimaFaseRitorno.add(layout);
+				} else if (gg == 15 || gg == 16) {
+					gridQuarti.add(layout);
+				} else if (gg == 17 || gg == 18) {
+					gridSemi.add(layout);
+				} else if (gg == 19) {
+					gridFinali.add(layout);
+				}
 
-                conta = 1;
-                beanContainer = new ArrayList<>();
+				conta = 1;
+				beanContainer = new ArrayList<>();
 
-            } else {
-                conta++;
-            }
-        }
+			} else {
+				conta++;
+			}
+		}
 
-        try {
-            this.add(buildButtonCalendarioPdf(campionato));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
+		try {
+			this.add(buildButtonCalendarioPdf(campionato));
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
 
-        Details paneldPrimaFaseAndata = new Details("Prima Fase Andata", gridPrimaFaseAndata);
-        paneldPrimaFaseAndata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-        paneldPrimaFaseAndata.setEnabled(true);
-        paneldPrimaFaseAndata.setOpened(true);
+		Details paneldPrimaFaseAndata = new Details("Prima Fase Andata",gridPrimaFaseAndata);
+		paneldPrimaFaseAndata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+		paneldPrimaFaseAndata.setEnabled(true);
+		paneldPrimaFaseAndata.setOpened(true);
 
-        add(paneldPrimaFaseAndata);
+		add(paneldPrimaFaseAndata);
 
-        Details paneldPrimaFaseRitorno = new Details("Prima Fase Ritorno", gridPrimaFaseRitorno);
-        paneldPrimaFaseRitorno.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-        paneldPrimaFaseRitorno.setEnabled(true);
-        paneldPrimaFaseRitorno.setOpened(true);
+		Details paneldPrimaFaseRitorno = new Details("Prima Fase Ritorno",gridPrimaFaseRitorno);
+		paneldPrimaFaseRitorno.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+		paneldPrimaFaseRitorno.setEnabled(true);
+		paneldPrimaFaseRitorno.setOpened(true);
 
-        this.add(paneldPrimaFaseRitorno);
+		this.add(paneldPrimaFaseRitorno);
 
-        if (gridQuarti.getComponentCount() > 0) {
-            Details paneldQuarti = new Details("Quarti", gridQuarti);
-            paneldQuarti.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-            paneldQuarti.setEnabled(true);
-            paneldQuarti.setOpened(true);
+		if (gridQuarti.getComponentCount() > 0) {
+			Details paneldQuarti = new Details("Quarti",gridQuarti);
+			paneldQuarti.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+			paneldQuarti.setEnabled(true);
+			paneldQuarti.setOpened(true);
 
-            this.add(paneldQuarti);
-        }
+			this.add(paneldQuarti);
+		}
 
-        if (gridSemi.getComponentCount() > 0) {
-            Details paneldSemi = new Details("Semifinali", gridSemi);
-            paneldSemi.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-            paneldSemi.setEnabled(true);
-            paneldSemi.setOpened(true);
+		if (gridSemi.getComponentCount() > 0) {
+			Details paneldSemi = new Details("Semifinali",gridSemi);
+			paneldSemi.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+			paneldSemi.setEnabled(true);
+			paneldSemi.setOpened(true);
 
-            this.add(paneldSemi);
-        }
+			this.add(paneldSemi);
+		}
 
-        if (gridFinali.getComponentCount() > 0) {
-            Details paneldFinali = new Details("Finali", gridFinali);
-            paneldFinali.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-            paneldFinali.setEnabled(true);
-            paneldFinali.setOpened(true);
+		if (gridFinali.getComponentCount() > 0) {
+			Details paneldFinali = new Details("Finali",gridFinali);
+			paneldFinali.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+			paneldFinali.setEnabled(true);
+			paneldFinali.setOpened(true);
 
-            this.add(paneldFinali);
-        }
-    }
+			this.add(paneldFinali);
+		}
+	}
 
-    private HorizontalLayout buildButtonCalendarioPdf(FcCampionato campionato) {
+	private HorizontalLayout buildButtonCalendarioPdf(FcCampionato campionato) {
 
-        HorizontalLayout horLayout = new HorizontalLayout();
-        horLayout.setSpacing(true);
+		HorizontalLayout horLayout = new HorizontalLayout();
+		horLayout.setSpacing(true);
 
-        try {
-            Button stampapdf = new Button("Calendario Pdf");
-            stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+		try {
+			Button stampapdf = new Button("Calendario Pdf");
+			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
-            if (jdbcTemplate.getDataSource() != null) {
-                Connection conn = jdbcTemplate.getDataSource().getConnection();
-                Map<String, Object> hm = new HashMap<String, Object>();
-                String start = campionato.getStart().toString();
-                String end = campionato.getEnd().toString();
-                hm.put("START", start);
-                hm.put("END", end);
-                Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
-                FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
-                        Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
-                button1Wrapper.wrapComponent(stampapdf);
-                horLayout.add(button1Wrapper);
-            }
+			if (jdbcTemplate.getDataSource() != null) {
+				Connection conn = jdbcTemplate.getDataSource().getConnection();
+				Map<String, Object> hm = new HashMap<String, Object>();
+				String start = campionato.getStart().toString();
+				String end = campionato.getEnd().toString();
+				hm.put("START", start);
+				hm.put("END", end);
+				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
+				FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
+				button1Wrapper.wrapComponent(stampapdf);
+				horLayout.add(button1Wrapper);
+			}
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
 
-        return horLayout;
-    }
+		return horLayout;
+	}
 
-    private Grid<FcGiornata> getTableCalendar(List<FcGiornata> items) {
+	private Grid<FcGiornata> getTableCalendar(List<FcGiornata> items) {
 
-        Grid<FcGiornata> grid = new Grid<>();
-        grid.setItems(items);
-        grid.setSelectionMode(Grid.SelectionMode.NONE);
-        grid.setAllRowsVisible(true);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-                GridVariant.LUMO_ROW_STRIPES);
-        grid.setWidth("500px");
+		Grid<FcGiornata> grid = new Grid<>();
+		grid.setItems(items);
+		grid.setSelectionMode(Grid.SelectionMode.NONE);
+		grid.setAllRowsVisible(true);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.setWidth("500px");
 
-        Column<FcGiornata> attoreCasaColumn = grid
-                .addColumn(giornata -> giornata.getFcAttoreByIdAttoreCasa().getDescAttore());
-        attoreCasaColumn.setSortable(false);
+		Column<FcGiornata> attoreCasaColumn = grid.addColumn(giornata -> giornata.getFcAttoreByIdAttoreCasa().getDescAttore());
+		attoreCasaColumn.setSortable(false);
 
-        Column<FcGiornata> golColumn = grid.addColumn(
-                giornata -> giornata.getGolCasa() != null ? giornata.getGolCasa() + " - " + giornata.getGolFuori()
-                        : "-");
-        golColumn.setSortable(false);
+		Column<FcGiornata> golColumn = grid.addColumn(giornata -> giornata.getGolCasa() != null ? giornata.getGolCasa() + " - " + giornata.getGolFuori() : "-");
+		golColumn.setSortable(false);
 
-        Column<FcGiornata> attoreFuoriColumn = grid
-                .addColumn(giornata -> giornata.getFcAttoreByIdAttoreFuori().getDescAttore());
-        attoreFuoriColumn.setSortable(false);
+		Column<FcGiornata> attoreFuoriColumn = grid.addColumn(giornata -> giornata.getFcAttoreByIdAttoreFuori().getDescAttore());
+		attoreFuoriColumn.setSortable(false);
 
-        Column<FcGiornata> punteggioColumn = grid.addColumn(giornata -> {
-            DecimalFormat myFormatter = new DecimalFormat("#0.00");
+		Column<FcGiornata> punteggioColumn = grid.addColumn(giornata -> {
+			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 
-            Double dTotCasa = giornata.getTotCasa() != null
-                    ? giornata.getTotCasa().doubleValue() / Costants.DIVISORE_100
-                    : 0;
-            String sTotCasa = myFormatter.format(dTotCasa);
+			Double dTotCasa = giornata.getTotCasa() != null ? giornata.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
+			String sTotCasa = myFormatter.format(dTotCasa);
 
-            Double dTotFuori = giornata.getTotFuori() != null
-                    ? giornata.getTotFuori().doubleValue() / Costants.DIVISORE_100
-                    : 0;
-            String sTotFuori = myFormatter.format(dTotFuori);
+			Double dTotFuori = giornata.getTotFuori() != null ? giornata.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
+			String sTotFuori = myFormatter.format(dTotFuori);
 
-            return sTotCasa + " - " + sTotFuori;
-        });
-        punteggioColumn.setSortable(false);
+			return sTotCasa + " - " + sTotFuori;
+		});
+		punteggioColumn.setSortable(false);
 
-        return grid;
+		return grid;
 
-    }
+	}
 
 }

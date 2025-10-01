@@ -26,76 +26,72 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Campionato")
 @Route(value = "campionato", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcCampionatoView extends VerticalLayout {
+public class FcCampionatoView extends VerticalLayout{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private CampionatoService campionatoController;
+	@Autowired
+	private CampionatoService campionatoController;
 
-    @Autowired
-    public Environment env;
+	@Autowired
+	public Environment env;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    public FcCampionatoView() {
-        log.info("FcCampionatoView()");
-    }
+	public FcCampionatoView() {
+		log.info("FcCampionatoView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        this.setMargin(true);
-        this.setSpacing(true);
-        this.setSizeFull();
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
 
-        GridCrud<FcCampionato> crud = new GridCrud<>(FcCampionato.class, new HorizontalSplitCrudLayout());
+		GridCrud<FcCampionato> crud = new GridCrud<>(FcCampionato.class,new HorizontalSplitCrudLayout());
 
-        DefaultCrudFormFactory<FcCampionato> formFactory = new DefaultCrudFormFactory<>(FcCampionato.class);
-        crud.setCrudFormFactory(formFactory);
-        formFactory.setUseBeanValidation(false);
+		DefaultCrudFormFactory<FcCampionato> formFactory = new DefaultCrudFormFactory<>(FcCampionato.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
 
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "idCampionato", "descCampionato", "type",
-                "dataInizio", "dataFine", "start", "end", "active");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "idCampionato", "descCampionato", "type",
-                "dataInizio", "dataFine", "start", "end", "active");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "idCampionato", "descCampionato", "type",
-                "dataInizio", "dataFine", "start", "end", "active");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "idCampionato", "descCampionato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "idCampionato", "descCampionato", "type", "dataInizio", "dataFine", "start", "end", "active");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "idCampionato", "descCampionato", "type", "dataInizio", "dataFine", "start", "end", "active");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "idCampionato", "descCampionato", "type", "dataInizio", "dataFine", "start", "end", "active");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "idCampionato", "descCampionato");
 
-        crud.getGrid().setColumns("idCampionato", "descCampionato", "type", "dataInizio", "dataFine", "start", "end",
-                "active");
+		crud.getGrid().setColumns("idCampionato", "descCampionato", "type", "dataInizio", "dataFine", "start", "end", "active");
 
-        crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
-            Checkbox check = new Checkbox();
-            check.setValue(user.isActive());
-            return check;
-        })).setHeader("Attivo");
+		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
+			Checkbox check = new Checkbox();
+			check.setValue(user.isActive());
+			return check;
+		})).setHeader("Attivo");
 
-        crud.getGrid().setColumnReorderingAllowed(true);
+		crud.getGrid().setColumnReorderingAllowed(true);
 
-        crud.setRowCountCaption("%d campionato(s) found");
-        crud.setClickRowToUpdate(true);
-        crud.setUpdateOperationVisible(true);
+		crud.setRowCountCaption("%d campionato(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(true);
 
-        crud.setFindAllOperation(() -> campionatoController.findAll());
-        crud.setAddOperation(c -> campionatoController.updateCampionato(c));
-        crud.setUpdateOperation(c -> campionatoController.updateCampionato(c));
-        crud.setDeleteOperation(c -> campionatoController.deleteCampionato(c));
+		crud.setFindAllOperation(() -> campionatoController.findAll());
+		crud.setAddOperation(c -> campionatoController.updateCampionato(c));
+		crud.setUpdateOperation(c -> campionatoController.updateCampionato(c));
+		crud.setDeleteOperation(c -> campionatoController.deleteCampionato(c));
 
-        add(crud);
-    }
+		add(crud);
+	}
 
 }

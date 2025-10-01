@@ -13,18 +13,21 @@ import fcweb.backend.data.entity.FcClassificaTotPt;
 import fcweb.backend.data.entity.FcClassificaTotPtId;
 import fcweb.backend.data.entity.FcGiornataInfo;
 
-public interface ClassificaTotalePuntiRepository extends CrudRepository<FcClassificaTotPt, FcClassificaTotPtId> {
+public interface ClassificaTotalePuntiRepository
+		extends CrudRepository<FcClassificaTotPt, FcClassificaTotPtId>{
 
-    Page<FcClassificaTotPt> findAll(Pageable pageable);
+	Page<FcClassificaTotPt> findAll(Pageable pageable);
 
-    Iterable<FcClassificaTotPt> findAll(Sort sort);
+	Iterable<FcClassificaTotPt> findAll(Sort sort);
 
-    public List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(FcCampionato campionato,
-            FcGiornataInfo giornataInfo);
+	public List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(
+			FcCampionato campionato, FcGiornataInfo giornataInfo);
 
-    public FcClassificaTotPt findByFcCampionatoAndFcAttoreAndFcGiornataInfo(FcCampionato campionato, FcAttore attore,
-            FcGiornataInfo giornataInfo);
+	public FcClassificaTotPt findByFcCampionatoAndFcAttoreAndFcGiornataInfo(
+			FcCampionato campionato, FcAttore attore,
+			FcGiornataInfo giornataInfo);
 
-    public FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore, FcGiornataInfo giornataInfo);
+	public FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore,
+			FcGiornataInfo giornataInfo);
 
 }

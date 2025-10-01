@@ -10,12 +10,14 @@ import fcweb.backend.data.entity.FcGiornataDettInfo;
 import fcweb.backend.data.entity.FcGiornataDettInfoId;
 import fcweb.backend.data.entity.FcGiornataInfo;
 
-public interface GiornataDettInfoRepository extends CrudRepository<FcGiornataDettInfo, FcGiornataDettInfoId> {
+public interface GiornataDettInfoRepository
+		extends CrudRepository<FcGiornataDettInfo, FcGiornataDettInfoId>{
 
-    Page<FcGiornataDettInfo> findAll(Pageable pageable);
+	Page<FcGiornataDettInfo> findAll(Pageable pageable);
 
-    Iterable<FcGiornataDettInfo> findAll(Sort sort);
+	Iterable<FcGiornataDettInfo> findAll(Sort sort);
 
-    public FcGiornataDettInfo findByFcAttoreAndFcGiornataInfo(FcAttore attore, FcGiornataInfo giornataInfo);
+	public FcGiornataDettInfo findByFcAttoreAndFcGiornataInfo(FcAttore attore,
+			FcGiornataInfo giornataInfo);
 
 }

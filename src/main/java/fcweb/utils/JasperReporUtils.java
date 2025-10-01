@@ -11,75 +11,77 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-public class JasperReporUtils {
+public class JasperReporUtils{
 
-    public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm,
-            Connection conn) {
+	public static ByteArrayInputStream runReportToPdf(InputStream inputStream,
+			Map<String, Object> hm, Connection conn) {
 
-        byte[] b = null;
-        try {
-            b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
-        } catch (JRException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex2) {
-            ex2.printStackTrace();
-        }
-        return new ByteArrayInputStream(b);
-    }
+		byte[] b = null;
+		try {
+			b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
+		} catch (JRException ex) {
+			ex.printStackTrace();
+		} catch (Exception ex2) {
+			ex2.printStackTrace();
+		}
+		return new ByteArrayInputStream(b);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm,
-            Collection coll) {
+	@SuppressWarnings("rawtypes")
+	public static ByteArrayInputStream runReportToPdf(InputStream inputStream,
+			Map<String, Object> hm, Collection coll) {
 
-        byte[] b = null;
-        try {
-            b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
-        } catch (JRException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex2) {
-            ex2.printStackTrace();
-        }
-        return new ByteArrayInputStream(b);
-    }
+		byte[] b = null;
+		try {
+			b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
+		} catch (JRException ex) {
+			ex.printStackTrace();
+		} catch (Exception ex2) {
+			ex2.printStackTrace();
+		}
+		return new ByteArrayInputStream(b);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public static byte[] getReportByteCollectionDataSource(InputStream inputStream, Map<String, Object> hm,
-            Collection coll) {
+	@SuppressWarnings("rawtypes")
+	public static byte[] getReportByteCollectionDataSource(
+			InputStream inputStream, Map<String, Object> hm, Collection coll) {
 
-        byte[] b = null;
-        try {
-            b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
-        } catch (JRException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex2) {
-            ex2.printStackTrace();
-        }
-        return b;
-    }
+		byte[] b = null;
+		try {
+			b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
+		} catch (JRException ex) {
+			ex.printStackTrace();
+		} catch (Exception ex2) {
+			ex2.printStackTrace();
+		}
+		return b;
+	}
 
-    @SuppressWarnings("rawtypes")
-    public static void runReportToPdfStream(InputStream inputStream, FileOutputStream outputStream,
-            Map<String, Object> hm, Collection coll) {
+	@SuppressWarnings("rawtypes")
+	public static void runReportToPdfStream(InputStream inputStream,
+			FileOutputStream outputStream, Map<String, Object> hm,
+			Collection coll) {
 
-        try {
-            JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, new JRBeanCollectionDataSource(coll));
-        } catch (JRException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex2) {
-            ex2.printStackTrace();
-        }
-    }
+		try {
+			JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, new JRBeanCollectionDataSource(coll));
+		} catch (JRException ex) {
+			ex.printStackTrace();
+		} catch (Exception ex2) {
+			ex2.printStackTrace();
+		}
+	}
 
-    public static void runReportToPdfStream(InputStream inputStream, FileOutputStream outputStream,
-            Map<String, Object> hm, Connection conn) {
+	public static void runReportToPdfStream(InputStream inputStream,
+			FileOutputStream outputStream, Map<String, Object> hm,
+			Connection conn) {
 
-        try {
-            JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, conn);
-        } catch (JRException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex2) {
-            ex2.printStackTrace();
-        }
-    }
+		try {
+			JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, conn);
+		} catch (JRException ex) {
+			ex.printStackTrace();
+		} catch (Exception ex2) {
+			ex2.printStackTrace();
+		}
+	}
 
 }

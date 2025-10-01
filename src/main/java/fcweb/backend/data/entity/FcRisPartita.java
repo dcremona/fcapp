@@ -11,41 +11,41 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_ris_partita")
-public class FcRisPartita implements java.io.Serializable {
+public class FcRisPartita implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private int idRisPartita;
-    private String descRisPartita;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private int idRisPartita;
+	private String descRisPartita;
 
-    public FcRisPartita() {
-    }
+	public FcRisPartita() {
+	}
 
-    public FcRisPartita(int idRisPartita, String descRisPartita) {
-        this.idRisPartita = idRisPartita;
-        this.descRisPartita = descRisPartita;
-    }
+	public FcRisPartita(int idRisPartita, String descRisPartita) {
+		this.idRisPartita = idRisPartita;
+		this.descRisPartita = descRisPartita;
+	}
 
-    @Id
+	@Id
 
-    @Column(name = "id_ris_partita", unique = true, nullable = false)
-    public int getIdRisPartita() {
-        return this.idRisPartita;
-    }
+	@Column(name = "id_ris_partita", unique = true, nullable = false)
+	public int getIdRisPartita() {
+		return this.idRisPartita;
+	}
 
-    public void setIdRisPartita(int idRisPartita) {
-        this.idRisPartita = idRisPartita;
-    }
+	public void setIdRisPartita(int idRisPartita) {
+		this.idRisPartita = idRisPartita;
+	}
 
-    @Column(name = "desc_ris_partita", nullable = false)
-    public String getDescRisPartita() {
-        return this.descRisPartita;
-    }
+	@Column(name = "desc_ris_partita", nullable = false)
+	public String getDescRisPartita() {
+		return this.descRisPartita;
+	}
 
-    public void setDescRisPartita(String descRisPartita) {
-        this.descRisPartita = descRisPartita;
-    }
+	public void setDescRisPartita(String descRisPartita) {
+		this.descRisPartita = descRisPartita;
+	}
 
 }

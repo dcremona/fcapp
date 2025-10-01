@@ -10,39 +10,39 @@ import fcweb.backend.data.entity.FcGiornataGiocatore;
 import fcweb.backend.data.entity.FcGiornataInfo;
 
 @Service
-public class GiornataGiocatoreService {
+public class GiornataGiocatoreService{
 
-    private final GiornataGiocatoreRepository giornataGiocatoreRepository;
+	private final GiornataGiocatoreRepository giornataGiocatoreRepository;
 
-    @Autowired
-    public GiornataGiocatoreService(GiornataGiocatoreRepository giornataGiocatoreRepository) {
-        this.giornataGiocatoreRepository = giornataGiocatoreRepository;
-    }
+	@Autowired
+	public GiornataGiocatoreService(
+			GiornataGiocatoreRepository giornataGiocatoreRepository) {
+		this.giornataGiocatoreRepository = giornataGiocatoreRepository;
+	}
 
-    public List<FcGiornataGiocatore> findAll() {
-        List<FcGiornataGiocatore> l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
-        return l;
-    }
+	public List<FcGiornataGiocatore> findAll() {
+		List<FcGiornataGiocatore> l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
+		return l;
+	}
 
-    public List<FcGiornataGiocatore> findByCustonm(FcGiornataInfo giornataInfo, FcGiocatore giocatore) {
-        List<FcGiornataGiocatore> l = null;
-        if (giornataInfo == null && giocatore == null) {
-            l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
-        } else if (giornataInfo != null && giocatore == null) {
-            l = giornataGiocatoreRepository
-                    .findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
-                            giornataInfo);
-        } else if (giornataInfo == null && giocatore != null) {
-            l = giornataGiocatoreRepository.findByFcGiocatore(giocatore);
-        }
-        return l;
-    }
+	public List<FcGiornataGiocatore> findByCustonm(FcGiornataInfo giornataInfo,
+			FcGiocatore giocatore) {
+		List<FcGiornataGiocatore> l = null;
+		if (giornataInfo == null && giocatore == null) {
+			l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
+		} else if (giornataInfo != null && giocatore == null) {
+			l = giornataGiocatoreRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
+		} else if (giornataInfo == null && giocatore != null) {
+			l = giornataGiocatoreRepository.findByFcGiocatore(giocatore);
+		}
+		return l;
+	}
 
-    public void deleteByCustonm(FcGiornataInfo giornataInfo) {
-        List<FcGiornataGiocatore> listSqualificatiInfortunati = this.findByCustonm(giornataInfo, null);
-        for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
-            giornataGiocatoreRepository.deleteById(gg.getId());
-        }
-    }
+	public void deleteByCustonm(FcGiornataInfo giornataInfo) {
+		List<FcGiornataGiocatore> listSqualificatiInfortunati = this.findByCustonm(giornataInfo, null);
+		for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
+			giornataGiocatoreRepository.deleteById(gg.getId());
+		}
+	}
 
 }

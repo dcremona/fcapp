@@ -54,313 +54,303 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Classifica")
 @Route(value = "emclassifica", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class EmClassificaView extends VerticalLayout {
+public class EmClassificaView extends VerticalLayout{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private ClassificaTotalePuntiService classificaTotalePuntiController;
+	@Autowired
+	private ClassificaTotalePuntiService classificaTotalePuntiController;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+	@Autowired
+	private ResourceLoader resourceLoader;
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    @Autowired
-    private Environment env;
+	@Autowired
+	private Environment env;
 
-    private List<ClassificaBean> items = null;
-    private FcGiornataInfo giornataInfo = null;
-    private Properties p = null;
+	private List<ClassificaBean> items = null;
+	private FcGiornataInfo giornataInfo = null;
+	private Properties p = null;
 
-    @PostConstruct
-    void init() throws Exception {
-        LOG.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
+	@PostConstruct
+	void init() throws Exception {
+		LOG.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
 
-        initData();
-        initLayout();
-    }
+		initData();
+		initLayout();
+	}
 
-    private void initData() throws Exception {
+	private void initData() throws Exception {
 
-        p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-        giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+		p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
+		giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
-        items = classificaTotalePuntiController.getModelClassifica(giornataInfo.getIdGiornataFc());
-    }
+		items = classificaTotalePuntiController.getModelClassifica(giornataInfo.getIdGiornataFc());
+	}
 
-    private void initLayout() throws Exception {
+	private void initLayout() throws Exception {
 
-        LOG.info("initLayout");
+		LOG.info("initLayout");
 
-        HorizontalLayout layoutGrid = new HorizontalLayout();
-        layoutGrid.setMargin(false);
-        layoutGrid.setPadding(false);
-        layoutGrid.setSpacing(false);
-        layoutGrid.setSizeFull();
+		HorizontalLayout layoutGrid = new HorizontalLayout();
+		layoutGrid.setMargin(false);
+		layoutGrid.setPadding(false);
+		layoutGrid.setSpacing(false);
+		layoutGrid.setSizeFull();
 
-        Grid<ClassificaBean> grid;
-        try {
-            grid = buildTableClassifica(items, giornataInfo);
-            layoutGrid.add(grid);
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        }
+		Grid<ClassificaBean> grid;
+		try {
+			grid = buildTableClassifica(items, giornataInfo);
+			layoutGrid.add(grid);
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 
-        try {
-            this.add(buildButtonPdf(p));
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        }
-        this.add(layoutGrid);
-        try {
-            this.add(buildGrafico(items));
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        }
-    }
+		try {
+			this.add(buildButtonPdf(p));
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
+		this.add(layoutGrid);
+		try {
+			this.add(buildGrafico(items));
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Component buildGrafico(List<ClassificaBean> items) throws Exception {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Component buildGrafico(List<ClassificaBean> items) throws Exception {
 
-        String[] att = new String[items.size()];
-        String[] data = new String[items.size()];
+		String[] att = new String[items.size()];
+		String[] data = new String[items.size()];
 
-        int i = 0;
-        Series series = new Series("Tot Pt");
-        for (ClassificaBean cl : items) {
-            String sq = cl.getSquadra();
-            double puntiRosa = (cl.getTotPunti() / Costants.DIVISORE_10);
-            att[i] = sq;
-            data[i] = new String("" + puntiRosa);
-            i++;
-        }
-        series.setData(data);
+		int i = 0;
+		Series series = new Series("Tot Pt");
+		for (ClassificaBean cl : items) {
+			String sq = cl.getSquadra();
+			double puntiRosa = (cl.getTotPunti() / Costants.DIVISORE_10);
+			att[i] = sq;
+			data[i] = new String("" + puntiRosa);
+			i++;
+		}
+		series.setData(data);
 
-        ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
+		ApexCharts barChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.BAR).build())
 
-                .withTitle(TitleSubtitleBuilder.get().withText("Totale Punti").withAlign(Align.LEFT).build())
-                .withPlotOptions(
-                        PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
+				.withTitle(TitleSubtitleBuilder.get().withText("Totale Punti").withAlign(Align.LEFT).build()).withPlotOptions(PlotOptionsBuilder.get().withBar(BarBuilder.get().withHorizontal(false).build()).build())
 
-                .withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
+				.withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
 
-                .withSeries(series)
+				.withSeries(series)
 
-                .withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
+				.withXaxis(XAxisBuilder.get().withCategories(att).build()).build();
 
-        barChart.setWidth("800px");
-        barChart.setHeight("600px");
+		barChart.setWidth("800px");
+		barChart.setHeight("600px");
 
-        return barChart;
-    }
+		return barChart;
+	}
 
-    private HorizontalLayout buildButtonPdf(Properties p) throws Exception {
+	private HorizontalLayout buildButtonPdf(Properties p) throws Exception {
 
-        // Button stampapdf = new Button("Classifica pdf");
-        // stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-        // FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new
-        // StreamResource("Classifica.pdf",() -> {
-        // try {
-        // String imgLog = env.getProperty("img.logo");
-        // Map<String, Object> hm = new HashMap<String, Object>();
-        // hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-        // hm.put("PATH_IMG", "images/" + imgLog);
-        // Resource resource =
-        // resourceLoader.getResource("classpath:reports/em/classifica.jasper");
-        // InputStream inputStream = resource.getInputStream();
-        // Connection conn = jdbcTemplate.getDataSource().getConnection();
-        // return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-        // } catch (Exception ex2) {
-        // }
-        // return null;
-        // }));
-        // button1Wrapper.wrapComponent(stampapdf);
-        //
-        // HorizontalLayout horLayout = new HorizontalLayout();
-        // horLayout.setSpacing(true);
-        // horLayout.add(button1Wrapper);
+		// Button stampapdf = new Button("Classifica pdf");
+		// stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+		// FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new
+		// StreamResource("Classifica.pdf",() -> {
+		// try {
+		// String imgLog = env.getProperty("img.logo");
+		// Map<String, Object> hm = new HashMap<String, Object>();
+		// hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+		// hm.put("PATH_IMG", "images/" + imgLog);
+		// Resource resource =
+		// resourceLoader.getResource("classpath:reports/em/classifica.jasper");
+		// InputStream inputStream = resource.getInputStream();
+		// Connection conn = jdbcTemplate.getDataSource().getConnection();
+		// return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+		// } catch (Exception ex2) {
+		// }
+		// return null;
+		// }));
+		// button1Wrapper.wrapComponent(stampapdf);
+		//
+		// HorizontalLayout horLayout = new HorizontalLayout();
+		// horLayout.setSpacing(true);
+		// horLayout.add(button1Wrapper);
 
-        HorizontalLayout horLayout = new HorizontalLayout();
-        horLayout.setSpacing(true);
+		HorizontalLayout horLayout = new HorizontalLayout();
+		horLayout.setSpacing(true);
 
-        try {
-            Button stampapdf = new Button("Classifica pdf");
-            stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+		try {
+			Button stampapdf = new Button("Classifica pdf");
+			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
-            Connection conn = jdbcTemplate.getDataSource().getConnection();
-            Map<String, Object> hm = new HashMap<String, Object>();
-            String imgLog = env.getProperty("img.logo");
-            hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-            hm.put("PATH_IMG", "images/" + imgLog);
-            Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
-            FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(
-                    Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
+			Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<String, Object>();
+			String imgLog = env.getProperty("img.logo");
+			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
+			hm.put("PATH_IMG", "images/" + imgLog);
+			Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
+			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
 
-            button1Wrapper.wrapComponent(stampapdf);
-            horLayout.add(button1Wrapper);
+			button1Wrapper.wrapComponent(stampapdf);
+			horLayout.add(button1Wrapper);
 
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 
-        return horLayout;
-    }
+		return horLayout;
+	}
 
-    private Grid<ClassificaBean> buildTableClassifica(List<ClassificaBean> items, FcGiornataInfo giornataInfo)
-            throws Exception {
+	private Grid<ClassificaBean> buildTableClassifica(
+			List<ClassificaBean> items, FcGiornataInfo giornataInfo)
+			throws Exception {
 
-        Grid<ClassificaBean> grid = new Grid<>();
-        grid.setItems(items);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
-                GridVariant.LUMO_ROW_STRIPES);
-        grid.setAllRowsVisible(true);
-        grid.setSelectionMode(Grid.SelectionMode.NONE);
-        grid.setMultiSort(true);
+		Grid<ClassificaBean> grid = new Grid<>();
+		grid.setItems(items);
+		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+		grid.setAllRowsVisible(true);
+		grid.setSelectionMode(Grid.SelectionMode.NONE);
+		grid.setMultiSort(true);
 
-        Column<ClassificaBean> posizioneColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
-            int x = items.indexOf(classifica) + 1;
-            Span lblPosizione = new Span("" + x);
-            return lblPosizione;
-        })).setHeader("");
-        posizioneColumn.setSortable(false);
+		Column<ClassificaBean> posizioneColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
+			int x = items.indexOf(classifica) + 1;
+			Span lblPosizione = new Span("" + x);
+			return lblPosizione;
+		})).setHeader("");
+		posizioneColumn.setSortable(false);
 
-        Column<ClassificaBean> squadraColumn = grid.addColumn(classifica -> classifica.getSquadra());
-        squadraColumn.setSortable(false);
-        squadraColumn.setHeader(Costants.SQUADRA);
+		Column<ClassificaBean> squadraColumn = grid.addColumn(classifica -> classifica.getSquadra());
+		squadraColumn.setSortable(false);
+		squadraColumn.setHeader(Costants.SQUADRA);
 
-        Column<ClassificaBean> totPuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
-            DecimalFormat myFormatter = new DecimalFormat("#0.00");
-            Double dTotPunti = classifica.getTotPunti() != null ? classifica.getTotPunti() / Costants.DIVISORE_10 : 0;
-            String sTotPunti = myFormatter.format(dTotPunti);
+		Column<ClassificaBean> totPuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
+			DecimalFormat myFormatter = new DecimalFormat("#0.00");
+			Double dTotPunti = classifica.getTotPunti() != null ? classifica.getTotPunti() / Costants.DIVISORE_10 : 0;
+			String sTotPunti = myFormatter.format(dTotPunti);
 
-            Span lblTotPunti = new Span(sTotPunti);
+			Span lblTotPunti = new Span(sTotPunti);
 
-            lblTotPunti.getStyle().set(Costants.FONT_SIZE, "14px");
-            lblTotPunti.getStyle().set("color", Costants.BLUE);
-            lblTotPunti.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
-            return lblTotPunti;
+			lblTotPunti.getStyle().set(Costants.FONT_SIZE, "14px");
+			lblTotPunti.getStyle().set("color", Costants.BLUE);
+			lblTotPunti.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
+			return lblTotPunti;
 
-        })).setHeader("Totale Punti");
-        totPuntiColumn.setSortable(true);
-        totPuntiColumn.setComparator((p1, p2) -> p1.getTotPunti().compareTo(p2.getTotPunti()));
+		})).setHeader("Totale Punti");
+		totPuntiColumn.setSortable(true);
+		totPuntiColumn.setComparator((p1,
+				p2) -> p1.getTotPunti().compareTo(p2.getTotPunti()));
 
-        Column<ClassificaBean> parzialePuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
-            DecimalFormat myFormatter = new DecimalFormat("#0.00");
-            Double dTotPunti = classifica.getTotPuntiParziale() != null
-                    ? classifica.getTotPuntiParziale() / Costants.DIVISORE_10
-                    : 0;
-            String sTotPunti = myFormatter.format(dTotPunti);
-            return new Span(sTotPunti);
-        })).setHeader("Parziale Punti");
-        parzialePuntiColumn.setSortable(true);
-        parzialePuntiColumn.setComparator((p1, p2) -> p1.getTotPuntiParziale().compareTo(p2.getTotPuntiParziale()));
+		Column<ClassificaBean> parzialePuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
+			DecimalFormat myFormatter = new DecimalFormat("#0.00");
+			Double dTotPunti = classifica.getTotPuntiParziale() != null ? classifica.getTotPuntiParziale() / Costants.DIVISORE_10 : 0;
+			String sTotPunti = myFormatter.format(dTotPunti);
+			return new Span(sTotPunti);
+		})).setHeader("Parziale Punti");
+		parzialePuntiColumn.setSortable(true);
+		parzialePuntiColumn.setComparator((p1,
+				p2) -> p1.getTotPuntiParziale().compareTo(p2.getTotPuntiParziale()));
 
-        if (giornataInfo.getIdGiornataFc() >= 1) {
-            Column<ClassificaBean> punti1Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata1() != null
-                        ? classifica.getPuntiGiornata1() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_1");
-            punti1Column.setSortable(true);
-            punti1Column.setComparator((p1, p2) -> p1.getPuntiGiornata1().compareTo(p2.getPuntiGiornata1()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 1) {
+			Column<ClassificaBean> punti1Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata1() != null ? classifica.getPuntiGiornata1() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_1");
+			punti1Column.setSortable(true);
+			punti1Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata1().compareTo(p2.getPuntiGiornata1()));
+		}
 
-        if (giornataInfo.getIdGiornataFc() >= 2) {
-            Column<ClassificaBean> punti2Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata2() != null
-                        ? classifica.getPuntiGiornata2() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_2");
-            punti2Column.setSortable(true);
-            punti2Column.setComparator((p1, p2) -> p1.getPuntiGiornata2().compareTo(p2.getPuntiGiornata2()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 2) {
+			Column<ClassificaBean> punti2Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata2() != null ? classifica.getPuntiGiornata2() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_2");
+			punti2Column.setSortable(true);
+			punti2Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata2().compareTo(p2.getPuntiGiornata2()));
+		}
 
-        if (giornataInfo.getIdGiornataFc() >= 3) {
-            Column<ClassificaBean> punti3Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata3() != null
-                        ? classifica.getPuntiGiornata3() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_3");
-            punti3Column.setSortable(true);
-            punti3Column.setComparator((p1, p2) -> p1.getPuntiGiornata3().compareTo(p2.getPuntiGiornata3()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 3) {
+			Column<ClassificaBean> punti3Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata3() != null ? classifica.getPuntiGiornata3() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_3");
+			punti3Column.setSortable(true);
+			punti3Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata3().compareTo(p2.getPuntiGiornata3()));
+		}
 
-        if (giornataInfo.getIdGiornataFc() >= 4) {
-            Column<ClassificaBean> punti4Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata4() != null
-                        ? classifica.getPuntiGiornata4() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_4");
-            punti4Column.setSortable(true);
-            punti4Column.setComparator((p1, p2) -> p1.getPuntiGiornata4().compareTo(p2.getPuntiGiornata4()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 4) {
+			Column<ClassificaBean> punti4Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata4() != null ? classifica.getPuntiGiornata4() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_4");
+			punti4Column.setSortable(true);
+			punti4Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata4().compareTo(p2.getPuntiGiornata4()));
+		}
 
-        if (giornataInfo.getIdGiornataFc() >= 5) {
-            Column<ClassificaBean> punti5Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata5() != null
-                        ? classifica.getPuntiGiornata5() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_5");
-            punti5Column.setSortable(true);
-            punti5Column.setComparator((p1, p2) -> p1.getPuntiGiornata5().compareTo(p2.getPuntiGiornata5()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 5) {
+			Column<ClassificaBean> punti5Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata5() != null ? classifica.getPuntiGiornata5() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_5");
+			punti5Column.setSortable(true);
+			punti5Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata5().compareTo(p2.getPuntiGiornata5()));
+		}
 
-        if (giornataInfo.getIdGiornataFc() >= 6) {
-            Column<ClassificaBean> punti6Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata6() != null
-                        ? classifica.getPuntiGiornata6() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_6");
-            punti6Column.setSortable(true);
-            punti6Column.setComparator((p1, p2) -> p1.getPuntiGiornata6().compareTo(p2.getPuntiGiornata6()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 6) {
+			Column<ClassificaBean> punti6Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata6() != null ? classifica.getPuntiGiornata6() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_6");
+			punti6Column.setSortable(true);
+			punti6Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata6().compareTo(p2.getPuntiGiornata6()));
+		}
 
-        if (giornataInfo.getIdGiornataFc() >= 7) {
-            Column<ClassificaBean> punti7Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
-                DecimalFormat myFormatter = new DecimalFormat("#0.00");
-                Double dTotPunti = classifica.getPuntiGiornata7() != null
-                        ? classifica.getPuntiGiornata7() / Costants.DIVISORE_10
-                        : 0;
-                String sTotPunti = myFormatter.format(dTotPunti);
-                return new Span(sTotPunti);
-            })).setHeader("Punti_7");
-            punti7Column.setSortable(true);
-            punti7Column.setComparator((p1, p2) -> p1.getPuntiGiornata7().compareTo(p2.getPuntiGiornata7()));
-        }
+		if (giornataInfo.getIdGiornataFc() >= 7) {
+			Column<ClassificaBean> punti7Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
+				DecimalFormat myFormatter = new DecimalFormat("#0.00");
+				Double dTotPunti = classifica.getPuntiGiornata7() != null ? classifica.getPuntiGiornata7() / Costants.DIVISORE_10 : 0;
+				String sTotPunti = myFormatter.format(dTotPunti);
+				return new Span(sTotPunti);
+			})).setHeader("Punti_7");
+			punti7Column.setSortable(true);
+			punti7Column.setComparator((p1,
+					p2) -> p1.getPuntiGiornata7().compareTo(p2.getPuntiGiornata7()));
+		}
 
-        return grid;
-    }
+		return grid;
+	}
 }

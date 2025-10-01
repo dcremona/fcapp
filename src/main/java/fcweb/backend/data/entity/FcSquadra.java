@@ -17,87 +17,88 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_squadra")
-public class FcSquadra implements java.io.Serializable {
+public class FcSquadra implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private int idSquadra;
-    private String nomeSquadra;
-    private String nomeImg;
-    private Blob img;
-    private Blob img40;
-    private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private int idSquadra;
+	private String nomeSquadra;
+	private String nomeImg;
+	private Blob img;
+	private Blob img40;
+	private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
 
-    public FcSquadra() {
-    }
+	public FcSquadra() {
+	}
 
-    public FcSquadra(int idSquadra, String nomeSquadra) {
-        this.idSquadra = idSquadra;
-        this.nomeSquadra = nomeSquadra;
-    }
+	public FcSquadra(int idSquadra, String nomeSquadra) {
+		this.idSquadra = idSquadra;
+		this.nomeSquadra = nomeSquadra;
+	}
 
-    public FcSquadra(int idSquadra, String nomeSquadra, Set<FcGiocatore> fcGiocatores) {
-        this.idSquadra = idSquadra;
-        this.nomeSquadra = nomeSquadra;
-        this.fcGiocatores = fcGiocatores;
-    }
+	public FcSquadra(int idSquadra, String nomeSquadra,
+			Set<FcGiocatore> fcGiocatores) {
+		this.idSquadra = idSquadra;
+		this.nomeSquadra = nomeSquadra;
+		this.fcGiocatores = fcGiocatores;
+	}
 
-    @Id
+	@Id
 
-    @Column(name = "id_squadra", unique = true, nullable = false)
-    public int getIdSquadra() {
-        return this.idSquadra;
-    }
+	@Column(name = "id_squadra", unique = true, nullable = false)
+	public int getIdSquadra() {
+		return this.idSquadra;
+	}
 
-    public void setIdSquadra(int idSquadra) {
-        this.idSquadra = idSquadra;
-    }
+	public void setIdSquadra(int idSquadra) {
+		this.idSquadra = idSquadra;
+	}
 
-    @Column(name = "nome_squadra", nullable = false)
-    public String getNomeSquadra() {
-        return this.nomeSquadra;
-    }
+	@Column(name = "nome_squadra", nullable = false)
+	public String getNomeSquadra() {
+		return this.nomeSquadra;
+	}
 
-    public void setNomeSquadra(String nomeSquadra) {
-        this.nomeSquadra = nomeSquadra;
-    }
+	public void setNomeSquadra(String nomeSquadra) {
+		this.nomeSquadra = nomeSquadra;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fcSquadra")
-    public Set<FcGiocatore> getFcGiocatores() {
-        return this.fcGiocatores;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcSquadra")
+	public Set<FcGiocatore> getFcGiocatores() {
+		return this.fcGiocatores;
+	}
 
-    public void setFcGiocatores(Set<FcGiocatore> fcGiocatores) {
-        this.fcGiocatores = fcGiocatores;
-    }
+	public void setFcGiocatores(Set<FcGiocatore> fcGiocatores) {
+		this.fcGiocatores = fcGiocatores;
+	}
 
-    @Column(name = "nome_img")
-    public String getNomeImg() {
-        return this.nomeImg;
-    }
+	@Column(name = "nome_img")
+	public String getNomeImg() {
+		return this.nomeImg;
+	}
 
-    public void setNomeImg(String nomeImg) {
-        this.nomeImg = nomeImg;
-    }
+	public void setNomeImg(String nomeImg) {
+		this.nomeImg = nomeImg;
+	}
 
-    @Column(name = "img")
-    public Blob getImg() {
-        return this.img;
-    }
+	@Column(name = "img")
+	public Blob getImg() {
+		return this.img;
+	}
 
-    public void setImg(Blob img) {
-        this.img = img;
-    }
+	public void setImg(Blob img) {
+		this.img = img;
+	}
 
-    @Column(name = "img40")
-    public Blob getImg40() {
-        return this.img40;
-    }
+	@Column(name = "img40")
+	public Blob getImg40() {
+		return this.img40;
+	}
 
-    public void setImg40(Blob img40) {
-        this.img40 = img40;
-    }
+	public void setImg40(Blob img40) {
+		this.img40 = img40;
+	}
 
 }

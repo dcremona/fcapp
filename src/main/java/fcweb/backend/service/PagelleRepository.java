@@ -12,21 +12,23 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
 import fcweb.backend.data.entity.FcPagelleId;
 
-public interface PagelleRepository extends CrudRepository<FcPagelle, FcPagelleId> {
+public interface PagelleRepository
+		extends CrudRepository<FcPagelle, FcPagelleId>{
 
-    Page<FcPagelle> findAll(Pageable pageable);
+	Page<FcPagelle> findAll(Pageable pageable);
 
-    Iterable<FcPagelle> findAll(Sort sort);
+	Iterable<FcPagelle> findAll(Sort sort);
 
-    FcPagelle findFirstByOrderByFcGiornataInfoAsc();
+	FcPagelle findFirstByOrderByFcGiornataInfoAsc();
 
-    FcPagelle findTopByOrderByFcGiornataInfoDesc();
+	FcPagelle findTopByOrderByFcGiornataInfoDesc();
 
-    public List<FcPagelle> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
-            FcGiornataInfo giornataInfo);
+	public List<FcPagelle> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
+			FcGiornataInfo giornataInfo);
 
-    public List<FcPagelle> findByFcGiocatore(FcGiocatore giocatore);
+	public List<FcPagelle> findByFcGiocatore(FcGiocatore giocatore);
 
-    public FcPagelle findByFcGiornataInfoAndFcGiocatore(FcGiornataInfo giornataInfo, FcGiocatore giocatore);
+	public FcPagelle findByFcGiornataInfoAndFcGiocatore(
+			FcGiornataInfo giornataInfo, FcGiocatore giocatore);
 
 }

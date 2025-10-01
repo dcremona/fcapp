@@ -7,10 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcExpRosea;
 
-public interface ExpRoseARepository extends CrudRepository<FcExpRosea, Long> {
+public interface ExpRoseARepository extends CrudRepository<FcExpRosea, Long>{
 
-    Page<FcExpRosea> findAll(Pageable pageable);
+	Page<FcExpRosea> findAll(Pageable pageable);
 
-    Iterable<FcExpRosea> findAll(Sort sort);
+	Iterable<FcExpRosea> findAll(Sort sort);
 
 }

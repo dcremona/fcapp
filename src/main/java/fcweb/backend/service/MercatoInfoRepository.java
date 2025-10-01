@@ -10,12 +10,14 @@ import org.springframework.data.repository.CrudRepository;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcMercatoDettInfo;
 
-public interface MercatoInfoRepository extends CrudRepository<FcMercatoDettInfo, Long> {
+public interface MercatoInfoRepository
+		extends CrudRepository<FcMercatoDettInfo, Long>{
 
-    Page<FcMercatoDettInfo> findAll(Pageable pageable);
+	Page<FcMercatoDettInfo> findAll(Pageable pageable);
 
-    Iterable<FcMercatoDettInfo> findAll(Sort sort);
+	Iterable<FcMercatoDettInfo> findAll(Sort sort);
 
-    public List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(FcAttore attore);
+	public List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(
+			FcAttore attore);
 
 }

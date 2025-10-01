@@ -9,12 +9,13 @@ import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcStatistiche;
 
-public interface StatisticheRepository extends CrudRepository<FcStatistiche, Long> {
+public interface StatisticheRepository
+		extends CrudRepository<FcStatistiche, Long>{
 
-    Page<FcStatistiche> findAll(Pageable pageable);
+	Page<FcStatistiche> findAll(Pageable pageable);
 
-    Iterable<FcStatistiche> findAll(Sort sort);
+	Iterable<FcStatistiche> findAll(Sort sort);
 
-    public List<FcStatistiche> findByFlagAttivo(boolean flagAttivo);
+	public List<FcStatistiche> findByFlagAttivo(boolean flagAttivo);
 
 }

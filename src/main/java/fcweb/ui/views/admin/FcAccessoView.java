@@ -38,103 +38,91 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Accesso")
 @Route(value = "fcAccesso", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcAccessoView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
+public class FcAccessoView extends VerticalLayout
+		implements ComponentEventListener<ClickEvent<Button>>{
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private AccessoService accessoController;
+	@Autowired
+	private AccessoService accessoController;
 
-    @Autowired
-    private AttoreService attoreController;
+	@Autowired
+	private AttoreService attoreController;
 
-    @Autowired
-    private CampionatoService campionatoController;
+	@Autowired
+	private CampionatoService campionatoController;
 
-    @Autowired
-    public Environment env;
+	@Autowired
+	public Environment env;
 
-    public FcAccessoView() {
-        log.info("FcAccessoView()");
-    }
+	public FcAccessoView() {
+		log.info("FcAccessoView()");
+	}
 
-    @PostConstruct
-    void init() {
-        log.info("init");
-        if (!Utils.isValidVaadinSession()) {
-            return;
-        }
-        accessoController.insertAccesso(this.getClass().getName());
-        initLayout();
-    }
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoController.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
 
-    private void initLayout() {
+	private void initLayout() {
 
-        this.setMargin(true);
-        this.setSpacing(true);
-        this.setSizeFull();
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
 
-        GridCrud<FcAccesso> crud = new GridCrud<>(FcAccesso.class, new HorizontalSplitCrudLayout());
+		GridCrud<FcAccesso> crud = new GridCrud<>(FcAccesso.class,new HorizontalSplitCrudLayout());
 
-        DefaultCrudFormFactory<FcAccesso> formFactory = new DefaultCrudFormFactory<>(FcAccesso.class);
-        crud.setCrudFormFactory(formFactory);
-        formFactory.setUseBeanValidation(false);
+		DefaultCrudFormFactory<FcAccesso> formFactory = new DefaultCrudFormFactory<>(FcAccesso.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
 
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcAttore", "data", "note",
-                "fcCampionato");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcAttore", "data", "note",
-                "fcCampionato");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcAttore", "data", "note",
-                "fcCampionato");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcAttore");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcAttore", "data", "note", "fcCampionato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcAttore", "data", "note", "fcCampionato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcAttore", "data", "note", "fcCampionato");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcAttore");
 
-        crud.getGrid().removeAllColumns();
-        crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId() : "")).setHeader("Id");
-        crud.getGrid()
-                .addColumn(new TextRenderer<>(
-                        f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : ""))
-                .setHeader("Attore");
+		crud.getGrid().removeAllColumns();
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId() : "")).setHeader("Id");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
 
-        Column<FcAccesso> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcAccesso::getData,
-                () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
-        dataColumn.setSortable(false);
-        dataColumn.setAutoWidth(true);
+		Column<FcAccesso> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcAccesso::getData,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+		dataColumn.setSortable(false);
+		dataColumn.setAutoWidth(true);
 
-        Column<FcAccesso> noteColumn = crud.getGrid()
-                .addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getNote())).setHeader("Info");
-        noteColumn.setSortable(false);
-        noteColumn.setAutoWidth(true);
+		Column<FcAccesso> noteColumn = crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getNote())).setHeader("Info");
+		noteColumn.setSortable(false);
+		noteColumn.setAutoWidth(true);
 
-        crud.getGrid().setColumnReorderingAllowed(true);
+		crud.getGrid().setColumnReorderingAllowed(true);
 
-        crud.getCrudFormFactory().setFieldProvider("fcAttore",
-                new ComboBoxProvider<>("Attore", attoreController.findByActive(true),
-                        new TextRenderer<>(FcAttore::getDescAttore), FcAttore::getDescAttore));
-        crud.getCrudFormFactory().setFieldProvider("data", a -> {
-            DateTimePicker data = new DateTimePicker();
-            return data;
-        });
-        crud.getCrudFormFactory().setFieldProvider("fcCampionato",
-                new ComboBoxProvider<>("Camionato", campionatoController.findAll(),
-                        new TextRenderer<>(FcCampionato::getDescCampionato), FcCampionato::getDescCampionato));
+		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("data", a -> {
+			return new DateTimePicker();
+		});
+		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Camionato",campionatoController.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
 
-        crud.setRowCountCaption("%d Accesso(s) found");
-        crud.setClickRowToUpdate(true);
-        crud.setUpdateOperationVisible(true);
+		crud.setRowCountCaption("%d Accesso(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(true);
 
-        crud.setFindAllOperation(() -> accessoController.findAll());
-        crud.setAddOperation(user -> accessoController.updateAccesso(user));
-        crud.setUpdateOperation(user -> accessoController.updateAccesso(user));
-        crud.setDeleteOperation(user -> accessoController.deleteAccesso(user));
+		crud.setFindAllOperation(() -> accessoController.findAll());
+		crud.setAddOperation(user -> accessoController.updateAccesso(user));
+		crud.setUpdateOperation(user -> accessoController.updateAccesso(user));
+		crud.setDeleteOperation(user -> accessoController.deleteAccesso(user));
 
-        add(crud);
-    }
+		add(crud);
+	}
 
-    @Override
-    public void onComponentEvent(ClickEvent<Button> event) {
+	@Override
+	public void onComponentEvent(ClickEvent<Button> event) {
 
-    }
+	}
 
 }

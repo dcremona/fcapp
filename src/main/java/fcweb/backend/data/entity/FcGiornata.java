@@ -16,134 +16,133 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "fc_giornata")
-public class FcGiornata implements java.io.Serializable {
+public class FcGiornata implements java.io.Serializable{
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private FcGiornataId id;
-    private FcAttore fcAttoreByIdAttoreFuori;
-    private FcAttore fcAttoreByIdAttoreCasa;
-    private FcGiornataInfo fcGiornataInfo;
-    private FcTipoGiornata fcTipoGiornata;
-    private Integer golCasa;
-    private Integer golFuori;
-    private Double totCasa;
-    private Double totFuori;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private FcGiornataId id;
+	private FcAttore fcAttoreByIdAttoreFuori;
+	private FcAttore fcAttoreByIdAttoreCasa;
+	private FcGiornataInfo fcGiornataInfo;
+	private FcTipoGiornata fcTipoGiornata;
+	private Integer golCasa;
+	private Integer golFuori;
+	private Double totCasa;
+	private Double totFuori;
 
-    public FcGiornata() {
-    }
+	public FcGiornata() {
+	}
 
-    public FcGiornata(FcGiornataId id, FcAttore fcAttoreByIdAttoreCasa, FcGiornataInfo fcGiornataInfo,
-            FcTipoGiornata fcTipoGiornata) {
-        this.id = id;
-        this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
-        this.fcGiornataInfo = fcGiornataInfo;
-        this.fcTipoGiornata = fcTipoGiornata;
-    }
+	public FcGiornata(FcGiornataId id, FcAttore fcAttoreByIdAttoreCasa,
+			FcGiornataInfo fcGiornataInfo, FcTipoGiornata fcTipoGiornata) {
+		this.id = id;
+		this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
+		this.fcGiornataInfo = fcGiornataInfo;
+		this.fcTipoGiornata = fcTipoGiornata;
+	}
 
-    public FcGiornata(FcGiornataId id, FcAttore fcAttoreByIdAttoreFuori, FcAttore fcAttoreByIdAttoreCasa,
-            FcGiornataInfo fcGiornataInfo, FcTipoGiornata fcTipoGiornata, Integer golCasa, Integer golFuori,
-            Double totCasa, Double totFuori) {
-        this.id = id;
-        this.fcAttoreByIdAttoreFuori = fcAttoreByIdAttoreFuori;
-        this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
-        this.fcGiornataInfo = fcGiornataInfo;
-        this.fcTipoGiornata = fcTipoGiornata;
-        this.golCasa = golCasa;
-        this.golFuori = golFuori;
-        this.totCasa = totCasa;
-        this.totFuori = totFuori;
-    }
+	public FcGiornata(FcGiornataId id, FcAttore fcAttoreByIdAttoreFuori,
+			FcAttore fcAttoreByIdAttoreCasa, FcGiornataInfo fcGiornataInfo,
+			FcTipoGiornata fcTipoGiornata, Integer golCasa, Integer golFuori,
+			Double totCasa, Double totFuori) {
+		this.id = id;
+		this.fcAttoreByIdAttoreFuori = fcAttoreByIdAttoreFuori;
+		this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
+		this.fcGiornataInfo = fcGiornataInfo;
+		this.fcTipoGiornata = fcTipoGiornata;
+		this.golCasa = golCasa;
+		this.golFuori = golFuori;
+		this.totCasa = totCasa;
+		this.totFuori = totFuori;
+	}
 
-    @EmbeddedId
+	@EmbeddedId
 
-    @AttributeOverrides({
-            @AttributeOverride(name = "idAttoreCasa", column = @Column(name = "id_attore_casa", nullable = false)),
-            @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
-    public FcGiornataId getId() {
-        return this.id;
-    }
+	@AttributeOverrides({ @AttributeOverride(name = "idAttoreCasa", column = @Column(name = "id_attore_casa", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
+	public FcGiornataId getId() {
+		return this.id;
+	}
 
-    public void setId(FcGiornataId id) {
-        this.id = id;
-    }
+	public void setId(FcGiornataId id) {
+		this.id = id;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_attore_fuori")
-    public FcAttore getFcAttoreByIdAttoreFuori() {
-        return this.fcAttoreByIdAttoreFuori;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore_fuori")
+	public FcAttore getFcAttoreByIdAttoreFuori() {
+		return this.fcAttoreByIdAttoreFuori;
+	}
 
-    public void setFcAttoreByIdAttoreFuori(FcAttore fcAttoreByIdAttoreFuori) {
-        this.fcAttoreByIdAttoreFuori = fcAttoreByIdAttoreFuori;
-    }
+	public void setFcAttoreByIdAttoreFuori(FcAttore fcAttoreByIdAttoreFuori) {
+		this.fcAttoreByIdAttoreFuori = fcAttoreByIdAttoreFuori;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_attore_casa", nullable = false, insertable = false, updatable = false)
-    public FcAttore getFcAttoreByIdAttoreCasa() {
-        return this.fcAttoreByIdAttoreCasa;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore_casa", nullable = false, insertable = false, updatable = false)
+	public FcAttore getFcAttoreByIdAttoreCasa() {
+		return this.fcAttoreByIdAttoreCasa;
+	}
 
-    public void setFcAttoreByIdAttoreCasa(FcAttore fcAttoreByIdAttoreCasa) {
-        this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
-    }
+	public void setFcAttoreByIdAttoreCasa(FcAttore fcAttoreByIdAttoreCasa) {
+		this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
-    public FcGiornataInfo getFcGiornataInfo() {
-        return this.fcGiornataInfo;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
+	public FcGiornataInfo getFcGiornataInfo() {
+		return this.fcGiornataInfo;
+	}
 
-    public void setFcGiornataInfo(FcGiornataInfo fcGiornataInfo) {
-        this.fcGiornataInfo = fcGiornataInfo;
-    }
+	public void setFcGiornataInfo(FcGiornataInfo fcGiornataInfo) {
+		this.fcGiornataInfo = fcGiornataInfo;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_giornata", nullable = false)
-    public FcTipoGiornata getFcTipoGiornata() {
-        return this.fcTipoGiornata;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_tipo_giornata", nullable = false)
+	public FcTipoGiornata getFcTipoGiornata() {
+		return this.fcTipoGiornata;
+	}
 
-    public void setFcTipoGiornata(FcTipoGiornata fcTipoGiornata) {
-        this.fcTipoGiornata = fcTipoGiornata;
-    }
+	public void setFcTipoGiornata(FcTipoGiornata fcTipoGiornata) {
+		this.fcTipoGiornata = fcTipoGiornata;
+	}
 
-    @Column(name = "gol_casa")
-    public Integer getGolCasa() {
-        return this.golCasa;
-    }
+	@Column(name = "gol_casa")
+	public Integer getGolCasa() {
+		return this.golCasa;
+	}
 
-    public void setGolCasa(Integer golCasa) {
-        this.golCasa = golCasa;
-    }
+	public void setGolCasa(Integer golCasa) {
+		this.golCasa = golCasa;
+	}
 
-    @Column(name = "gol_fuori")
-    public Integer getGolFuori() {
-        return this.golFuori;
-    }
+	@Column(name = "gol_fuori")
+	public Integer getGolFuori() {
+		return this.golFuori;
+	}
 
-    public void setGolFuori(Integer golFuori) {
-        this.golFuori = golFuori;
-    }
+	public void setGolFuori(Integer golFuori) {
+		this.golFuori = golFuori;
+	}
 
-    @Column(name = "tot_casa", precision = 22, scale = 0)
-    public Double getTotCasa() {
-        return this.totCasa;
-    }
+	@Column(name = "tot_casa", precision = 22, scale = 0)
+	public Double getTotCasa() {
+		return this.totCasa;
+	}
 
-    public void setTotCasa(Double totCasa) {
-        this.totCasa = totCasa;
-    }
+	public void setTotCasa(Double totCasa) {
+		this.totCasa = totCasa;
+	}
 
-    @Column(name = "tot_fuori", precision = 22, scale = 0)
-    public Double getTotFuori() {
-        return this.totFuori;
-    }
+	@Column(name = "tot_fuori", precision = 22, scale = 0)
+	public Double getTotFuori() {
+		return this.totFuori;
+	}
 
-    public void setTotFuori(Double totFuori) {
-        this.totFuori = totFuori;
-    }
+	public void setTotFuori(Double totFuori) {
+		this.totFuori = totFuori;
+	}
 
 }

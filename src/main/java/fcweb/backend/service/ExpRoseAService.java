@@ -9,21 +9,21 @@ import org.springframework.stereotype.Service;
 import fcweb.backend.data.entity.FcExpRosea;
 
 @Service
-public class ExpRoseAService {
+public class ExpRoseAService{
 
-    private final ExpRoseARepository expRoseARepository;
+	private final ExpRoseARepository expRoseARepository;
 
-    @Autowired
-    public ExpRoseAService(ExpRoseARepository expRoseARepository) {
-        this.expRoseARepository = expRoseARepository;
-    }
+	@Autowired
+	public ExpRoseAService(ExpRoseARepository expRoseARepository) {
+		this.expRoseARepository = expRoseARepository;
+	}
 
-    public List<FcExpRosea> findAll() {
-        List<FcExpRosea> l = (List<FcExpRosea>) expRoseARepository.findAll(sortByIdAsc());
-        return l;
-    }
+	public List<FcExpRosea> findAll() {
+		List<FcExpRosea> l = (List<FcExpRosea>) expRoseARepository.findAll(sortByIdAsc());
+		return l;
+	}
 
-    private Sort sortByIdAsc() {
-        return Sort.by(Sort.Direction.ASC, "id");
-    }
+	private Sort sortByIdAsc() {
+		return Sort.by(Sort.Direction.ASC, "id");
+	}
 }
