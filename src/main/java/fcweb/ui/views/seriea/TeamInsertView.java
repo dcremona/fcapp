@@ -521,6 +521,17 @@ public class TeamInsertView extends VerticalLayout
 		contentInfo.setMargin(false);
 		contentInfo.setPadding(false);
 		contentInfo.setSpacing(false);
+		
+		String ruolo = g.getFcRuolo().getIdRuolo();
+		if (Costants.P.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
+		} else if (Costants.D.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
+		} else if (Costants.C.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
+		} else if (Costants.A.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
+		}
 
 		if (g.getFcRuolo() != null) {
 			HorizontalLayout info1 = new HorizontalLayout();
@@ -537,11 +548,6 @@ public class TeamInsertView extends VerticalLayout
 				info1.add(lblGiocatore);
 			}
 			contentInfo.add(info1);
-		}
-
-		FcGiornataGiocatore gg = isGiocatoreOut(g);
-		if (gg != null) {
-			contentInfo.add(getImageGiocatoreOut(gg));
 		}
 
 		if (g.getFcSquadra() != null) {
@@ -581,6 +587,11 @@ public class TeamInsertView extends VerticalLayout
 			info3.add(lblSquadra);
 
 			contentInfo.add(info3);
+		}
+
+		FcGiornataGiocatore gg = isGiocatoreOut(g);
+		if (gg != null) {
+			contentInfo.add(getImageGiocatoreOut(gg));
 		}
 
 		FcStatistiche s = g.getFcStatistiche();
@@ -667,8 +678,20 @@ public class TeamInsertView extends VerticalLayout
 		lblProbabile.setText("Probabile: " + (StringUtils.isNotEmpty(g.getNomeGiocatore()) ? g.getNomeGiocatore() : "N.D."));
 		contentInfo.add(lblProbabile);
 
-		popover.add(contentInfo);
+		Integer perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
+		Span lblPerc = new Span();
+		lblPerc.setText("Percentuale: "+perc + "%");
 
+		if (perc > 60) {
+			lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
+		} else if (perc > 39 && perc < 61) {
+			lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
+		} else {
+			lblPerc.addClassNames(LumoUtility.TextColor.TERTIARY);
+		}
+		contentInfo.add(lblPerc);
+
+		popover.add(contentInfo);
 		popover.setAriaLabelledBy("cvv-heading");
 		popover.setTarget(cellLayout);
 
@@ -843,8 +866,10 @@ public class TeamInsertView extends VerticalLayout
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
-			cellLayout.setSizeUndefined();
-			cellLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+			//cellLayout.setSizeUndefined();
+			cellLayout.setWidth(Costants.WIDTH_85);
+			cellLayout.setHeight(Costants.HEIGHT_120);
+			cellLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.EVENLY);
 
 			if (p != null) {
 
@@ -1061,7 +1086,7 @@ public class TeamInsertView extends VerticalLayout
 					lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
 				} else {
 					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-					lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
+					lblPerc.addClassNames(LumoUtility.TextColor.TERTIARY);
 				}
 
 				cellLayout.add(progressBarPerc);

@@ -16,10 +16,10 @@ public class Costants{
 	public static final String BORDER = "border";
 	public static final String BORDER_COLOR = "1px solid #9E9E9E";
 
-	public static final String BORDER_COLOR_P = "2px solid #FFA500";
-	public static final String BORDER_COLOR_D = "2px solid #008000";
-	public static final String BORDER_COLOR_C = "2px solid #56A5EC";
-	public static final String BORDER_COLOR_A = "2px solid #FF0000";
+	public static final String BORDER_COLOR_P = "3px solid #FFA500";
+	public static final String BORDER_COLOR_D = "3px solid #008000";
+	public static final String BORDER_COLOR_C = "3px solid #56A5EC";
+	public static final String BORDER_COLOR_A = "3px solid #FF0000";
 
 	public static final String COLOR_P = "#FFA500";
 	public static final String COLOR_D = "#008000";
@@ -127,6 +127,9 @@ public class Costants{
 	public static final String D = "D";
 	public static final String C = "C";
 	public static final String A = "A";
+	
+	public static final String WIDTH_85 = "85px";
+	public static final String HEIGHT_120 = "120px";
 
 	public static final String WIDTH_50 = "50px";
 	public static final String WIDTH_90 = "90px";
