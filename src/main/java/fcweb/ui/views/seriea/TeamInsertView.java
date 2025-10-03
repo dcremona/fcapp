@@ -524,13 +524,13 @@ public class TeamInsertView extends VerticalLayout
 		
 		String ruolo = g.getFcRuolo().getIdRuolo();
 		if (Costants.P.equals(ruolo)) {
-			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_P);
 		} else if (Costants.D.equals(ruolo)) {
-			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_D);
 		} else if (Costants.C.equals(ruolo)) {
-			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_C);
 		} else if (Costants.A.equals(ruolo)) {
-			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_A);
 		}
 
 		if (g.getFcRuolo() != null) {
@@ -875,13 +875,13 @@ public class TeamInsertView extends VerticalLayout
 
 				String ruolo = p.getFcRuolo().getIdRuolo();
 				if (Costants.P.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_P);
 				} else if (Costants.D.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_D);
 				} else if (Costants.C.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_C);
 				} else if (Costants.A.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_A);
 				}
 
 				FcGiornataGiocatore giocatoreOut = isGiocatoreOut(p);

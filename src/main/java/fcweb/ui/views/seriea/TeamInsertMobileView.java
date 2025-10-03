@@ -803,13 +803,13 @@ public class TeamInsertMobileView extends VerticalLayout
 
 				String ruolo = p.getFcRuolo().getIdRuolo();
 				if (Costants.P.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_P);
 				} else if (Costants.D.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_D);
 				} else if (Costants.C.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_C);
 				} else if (Costants.A.equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_A);
 				}
 
 				if (isGiocatoreOut(p) != null) {

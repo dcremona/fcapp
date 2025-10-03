@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -706,13 +705,13 @@ public class EmTeamInsertView extends VerticalLayout
 
 				String ruolo = g.getFcRuolo().getIdRuolo();
 				if ("P".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_P);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_P);
 				} else if ("D".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_D);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_D);
 				} else if ("C".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_C);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_C);
 				} else if ("A".equals(ruolo)) {
-					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_A);
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_2_A);
 				}
 
 				if (!g.isFlagAttivo()) {
