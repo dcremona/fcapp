@@ -390,24 +390,27 @@ public class JobProcessFileCsv{
 								}
 							}
 
-							data.append(nomeImg);
-							data.append(";");
-
+							String infoSqualificatoInfortunato = "";
 							String note = "";
 							if ("injured-list".equals(className)) {
-								data.append(Costants.INFORTUNATO);
+								infoSqualificatoInfortunato = Costants.INFORTUNATO;
 								for (Element p : childrenLi) {
 									String classNameNote = p.className();
 									if ("description".equals(classNameNote)) {
 										note = p.text();
 									}
 								}
-							} else if ("suspendeds".equals(classNameparent)) {
-								data.append(Costants.SQUALIFICATO);
+							} else if ("suspendeds-list".equals(className) && "suspendeds".equals(classNameparent)) {
+								infoSqualificatoInfortunato = Costants.SQUALIFICATO;
+								note = Costants.SQUALIFICATO;
+							} else {
+								log.info(" nomeImg=" + nomeImg + " percentuale=0" + " href " + href);
+								continue;
 							}
-
-							// log.info(" nomeImg=" + nomeImg + " percentuale=0"
-							// + " href " + href);
+							
+							data.append(nomeImg);
+							data.append(";");
+							data.append(infoSqualificatoInfortunato);
 							data.append(";");
 							data.append("0");
 							data.append(";");

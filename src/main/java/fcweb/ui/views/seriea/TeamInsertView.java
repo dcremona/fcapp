@@ -1658,7 +1658,7 @@ public class TeamInsertView extends VerticalLayout
 
 	private void loadFcGiornatadett() {
 
-		log.info("loadFcGiornatadett");
+		log.info("START loadFcGiornatadett");
 
 		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
@@ -1772,6 +1772,8 @@ public class TeamInsertView extends VerticalLayout
 				refreshAndSortGridFormazione();
 			}
 		}
+		
+		log.info("END loadFcGiornatadett");
 	}
 
 	@Override
@@ -2926,16 +2928,15 @@ public class TeamInsertView extends VerticalLayout
 			if (gg.isInfortunato()) {
 				if (gg.getNote().indexOf("INCERTO") != -1) {
 					img = Utils.buildImage("help.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/" + "help.png"));
-					img.setTitle(gg.getNote());
+					img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
 				} else {
 					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png"));
-					img.setTitle(gg.getNote());
+					img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
 				}
 
 			} else if (gg.isSqualificato()) {
 				img = Utils.buildImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png"));
-				img.setTitle(gg.getNote());
-
+				img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
 			}
 		}
 		return img;
