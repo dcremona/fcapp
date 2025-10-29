@@ -368,6 +368,9 @@ public class JobProcessFileCsv{
 		for (Element ulRow : ulRows) {
 			String rowData = ulRow.text();
 			String className = ulRow.className();
+			Element parent =  ulRow.parent().parent();
+			//String rowDataparent = parent.text();
+			String classNameparent = parent.className();
 
 			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && ("injured-list".equals(className) || "suspendeds-list".equals(className))) {
 				Elements children = ulRow.children();
@@ -399,7 +402,7 @@ public class JobProcessFileCsv{
 										note = p.text();
 									}
 								}
-							} else if ("suspendeds-list".equals(className)) {
+							} else if ("suspendeds".equals(classNameparent)) {
 								data.append(Costants.SQUALIFICATO);
 							}
 

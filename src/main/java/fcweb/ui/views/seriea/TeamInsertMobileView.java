@@ -2108,7 +2108,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		formazioneHtml.append(descAttore);
 		formazioneHtml.append("</p>\n");
 		formazioneHtml.append("</body>\n");
-		formazioneHtml.append("<html");
+		formazioneHtml.append("<html>");
 
 		StringBuilder emailDestinatario = new StringBuilder();
 		String activeMail = p.getProperty("ACTIVE_MAIL");
