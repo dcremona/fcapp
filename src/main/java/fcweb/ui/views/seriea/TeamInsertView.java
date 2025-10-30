@@ -37,7 +37,6 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.popover.Popover;
@@ -856,7 +855,8 @@ public class TeamInsertView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		grid.setAllRowsVisible(true);
+		//grid.setAllRowsVisible(true);
+		grid.setSizeUndefined();
 		grid.setWidth(WIDTH);
 		grid.setHeight(HEIGHT);
 
@@ -866,11 +866,12 @@ public class TeamInsertView extends VerticalLayout
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
-			//cellLayout.setSizeUndefined();
-			cellLayout.setWidth(Costants.WIDTH_85);
-			cellLayout.setHeight(Costants.HEIGHT_120);
-			cellLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.EVENLY);
-
+			cellLayout.setSizeUndefined();
+			//cellLayout.setWidth(Costants.WIDTH_90);
+			//cellLayout.setHeight(Costants.HEIGHT_120);
+			//cellLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+			//cellLayout.setAlignItems(FlexComponent.Alignment.START);
+			
 			if (p != null) {
 
 				String ruolo = p.getFcRuolo().getIdRuolo();
@@ -935,7 +936,7 @@ public class TeamInsertView extends VerticalLayout
 					log.error(e.getMessage());
 				}
 				Span lblGiocatore = new Span(p.getCognGiocatore());
-				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "10px");
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "9px");
 				cellLayout.add(lblGiocatore);
 
 				Element element = cellLayout.getElement(); // DOM element

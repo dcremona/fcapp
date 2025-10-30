@@ -784,7 +784,8 @@ public class TeamInsertMobileView extends VerticalLayout
 		grid.setItems(items);
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.getStyle().set("--_lumo-grid-border-width", "0px");
-		grid.setAllRowsVisible(true);
+		//grid.setAllRowsVisible(true);
+		grid.setSizeUndefined();
 		grid.setWidth(WIDTH);
 		grid.setHeight(HEIGHT);
 
@@ -795,7 +796,10 @@ public class TeamInsertMobileView extends VerticalLayout
 			cellLayout.setPadding(false);
 			cellLayout.setSpacing(false);
 			cellLayout.setSizeUndefined();
-			cellLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+			//cellLayout.setWidth(WIDTH);
+			//cellLayout.setHeight(HEIGHT);
+			//cellLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+			//cellLayout.setAlignItems(FlexComponent.Alignment.START);
 
 			if (p != null) {
 
