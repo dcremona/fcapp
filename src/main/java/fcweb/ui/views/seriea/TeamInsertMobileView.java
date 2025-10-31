@@ -826,7 +826,7 @@ public class TeamInsertMobileView extends VerticalLayout
 				cellLayoutImg.setPadding(false);
 				cellLayoutImg.setSpacing(false);
 				cellLayoutImg.setSizeUndefined();
-				cellLayoutImg.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+				//cellLayoutImg.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
 
 				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 				imgR.setTitle(title);

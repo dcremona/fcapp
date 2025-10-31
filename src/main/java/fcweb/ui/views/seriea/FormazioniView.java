@@ -210,13 +210,7 @@ public class FormazioniView extends VerticalLayout{
 		tabSheet.setSizeFull();
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		Integer currGG = 0;
-		if (campionato.getIdCampionato() == 1) {
-			currGG = Integer.valueOf(giornata);
-		} else if (campionato.getIdCampionato() == 2) {
-			currGG = Integer.valueOf(giornata);
-		}
-
+		Integer currGG = Integer.valueOf(giornata);
 		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(currGG);
 		List<FcGiornata> partite = giornataController.findByFcGiornataInfo(giornataInfo);
 
@@ -423,7 +417,6 @@ public class FormazioniView extends VerticalLayout{
 		cognGiocatoreColumn.setSortable(false);
 		cognGiocatoreColumn.setResizable(false);
 		cognGiocatoreColumn.setHeader("");
-		cognGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiornataDett> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -446,7 +439,7 @@ public class FormazioniView extends VerticalLayout{
 		nomeSquadraColumn.setSortable(false);
 		nomeSquadraColumn.setResizable(false);
 		nomeSquadraColumn.setHeader("");
-		nomeSquadraColumn.setAutoWidth(true);
+		nomeSquadraColumn.setWidth("5rem").setFlexGrow(0);
 
 		Column<FcGiornataDett> resultGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -518,7 +511,6 @@ public class FormazioniView extends VerticalLayout{
 		resultGiocatoreColumn.setSortable(false);
 		resultGiocatoreColumn.setResizable(false);
 		resultGiocatoreColumn.setHeader("");
-		resultGiocatoreColumn.setAutoWidth(true);
 
 		Column<FcGiornataDett> votoColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			DecimalFormat myFormatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
@@ -542,7 +534,7 @@ public class FormazioniView extends VerticalLayout{
 		votoColumn.setSortable(false);
 		votoColumn.setResizable(false);
 		votoColumn.setHeader(Costants.FV);
-		votoColumn.setAutoWidth(true);
+		votoColumn.setWidth("5rem").setFlexGrow(0);
 
 		Column<FcGiornataDett> gColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			DecimalFormat myFormatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
@@ -566,7 +558,7 @@ public class FormazioniView extends VerticalLayout{
 		gColumn.setSortable(false);
 		gColumn.setResizable(false);
 		gColumn.setHeader(Costants.G);
-		gColumn.setAutoWidth(true);
+		gColumn.setWidth("5rem").setFlexGrow(0);
 
 		Column<FcGiornataDett> csColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			DecimalFormat myFormatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
@@ -590,7 +582,7 @@ public class FormazioniView extends VerticalLayout{
 		csColumn.setSortable(false);
 		csColumn.setResizable(false);
 		csColumn.setHeader(Costants.CS);
-		csColumn.setAutoWidth(true);
+		csColumn.setWidth("5rem").setFlexGrow(0);
 
 		Column<FcGiornataDett> tsColumn = grid.addColumn(new ComponentRenderer<>(gd -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -613,7 +605,7 @@ public class FormazioniView extends VerticalLayout{
 		tsColumn.setSortable(false);
 		tsColumn.setResizable(false);
 		tsColumn.setHeader(Costants.TS);
-		tsColumn.setAutoWidth(true);
+		tsColumn.setWidth("5rem").setFlexGrow(0);
 
 		HeaderRow headerRow = grid.prependHeaderRow();
 

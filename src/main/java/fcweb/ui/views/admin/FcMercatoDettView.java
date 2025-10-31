@@ -115,8 +115,7 @@ public class FcMercatoDettView extends VerticalLayout{
 		formFactory.setFieldProvider("fcGiocatoreByIdGiocVen", new ComboBoxProvider<>("Gioc Acq",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 		formFactory.setFieldProvider("fcGiocatoreByIdGiocAcq", new ComboBoxProvider<>("Gioc Ven",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 		formFactory.setFieldProvider("dataCambio", a -> {
-			DateTimePicker data = new DateTimePicker();
-			return data;
+			return new DateTimePicker();
 		});
 
 		crud.setRowCountCaption("%d Mercato(s) found");

@@ -255,13 +255,14 @@ public class DownloadView extends VerticalLayout
 			}
 			if (rxColumn != null) {
 				rxColumn.setKey("r" + i);
+				rxColumn.setWidth("2rem").setFlexGrow(0);
 			}
 			if (sxColumn != null) {
 				sxColumn.setKey("s" + i);
-				sxColumn.setAutoWidth(true);
 			}
 			if (qxColumn != null) {
 				qxColumn.setKey("q" + i);
+				qxColumn.setWidth("2rem").setFlexGrow(0);
 			}
 		}
 
@@ -335,13 +336,15 @@ public class DownloadView extends VerticalLayout
 
 			if (rxColumn != null) {
 				rxColumn.setKey("r" + i);
+				rxColumn.setWidth("2rem").setFlexGrow(0);
 			}
 			if (sxColumn != null) {
 				sxColumn.setKey("s" + i);
-				sxColumn.setAutoWidth(true);
+				//sxColumn.setAutoWidth(true);
 			}
 			if (qxColumn != null) {
 				qxColumn.setKey("q" + i);
+				qxColumn.setWidth("2rem").setFlexGrow(0);
 			}
 		}
 
