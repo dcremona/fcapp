@@ -20,8 +20,7 @@ public class MercatoInfoService{
 	}
 
 	public List<FcMercatoDettInfo> findAll() {
-		List<FcMercatoDettInfo> l = (List<FcMercatoDettInfo>) mercatoInfoRepository.findAll(sortByGiornataInfoAndattoreAsc());
-		return l;
+		return (List<FcMercatoDettInfo>) mercatoInfoRepository.findAll(sortByGiornataInfoAndattoreAsc());
 	}
 
 	private Sort sortByGiornataInfoAndattoreAsc() {
@@ -30,9 +29,7 @@ public class MercatoInfoService{
 
 	public List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(
 			FcAttore fcAttore) {
-		List<FcMercatoDettInfo> l = mercatoInfoRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
-
-		return l;
+		return mercatoInfoRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
 	}
 
 	public FcMercatoDettInfo insertMercatoDettInfo(

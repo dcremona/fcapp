@@ -2,10 +2,10 @@ package fcweb.backend.service;
 
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import fcweb.backend.data.entity.FcStatistiche;
 
@@ -20,31 +20,28 @@ public class StatisticheService{
 	}
 
 	public List<FcStatistiche> findAll() {
-		List<FcStatistiche> l = (List<FcStatistiche>) statisticheRepository.findAll(sortByIdRuoloDesc());
-		return l;
+		return (List<FcStatistiche>) statisticheRepository.findAll(sortByIdRuoloDesc());
 	}
 
 	public List<FcStatistiche> findByFlagAttivo(boolean flagAttivo) {
-		List<FcStatistiche> l = statisticheRepository.findByFlagAttivo(flagAttivo);
-		return l;
+		return statisticheRepository.findByFlagAttivo(flagAttivo);
 	}
 
 	private Sort sortByIdRuoloDesc() {
 		return Sort.by(Sort.Direction.DESC, "idRuolo");
 	}
 
-	public FcStatistiche updateStatistiche(
-			@RequestParam("statistiche") FcStatistiche statistiche) {
+	public FcStatistiche updateStatistiche(FcStatistiche statistiche) {
 		FcStatistiche fcStatistiche = null;
 		try {
 			fcStatistiche = statisticheRepository.save(statistiche);
 		} catch (Exception ex) {
+			Log.error(ex.getMessage());
 		}
 		return fcStatistiche;
 	}
 
-	public String deleteStatistiche(
-			@RequestParam("statistiche") FcStatistiche statistiche) {
+	public String deleteStatistiche(FcStatistiche statistiche) {
 		String id = "";
 		try {
 			statisticheRepository.delete(statistiche);

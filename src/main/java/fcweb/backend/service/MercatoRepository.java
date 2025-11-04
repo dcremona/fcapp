@@ -20,10 +20,6 @@ public interface MercatoRepository extends CrudRepository<FcMercatoDett, Long>{
 	public List<FcMercatoDett> findByFcGiornataInfo(
 			FcGiornataInfo fcGiornataInfo);
 
-	// public List<FcMercatoDett>
-	// findByFcAttoreOrderByFcGiornataInfoAsc(FcAttore
-	// attore);
-
 	public List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDesc(
 			FcAttore attore);
 

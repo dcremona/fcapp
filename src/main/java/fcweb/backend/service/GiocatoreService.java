@@ -21,27 +21,23 @@ public class GiocatoreService{
 	}
 
 	public List<FcGiocatore> findAll() {
-		List<FcGiocatore> l = (List<FcGiocatore>) giocatoreRepository.findAll();
-		return l;
+		return (List<FcGiocatore>) giocatoreRepository.findAll();
 	}
 
 	public List<FcGiocatore> findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(
 			FcRuolo ruolo, boolean flagAttivo) {
-		List<FcGiocatore> l = giocatoreRepository.findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(ruolo, flagAttivo);
-		return l;
+		return giocatoreRepository.findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(ruolo, flagAttivo);
 	}
 
 	public List<FcGiocatore> findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(
 			FcRuolo ruolo, boolean flagAttivo, Collection<Integer> giocatore) {
-		List<FcGiocatore> l = giocatoreRepository.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(ruolo, flagAttivo, giocatore);
-		return l;
+		return giocatoreRepository.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(ruolo, flagAttivo, giocatore);
 	}
 
 	public List<FcGiocatore> findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
 			FcRuolo ruolo, boolean flagAttivo, FcSquadra squadra,
 			Collection<Integer> giocatore) {
-		List<FcGiocatore> l = giocatoreRepository.findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(flagAttivo, squadra, giocatore);
-		return l;
+		return giocatoreRepository.findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(flagAttivo, squadra, giocatore);
 	}
 
 	public List<FcGiocatore> findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
@@ -62,8 +58,7 @@ public class GiocatoreService{
 	// em
 	public List<FcGiocatore> findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
 			Collection<Integer> notIn) {
-		List<FcGiocatore> l = giocatoreRepository.findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(notIn);
-		return l;
+		return giocatoreRepository.findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(notIn);
 	}
 
 	public FcGiocatore updateGiocatore(FcGiocatore c) {

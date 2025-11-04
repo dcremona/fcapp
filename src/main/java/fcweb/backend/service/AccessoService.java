@@ -28,8 +28,7 @@ public class AccessoService{
 	}
 
 	public List<FcAccesso> findAll() {
-		List<FcAccesso> l = (List<FcAccesso>) accessoRepository.findAll(sortByIdDesc());
-		return l;
+		return (List<FcAccesso>) accessoRepository.findAll(sortByIdDesc());
 	}
 
 	private Sort sortByIdDesc() {

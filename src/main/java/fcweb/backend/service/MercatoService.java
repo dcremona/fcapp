@@ -21,26 +21,22 @@ public class MercatoService{
 	}
 
 	public List<FcMercatoDett> findAll() {
-		List<FcMercatoDett> l = (List<FcMercatoDett>) mercatoRepository.findAll(sortByGiornataInfoAndattoreAsc());
-		return l;
+		return (List<FcMercatoDett>) mercatoRepository.findAll(sortByGiornataInfoAndattoreAsc());
 	}
 
 	public List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDesc(
 			FcAttore attore) {
-		List<FcMercatoDett> l = mercatoRepository.findByFcAttoreOrderByFcGiornataInfoDesc(attore);
-		return l;
+		return mercatoRepository.findByFcAttoreOrderByFcGiornataInfoDesc(attore);
 	}
 
 	public List<FcMercatoDett> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(
 			FcGiornataInfo from, FcGiornataInfo to, FcAttore attore) {
-		List<FcMercatoDett> l = mercatoRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(from, to, attore);
-		return l;
+		return mercatoRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(from, to, attore);
 	}
 
 	public List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(
 			FcAttore attore) {
-		List<FcMercatoDett> l = mercatoRepository.findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(attore);
-		return l;
+		return mercatoRepository.findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(attore);
 	}
 
 	public FcMercatoDett insertMercatoDett(FcMercatoDett c) {

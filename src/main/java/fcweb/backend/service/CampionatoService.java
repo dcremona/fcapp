@@ -18,18 +18,15 @@ public class CampionatoService{
 	}
 
 	public List<FcCampionato> findAll() {
-		List<FcCampionato> l = (List<FcCampionato>) campionatoRepository.findAll();
-		return l;
+		return (List<FcCampionato>) campionatoRepository.findAll();
 	}
 
 	public FcCampionato findByIdCampionato(Integer idCampionato) {
-		FcCampionato c = campionatoRepository.findByIdCampionato(idCampionato);
-		return c;
+		return campionatoRepository.findByIdCampionato(idCampionato);
 	}
 
 	public FcCampionato findByActive(boolean active) {
-		FcCampionato c = campionatoRepository.findByActive(active);
-		return c;
+		return campionatoRepository.findByActive(active);
 	}
 
 	public FcCampionato updateCampionato(FcCampionato c) {

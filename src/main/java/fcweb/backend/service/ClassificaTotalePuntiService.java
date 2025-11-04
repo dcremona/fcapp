@@ -30,59 +30,55 @@ public class ClassificaTotalePuntiService{
 
 	public List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(
 			FcCampionato campionato, FcGiornataInfo giornataInfo) {
-		List<FcClassificaTotPt> l = classificaTotalePuntiRepository.findByFcCampionatoAndFcGiornataInfo(campionato, giornataInfo);
-		return l;
+		return classificaTotalePuntiRepository.findByFcCampionatoAndFcGiornataInfo(campionato, giornataInfo);
 	}
 
 	public List<FcClassificaTotPt> findAll() {
-		List<FcClassificaTotPt> l = (List<FcClassificaTotPt>) classificaTotalePuntiRepository.findAll();
-		return l;
+		return (List<FcClassificaTotPt>) classificaTotalePuntiRepository.findAll();
 	}
 
 	public FcClassificaTotPt findByFcCampionatoAndFcAttoreAndFcGiornataInfo(
 			FcCampionato campionato, FcAttore attore,
 			FcGiornataInfo giornataInfo) {
-		FcClassificaTotPt l = classificaTotalePuntiRepository.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
-		return l;
+		return classificaTotalePuntiRepository.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
 	}
 
 	public FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
-		FcClassificaTotPt l = classificaTotalePuntiRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
-		return l;
+		return classificaTotalePuntiRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
 	}
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public List<ClassificaBean> getModelClassifica(int curr_gg) {
+	public List<ClassificaBean> getModelClassifica(int currGG) {
 
-		String in_gg = "";
-		if (curr_gg >= 1) {
-			in_gg += "1";
+		String inGG = "";
+		if (currGG >= 1) {
+			inGG += "1";
 		}
-		if (curr_gg > 2) {
-			in_gg += ",2";
+		if (currGG > 2) {
+			inGG += ",2";
 		}
-		if (curr_gg > 3) {
-			in_gg += ",3";
+		if (currGG > 3) {
+			inGG += ",3";
 		}
-		if (curr_gg > 4) {
-			in_gg += ",4";
+		if (currGG > 4) {
+			inGG += ",4";
 		}
-		if (curr_gg > 5) {
-			in_gg += ",5";
+		if (currGG > 5) {
+			inGG += ",5";
 		}
-		if (curr_gg > 6) {
-			in_gg += ",6";
+		if (currGG > 6) {
+			inGG += ",6";
 		}
-		if (curr_gg >= 7) {
-			in_gg += ",7";
+		if (currGG >= 7) {
+			inGG += ",7";
 		}
 
 		String query = " SELECT ";
 		query += " B.DESC_ATTORE AS squadra, ";
-		query += " SUM(IF(id_giornata in (" + in_gg + "),  TOT_PT, 0)) AS  tot_pt, ";
+		query += " SUM(IF(id_giornata in (" + inGG + "),  TOT_PT, 0)) AS  tot_pt, ";
 		query += " SUM(IF(id_giornata = 1, TOT_PT, 0)) AS  punti_giornata_1, ";
 		query += " SUM(IF(id_giornata = 2, TOT_PT, 0)) AS  punti_giornata_2, ";
 		query += " SUM(IF(id_giornata = 3, TOT_PT, 0)) AS  punti_giornata_3, ";

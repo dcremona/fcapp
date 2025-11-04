@@ -2,6 +2,7 @@ package fcweb.backend.service;
 
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,19 +25,16 @@ public class GiornataService{
 	}
 
 	public List<FcGiornata> findAll() {
-		List<FcGiornata> l = (List<FcGiornata>) giornataRepository.findAll(sortBy());
-		return l;
+		return (List<FcGiornata>) giornataRepository.findAll(sortBy());
 	}
 
 	public List<FcGiornata> findByFcGiornataInfo(FcGiornataInfo giornataInfo) {
-		List<FcGiornata> l = giornataRepository.findByFcGiornataInfoOrderByFcTipoGiornata(giornataInfo);
-		return l;
+		return giornataRepository.findByFcGiornataInfoOrderByFcTipoGiornata(giornataInfo);
 	}
 
 	public List<FcGiornata> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(
 			FcGiornataInfo start, FcGiornataInfo end) {
-		List<FcGiornata> l = giornataRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(start, end);
-		return l;
+		return giornataRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(start, end);
 	}
 
 	public FcGiornata updateGiornata(FcGiornata giornata) {
@@ -44,7 +42,7 @@ public class GiornataService{
 		try {
 			fcGiornata = giornataRepository.save(giornata);
 		} catch (Exception ex) {
-
+			Log.error(ex.getMessage());
 		}
 		return fcGiornata;
 	}

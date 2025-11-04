@@ -19,8 +19,7 @@ public class ExpStatService{
 	}
 
 	public List<FcExpStat> findAll() {
-		List<FcExpStat> l = (List<FcExpStat>) expStatRepository.findAll(sortByIdAsc());
-		return l;
+		return (List<FcExpStat>) expStatRepository.findAll(sortByIdAsc());
 	}
 
 	private Sort sortByIdAsc() {

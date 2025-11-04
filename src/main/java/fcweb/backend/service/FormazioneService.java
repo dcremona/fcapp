@@ -25,19 +25,16 @@ public class FormazioneService{
 	}
 
 	public List<FcFormazione> findAll() {
-		List<FcFormazione> l = (List<FcFormazione>) formazioneRepository.findAll();
-		return l;
+		return (List<FcFormazione>) formazioneRepository.findAll();
 	}
 
 	public List<FcFormazione> findByFcCampionato(FcCampionato campionato) {
-		List<FcFormazione> l = formazioneRepository.findByFcCampionato(campionato);
-		return l;
+		return formazioneRepository.findByFcCampionato(campionato);
 	}
 
 	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
 			FcCampionato campionato, FcAttore attore) {
-		List<FcFormazione> l = formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
-		return l;
+		return formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
 	}
 
 	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
@@ -85,14 +82,12 @@ public class FormazioneService{
 
 	public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(
 			FcCampionato campionato, FcAttore attore, FcGiocatore giocatore) {
-		FcFormazione l = formazioneRepository.findByFcCampionatoAndFcAttoreAndFcGiocatore(campionato, attore, giocatore);
-		return l;
+		return formazioneRepository.findByFcCampionatoAndFcAttoreAndFcGiocatore(campionato, attore, giocatore);
 	}
 
 	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
 			FcAttore attore) {
-		List<FcFormazione> l = formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
-		return l;
+		return formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
 	}
 
 	public String createFormazione(FcAttore attore, Integer idCampionato,

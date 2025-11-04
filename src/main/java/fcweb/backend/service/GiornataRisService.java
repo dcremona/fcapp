@@ -20,26 +20,22 @@ public class GiornataRisService{
 	}
 
 	public List<FcGiornataRis> findAll() {
-		List<FcGiornataRis> l = (List<FcGiornataRis>) giornataRisRepository.findAll();
-		return l;
+		return (List<FcGiornataRis>) giornataRisRepository.findAll();
 	}
 
 	public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoDesc(
 			FcAttore fcAttore) {
-		List<FcGiornataRis> l = giornataRisRepository.findByFcAttoreOrderByFcGiornataInfoDesc(fcAttore);
-		return l;
+		return giornataRisRepository.findByFcAttoreOrderByFcGiornataInfoDesc(fcAttore);
 	}
 
 	public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoAsc(
 			FcAttore fcAttore) {
-		List<FcGiornataRis> l = giornataRisRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
-		return l;
+		return giornataRisRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
 	}
 
 	public List<FcGiornataRis> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(
 			FcGiornataInfo start, FcGiornataInfo end) {
-		List<FcGiornataRis> l = giornataRisRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(start, end);
-		return l;
+		return giornataRisRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(start, end);
 	}
 
 }

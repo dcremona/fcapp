@@ -2,6 +2,7 @@ package fcweb.backend.service;
 
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,11 @@ public class ProprietaService{
 	}
 
 	public List<FcProperties> findAll() {
-		List<FcProperties> l = (List<FcProperties>) proprietaRepository.findAll();
-		return l;
+		return (List<FcProperties>) proprietaRepository.findAll();
 	}
 
 	public FcProperties findByKey(String key) {
-		FcProperties l = proprietaRepository.findByKey(key);
-		return l;
+		return proprietaRepository.findByKey(key);
 	}
 
 	public FcProperties updateProprieta(FcProperties proprieta) {
@@ -32,7 +31,7 @@ public class ProprietaService{
 		try {
 			fcProperties = proprietaRepository.save(proprieta);
 		} catch (Exception ex) {
-
+			Log.error(ex.getMessage());
 		}
 		return fcProperties;
 	}

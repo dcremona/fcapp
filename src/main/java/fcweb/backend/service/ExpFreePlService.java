@@ -19,9 +19,7 @@ public class ExpFreePlService{
 	}
 
 	public List<FcExpFreePl> findAll() {
-		List<FcExpFreePl> l = (List<FcExpFreePl>) expFreePlRepository.findAll(sortByIdAsc());
-
-		return l;
+		return (List<FcExpFreePl>) expFreePlRepository.findAll(sortByIdAsc());
 	}
 
 	private Sort sortByIdAsc() {

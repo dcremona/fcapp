@@ -21,13 +21,11 @@ public class PagelleService{
 	}
 
 	public List<FcPagelle> findAll() {
-		List<FcPagelle> l = (List<FcPagelle>) pagelleRepository.findAll();
-		return l;
+		return (List<FcPagelle>) pagelleRepository.findAll();
 	}
 
 	public FcPagelle findCurrentGiornata() {
-		FcPagelle currentGiornata = pagelleRepository.findTopByOrderByFcGiornataInfoDesc();
-		return currentGiornata;
+		return pagelleRepository.findTopByOrderByFcGiornataInfoDesc();
 	}
 
 	public List<FcPagelle> findByCustonm(FcGiornataInfo giornataInfo,

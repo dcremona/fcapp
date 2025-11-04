@@ -21,14 +21,12 @@ public class GiornataDettInfoService{
 	}
 
 	public List<FcGiornataDettInfo> findAll() {
-		List<FcGiornataDettInfo> l = (List<FcGiornataDettInfo>) giornataDettInfoRepository.findAll();
-		return l;
+		return (List<FcGiornataDettInfo>) giornataDettInfoRepository.findAll();
 	}
 
 	public FcGiornataDettInfo findByFcAttoreAndFcGiornataInfo(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
-		FcGiornataDettInfo l = giornataDettInfoRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
-		return l;
+		return giornataDettInfoRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
 	}
 
 }

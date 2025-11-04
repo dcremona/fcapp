@@ -2,6 +2,7 @@ package fcweb.backend.service;
 
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,24 +19,20 @@ public class GiornataInfoService{
 	}
 
 	public List<FcGiornataInfo> findAll() {
-		List<FcGiornataInfo> l = (List<FcGiornataInfo>) giornataInfoRepository.findAll();
-		return l;
+		return (List<FcGiornataInfo>) giornataInfoRepository.findAll();
 	}
 
 	public FcGiornataInfo findByCodiceGiornata(Integer gg) {
-		FcGiornataInfo info = giornataInfoRepository.findByCodiceGiornata(gg);
-		return info;
+		return giornataInfoRepository.findByCodiceGiornata(gg);
 	}
 
 	public FcGiornataInfo findByDescGiornataFc(String descGiornataFc) {
-		FcGiornataInfo fcGiornataInfo = giornataInfoRepository.findByDescGiornataFc(descGiornataFc);
-		return fcGiornataInfo;
+		return giornataInfoRepository.findByDescGiornataFc(descGiornataFc);
 	}
 
 	public List<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(
 			Integer from, Integer to) {
-		List<FcGiornataInfo> l = (List<FcGiornataInfo>) giornataInfoRepository.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
-		return l;
+		return (List<FcGiornataInfo>) giornataInfoRepository.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
 	public FcGiornataInfo updateGiornataInfo(FcGiornataInfo giornataInfo) {
@@ -43,7 +40,7 @@ public class GiornataInfoService{
 		try {
 			fcGiornataInfo = giornataInfoRepository.save(giornataInfo);
 		} catch (Exception ex) {
-
+			Log.error(ex.getMessage());
 		}
 		return fcGiornataInfo;
 	}

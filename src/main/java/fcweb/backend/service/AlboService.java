@@ -19,8 +19,7 @@ public class AlboService{
 	}
 
 	public List<FcExpStat> findAll() {
-		List<FcExpStat> l = (List<FcExpStat>) alboRepository.findAll(sortByIdAsc());
-		return l;
+		return(List<FcExpStat>) alboRepository.findAll(sortByIdAsc());
 	}
 
 	private Sort sortByIdAsc() {

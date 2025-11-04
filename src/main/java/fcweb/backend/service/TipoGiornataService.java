@@ -19,8 +19,7 @@ public class TipoGiornataService{
 	}
 
 	public List<FcTipoGiornata> findAll() {
-		List<FcTipoGiornata> l = (List<FcTipoGiornata>) tipoGiornataRepository.findAll(sortByIdTipoGiornataDesc());
-		return l;
+		return (List<FcTipoGiornata>) tipoGiornataRepository.findAll(sortByIdTipoGiornataDesc());
 	}
 
 	private Sort sortByIdTipoGiornataDesc() {

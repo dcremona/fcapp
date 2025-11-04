@@ -19,18 +19,15 @@ public class SquadraService{
 	}
 
 	public List<FcSquadra> findAll() {
-		List<FcSquadra> l = (List<FcSquadra>) squadraRepository.findAll(sortByIdSquadra());
-		return l;
+		return (List<FcSquadra>) squadraRepository.findAll(sortByIdSquadra());
 	}
 
 	public FcSquadra findByNomeSquadra(String nomeSquadra) {
-		FcSquadra fcSquadra = squadraRepository.findByNomeSquadra(nomeSquadra);
-		return fcSquadra;
+		return squadraRepository.findByNomeSquadra(nomeSquadra);
 	}
 
 	public FcSquadra findByIdSquadra(int idSquadra) {
-		FcSquadra fcSquadra = squadraRepository.findByIdSquadra(idSquadra);
-		return fcSquadra;
+		return squadraRepository.findByIdSquadra(idSquadra);
 	}
 
 	private Sort sortByIdSquadra() {

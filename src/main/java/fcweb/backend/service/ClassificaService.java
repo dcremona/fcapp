@@ -2,6 +2,7 @@ package fcweb.backend.service;
 
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,38 +22,32 @@ public class ClassificaService{
 	}
 
 	public List<FcClassifica> findAll() {
-		List<FcClassifica> l = (List<FcClassifica>) classificaRepository.findAll();
-		return l;
+		return (List<FcClassifica>) classificaRepository.findAll();
 	}
 
 	public List<FcClassifica> findByFcCampionatoOrderByPuntiDescIdPosizAsc(
 			FcCampionato campionato) {
-		List<FcClassifica> l = classificaRepository.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
-		return l;
+		return classificaRepository.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 	}
 
 	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiDesc(
 			FcCampionato campionato) {
-		List<FcClassifica> l = classificaRepository.findByFcCampionatoOrderByTotPuntiDesc(campionato);
-		return l;
+		return classificaRepository.findByFcCampionatoOrderByTotPuntiDesc(campionato);
 	}
 
 	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiRosaDesc(
 			FcCampionato campionato) {
-		List<FcClassifica> l = classificaRepository.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
-		return l;
+		return classificaRepository.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
 	}
 
 	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiTvsTDesc(
 			FcCampionato campionato) {
-		List<FcClassifica> l = classificaRepository.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
-		return l;
+		return classificaRepository.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
 	}
 
 	public FcClassifica findByFcCampionatoAndFcAttore(FcCampionato campionato,
 			FcAttore attore) {
-		FcClassifica l = classificaRepository.findByFcCampionatoAndFcAttore(campionato, attore);
-		return l;
+		return classificaRepository.findByFcCampionatoAndFcAttore(campionato, attore);
 	}
 
 	public String create(FcAttore attore, FcCampionato campionato,
@@ -80,7 +75,7 @@ public class ClassificaService{
 		try {
 			fcClassifica = classificaRepository.save(classifica);
 		} catch (Exception ex) {
-
+			Log.error(ex.getMessage());
 		}
 		return fcClassifica;
 	}

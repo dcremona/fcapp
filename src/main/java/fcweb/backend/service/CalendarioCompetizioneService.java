@@ -22,8 +22,7 @@ public class CalendarioCompetizioneService{
 	}
 
 	public List<FcCalendarioCompetizione> findAll() {
-		List<FcCalendarioCompetizione> l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findAll(sortByIdAsc());
-		return l;
+		return (List<FcCalendarioCompetizione>) calendarioTimRepository.findAll(sortByIdAsc());
 	}
 
 	private Sort sortByIdAsc() {
@@ -43,37 +42,34 @@ public class CalendarioCompetizioneService{
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata) {
-		List<FcCalendarioCompetizione> l = calendarioTimRepository.findByIdGiornata(idGiornata);
-		return l;
+		return calendarioTimRepository.findByIdGiornata(idGiornata);
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(
 			int idGiornata) {
-		List<FcCalendarioCompetizione> l = calendarioTimRepository.findByIdGiornataOrderByDataAsc(idGiornata);
-		return l;
+		return calendarioTimRepository.findByIdGiornataOrderByDataAsc(idGiornata);
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(
 			int idGiornata, LocalDateTime data) {
-		List<FcCalendarioCompetizione> l = calendarioTimRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
-		return l;
+		return calendarioTimRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
 	}
 
 	public FcCalendarioCompetizione updateCalendarioTim(
-			FcCalendarioCompetizione caòemdarioTim) {
+			FcCalendarioCompetizione calendarioTim) {
 		FcCalendarioCompetizione fcCalendarioTim = null;
 		try {
-			fcCalendarioTim = calendarioTimRepository.save(caòemdarioTim);
+			fcCalendarioTim = calendarioTimRepository.save(calendarioTim);
 		} catch (Exception ex) {
 		}
 		return fcCalendarioTim;
 	}
 
-	public String deleteCalendarioTim(FcCalendarioCompetizione caòemdarioTim) {
+	public String deleteCalendarioTim(FcCalendarioCompetizione calendarioTim) {
 		String id = "";
 		try {
-			calendarioTimRepository.delete(caòemdarioTim);
-			id = "" + caòemdarioTim.getId();
+			calendarioTimRepository.delete(calendarioTim);
+			id = "" + calendarioTim.getId();
 		} catch (Exception ex) {
 			return "Error delete caledarioTim: " + ex.toString();
 		}

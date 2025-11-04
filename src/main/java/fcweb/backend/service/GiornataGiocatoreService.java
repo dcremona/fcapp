@@ -21,8 +21,7 @@ public class GiornataGiocatoreService{
 	}
 
 	public List<FcGiornataGiocatore> findAll() {
-		List<FcGiornataGiocatore> l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
-		return l;
+		return (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
 	}
 
 	public List<FcGiornataGiocatore> findByCustonm(FcGiornataInfo giornataInfo,

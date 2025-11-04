@@ -19,8 +19,7 @@ public class StatoGiocatoreService{
 	}
 
 	public List<FcStatoGiocatore> findAll() {
-		List<FcStatoGiocatore> l = (List<FcStatoGiocatore>) statoGiocatoreRepository.findAll();
-		return l;
+		return (List<FcStatoGiocatore>) statoGiocatoreRepository.findAll();
 	}
 
 }

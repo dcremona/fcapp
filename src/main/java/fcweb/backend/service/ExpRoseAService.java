@@ -19,8 +19,7 @@ public class ExpRoseAService{
 	}
 
 	public List<FcExpRosea> findAll() {
-		List<FcExpRosea> l = (List<FcExpRosea>) expRoseARepository.findAll(sortByIdAsc());
-		return l;
+		return (List<FcExpRosea>) expRoseARepository.findAll(sortByIdAsc());
 	}
 
 	private Sort sortByIdAsc() {
