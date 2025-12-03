@@ -69,7 +69,7 @@ public class FcGiornataDettView extends VerticalLayout{
 
 	private ComboBox<FcAttore> attoreFilter = new ComboBox<>();
 	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
-	private TextField flagAttivoFilter = new TextField();
+//	private TextField flagAttivoFilter = new TextField();
 
 	public FcGiornataDettView() {
 		log.info("FcGiornataDettView()");
@@ -140,13 +140,13 @@ public class FcGiornataDettView extends VerticalLayout{
 		attoreFilter.setClearButtonVisible(true);
 		crud.getCrudLayout().addFilterComponent(attoreFilter);
 
-		flagAttivoFilter.setPlaceholder("filter by flag...");
-		flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
+//		flagAttivoFilter.setPlaceholder("filter by flag...");
+//		flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
+//		crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
 
 		Button clearFilters = new Button("clear");
 		clearFilters.addClickListener(event -> {
-			flagAttivoFilter.clear();
+//			flagAttivoFilter.clear();
 			attoreFilter.clear();
 		});
 		crud.getCrudLayout().addFilterComponent(clearFilters);

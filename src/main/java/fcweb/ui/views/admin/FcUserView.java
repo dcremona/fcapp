@@ -76,22 +76,24 @@ public class FcUserView extends VerticalLayout{
 		crud.setCrudFormFactory(formFactory);
 		formFactory.setUseBeanValidation(false);
 
-		formFactory.setVisibleProperties(CrudOperation.READ, "id", "username", "hashedPassword", "name", "roles", "profilePicture", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
-		formFactory.setVisibleProperties(CrudOperation.ADD, "id", "username", "hashedPassword", "name", "roles", "profilePicture", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
-		formFactory.setVisibleProperties(CrudOperation.UPDATE, "username", "hashedPassword", "name", "roles", "profilePicture", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
+		formFactory.setVisibleProperties(CrudOperation.READ, "id", "username", "hashedPassword", "name", "roles",  "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
+		formFactory.setVisibleProperties(CrudOperation.ADD, "id", "username", "hashedPassword", "name", "roles",  "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
+		formFactory.setVisibleProperties(CrudOperation.UPDATE, "username", "hashedPassword", "name", "roles", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
 		formFactory.setVisibleProperties(CrudOperation.DELETE, "id", "username");
 
-		crud.getGrid().setColumns("idAttore", "descAttore", "username", "name", "email", "cellulare", "roles");
+		crud.getGrid().setColumns("id","idAttore", "descAttore", "username", "cellulare", "roles");
 
 		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
 			Checkbox check = new Checkbox();
 			check.setValue(user.isNotifiche());
+			check.setEnabled(false);
 			return check;
 		})).setHeader("Notifiche");
 
 		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
 			Checkbox check = new Checkbox();
 			check.setValue(user.isActive());
+			check.setEnabled(false);
 			return check;
 		})).setHeader("Attivo");
 
@@ -142,7 +144,7 @@ public class FcUserView extends VerticalLayout{
 			checkboxes.setItems(Role.values());
 			return checkboxes;
 		});
-
+		
 		crud.getGrid().setColumnReorderingAllowed(true);
 
 		crud.setRowCountCaption("%d user(s) found");
@@ -151,27 +153,22 @@ public class FcUserView extends VerticalLayout{
 
 		// logic configuration
 		crud.setOperations(() -> attoreService.findAll(), user -> attoreService.update(user), user -> {
-
 			// String password = user.getHashedPassword();
 			int strength = 10; // work factor of bcrypt
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength,new SecureRandom());
 			String encodedPassword = bCryptPasswordEncoder.encode(user.getHashedPassword());
 			// System.out.println(encodedPassword);
-
 			// boolean isPasswordMatch = bCryptPasswordEncoder.matches(password,
 			// encodedPassword);
 			// System.out.println("Password : " + password + " isPasswordMatch :
 			// " +
 			// isPasswordMatch);
-
 			// isPasswordMatch = bCryptPasswordEncoder.matches(password,
 			// encodedPassword);
 			// System.out.println("Password : " + password + " isPasswordMatch :
 			// " +
 			// isPasswordMatch);
-
 			user.setHashedPassword(encodedPassword);
-
 			if (user.getId().equals(10L)) {
 				throw new CrudOperationException("Simulated error.");
 			}
