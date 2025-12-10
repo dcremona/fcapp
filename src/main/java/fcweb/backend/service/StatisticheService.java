@@ -2,7 +2,6 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ public class StatisticheService{
 		try {
 			fcStatistiche = statisticheRepository.save(statistiche);
 		} catch (Exception ex) {
-			Log.error(ex.getMessage());
 		}
 		return fcStatistiche;
 	}

@@ -2,7 +2,6 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,6 @@ public class ProprietaService{
 		try {
 			fcProperties = proprietaRepository.save(proprieta);
 		} catch (Exception ex) {
-			Log.error(ex.getMessage());
 		}
 		return fcProperties;
 	}
