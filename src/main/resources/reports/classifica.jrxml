@@ -96,7 +96,7 @@ WHERE
     AND A.ID_CAMPIONATO= $P{ID_CAMPIONATO}
 ORDER BY
     2 DESC,
-    11 ASC]]>
+    12 ASC]]>
 	</queryString>
 	<field name="DESC_ATTORE" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="desc_attore"/>
