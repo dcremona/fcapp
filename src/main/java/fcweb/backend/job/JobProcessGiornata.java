@@ -1060,7 +1060,7 @@ public class JobProcessGiornata{
 			sql += " and ( ts = 600 or ts = 0) ";
 			sql += " and ( cs = 600 or cs = 0) ";
 			sql += " and ( g = 601 or g = 604 or g = 0) ";
-			sql += " AND ( VOTO_GIOCATORE = 600 or VOTO_GIOCATORE = 601 or VOTO_GIOCATORE = 604) ";
+			//sql += " AND ( VOTO_GIOCATORE = 600 or VOTO_GIOCATORE = 601 or VOTO_GIOCATORE = 604) ";
 
 			Boolean bSeiPolitico = jdbcTemplate.query(sql, new ResultSetExtractor<Boolean>(){
 				@Override

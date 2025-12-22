@@ -209,6 +209,7 @@
     </dependencies>
 
 	<build>
+	    <finalName>${project.name}-${activatedProperties}</finalName>
         <defaultGoal>spring-boot:run</defaultGoal>
         <plugins>
             <plugin>
