@@ -1,5 +1,6 @@
 package fcweb.ui.views.admin;
 
+import java.io.Serial;
 import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
@@ -40,9 +41,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ADMIN")
 public class FcMercatoDettView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private MercatoService mercatoController;
@@ -97,8 +99,8 @@ public class FcMercatoDettView extends VerticalLayout{
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? "" + g.getId() : "")).setHeader("Id");
 		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? g.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocVen() != null ? "" + g.getFcGiocatoreByIdGiocVen().getCognGiocatore() : "")).setHeader("Gioc Ven");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocAcq() != null ? "" + g.getFcGiocatoreByIdGiocAcq().getCognGiocatore() : "")).setHeader("Gioc Acq");
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocVen() != null ? g.getFcGiocatoreByIdGiocVen().getCognGiocatore() : "")).setHeader("Gioc Ven");
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocAcq() != null ? g.getFcGiocatoreByIdGiocAcq().getCognGiocatore() : "")).setHeader("Gioc Acq");
 
 		Column<FcMercatoDett> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
 		dataColumn.setHeader("Data Cambio");
@@ -106,7 +108,7 @@ public class FcMercatoDettView extends VerticalLayout{
 		dataColumn.setAutoWidth(true);
 		dataColumn.setFlexGrow(2);
 
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? "" + g.getNota() : "")).setHeader("Nota");
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? g.getNota() : "")).setHeader("Nota");
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
@@ -114,9 +116,7 @@ public class FcMercatoDettView extends VerticalLayout{
 		formFactory.setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
 		formFactory.setFieldProvider("fcGiocatoreByIdGiocVen", new ComboBoxProvider<>("Gioc Acq",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 		formFactory.setFieldProvider("fcGiocatoreByIdGiocAcq", new ComboBoxProvider<>("Gioc Ven",giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
-		formFactory.setFieldProvider("dataCambio", a -> {
-			return new DateTimePicker();
-		});
+		formFactory.setFieldProvider("dataCambio", a -> new DateTimePicker());
 
 		crud.setRowCountCaption("%d Mercato(s) found");
 		crud.setClickRowToUpdate(true);

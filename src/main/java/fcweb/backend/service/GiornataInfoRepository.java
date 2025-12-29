@@ -14,9 +14,9 @@ public interface GiornataInfoRepository
 
 	Iterable<FcGiornataInfo> findAll(Sort sort);
 
-	public FcGiornataInfo findByCodiceGiornata(Integer codiceGiornata);
+	FcGiornataInfo findByCodiceGiornata(Integer codiceGiornata);
 
-	public FcGiornataInfo findByDescGiornataFc(String descGiornataFc);
+	FcGiornataInfo findByDescGiornataFc(String descGiornataFc);
 
 	Iterable<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(
 			Integer from, Integer to);

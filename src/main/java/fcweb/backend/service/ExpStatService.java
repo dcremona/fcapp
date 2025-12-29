@@ -30,20 +30,17 @@ public class ExpStatService{
 		FcExpStat fcExpStat = null;
 		try {
 			fcExpStat = expStatRepository.save(expStat);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return fcExpStat;
 	}
 
-	public String deleteExpStat(FcExpStat expStat) {
-		String id = "";
-		try {
+	public void deleteExpStat(FcExpStat expStat) {
+        try {
 			expStatRepository.delete(expStat);
-			id = "" + expStat.getId();
-		} catch (Exception ex) {
-			return "Error delete FcExpStat: " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "expStat succesfully delete with id = " + id;
 	}
 
 }

@@ -12,5 +12,5 @@ public interface AttoreRepository extends JpaRepository<FcAttore, Long>,
 
 	FcAttore findByUsername(String username);
 
-	public List<FcAttore> findByActive(boolean active);
+	List<FcAttore> findByActive(boolean active);
 }

@@ -16,14 +16,17 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import fcweb.security.AuthenticatedUser;
 
+import java.io.Serial;
+
 @AnonymousAllowed
 @PageTitle("Login")
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	private final AuthenticatedUser authenticatedUser;
 
@@ -58,9 +61,9 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 		UI.getCurrent().getPage().retrieveExtendedClientDetails(event -> {
 			int resX = event.getScreenWidth();
 			int resY = event.getScreenHeight();
-			log.info("resX " + resX);
-			log.info("resY " + resY);
-			log.info("Math.max " + Math.max(resX, resY));
+            log.info("resX {}", resX);
+            log.info("resY {}", resY);
+            log.info("Math.max {}", Math.max(resX, resY));
 			if (Math.max(resX, resY) < 900) {
 				// small screen detected
 				log.info("small screen detected ");

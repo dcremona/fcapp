@@ -1,5 +1,6 @@
 package fcweb.config;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class EmailConfig{
 				if (propertySource instanceof EnumerablePropertySource) {
 					for (String key : ((EnumerablePropertySource) propertySource).getPropertyNames()) {
 						if (key.startsWith(prefix)) {
-							props.setProperty(key.replaceAll(prefix + KEY_SEPARATOR, EMPTY_STRING), propertySource.getProperty(key).toString());
+							props.setProperty(key.replaceAll(prefix + KEY_SEPARATOR, EMPTY_STRING), Objects.requireNonNull(propertySource.getProperty(key)).toString());
 						}
 					}
 				}

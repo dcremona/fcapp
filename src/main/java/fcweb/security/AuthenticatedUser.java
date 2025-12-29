@@ -30,7 +30,7 @@ import fcweb.backend.service.ProprietaService;
 @Component
 public class AuthenticatedUser{
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	private final AttoreRepository userRepository;
 
@@ -73,11 +73,11 @@ public class AuthenticatedUser{
 
 	private String type = null;
 
-	private boolean setSession(FcAttore attore) {
+	private void setSession(FcAttore attore) {
 
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.isEmpty()) {
-			return false;
+			return;
 		}
 
 		Properties properties = new Properties();
@@ -87,22 +87,22 @@ public class AuthenticatedUser{
 
 		FcCampionato campionato = campionatoController.findByActive(true);
 		if (campionato == null) {
-			return false;
+			return;
 		}
-		LOG.info("Campionato: " + campionato.getIdCampionato());
+        LOG.info("Campionato: {}", campionato.getIdCampionato());
 		type = campionato.getType();
 
 		FcPagelle currentGG = pagelleController.findCurrentGiornata();
-		FcGiornataInfo giornataInfo = null;
+		FcGiornataInfo giornataInfo;
 		if (currentGG == null) {
-			giornataInfo = giornataInfoRepository.findByCodiceGiornata(Integer.valueOf(1));
+			giornataInfo = giornataInfoRepository.findByCodiceGiornata(1);
 		} else {
 			giornataInfo = currentGG.getFcGiornataInfo();
 			if (currentGG.getFcGiornataInfo().getCodiceGiornata() > campionato.getEnd()) {
 				giornataInfo = giornataInfoRepository.findByCodiceGiornata(campionato.getEnd());
 			}
 		}
-		LOG.info("CurrentGG: " + giornataInfo.getCodiceGiornata());
+        LOG.info("CurrentGG: {}", giornataInfo.getCodiceGiornata());
 
 		String fusoOrario = properties.getProperty("FUSO_ORARIO");
 		String nextDate = Utils.getNextDate(giornataInfo);
@@ -113,8 +113,8 @@ public class AuthenticatedUser{
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
-		LOG.info("millisDiff : " + millisDiff);
-		LOG.info("Login " + attore.getDescAttore() + " success");
+        LOG.info("millisDiff : {}", millisDiff);
+        LOG.info("Login {} success", attore.getDescAttore());
 
 		// Set a session attribute
 		VaadinSession.getCurrent().setAttribute("GIORNATA_INFO", giornataInfo);
@@ -125,7 +125,6 @@ public class AuthenticatedUser{
 		VaadinSession.getCurrent().setAttribute("MILLISDIFF", millisDiff);
 		VaadinSession.getCurrent().setAttribute("COUNTDOWNDATE", getCalendarCountDown(nextDate, fusoOrario));
 
-		return true;
 	}
 
 	private Date getCalendarCountDown(String currentDataGiornata,

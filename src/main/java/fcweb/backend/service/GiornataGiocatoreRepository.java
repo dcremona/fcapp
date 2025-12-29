@@ -19,16 +19,9 @@ public interface GiornataGiocatoreRepository
 
 	Iterable<FcGiornataGiocatore> findAll(Sort sort);
 
-	FcGiornataGiocatore findFirstByOrderByFcGiornataInfoAsc();
+	List<FcGiornataGiocatore> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
+            FcGiornataInfo giornataInfo);
 
-	FcGiornataGiocatore findTopByOrderByFcGiornataInfoDesc();
-
-	public List<FcGiornataGiocatore> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
-			FcGiornataInfo giornataInfo);
-
-	public List<FcGiornataGiocatore> findByFcGiocatore(FcGiocatore giocatore);
-
-	public FcGiornataGiocatore findByFcGiornataInfoAndFcGiocatore(
-			FcGiornataInfo giornataInfo, FcGiocatore giocatore);
+	List<FcGiornataGiocatore> findByFcGiocatore(FcGiocatore giocatore);
 
 }

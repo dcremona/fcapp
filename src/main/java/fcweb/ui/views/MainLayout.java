@@ -1,5 +1,6 @@
 package fcweb.ui.views;
 
+import java.io.Serial;
 import java.util.Optional;
 
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -74,12 +75,13 @@ import fcweb.utils.Costants;
  */
 public class MainLayout extends AppLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	private H2 viewTitle;
 
-	private AuthenticatedUser authenticatedUser;
-	private AccessAnnotationChecker accessChecker;
+	private final AuthenticatedUser authenticatedUser;
+	private final AccessAnnotationChecker accessChecker;
 
 	public MainLayout(AuthenticatedUser authenticatedUser,
 			AccessAnnotationChecker accessChecker) {
@@ -302,11 +304,7 @@ public class MainLayout extends AppLayout{
 					adminNav.addItem(new SideNavItem("Calendario Serie A",FcCalendarioCompetizioneView.class,LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
 				}
 
-				if (accessChecker.hasAccess(FcAccessoView.class)) {
-					adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
-				}
-
-			} else {
+            } else {
 
 				// ADMIN
 				if (accessChecker.hasAccess(EmImpostazioniView.class)) {
@@ -359,11 +357,11 @@ public class MainLayout extends AppLayout{
 					adminNav.addItem(new SideNavItem("Calendario EM",FcCalendarioCompetizioneView.class,LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
 				}
 
-				if (accessChecker.hasAccess(FcAccessoView.class)) {
-					adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
-				}
-			}
-		}
+            }
+            if (accessChecker.hasAccess(FcAccessoView.class)) {
+                adminNav.addItem(new SideNavItem("Accesso",FcAccessoView.class,LineAwesomeIcon.UNIVERSAL_ACCESS_SOLID.create()));
+            }
+        }
 
 		return adminNav;
 	}
@@ -392,9 +390,7 @@ public class MainLayout extends AppLayout{
 			div.getElement().getStyle().set("align-items", "center");
 			div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
 			userName.add(div);
-			userName.getSubMenu().addItem("Esci", e -> {
-				authenticatedUser.logout();
-			});
+			userName.getSubMenu().addItem("Esci", e -> authenticatedUser.logout());
 
 			layout.add(userMenu);
 		} else {

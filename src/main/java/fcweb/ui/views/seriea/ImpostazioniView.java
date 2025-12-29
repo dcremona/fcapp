@@ -3,15 +3,13 @@ package fcweb.ui.views.seriea;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serial;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +76,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class ImpostazioniView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private List<FcAttore> squadre = null;
 	private List<FcSquadra> squadreSerieA = null;
@@ -200,7 +199,7 @@ public class ImpostazioniView extends VerticalLayout
 		generaCalendar.addClickListener(this);
 
 		comboGiornata = new ComboBox<>();
-		comboGiornata.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
+		comboGiornata.setItemLabelGenerator(Utils::buildInfoGiornata);
 		comboGiornata.setItems(giornate);
 		comboGiornata.setClearButtonVisible(true);
 		comboGiornata.setPlaceholder("Seleziona la giornata");
@@ -215,7 +214,7 @@ public class ImpostazioniView extends VerticalLayout
 				fcGiornataInfo2 = event.getValue();
 			}
 			if (fcGiornataInfo2 != null && da1 != null && da2 != null && dg != null && dp != null) {
-				log.info("gioranta " + "" + fcGiornataInfo2.getCodiceGiornata());
+                log.info("gioranta {}", fcGiornataInfo2.getCodiceGiornata());
 				if (fcGiornataInfo2.getDataAnticipo1() != null) {
 					da1.setValue(fcGiornataInfo2.getDataAnticipo1());
 				}
@@ -232,7 +231,7 @@ public class ImpostazioniView extends VerticalLayout
 				panelSetup.setOpened(false);
 				initDb.setEnabled(false);
 				generaCalendar.setEnabled(false);
-				log.info("getCodiceGiornata " + "" + fcGiornataInfo2.getCodiceGiornata());
+                log.info("getCodiceGiornata {}", fcGiornataInfo2.getCodiceGiornata());
 				if (fcGiornataInfo2.getCodiceGiornata() == 1 || fcGiornataInfo2.getCodiceGiornata() == 20) {
 					panelSetup.setOpened(true);
 					initDb.setEnabled(true);
@@ -267,7 +266,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		comboAttore = new ComboBox<>();
 		comboAttore.setItems(squadre);
-		comboAttore.setItemLabelGenerator(p -> p.getDescAttore());
+		comboAttore.setItemLabelGenerator(FcAttore::getDescAttore);
 		comboAttore.setClearButtonVisible(true);
 		comboAttore.setPlaceholder("Seleziona attore");
 
@@ -350,11 +349,8 @@ public class ImpostazioniView extends VerticalLayout
 		InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((
 				metadata, data) -> {
 			// Get other information about the file.
-			// String fileName = metadata.fileName();
-			// String mimeType = metadata.contentType();
-			// long contentLength = metadata.contentLength();
 
-			try {
+            try {
 				InputStream is = new ByteArrayInputStream(data);
 				jobProcessGiornata.updateImgGiocatore(is);
 
@@ -388,7 +384,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		comboSqudreA = new ComboBox<>();
 		comboSqudreA.setItems(squadreSerieA);
-		comboSqudreA.setItemLabelGenerator(p -> p.getNomeSquadra());
+		comboSqudreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
 		comboSqudreA.setClearButtonVisible(true);
 		comboSqudreA.setPlaceholder(Costants.SQUADRA);
 		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
@@ -398,10 +394,10 @@ public class ImpostazioniView extends VerticalLayout
 					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
 					container.add(img);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 			}
-			Span lblSquadra = new Span(item.getNomeSquadra());
+			Span lblSquadra = new Span(Objects.requireNonNull(item).getNomeSquadra());
 			container.add(lblSquadra);
 			return container;
 		}));
@@ -547,9 +543,9 @@ public class ImpostazioniView extends VerticalLayout
 				Boolean value = event.getValue();
 				FcProperties proprieta = new FcProperties();
 				proprieta.setKey(key);
-				proprieta.setValue(value.booleanValue() ? "1" : "0");
+				proprieta.setValue(value ? "1" : "0");
 				proprietaController.updateProprieta(proprieta);
-				p.setProperty(key, value.booleanValue() ? "1" : "0");
+				p.setProperty(key, value ? "1" : "0");
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			} catch (Exception e) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
@@ -572,13 +568,11 @@ public class ImpostazioniView extends VerticalLayout
 				giornataInfo = comboGiornata.getValue();
 				codiceGiornata = giornataInfo.getCodiceGiornata();
 			}
-			log.info("giornata " + codiceGiornata);
-
 			FcAttore attore = comboAttore.getValue();
-			log.info("giornata " + codiceGiornata);
+            log.info("giornata {}", codiceGiornata);
 
 			String basePathData = (String) p.get("PATH_TMP");
-			log.info("basePathData " + basePathData);
+            log.info("basePathData {}", basePathData);
 			File f = new File(basePathData);
 			if (!f.exists()) {
 				CustomMessageDialog.showMessageError("Impossibile trovare il percorso specificato " + basePathData);
@@ -591,9 +585,9 @@ public class ImpostazioniView extends VerticalLayout
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 26; j++) {
-							formazioneController.createFormazione(a, campionato.getIdCampionato(), Integer.valueOf(j));
+							formazioneController.createFormazione(a, campionato.getIdCampionato(), j);
 						}
-						classificaController.create(a, campionato, Double.valueOf(0));
+						classificaController.create(a, campionato, (double) 0);
 					}
 				}
 
@@ -634,14 +628,13 @@ public class ImpostazioniView extends VerticalLayout
 				// **************************************
 
 				String urlFanta = (String) p.get("URL_FANTA");
-				String basePath = basePathData;
-				String quotaz = "Giocatori-Quotazioni-Excel";
+                String quotaz = "Giocatori-Quotazioni-Excel";
 				String httpUrl = urlFanta + quotaz + ".asp?giornata=" + codiceGiornata;
 
-				log.info("httpUrl " + httpUrl);
+                log.info("httpUrl {}", httpUrl);
 				String fileName = "Q_" + codiceGiornata;
 				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-				jobCsv.downloadCsv(httpUrl, basePath, fileName, 2);
+				jobCsv.downloadCsv(httpUrl, basePathData, fileName, 2);
 
 			} else if (event.getSource() == updateGiocatori) {
 
@@ -650,21 +643,20 @@ public class ImpostazioniView extends VerticalLayout
 				// **************************************
 
 				log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
-				String imgPath = basePathData;
-				String fileName = "Q_" + codiceGiornata;
+                String fileName = "Q_" + codiceGiornata;
 				fileName = basePathData + fileName + ".csv";
-				boolean updateQuotazioni = chkUpdateQuotaz.getValue().booleanValue();
-				boolean updateImg = chkUpdateImg.getValue().booleanValue();
+				boolean updateQuotazioni = chkUpdateQuotaz.getValue();
+				boolean updateImg = chkUpdateImg.getValue();
 				String percentuale = "" + txtPerc.getValue().intValue();
-				HashMap<Object, Object> map = jobProcessGiornata.initDbGiocatori(Costants.HTTP_URL_IMG, imgPath, fileName, updateQuotazioni, updateImg, percentuale);
+				HashMap<Object, Object> map = jobProcessGiornata.initDbGiocatori(Costants.HTTP_URL_IMG, basePathData, fileName, updateQuotazioni, updateImg, percentuale);
 
 				@SuppressWarnings("unchecked")
 				ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
 				@SuppressWarnings("unchecked")
 				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
 
-				log.info("listGiocatoriAdd " + listGiocatoriAdd.size());
-				log.info("listGiocatoriDel " + listGiocatoriDel.size());
+                log.info("listGiocatoriAdd {}", listGiocatoriAdd.size());
+                log.info("listGiocatoriDel {}", listGiocatoriDel.size());
 
 				tableGiocatoreAdd.setItems(listGiocatoriAdd);
 				tableGiocatoreDel.setItems(listGiocatoriDel);
@@ -683,32 +675,7 @@ public class ImpostazioniView extends VerticalLayout
 					return;
 				}
 
-				String msg = "Confermi inserimento formazioni 422 per la giornata " + codiceGiornata;
-
-				ConfirmDialog dialog = new ConfirmDialog();
-				dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
-				dialog.setText(msg);
-				dialog.setCancelable(true);
-				dialog.setCancelText("Annulla");
-				dialog.setRejectable(false);
-				dialog.setConfirmText("Conferma");
-				dialog.addConfirmListener(e -> {
-					try {
-						int giornata = 0;
-						if (!comboGiornata.isEmpty()) {
-							FcGiornataInfo ggInfo = comboGiornata.getValue();
-							giornata = ggInfo.getCodiceGiornata();
-						}
-						log.info("giornata " + giornata);
-						for (FcAttore a : squadre) {
-							jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
-						}
-
-						CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-					} catch (Exception excpt) {
-						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
-					}
-				});
+				ConfirmDialog dialog = getConfirmDialog(codiceGiornata, campionato);
 				dialog.open();
 
 				return;
@@ -761,7 +728,7 @@ public class ImpostazioniView extends VerticalLayout
 				String urlFanta = (String) p.get("URL_FANTA");
 
 				String votiExcel = "Voti-Ufficiosi-Excel";
-				if (chkUfficiali.getValue().booleanValue()) {
+				if (chkUfficiali.getValue()) {
 					votiExcel = "Voti-Ufficiali-Excel";
 				}
 
@@ -772,7 +739,8 @@ public class ImpostazioniView extends VerticalLayout
 				fileName = basePathData + "voti_" + codiceGiornata + ".csv";
 				jobProcessGiornata.aggiornamentoPFGiornata(p, fileName, "" + codiceGiornata);
 
-				jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+                assert giornataInfo != null;
+                jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
 
 			} else if (event.getSource() == seiPolitico) {
 
@@ -787,7 +755,7 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == calcola) {
 
 				int forzaVotoGiocatore = -1;
-				if (chkForzaVotoGiocatore.getValue().booleanValue()) {
+				if (chkForzaVotoGiocatore.getValue()) {
 					forzaVotoGiocatore = 0;
 				}
 				jobProcessGiornata.algoritmo(codiceGiornata, campionato, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
@@ -807,41 +775,43 @@ public class ImpostazioniView extends VerticalLayout
 
 				String pathImg = "images/";
 				p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
-				if (chkUfficiali.getValue().booleanValue()) {
+				if (chkUfficiali.getValue()) {
 					p.setProperty("INFO_RESULT", "UFFICIALI");
 				} else {
 					p.setProperty("INFO_RESULT", "UFFICIOSI");
 				}
-				jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, basePathData);
+                assert giornataInfo != null;
+                jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, basePathData);
 
 			} else if (event.getSource() == salva) {
-				log.info("da1 " + da1.getValue());
-				log.info("da2 " + da2.getValue());
-				log.info("dg " + dg.getValue());
-				log.info("dp " + dp.getValue());
-				giornataInfo.setDataAnticipo1(da1.getValue());
+                log.info("da1 {}", da1.getValue());
+                log.info("da2 {}", da2.getValue());
+                log.info("dg {}", dg.getValue());
+                log.info("dp {}", dp.getValue());
+                assert giornataInfo != null;
+                giornataInfo.setDataAnticipo1(da1.getValue());
 				giornataInfo.setDataAnticipo2(da2.getValue());
 				giornataInfo.setDataGiornata(dg.getValue());
 				giornataInfo.setDataPosticipo(dp.getValue());
-				log.info("getDataAnticipo2 " + giornataInfo.getDataAnticipo2());
-				log.info("getDataGiornata " + giornataInfo.getDataGiornata());
-				log.info("getDataPosticipo " + giornataInfo.getDataPosticipo());
+                log.info("getDataAnticipo2 {}", giornataInfo.getDataAnticipo2());
+                log.info("getDataGiornata {}", giornataInfo.getDataGiornata());
+                log.info("getDataPosticipo {}", giornataInfo.getDataPosticipo());
 				giornataInfoController.updateGiornataInfo(giornataInfo);
 			} else if (event.getSource() == resetDate) {
 				da1.setValue(null);
 				da2.setValue(null);
 				dg.setValue(null);
 				dp.setValue(null);
-				log.info("1 " + da1.getValue());
-				log.info("1 " + da2.getValue());
-				log.info("1 " + dg.getValue());
-				log.info("1 " + dp.getValue());
+                log.info("1 {}", da1.getValue());
+                log.info("1 {}", da2.getValue());
+                log.info("1 {}", dg.getValue());
+                log.info("1 {}", dp.getValue());
 
 				List<FcCalendarioCompetizione> listCalend = calendarioTimController.findCustom(giornataInfo);
 				LocalDateTime appo = listCalend.get(0).getData();
 				ArrayList<LocalDateTime> listDate = new ArrayList<>();
 				for (FcCalendarioCompetizione c : listCalend) {
-					log.info("" + appo.getDayOfWeek());
+                    log.info("{}", appo.getDayOfWeek());
 					if (appo.getDayOfWeek() != (c.getData().getDayOfWeek())) {
 						listDate.add(appo);
 						appo = c.getData();
@@ -854,43 +824,72 @@ public class ImpostazioniView extends VerticalLayout
 					LocalDateTime localDateTime1 = listDate.get(0);
 					da1.setValue(null);
 					da2.setValue(null);
-					dg.setValue(localDateTime1.minus(1, ChronoUnit.MINUTES));
+					dg.setValue(localDateTime1.minusMinutes(1));
 					dp.setValue(null);
 				} else if (listDate.size() == 2) {
 					LocalDateTime localDateTime1 = listDate.get(0);
 					LocalDateTime localDateTime2 = listDate.get(1);
 					da1.setValue(null);
-					da2.setValue(localDateTime1.minus(1, ChronoUnit.MINUTES));
-					dg.setValue(localDateTime2.minus(1, ChronoUnit.MINUTES));
+					da2.setValue(localDateTime1.minusMinutes(1));
+					dg.setValue(localDateTime2.minusMinutes(1));
 					dp.setValue(null);
 				} else if (listDate.size() == 3) {
 					LocalDateTime localDateTime1 = listDate.get(0);
 					LocalDateTime localDateTime2 = listDate.get(1);
 					LocalDateTime localDateTime3 = listDate.get(2);
 					da1.setValue(null);
-					da2.setValue(localDateTime1.minus(1, ChronoUnit.MINUTES));
-					dg.setValue(localDateTime2.minus(1, ChronoUnit.MINUTES));
-					dp.setValue(localDateTime3.minus(1, ChronoUnit.MINUTES));
-				} else if (listDate.size() > 3) {
+					da2.setValue(localDateTime1.minusMinutes(1));
+					dg.setValue(localDateTime2.minusMinutes(1));
+					dp.setValue(localDateTime3.minusMinutes(1));
+				} else {
 					LocalDateTime localDateTime1 = listDate.get(0);
 					LocalDateTime localDateTime2 = listDate.get(1);
 					LocalDateTime localDateTime3 = listDate.get(2);
 					LocalDateTime localDateTime4 = listDate.get(3);
-					da1.setValue(localDateTime1.minus(1, ChronoUnit.MINUTES));
-					da2.setValue(localDateTime2.minus(1, ChronoUnit.MINUTES));
-					dg.setValue(localDateTime3.minus(1, ChronoUnit.MINUTES));
-					dp.setValue(localDateTime4.minus(1, ChronoUnit.MINUTES));
+					da1.setValue(localDateTime1.minusMinutes(1));
+					da2.setValue(localDateTime2.minusMinutes(1));
+					dg.setValue(localDateTime3.minusMinutes(1));
+					dp.setValue(localDateTime4.minusMinutes(1));
 				}
 
-				log.info("2 " + da1.getValue());
-				log.info("2 " + da2.getValue());
-				log.info("2 " + dg.getValue());
-				log.info("2 " + dp.getValue());
+                log.info("2 {}", da1.getValue());
+                log.info("2 {}", da2.getValue());
+                log.info("2 {}", dg.getValue());
+                log.info("2 {}", dp.getValue());
 			}
 			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 		} catch (Exception e) {
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
+	}
+
+	private @NonNull ConfirmDialog getConfirmDialog(int codiceGiornata, FcCampionato campionato) {
+		String msg = "Confermi inserimento formazioni 422 per la giornata " + codiceGiornata;
+
+		ConfirmDialog dialog = new ConfirmDialog();
+		dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
+		dialog.setText(msg);
+		dialog.setCancelable(true);
+		dialog.setCancelText("Annulla");
+		dialog.setRejectable(false);
+		dialog.setConfirmText("Conferma");
+		dialog.addConfirmListener(e -> {
+			try {
+				int giornata = 0;
+				if (!comboGiornata.isEmpty()) {
+					FcGiornataInfo ggInfo = comboGiornata.getValue();
+					giornata = ggInfo.getCodiceGiornata();
+				}
+				for (FcAttore a : squadre) {
+					jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
+				}
+
+				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+			} catch (Exception excpt) {
+				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
+			}
+		});
+		return dialog;
 	}
 
 	@Autowired
@@ -903,7 +902,7 @@ public class ImpostazioniView extends VerticalLayout
 		StringBuilder formazioneHtml = new StringBuilder();
 		formazioneHtml.append("<html><head><title>FC</title></head>\n");
 		formazioneHtml.append("<body>\n");
-		formazioneHtml.append("<p>Prossima Giornata: " + Utils.buildInfoGiornataHtml(ggInfo) + "</p>\n");
+		formazioneHtml.append("<p>Prossima Giornata: ").append(Utils.buildInfoGiornataHtml(ggInfo)).append("</p>\n");
 		formazioneHtml.append("<br>\n");
 		formazioneHtml.append("<br>\n");
 
@@ -925,10 +924,10 @@ public class ImpostazioniView extends VerticalLayout
 
 		formazioneHtml.append("<br>");
 		formazioneHtml.append("<br>");
-		formazioneHtml.append("<p>Data Anticipo1:  " + (ggInfo.getDataAnticipo1() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), Costants.DATA_FORMATTED)) + "</p>");
-		formazioneHtml.append("<p>Data Anticipo2:  " + (ggInfo.getDataAnticipo2() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), Costants.DATA_FORMATTED)) + "</p>");
-		formazioneHtml.append("<p>Data Giornata:  " + (ggInfo.getDataGiornata() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), Costants.DATA_FORMATTED)) + "</p>");
-		formazioneHtml.append("<p>Data Posticipo: " + (ggInfo.getDataPosticipo() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), Costants.DATA_FORMATTED)) + "</p>");
+		formazioneHtml.append("<p>Data Anticipo1:  ").append(ggInfo.getDataAnticipo1() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), Costants.DATA_FORMATTED)).append("</p>");
+		formazioneHtml.append("<p>Data Anticipo2:  ").append(ggInfo.getDataAnticipo2() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), Costants.DATA_FORMATTED)).append("</p>");
+		formazioneHtml.append("<p>Data Giornata:  ").append(ggInfo.getDataGiornata() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), Costants.DATA_FORMATTED)).append("</p>");
+		formazioneHtml.append("<p>Data Posticipo: ").append(ggInfo.getDataPosticipo() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), Costants.DATA_FORMATTED)).append("</p>");
 		formazioneHtml.append("<br>");
 		formazioneHtml.append("<br>");
 		formazioneHtml.append("<p>Ciao Davide</p>");
@@ -957,18 +956,15 @@ public class ImpostazioniView extends VerticalLayout
 			to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
 		}
 
-		String[] cc = null;
-		String[] bcc = null;
-
-		// log.info(formazioneHtml);
+        // log.info(formazioneHtml);
 		try {
 			String from = env.getProperty("spring.mail.secondary.username");
-			emailService.sendMail(false, from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", "3", null);
+			emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			try {
 				String from = env.getProperty("spring.mail.primary.username");
-				emailService.sendMail(true, from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", "3", null);
+				emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
 			} catch (Exception e2) {
 				log.error(e2.getMessage());
 				throw e2;
@@ -1016,7 +1012,7 @@ public class ImpostazioniView extends VerticalLayout
 					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
 					cellLayout.add(img);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
@@ -1040,7 +1036,7 @@ public class ImpostazioniView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
@@ -1052,7 +1048,7 @@ public class ImpostazioniView extends VerticalLayout
 		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
-		Column<FcGiocatore> quotazioneColumn = grid.addColumn(g -> g.getQuotazione());
+		Column<FcGiocatore> quotazioneColumn = grid.addColumn(FcGiocatore::getQuotazione);
 		quotazioneColumn.setSortable(true);
 		quotazioneColumn.setHeader("Q");
 		quotazioneColumn.setAutoWidth(true);

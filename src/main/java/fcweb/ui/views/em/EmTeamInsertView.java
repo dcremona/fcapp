@@ -1,26 +1,20 @@
 package fcweb.ui.views.em;
 
 import java.io.InputStream;
+import java.io.Serial;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.vaadin.ronny.AbsoluteLayout;
 
 import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
@@ -74,9 +68,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class EmTeamInsertView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Environment env;
@@ -118,9 +113,7 @@ public class EmTeamInsertView extends VerticalLayout
 	private String descAttore = "";
 	private Properties p = null;
 
-	private Button save;
-
-	private ToggleButton checkMail;
+    private ToggleButton checkMail;
 	private ComboBox<String> comboModulo;
 
 	private Grid<FcGiocatore> tableFormazione;
@@ -151,29 +144,29 @@ public class EmTeamInsertView extends VerticalLayout
 	// DATA
 	private static final String[] schemi = new String[] { "5-4-1", "5-3-2", "4-5-1", "4-4-2", "4-3-3", "3-5-2", "3-4-3" };
 	private List<FcGiocatore> modelFormazione = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer1 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer2 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer3 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer4 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer5 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer6 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer7 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer8 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer9 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer10 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer11 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer12 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer13 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer14 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer15 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer16 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer17 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer18 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer19 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer20 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer21 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer22 = new ArrayList<>();
-	private List<FcGiocatore> modelPlayer23 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer1 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer2 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer3 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer4 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer5 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer6 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer7 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer8 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer9 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer10 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer11 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer12 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer13 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer14 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer15 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer16 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer17 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer18 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer19 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer20 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer21 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer22 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
 	@Autowired
 	private AttoreService attoreController;
@@ -189,9 +182,8 @@ public class EmTeamInsertView extends VerticalLayout
 
 	@Autowired
 	private CalendarioCompetizioneService calendarioTimController;
-	private Grid<FcCalendarioCompetizione> tablePartite;
 
-	private AbsoluteLayout absLayout;
+    private AbsoluteLayout absLayout;
 
 	@Autowired
 	private AccessoService accessoController;
@@ -212,7 +204,7 @@ public class EmTeamInsertView extends VerticalLayout
 		initLayout();
 	}
 
-	private void initData() throws Exception {
+	private void initData() {
 
 		p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
@@ -227,13 +219,13 @@ public class EmTeamInsertView extends VerticalLayout
 		modelFormazione = getModelFormazione(attore, campionato);
 	}
 
-	private void initLayout() throws Exception {
+	private void initLayout() {
 
 		absLayout = new AbsoluteLayout(1600,1200);
 		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 
-		save = new Button("Save");
+        Button save = new Button("Save");
 		save.setIcon(VaadinIcon.DATABASE.create());
 		save.addClickListener(this);
 
@@ -247,7 +239,7 @@ public class EmTeamInsertView extends VerticalLayout
 		comboModulo.setPlaceholder("Modulo");
 		comboModulo.addValueChangeListener(evt -> {
 
-			LOG.info(" addValueChangeListener " + evt.getValue());
+            LOG.info(" addValueChangeListener {}", evt.getValue());
 			removeAllElementsList();
 
 			if (evt.getValue() != null) {
@@ -272,111 +264,113 @@ public class EmTeamInsertView extends VerticalLayout
 				absLayout.add(tablePlayer23, _1060px, _A);
 
 				// 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
-				if (modulo.equals("5-4-1")) {
+                switch (modulo) {
+                    case "5-4-1" -> {
 
-					absLayout.add(tablePlayer2, _350px, _D);
-					absLayout.add(tablePlayer3, _450px, _D);
-					absLayout.add(tablePlayer4, _550px, _D);
-					absLayout.add(tablePlayer5, _650px, _D);
-					absLayout.add(tablePlayer6, _750px, _D);
+                        absLayout.add(tablePlayer2, _350px, _D);
+                        absLayout.add(tablePlayer3, _450px, _D);
+                        absLayout.add(tablePlayer4, _550px, _D);
+                        absLayout.add(tablePlayer5, _650px, _D);
+                        absLayout.add(tablePlayer6, _750px, _D);
 
-					absLayout.add(tablePlayer7, _400px, _C);
-					absLayout.add(tablePlayer8, _500px, _C);
-					absLayout.add(tablePlayer9, _600px, _C);
-					absLayout.add(tablePlayer10, _700px, _C);
+                        absLayout.add(tablePlayer7, _400px, _C);
+                        absLayout.add(tablePlayer8, _500px, _C);
+                        absLayout.add(tablePlayer9, _600px, _C);
+                        absLayout.add(tablePlayer10, _700px, _C);
 
-					absLayout.add(tablePlayer11, _550px, _A);
+                        absLayout.add(tablePlayer11, _550px, _A);
+                    }
+                    case "5-3-2" -> {
 
-				} else if (modulo.equals("5-3-2")) {
+                        absLayout.add(tablePlayer2, _350px, _D);
+                        absLayout.add(tablePlayer3, _450px, _D);
+                        absLayout.add(tablePlayer4, _550px, _D);
+                        absLayout.add(tablePlayer5, _650px, _D);
+                        absLayout.add(tablePlayer6, _750px, _D);
 
-					absLayout.add(tablePlayer2, _350px, _D);
-					absLayout.add(tablePlayer3, _450px, _D);
-					absLayout.add(tablePlayer4, _550px, _D);
-					absLayout.add(tablePlayer5, _650px, _D);
-					absLayout.add(tablePlayer6, _750px, _D);
+                        absLayout.add(tablePlayer7, _450px, _C);
+                        absLayout.add(tablePlayer8, _550px, _C);
+                        absLayout.add(tablePlayer9, _650px, _C);
 
-					absLayout.add(tablePlayer7, _450px, _C);
-					absLayout.add(tablePlayer8, _550px, _C);
-					absLayout.add(tablePlayer9, _650px, _C);
+                        absLayout.add(tablePlayer10, _500px, _A);
+                        absLayout.add(tablePlayer11, _600px, _A);
+                    }
+                    case "4-5-1" -> {
 
-					absLayout.add(tablePlayer10, _500px, _A);
-					absLayout.add(tablePlayer11, _600px, _A);
+                        absLayout.add(tablePlayer2, _400px, _D);
+                        absLayout.add(tablePlayer3, _500px, _D);
+                        absLayout.add(tablePlayer4, _600px, _D);
+                        absLayout.add(tablePlayer5, _700px, _D);
 
-				} else if (modulo.equals("4-5-1")) {
+                        absLayout.add(tablePlayer6, _350px, _C);
+                        absLayout.add(tablePlayer7, _450px, _C);
+                        absLayout.add(tablePlayer8, _550px, _C);
+                        absLayout.add(tablePlayer9, _650px, _C);
+                        absLayout.add(tablePlayer10, _750px, _C);
 
-					absLayout.add(tablePlayer2, _400px, _D);
-					absLayout.add(tablePlayer3, _500px, _D);
-					absLayout.add(tablePlayer4, _600px, _D);
-					absLayout.add(tablePlayer5, _700px, _D);
+                        absLayout.add(tablePlayer11, _550px, _A);
+                    }
+                    case "4-4-2" -> {
 
-					absLayout.add(tablePlayer6, _350px, _C);
-					absLayout.add(tablePlayer7, _450px, _C);
-					absLayout.add(tablePlayer8, _550px, _C);
-					absLayout.add(tablePlayer9, _650px, _C);
-					absLayout.add(tablePlayer10, _750px, _C);
+                        absLayout.add(tablePlayer2, _400px, _D);
+                        absLayout.add(tablePlayer3, _500px, _D);
+                        absLayout.add(tablePlayer4, _600px, _D);
+                        absLayout.add(tablePlayer5, _700px, _D);
 
-					absLayout.add(tablePlayer11, _550px, _A);
+                        absLayout.add(tablePlayer6, _400px, _C);
+                        absLayout.add(tablePlayer7, _500px, _C);
+                        absLayout.add(tablePlayer8, _600px, _C);
+                        absLayout.add(tablePlayer9, _700px, _C);
 
-				} else if (modulo.equals("4-4-2")) {
+                        absLayout.add(tablePlayer10, _500px, _A);
+                        absLayout.add(tablePlayer11, _600px, _A);
+                    }
+                    case "4-3-3" -> {
 
-					absLayout.add(tablePlayer2, _400px, _D);
-					absLayout.add(tablePlayer3, _500px, _D);
-					absLayout.add(tablePlayer4, _600px, _D);
-					absLayout.add(tablePlayer5, _700px, _D);
+                        absLayout.add(tablePlayer2, _400px, _D);
+                        absLayout.add(tablePlayer3, _500px, _D);
+                        absLayout.add(tablePlayer4, _600px, _D);
+                        absLayout.add(tablePlayer5, _700px, _D);
 
-					absLayout.add(tablePlayer6, _400px, _C);
-					absLayout.add(tablePlayer7, _500px, _C);
-					absLayout.add(tablePlayer8, _600px, _C);
-					absLayout.add(tablePlayer9, _700px, _C);
+                        absLayout.add(tablePlayer6, _450px, _C);
+                        absLayout.add(tablePlayer7, _550px, _C);
+                        absLayout.add(tablePlayer8, _650px, _C);
 
-					absLayout.add(tablePlayer10, _500px, _A);
-					absLayout.add(tablePlayer11, _600px, _A);
+                        absLayout.add(tablePlayer9, _450px, _A);
+                        absLayout.add(tablePlayer10, _550px, _A);
+                        absLayout.add(tablePlayer11, _650px, _A);
+                    }
+                    case "3-5-2" -> {
 
-				} else if (modulo.equals("4-3-3")) {
+                        absLayout.add(tablePlayer2, _450px, _D);
+                        absLayout.add(tablePlayer3, _550px, _D);
+                        absLayout.add(tablePlayer4, _650px, _D);
 
-					absLayout.add(tablePlayer2, _400px, _D);
-					absLayout.add(tablePlayer3, _500px, _D);
-					absLayout.add(tablePlayer4, _600px, _D);
-					absLayout.add(tablePlayer5, _700px, _D);
+                        absLayout.add(tablePlayer5, _350px, _C);
+                        absLayout.add(tablePlayer6, _450px, _C);
+                        absLayout.add(tablePlayer7, _550px, _C);
+                        absLayout.add(tablePlayer8, _650px, _C);
+                        absLayout.add(tablePlayer9, _750px, _C);
 
-					absLayout.add(tablePlayer6, _450px, _C);
-					absLayout.add(tablePlayer7, _550px, _C);
-					absLayout.add(tablePlayer8, _650px, _C);
+                        absLayout.add(tablePlayer10, _500px, _A);
+                        absLayout.add(tablePlayer11, _600px, _A);
+                    }
+                    case "3-4-3" -> {
 
-					absLayout.add(tablePlayer9, _450px, _A);
-					absLayout.add(tablePlayer10, _550px, _A);
-					absLayout.add(tablePlayer11, _650px, _A);
+                        absLayout.add(tablePlayer2, _450px, _D);
+                        absLayout.add(tablePlayer3, _550px, _D);
+                        absLayout.add(tablePlayer4, _650px, _D);
 
-				} else if (modulo.equals("3-5-2")) {
+                        absLayout.add(tablePlayer5, _400px, _C);
+                        absLayout.add(tablePlayer6, _500px, _C);
+                        absLayout.add(tablePlayer7, _600px, _C);
+                        absLayout.add(tablePlayer8, _700px, _C);
 
-					absLayout.add(tablePlayer2, _450px, _D);
-					absLayout.add(tablePlayer3, _550px, _D);
-					absLayout.add(tablePlayer4, _650px, _D);
-
-					absLayout.add(tablePlayer5, _350px, _C);
-					absLayout.add(tablePlayer6, _450px, _C);
-					absLayout.add(tablePlayer7, _550px, _C);
-					absLayout.add(tablePlayer8, _650px, _C);
-					absLayout.add(tablePlayer9, _750px, _C);
-
-					absLayout.add(tablePlayer10, _500px, _A);
-					absLayout.add(tablePlayer11, _600px, _A);
-
-				} else if (modulo.equals("3-4-3")) {
-
-					absLayout.add(tablePlayer2, _450px, _D);
-					absLayout.add(tablePlayer3, _550px, _D);
-					absLayout.add(tablePlayer4, _650px, _D);
-
-					absLayout.add(tablePlayer5, _400px, _C);
-					absLayout.add(tablePlayer6, _500px, _C);
-					absLayout.add(tablePlayer7, _600px, _C);
-					absLayout.add(tablePlayer8, _700px, _C);
-
-					absLayout.add(tablePlayer9, _450px, _A);
-					absLayout.add(tablePlayer10, _550px, _A);
-					absLayout.add(tablePlayer11, _650px, _A);
-				}
+                        absLayout.add(tablePlayer9, _450px, _A);
+                        absLayout.add(tablePlayer10, _550px, _A);
+                        absLayout.add(tablePlayer11, _650px, _A);
+                    }
+                }
 			}
 		});
 
@@ -407,7 +401,7 @@ public class EmTeamInsertView extends VerticalLayout
 		tablePlayer23 = getTableGiocatore(modelPlayer23);
 
 		List<FcCalendarioCompetizione> listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
-		tablePartite = getTablePartite(listPartite);
+        Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
 
 		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "panchina.jpg"));
 
@@ -483,7 +477,7 @@ public class EmTeamInsertView extends VerticalLayout
 			info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
 			info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
 			info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-			if ("P".equals(bean.getFcRuolo().getIdRuolo().toUpperCase())) {
+			if ("P".equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
 				info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
 			}
 		}
@@ -501,139 +495,139 @@ public class EmTeamInsertView extends VerticalLayout
 	private void removeAllElementsList() {
 
 		LOG.info("removeAllElementsList");
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			FcGiocatore bean = modelPlayer1.get(0);
 			modelFormazione.add(bean);
 			modelPlayer1.clear();
 			tablePlayer1.getDataProvider().refreshAll();
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			FcGiocatore bean = modelPlayer2.get(0);
 			modelFormazione.add(bean);
 			modelPlayer2.clear();
 			tablePlayer2.getDataProvider().refreshAll();
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			FcGiocatore bean = modelPlayer3.get(0);
 			modelFormazione.add(bean);
 			modelPlayer3.clear();
 			tablePlayer3.getDataProvider().refreshAll();
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			FcGiocatore bean = modelPlayer4.get(0);
 			modelFormazione.add(bean);
 			modelPlayer4.clear();
 			tablePlayer4.getDataProvider().refreshAll();
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			FcGiocatore bean = modelPlayer5.get(0);
 			modelFormazione.add(bean);
 			modelPlayer5.clear();
 			tablePlayer5.getDataProvider().refreshAll();
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			FcGiocatore bean = modelPlayer6.get(0);
 			modelFormazione.add(bean);
 			modelPlayer6.clear();
 			tablePlayer6.getDataProvider().refreshAll();
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			FcGiocatore bean = modelPlayer7.get(0);
 			modelFormazione.add(bean);
 			modelPlayer7.clear();
 			tablePlayer7.getDataProvider().refreshAll();
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			FcGiocatore bean = modelPlayer8.get(0);
 			modelFormazione.add(bean);
 			modelPlayer8.clear();
 			tablePlayer8.getDataProvider().refreshAll();
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			FcGiocatore bean = modelPlayer9.get(0);
 			modelFormazione.add(bean);
 			modelPlayer9.clear();
 			tablePlayer9.getDataProvider().refreshAll();
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			FcGiocatore bean = modelPlayer10.get(0);
 			modelFormazione.add(bean);
 			modelPlayer10.clear();
 			tablePlayer10.getDataProvider().refreshAll();
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			FcGiocatore bean = modelPlayer11.get(0);
 			modelFormazione.add(bean);
 			modelPlayer11.clear();
 			tablePlayer11.getDataProvider().refreshAll();
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			FcGiocatore bean = modelPlayer12.get(0);
 			modelFormazione.add(bean);
 			modelPlayer12.clear();
 			tablePlayer12.getDataProvider().refreshAll();
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			FcGiocatore bean = modelPlayer13.get(0);
 			modelFormazione.add(bean);
 			modelPlayer13.clear();
 			tablePlayer13.getDataProvider().refreshAll();
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			FcGiocatore bean = modelPlayer14.get(0);
 			modelFormazione.add(bean);
 			modelPlayer14.clear();
 			tablePlayer14.getDataProvider().refreshAll();
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			FcGiocatore bean = modelPlayer15.get(0);
 			modelFormazione.add(bean);
 			modelPlayer15.clear();
 			tablePlayer15.getDataProvider().refreshAll();
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			FcGiocatore bean = modelPlayer16.get(0);
 			modelFormazione.add(bean);
 			modelPlayer16.clear();
 			tablePlayer16.getDataProvider().refreshAll();
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			FcGiocatore bean = modelPlayer17.get(0);
 			modelFormazione.add(bean);
 			modelPlayer17.clear();
 			tablePlayer17.getDataProvider().refreshAll();
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			FcGiocatore bean = modelPlayer18.get(0);
 			modelFormazione.add(bean);
 			modelPlayer18.clear();
 			tablePlayer18.getDataProvider().refreshAll();
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			FcGiocatore bean = modelPlayer19.get(0);
 			modelFormazione.add(bean);
 			modelPlayer19.clear();
 			tablePlayer19.getDataProvider().refreshAll();
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			FcGiocatore bean = modelPlayer20.get(0);
 			modelFormazione.add(bean);
 			modelPlayer20.clear();
 			tablePlayer20.getDataProvider().refreshAll();
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			FcGiocatore bean = modelPlayer21.get(0);
 			modelFormazione.add(bean);
 			modelPlayer21.clear();
 			tablePlayer21.getDataProvider().refreshAll();
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			FcGiocatore bean = modelPlayer22.get(0);
 			modelFormazione.add(bean);
 			modelPlayer22.clear();
 			tablePlayer22.getDataProvider().refreshAll();
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
 			FcGiocatore bean = modelPlayer23.get(0);
 			modelFormazione.add(bean);
 			modelPlayer23.clear();
@@ -747,12 +741,10 @@ public class EmTeamInsertView extends VerticalLayout
 							cellLayout.add(img);
 							cellLayout.setAlignSelf(Alignment.START, img);
 						} catch (SQLException e) {
-							e.printStackTrace();
+							LOG.error(e.getMessage());
 						}
 					}
-					// Label lblInfoNomeSquadra = new
-					// Label(sq.getNomeSquadra());
-					Span lblInfoNomeSquadra = new Span();
+                    Span lblInfoNomeSquadra = new Span();
 					lblInfoNomeSquadra.setText(sq.getNomeSquadra());
 					lblInfoNomeSquadra.getStyle().set(Costants.FONT_SIZE, "11px");
 					lblInfoNomeSquadra.setTitle(title);
@@ -763,79 +755,78 @@ public class EmTeamInsertView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
 
-					FcGiocatore bean = g;
-					LOG.info("click " + bean.getCognGiocatore());
-					modelFormazione.add(bean);
+                    LOG.info("click {}", g.getCognGiocatore());
+					modelFormazione.add(g);
 					refreshAndSortGridFormazione();
 
 					if (grid == tablePlayer1) {
-						modelPlayer1.remove(bean);
+						modelPlayer1.remove(g);
 						tablePlayer1.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer2) {
-						modelPlayer2.remove(bean);
+						modelPlayer2.remove(g);
 						tablePlayer2.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer3) {
-						modelPlayer3.remove(bean);
+						modelPlayer3.remove(g);
 						tablePlayer3.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer4) {
-						modelPlayer4.remove(bean);
+						modelPlayer4.remove(g);
 						tablePlayer4.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer5) {
-						modelPlayer5.remove(bean);
+						modelPlayer5.remove(g);
 						tablePlayer5.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer6) {
-						modelPlayer6.remove(bean);
+						modelPlayer6.remove(g);
 						tablePlayer6.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer7) {
-						modelPlayer7.remove(bean);
+						modelPlayer7.remove(g);
 						tablePlayer7.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer8) {
-						modelPlayer8.remove(bean);
+						modelPlayer8.remove(g);
 						tablePlayer8.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer9) {
-						modelPlayer9.remove(bean);
+						modelPlayer9.remove(g);
 						tablePlayer9.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer10) {
-						modelPlayer10.remove(bean);
+						modelPlayer10.remove(g);
 						tablePlayer10.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer11) {
-						modelPlayer11.remove(bean);
+						modelPlayer11.remove(g);
 						tablePlayer11.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer12) {
-						modelPlayer12.remove(bean);
+						modelPlayer12.remove(g);
 						tablePlayer12.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer13) {
-						modelPlayer13.remove(bean);
+						modelPlayer13.remove(g);
 						tablePlayer13.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer14) {
-						modelPlayer14.remove(bean);
+						modelPlayer14.remove(g);
 						tablePlayer14.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer15) {
-						modelPlayer15.remove(bean);
+						modelPlayer15.remove(g);
 						tablePlayer15.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer16) {
-						modelPlayer16.remove(bean);
+						modelPlayer16.remove(g);
 						tablePlayer16.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer17) {
-						modelPlayer17.remove(bean);
+						modelPlayer17.remove(g);
 						tablePlayer17.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer18) {
-						modelPlayer18.remove(bean);
+						modelPlayer18.remove(g);
 						tablePlayer18.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer19) {
-						modelPlayer19.remove(bean);
+						modelPlayer19.remove(g);
 						tablePlayer19.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer20) {
-						modelPlayer20.remove(bean);
+						modelPlayer20.remove(g);
 						tablePlayer20.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer21) {
-						modelPlayer21.remove(bean);
+						modelPlayer21.remove(g);
 						tablePlayer21.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer22) {
-						modelPlayer22.remove(bean);
+						modelPlayer22.remove(g);
 						tablePlayer22.getDataProvider().refreshAll();
 					} else if (grid == tablePlayer23) {
-						modelPlayer23.remove(bean);
+						modelPlayer23.remove(g);
 						tablePlayer23.getDataProvider().refreshAll();
 					}
 
@@ -879,13 +870,9 @@ public class EmTeamInsertView extends VerticalLayout
 		ruoloColumn.setSortable(true);
 		ruoloColumn.setHeader("R");
 		ruoloColumn.setWidth("35px");
-		ruoloColumn.setComparator((p1,
-				p2) -> p1.getFcRuolo().getIdRuolo().compareTo(p2.getFcRuolo().getIdRuolo()));
-		// ruoloColumn.setAutoWidth(true);
+		ruoloColumn.setComparator(Comparator.comparing(p -> p.getFcRuolo().getIdRuolo()));
 
-		// Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g !=
-		// null ? g.getCognGiocatore() : "");
-		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+        Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);
 			cellLayout.setPadding(false);
@@ -932,7 +919,7 @@ public class EmTeamInsertView extends VerticalLayout
 							img.setTitle(title);
 							cellLayout.add(img);
 						} catch (SQLException e) {
-							e.printStackTrace();
+							LOG.error(e.getMessage());
 						}
 					}
 					Span lblSquadra = new Span();
@@ -944,8 +931,7 @@ public class EmTeamInsertView extends VerticalLayout
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setSortable(true);
-		nomeSquadraColumn.setComparator((p1,
-				p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
+		nomeSquadraColumn.setComparator(Comparator.comparing(p -> p.getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setHeader("Naz");
 		nomeSquadraColumn.setWidth("70px");
 		// nomeSquadraColumn.setAutoWidth(true);
@@ -976,7 +962,7 @@ public class EmTeamInsertView extends VerticalLayout
 				cellLayout.add(img);
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (s != null) {
 					d = s.getMediaVoto() / Costants.DIVISORE_10;
 				}
@@ -990,8 +976,7 @@ public class EmTeamInsertView extends VerticalLayout
 			return cellLayout;
 		}));
 		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator((p1,
-				p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
+		mediaVotoColumn.setComparator(Comparator.comparing(p -> p.getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader("Mv");
 		mediaVotoColumn.setWidth("70px");
 		// mediaVotoColumn.setAutoWidth(true);
@@ -1002,447 +987,451 @@ public class EmTeamInsertView extends VerticalLayout
 				return;
 			}
 			FcGiocatore bean = event.getItem();
-			LOG.info("click " + bean.getCognGiocatore());
+            LOG.info("click {}", bean.getCognGiocatore());
 
-			if (bean != null) {
+            if (existGiocatore(bean)) {
+                LOG.info("existGiocatore true");
+                return;
+            }
 
-				if (existGiocatore(bean)) {
-					LOG.info("existGiocatore true");
-					return;
-				}
+            boolean bDel = false;
+            switch (bean.getFcRuolo().getIdRuolo()) {
+                case "P" -> {
+                    if (modelPlayer1.isEmpty()) {
+                        modelPlayer1.add(bean);
+                        tablePlayer1.getDataProvider().refreshAll();
+                        bDel = true;
+                    }
+                }
+                case "D" -> {
 
-				boolean bDel = false;
-				if (bean.getFcRuolo().getIdRuolo().equals("P")) {
-					if (modelPlayer1.size() == 0) {
-						modelPlayer1.add(bean);
-						tablePlayer1.getDataProvider().refreshAll();
-						bDel = true;
-					}
-				} else if (bean.getFcRuolo().getIdRuolo().equals("D")) {
+                    switch (valModulo) {
+                        case "5-4-1", "5-3-2" -> {
 
-					if (valModulo.equals("5-4-1") || valModulo.equals("5-3-2")) {
+                            if (modelPlayer2.isEmpty()) {
+                                modelPlayer2.add(bean);
+                                tablePlayer2.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer3.isEmpty()) {
+                                modelPlayer3.add(bean);
+                                tablePlayer3.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer4.isEmpty()) {
+                                modelPlayer4.add(bean);
+                                tablePlayer4.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer5.isEmpty()) {
+                                modelPlayer5.add(bean);
+                                tablePlayer5.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer6.isEmpty()) {
+                                modelPlayer6.add(bean);
+                                tablePlayer6.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "4-5-1", "4-4-2", "4-3-3" -> {
 
-						if (modelPlayer2.size() == 0) {
-							modelPlayer2.add(bean);
-							tablePlayer2.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer3.size() == 0) {
-							modelPlayer3.add(bean);
-							tablePlayer3.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer4.size() == 0) {
-							modelPlayer4.add(bean);
-							tablePlayer4.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer5.size() == 0) {
-							modelPlayer5.add(bean);
-							tablePlayer5.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer6.size() == 0) {
-							modelPlayer6.add(bean);
-							tablePlayer6.getDataProvider().refreshAll();
-							bDel = true;
-						}
+                            if (modelPlayer2.isEmpty()) {
+                                modelPlayer2.add(bean);
+                                tablePlayer2.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer3.isEmpty()) {
+                                modelPlayer3.add(bean);
+                                tablePlayer3.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer4.isEmpty()) {
+                                modelPlayer4.add(bean);
+                                tablePlayer4.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer5.isEmpty()) {
+                                modelPlayer5.add(bean);
+                                tablePlayer5.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "3-5-2", "3-4-3" -> {
 
-					} else if (valModulo.equals("4-5-1") || valModulo.equals("4-4-2") || valModulo.equals("4-3-3")) {
+                            if (modelPlayer2.isEmpty()) {
+                                modelPlayer2.add(bean);
+                                tablePlayer2.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer3.isEmpty()) {
+                                modelPlayer3.add(bean);
+                                tablePlayer3.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer4.isEmpty()) {
+                                modelPlayer4.add(bean);
+                                tablePlayer4.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                    }
+                }
+                case "C" -> {
 
-						if (modelPlayer2.size() == 0) {
-							modelPlayer2.add(bean);
-							tablePlayer2.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer3.size() == 0) {
-							modelPlayer3.add(bean);
-							tablePlayer3.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer4.size() == 0) {
-							modelPlayer4.add(bean);
-							tablePlayer4.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer5.size() == 0) {
-							modelPlayer5.add(bean);
-							tablePlayer5.getDataProvider().refreshAll();
-							bDel = true;
-						}
+                    switch (valModulo) {
+                        case "4-5-1" -> {
 
-					} else if (valModulo.equals("3-5-2") || valModulo.equals("3-4-3")) {
+                            if (modelPlayer6.isEmpty()) {
+                                modelPlayer6.add(bean);
+                                tablePlayer6.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer9.isEmpty()) {
+                                modelPlayer9.add(bean);
+                                tablePlayer9.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer10.isEmpty()) {
+                                modelPlayer10.add(bean);
+                                tablePlayer10.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "3-5-2" -> {
 
-						if (modelPlayer2.size() == 0) {
-							modelPlayer2.add(bean);
-							tablePlayer2.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer3.size() == 0) {
-							modelPlayer3.add(bean);
-							tablePlayer3.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer4.size() == 0) {
-							modelPlayer4.add(bean);
-							tablePlayer4.getDataProvider().refreshAll();
-							bDel = true;
-						}
-					}
+                            if (modelPlayer5.isEmpty()) {
+                                modelPlayer5.add(bean);
+                                tablePlayer5.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer6.isEmpty()) {
+                                modelPlayer6.add(bean);
+                                tablePlayer6.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer9.isEmpty()) {
+                                modelPlayer9.add(bean);
+                                tablePlayer9.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "5-4-1" -> {
 
-				} else if (bean.getFcRuolo().getIdRuolo().equals("C")) {
+                            if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer9.isEmpty()) {
+                                modelPlayer9.add(bean);
+                                tablePlayer9.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer10.isEmpty()) {
+                                modelPlayer10.add(bean);
+                                tablePlayer10.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "4-4-2" -> {
 
-					if (valModulo.equals("4-5-1")) {
+                            if (modelPlayer6.isEmpty()) {
+                                modelPlayer6.add(bean);
+                                tablePlayer6.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer9.isEmpty()) {
+                                modelPlayer9.add(bean);
+                                tablePlayer9.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "3-4-3" -> {
 
-						if (modelPlayer6.size() == 0) {
-							modelPlayer6.add(bean);
-							tablePlayer6.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
-							modelPlayer9.add(bean);
-							tablePlayer9.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer10.size() == 0) {
-							modelPlayer10.add(bean);
-							tablePlayer10.getDataProvider().refreshAll();
-							bDel = true;
-						}
-					} else if (valModulo.equals("3-5-2")) {
+                            if (modelPlayer5.isEmpty()) {
+                                modelPlayer5.add(bean);
+                                tablePlayer5.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer6.isEmpty()) {
+                                modelPlayer6.add(bean);
+                                tablePlayer6.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "5-3-2" -> {
 
-						if (modelPlayer5.size() == 0) {
-							modelPlayer5.add(bean);
-							tablePlayer5.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer6.size() == 0) {
-							modelPlayer6.add(bean);
-							tablePlayer6.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
-							modelPlayer9.add(bean);
-							tablePlayer9.getDataProvider().refreshAll();
-							bDel = true;
-						}
+                            if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer9.isEmpty()) {
+                                modelPlayer9.add(bean);
+                                tablePlayer9.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "4-3-3" -> {
+                            if (modelPlayer6.isEmpty()) {
+                                modelPlayer6.add(bean);
+                                tablePlayer6.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer7.isEmpty()) {
+                                modelPlayer7.add(bean);
+                                tablePlayer7.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer8.isEmpty()) {
+                                modelPlayer8.add(bean);
+                                tablePlayer8.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                    }
+                }
+                case "A" -> {
 
-					} else if (valModulo.equals("5-4-1")) {
+                    switch (valModulo) {
+                        case "4-5-1", "5-4-1" -> {
 
-						if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
-							modelPlayer9.add(bean);
-							tablePlayer9.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer10.size() == 0) {
-							modelPlayer10.add(bean);
-							tablePlayer10.getDataProvider().refreshAll();
-							bDel = true;
-						}
+                            if (modelPlayer11.isEmpty()) {
+                                modelPlayer11.add(bean);
+                                tablePlayer11.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "3-5-2", "4-4-2", "5-3-2" -> {
 
-					} else if (valModulo.equals("4-4-2")) {
+                            if (modelPlayer10.isEmpty()) {
+                                modelPlayer10.add(bean);
+                                tablePlayer10.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer11.isEmpty()) {
+                                modelPlayer11.add(bean);
+                                tablePlayer11.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                        case "3-4-3", "4-3-3" -> {
 
-						if (modelPlayer6.size() == 0) {
-							modelPlayer6.add(bean);
-							tablePlayer6.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
-							modelPlayer9.add(bean);
-							tablePlayer9.getDataProvider().refreshAll();
-							bDel = true;
-						}
+                            if (modelPlayer9.isEmpty()) {
+                                modelPlayer9.add(bean);
+                                tablePlayer9.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer10.isEmpty()) {
+                                modelPlayer10.add(bean);
+                                tablePlayer10.getDataProvider().refreshAll();
+                                bDel = true;
+                            } else if (modelPlayer11.isEmpty()) {
+                                modelPlayer11.add(bean);
+                                tablePlayer11.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                    }
+                }
+            }
 
-					} else if (valModulo.equals("3-4-3")) {
+            if (!bDel) {
 
-						if (modelPlayer5.size() == 0) {
-							modelPlayer5.add(bean);
-							tablePlayer5.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer6.size() == 0) {
-							modelPlayer6.add(bean);
-							tablePlayer6.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						}
+                if (modelPlayer12.isEmpty()) {
+                    modelPlayer12.add(bean);
+                    tablePlayer12.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer13.isEmpty()) {
+                    modelPlayer13.add(bean);
+                    tablePlayer13.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer14.isEmpty()) {
+                    modelPlayer14.add(bean);
+                    tablePlayer14.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer15.isEmpty()) {
+                    modelPlayer15.add(bean);
+                    tablePlayer15.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer16.isEmpty()) {
+                    modelPlayer16.add(bean);
+                    tablePlayer16.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer17.isEmpty()) {
+                    modelPlayer17.add(bean);
+                    tablePlayer17.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer18.isEmpty()) {
+                    modelPlayer18.add(bean);
+                    tablePlayer18.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer19.isEmpty()) {
+                    modelPlayer19.add(bean);
+                    tablePlayer19.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer20.isEmpty()) {
+                    modelPlayer20.add(bean);
+                    tablePlayer20.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer21.isEmpty()) {
+                    modelPlayer21.add(bean);
+                    tablePlayer21.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer22.isEmpty()) {
+                    modelPlayer22.add(bean);
+                    tablePlayer22.getDataProvider().refreshAll();
+                    bDel = true;
+                } else if (modelPlayer23.isEmpty()) {
+                    modelPlayer23.add(bean);
+                    tablePlayer23.getDataProvider().refreshAll();
+                    bDel = true;
+                }
+            }
 
-					} else if (valModulo.equals("5-3-2")) {
+            if (bDel) {
+                modelFormazione.remove(bean);
+                refreshAndSortGridFormazione();
+            }
 
-						if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer9.size() == 0) {
-							modelPlayer9.add(bean);
-							tablePlayer9.getDataProvider().refreshAll();
-							bDel = true;
-						}
-
-					} else if (valModulo.equals("4-3-3")) {
-						if (modelPlayer6.size() == 0) {
-							modelPlayer6.add(bean);
-							tablePlayer6.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer7.size() == 0) {
-							modelPlayer7.add(bean);
-							tablePlayer7.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer8.size() == 0) {
-							modelPlayer8.add(bean);
-							tablePlayer8.getDataProvider().refreshAll();
-							bDel = true;
-						}
-					}
-
-				} else if (bean.getFcRuolo().getIdRuolo().equals("A")) {
-
-					if (valModulo.equals("4-5-1") || valModulo.equals("5-4-1")) {
-
-						if (modelPlayer11.size() == 0) {
-							modelPlayer11.add(bean);
-							tablePlayer11.getDataProvider().refreshAll();
-							bDel = true;
-						}
-
-					} else if (valModulo.equals("3-5-2") || valModulo.equals("4-4-2") || valModulo.equals("5-3-2")) {
-
-						if (modelPlayer10.size() == 0) {
-							modelPlayer10.add(bean);
-							tablePlayer10.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer11.size() == 0) {
-							modelPlayer11.add(bean);
-							tablePlayer11.getDataProvider().refreshAll();
-							bDel = true;
-						}
-
-					} else if (valModulo.equals("3-4-3") || valModulo.equals("4-3-3")) {
-
-						if (modelPlayer9.size() == 0) {
-							modelPlayer9.add(bean);
-							tablePlayer9.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer10.size() == 0) {
-							modelPlayer10.add(bean);
-							tablePlayer10.getDataProvider().refreshAll();
-							bDel = true;
-						} else if (modelPlayer11.size() == 0) {
-							modelPlayer11.add(bean);
-							tablePlayer11.getDataProvider().refreshAll();
-							bDel = true;
-						}
-					}
-				}
-
-				if (!bDel) {
-
-					if (modelPlayer12.size() == 0) {
-						modelPlayer12.add(bean);
-						tablePlayer12.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer13.size() == 0) {
-						modelPlayer13.add(bean);
-						tablePlayer13.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer14.size() == 0) {
-						modelPlayer14.add(bean);
-						tablePlayer14.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer15.size() == 0) {
-						modelPlayer15.add(bean);
-						tablePlayer15.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer16.size() == 0) {
-						modelPlayer16.add(bean);
-						tablePlayer16.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer17.size() == 0) {
-						modelPlayer17.add(bean);
-						tablePlayer17.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer18.size() == 0) {
-						modelPlayer18.add(bean);
-						tablePlayer18.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer19.size() == 0) {
-						modelPlayer19.add(bean);
-						tablePlayer19.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer20.size() == 0) {
-						modelPlayer20.add(bean);
-						tablePlayer20.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer21.size() == 0) {
-						modelPlayer21.add(bean);
-						tablePlayer21.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer22.size() == 0) {
-						modelPlayer22.add(bean);
-						tablePlayer22.getDataProvider().refreshAll();
-						bDel = true;
-					} else if (modelPlayer23.size() == 0) {
-						modelPlayer23.add(bean);
-						tablePlayer23.getDataProvider().refreshAll();
-						bDel = true;
-					}
-				}
-
-				if (bDel) {
-					modelFormazione.remove(bean);
-					refreshAndSortGridFormazione();
-				}
-
-			}
-
-		});
+        });
 
 		return grid;
 	}
 
 	private boolean existGiocatore(FcGiocatore g) {
 
-		if (modelPlayer1.size() != 0) {
-			if (modelPlayer1.indexOf(g) != -1) {
+		if (!modelPlayer1.isEmpty()) {
+			if (modelPlayer1.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer2.size() != 0) {
-			if (modelPlayer2.indexOf(g) != -1) {
+		if (!modelPlayer2.isEmpty()) {
+			if (modelPlayer2.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer3.size() != 0) {
-			if (modelPlayer3.indexOf(g) != -1) {
+		if (!modelPlayer3.isEmpty()) {
+			if (modelPlayer3.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer4.size() != 0) {
-			if (modelPlayer4.indexOf(g) != -1) {
+		if (!modelPlayer4.isEmpty()) {
+			if (modelPlayer4.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer5.size() != 0) {
-			if (modelPlayer5.indexOf(g) != -1) {
+		if (!modelPlayer5.isEmpty()) {
+			if (modelPlayer5.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer6.size() != 0) {
-			if (modelPlayer6.indexOf(g) != -1) {
+		if (!modelPlayer6.isEmpty()) {
+			if (modelPlayer6.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer7.size() != 0) {
-			if (modelPlayer7.indexOf(g) != -1) {
+		if (!modelPlayer7.isEmpty()) {
+			if (modelPlayer7.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer8.size() != 0) {
-			if (modelPlayer8.indexOf(g) != -1) {
+		if (!modelPlayer8.isEmpty()) {
+			if (modelPlayer8.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer9.size() != 0) {
-			if (modelPlayer9.indexOf(g) != -1) {
+		if (!modelPlayer9.isEmpty()) {
+			if (modelPlayer9.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer10.size() != 0) {
-			if (modelPlayer10.indexOf(g) != -1) {
+		if (!modelPlayer10.isEmpty()) {
+			if (modelPlayer10.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer11.size() != 0) {
-			if (modelPlayer11.indexOf(g) != -1) {
+		if (!modelPlayer11.isEmpty()) {
+			if (modelPlayer11.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer12.size() != 0) {
-			if (modelPlayer12.indexOf(g) != -1) {
+		if (!modelPlayer12.isEmpty()) {
+			if (modelPlayer12.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer13.size() != 0) {
-			if (modelPlayer13.indexOf(g) != -1) {
+		if (!modelPlayer13.isEmpty()) {
+			if (modelPlayer13.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer14.size() != 0) {
-			if (modelPlayer14.indexOf(g) != -1) {
+		if (!modelPlayer14.isEmpty()) {
+			if (modelPlayer14.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer15.size() != 0) {
-			if (modelPlayer15.indexOf(g) != -1) {
+		if (!modelPlayer15.isEmpty()) {
+			if (modelPlayer15.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer16.size() != 0) {
-			if (modelPlayer16.indexOf(g) != -1) {
+		if (!modelPlayer16.isEmpty()) {
+			if (modelPlayer16.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer17.size() != 0) {
-			if (modelPlayer17.indexOf(g) != -1) {
+		if (!modelPlayer17.isEmpty()) {
+			if (modelPlayer17.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer18.size() != 0) {
-			if (modelPlayer18.indexOf(g) != -1) {
+		if (!modelPlayer18.isEmpty()) {
+			if (modelPlayer18.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer19.size() != 0) {
-			if (modelPlayer19.indexOf(g) != -1) {
+		if (!modelPlayer19.isEmpty()) {
+			if (modelPlayer19.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer20.size() != 0) {
-			if (modelPlayer20.indexOf(g) != -1) {
+		if (!modelPlayer20.isEmpty()) {
+			if (modelPlayer20.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer21.size() != 0) {
-			if (modelPlayer21.indexOf(g) != -1) {
+		if (!modelPlayer21.isEmpty()) {
+			if (modelPlayer21.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer22.size() != 0) {
-			if (modelPlayer22.indexOf(g) != -1) {
+		if (!modelPlayer22.isEmpty()) {
+			if (modelPlayer22.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer23.size() != 0) {
-			if (modelPlayer23.indexOf(g) != -1) {
-				return true;
-			}
+		if (!modelPlayer23.isEmpty()) {
+            return modelPlayer23.contains(g);
 		}
 
 		return false;
@@ -1450,118 +1439,118 @@ public class EmTeamInsertView extends VerticalLayout
 
 	private int getOrdinamento(FcGiocatore g) {
 
-		if (modelPlayer1.size() != 0) {
-			if (modelPlayer1.indexOf(g) != -1) {
+		if (!modelPlayer1.isEmpty()) {
+			if (modelPlayer1.contains(g)) {
 				return 1;
 			}
 		}
-		if (modelPlayer2.size() != 0) {
-			if (modelPlayer2.indexOf(g) != -1) {
+		if (!modelPlayer2.isEmpty()) {
+			if (modelPlayer2.contains(g)) {
 				return 2;
 			}
 		}
-		if (modelPlayer3.size() != 0) {
-			if (modelPlayer3.indexOf(g) != -1) {
+		if (!modelPlayer3.isEmpty()) {
+			if (modelPlayer3.contains(g)) {
 				return 3;
 			}
 		}
-		if (modelPlayer4.size() != 0) {
-			if (modelPlayer4.indexOf(g) != -1) {
+		if (!modelPlayer4.isEmpty()) {
+			if (modelPlayer4.contains(g)) {
 				return 4;
 			}
 		}
-		if (modelPlayer5.size() != 0) {
-			if (modelPlayer5.indexOf(g) != -1) {
+		if (!modelPlayer5.isEmpty()) {
+			if (modelPlayer5.contains(g)) {
 				return 5;
 			}
 		}
-		if (modelPlayer6.size() != 0) {
-			if (modelPlayer6.indexOf(g) != -1) {
+		if (!modelPlayer6.isEmpty()) {
+			if (modelPlayer6.contains(g)) {
 				return 6;
 			}
 		}
-		if (modelPlayer7.size() != 0) {
-			if (modelPlayer7.indexOf(g) != -1) {
+		if (!modelPlayer7.isEmpty()) {
+			if (modelPlayer7.contains(g)) {
 				return 7;
 			}
 		}
-		if (modelPlayer8.size() != 0) {
-			if (modelPlayer8.indexOf(g) != -1) {
+		if (!modelPlayer8.isEmpty()) {
+			if (modelPlayer8.contains(g)) {
 				return 8;
 			}
 		}
-		if (modelPlayer9.size() != 0) {
-			if (modelPlayer9.indexOf(g) != -1) {
+		if (!modelPlayer9.isEmpty()) {
+			if (modelPlayer9.contains(g)) {
 				return 9;
 			}
 		}
 		if (modelPlayer10.size() != 0) {
-			if (modelPlayer10.indexOf(g) != -1) {
+			if (modelPlayer10.contains(g)) {
 				return 10;
 			}
 		}
 		if (modelPlayer11.size() != 0) {
-			if (modelPlayer11.indexOf(g) != -1) {
+			if (modelPlayer11.contains(g)) {
 				return 11;
 			}
 		}
 		if (modelPlayer12.size() != 0) {
-			if (modelPlayer12.indexOf(g) != -1) {
+			if (modelPlayer12.contains(g)) {
 				return 12;
 			}
 		}
 		if (modelPlayer13.size() != 0) {
-			if (modelPlayer13.indexOf(g) != -1) {
+			if (modelPlayer13.contains(g)) {
 				return 13;
 			}
 		}
 		if (modelPlayer14.size() != 0) {
-			if (modelPlayer14.indexOf(g) != -1) {
+			if (modelPlayer14.contains(g)) {
 				return 14;
 			}
 		}
 		if (modelPlayer15.size() != 0) {
-			if (modelPlayer15.indexOf(g) != -1) {
+			if (modelPlayer15.contains(g)) {
 				return 15;
 			}
 		}
 		if (modelPlayer16.size() != 0) {
-			if (modelPlayer16.indexOf(g) != -1) {
+			if (modelPlayer16.contains(g)) {
 				return 16;
 			}
 		}
 		if (modelPlayer17.size() != 0) {
-			if (modelPlayer17.indexOf(g) != -1) {
+			if (modelPlayer17.contains(g)) {
 				return 17;
 			}
 		}
 		if (modelPlayer18.size() != 0) {
-			if (modelPlayer18.indexOf(g) != -1) {
+			if (modelPlayer18.contains(g)) {
 				return 18;
 			}
 		}
 		if (modelPlayer19.size() != 0) {
-			if (modelPlayer19.indexOf(g) != -1) {
+			if (modelPlayer19.contains(g)) {
 				return 19;
 			}
 		}
 		if (modelPlayer20.size() != 0) {
-			if (modelPlayer20.indexOf(g) != -1) {
+			if (modelPlayer20.contains(g)) {
 				return 20;
 			}
 		}
 		if (modelPlayer21.size() != 0) {
-			if (modelPlayer21.indexOf(g) != -1) {
+			if (modelPlayer21.contains(g)) {
 				return 21;
 			}
 		}
 		if (modelPlayer22.size() != 0) {
-			if (modelPlayer22.indexOf(g) != -1) {
+			if (modelPlayer22.contains(g)) {
 				return 22;
 			}
 		}
 		if (modelPlayer23.size() != 0) {
-			if (modelPlayer23.indexOf(g) != -1) {
+			if (modelPlayer23.contains(g)) {
 				return 23;
 			}
 		}
@@ -1570,7 +1559,7 @@ public class EmTeamInsertView extends VerticalLayout
 	}
 
 	private void loadFcGiornatadett(FcAttore attore,
-			FcGiornataInfo giornataInfo) throws Exception {
+			FcGiornataInfo giornataInfo) {
 
 		LOG.info("loadFcGiornatadett");
 
@@ -1589,13 +1578,11 @@ public class EmTeamInsertView extends VerticalLayout
 		for (FcGiornataDett gd : lGiocatori) {
 
 			if (gd.getOrdinamento() < 12) {
-				if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("D")) {
-					countD++;
-				} else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("C")) {
-					countC++;
-				} else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("A")) {
-					countA++;
-				}
+                switch (gd.getFcGiocatore().getFcRuolo().getIdRuolo()) {
+                    case "D" -> countD++;
+                    case "C" -> countC++;
+                    case "A" -> countA++;
+                }
 			}
 		}
 
@@ -1740,8 +1727,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 				} catch (Exception excpt) {
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, excpt.getMessage());
-					return;
-				}
+                }
 
 			} else {
 				CustomMessageDialog.showMessageInfo("Formazione inserita con successo! \nPer rendere effettiva la formazione abilitare invio email.");
@@ -1752,18 +1738,13 @@ public class EmTeamInsertView extends VerticalLayout
 	private String getSysdate() {
 
 		String sql = "select sysdate() from dual";
-		return jdbcTemplate.query(sql, new ResultSetExtractor<String>(){
-			@Override
-			public String extractData(ResultSet rs)
-					throws SQLException, DataAccessException {
-				if (rs.next()) {
+		return jdbcTemplate.query(sql, rs -> {
+            if (rs.next()) {
 
-					String dataora = rs.getString(1);
-					return dataora;
-				}
-				return null;
-			}
-		});
+                return rs.getString(1);
+            }
+            return null;
+        });
 	}
 
 	private boolean check() {
@@ -1775,17 +1756,17 @@ public class EmTeamInsertView extends VerticalLayout
 		return true;
 	}
 
-	private void insert(int giornata) throws Exception {
+	private void insert(int giornata) {
 
-		String query = "";
+		String query;
 		try {
 			query = " DELETE FROM fc_giornata_dett WHERE ID_GIORNATA=" + giornata + " AND ID_ATTORE=" + idAttore;
 			jdbcTemplate.update(query);
 
 			String ID_GIORNATA = "" + giornata;
-			String ID_GIOCATORE = "";
-			String ID_STATO_GIOCATORE = "";
-			String ORDINAMENTO = "";
+			String ID_GIOCATORE;
+			String ID_STATO_GIOCATORE;
+			String ORDINAMENTO;
 			int ord = 1;
 			for (int i = 0; i < 23; i++) {
 
@@ -1879,7 +1860,7 @@ public class EmTeamInsertView extends VerticalLayout
 					FcGiocatore bean = modelPlayer22.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
-				} else if (i == 22) {
+				} else {
 					FcGiocatore bean = modelPlayer23.get(0);
 					ID_GIOCATORE = "" + bean.getIdGiocatore();
 					ID_STATO_GIOCATORE = "R";
@@ -1896,10 +1877,9 @@ public class EmTeamInsertView extends VerticalLayout
 		}
 	}
 
-	private void insert_dett_info(int giornata, String dataora)
-			throws Exception {
+	private void insert_dett_info(int giornata, String dataora) {
 
-		String query = "";
+		String query;
 		try {
 			query = " DELETE FROM fc_giornata_dett_info WHERE ID_GIORNATA=" + giornata + " AND ID_ATTORE=" + idAttore;
 			jdbcTemplate.update(query);
@@ -1918,77 +1898,29 @@ public class EmTeamInsertView extends VerticalLayout
 
 		String subject = "Formazione " + descAttore + " - " + desc_giornata;
 
-		String modulo = this.comboModulo.getValue().toString();
+		String modulo = this.comboModulo.getValue();
 
-		String formazioneHtml = "";
-		formazioneHtml += "<html><head><title>FC</title></head>\n";
-		formazioneHtml += "<body>\n";
-		formazioneHtml += "<p>" + desc_giornata + "</p>\n";
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<p>" + modulo + "</p>\n";
-		formazioneHtml += "<br>\n";
+		StringBuilder formazioneHtml = new StringBuilder();
+		formazioneHtml.append("<html><head><title>FC</title></head>\n");
+		formazioneHtml.append("<body>\n");
+		formazioneHtml.append("<p>").append(desc_giornata).append("</p>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<p>").append(modulo).append("</p>\n");
+		formazioneHtml.append("<br>\n");
 
-		formazioneHtml += "<table>";
+		formazioneHtml.append("<table>");
 
-		String NOME_GIOCATORE = "";
-		String RUOLO = "";
-		String STATO = "";
-		String ORDINAMENTO = "";
-		String SQUADRA = "";
+		String NOME_GIOCATORE;
+		String RUOLO;
+		String STATO;
+		String ORDINAMENTO;
+		String SQUADRA;
 		int ord = 1;
 		Map<String, InputStream> listImg = new HashMap<>();
 		for (int i = 0; i < 23; i++) {
 
 			ORDINAMENTO = "" + ord;
-			FcGiocatore bean = null;
-
-			if (i == 0) {
-				bean = modelPlayer1.get(0);
-			} else if (i == 1) {
-				bean = modelPlayer2.get(0);
-			} else if (i == 2) {
-				bean = modelPlayer3.get(0);
-			} else if (i == 3) {
-				bean = modelPlayer4.get(0);
-			} else if (i == 4) {
-				bean = modelPlayer5.get(0);
-			} else if (i == 5) {
-				bean = modelPlayer6.get(0);
-			} else if (i == 6) {
-				bean = modelPlayer7.get(0);
-			} else if (i == 7) {
-				bean = modelPlayer8.get(0);
-			} else if (i == 8) {
-				bean = modelPlayer9.get(0);
-			} else if (i == 9) {
-				bean = modelPlayer10.get(0);
-			} else if (i == 10) {
-				bean = modelPlayer11.get(0);
-			} else if (i == 11) {
-				bean = modelPlayer12.get(0);
-			} else if (i == 12) {
-				bean = modelPlayer13.get(0);
-			} else if (i == 13) {
-				bean = modelPlayer14.get(0);
-			} else if (i == 14) {
-				bean = modelPlayer15.get(0);
-			} else if (i == 15) {
-				bean = modelPlayer16.get(0);
-			} else if (i == 16) {
-				bean = modelPlayer17.get(0);
-			} else if (i == 17) {
-				bean = modelPlayer18.get(0);
-			} else if (i == 18) {
-				bean = modelPlayer19.get(0);
-			} else if (i == 19) {
-				bean = modelPlayer20.get(0);
-			} else if (i == 20) {
-				bean = modelPlayer21.get(0);
-			} else if (i == 21) {
-				bean = modelPlayer22.get(0);
-			} else if (i == 22) {
-				bean = modelPlayer23.get(0);
-			}
+			FcGiocatore bean = getFcGiocatore(i);
 
 			NOME_GIOCATORE = bean.getCognGiocatore();
 			RUOLO = bean.getFcRuolo().getDescRuolo();
@@ -2012,79 +1944,129 @@ public class EmTeamInsertView extends VerticalLayout
 				try {
 					listImg.put(cidNomeSq, sq.getImg().getBinaryStream());
 				} catch (SQLException e) {
-					e.printStackTrace();
+					LOG.error(e.getMessage());
 				}
 			}
 
-			formazioneHtml += "<tr " + color + ">";
+			formazioneHtml.append("<tr ").append(color).append(">");
 
-			formazioneHtml += "<td>";
-			formazioneHtml += ORDINAMENTO;
-			formazioneHtml += "</td>";
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ORDINAMENTO);
+			formazioneHtml.append("</td>");
 
-			formazioneHtml += "<td>";
-			formazioneHtml += RUOLO;
-			formazioneHtml += "</td>";
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(RUOLO);
+			formazioneHtml.append("</td>");
 
-			formazioneHtml += "<td>";
-			formazioneHtml += NOME_GIOCATORE;
-			formazioneHtml += "</td>";
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(NOME_GIOCATORE);
+			formazioneHtml.append("</td>");
 
-			formazioneHtml += "<td><img src=\"cid:" + cidNomeSq + "\" />";
-			formazioneHtml += SQUADRA;
-			formazioneHtml += "</td>";
+			formazioneHtml.append("<td><img src=\"cid:").append(cidNomeSq).append("\" />");
+			formazioneHtml.append(SQUADRA);
+			formazioneHtml.append("</td>");
 
-			formazioneHtml += "<td>";
-			formazioneHtml += STATO;
-			formazioneHtml += "</td>";
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(STATO);
+			formazioneHtml.append("</td>");
 
-			formazioneHtml += "</tr>";
+			formazioneHtml.append("</tr>");
 
 			ord++;
 		}
 
-		formazioneHtml += "</table>\n";
+		formazioneHtml.append("</table>\n");
 
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<br>\n";
-		formazioneHtml += "<p>Ciao " + descAttore + "</p>\n";
-		formazioneHtml += "</body>\n";
-		formazioneHtml += "<html>";
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<p>Ciao ").append(descAttore).append("</p>\n");
+		formazioneHtml.append("</body>\n");
+		formazioneHtml.append("<html>");
 
-		String email_destinatario = "";
+		StringBuilder email_destinatario = new StringBuilder();
 		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
 			List<FcAttore> attori = attoreController.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
-					email_destinatario += a.getEmail() + ";";
+					email_destinatario.append(a.getEmail()).append(";");
 				}
 			}
 		} else {
-			email_destinatario = p.getProperty("to");
+			email_destinatario = new StringBuilder(p.getProperty("to"));
 		}
 
 		String[] to = null;
-		if (email_destinatario != null && !email_destinatario.equals("")) {
-			to = Utils.tornaArrayString(email_destinatario, ";");
+		if (!email_destinatario.toString().isEmpty()) {
+			to = Utils.tornaArrayString(email_destinatario.toString(), ";");
 		}
 
-		String[] cc = null;
-		String[] bcc = null;
-
-		try {
+        try {
 			String from = env.getProperty("spring.mail.secondary.username");
-			emailService.sendMail2(false, from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
+			emailService.sendMail2(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			try {
 				String from = env.getProperty("spring.mail.primary.username");
-				emailService.sendMail2(true, from, to, cc, bcc, subject, formazioneHtml, "text/html", "3", listImg);
+				emailService.sendMail2(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
 			} catch (Exception e2) {
 				LOG.error(e2.getMessage());
 				throw e2;
 			}
 		}
+	}
+
+	private FcGiocatore getFcGiocatore(int i) {
+		FcGiocatore bean;
+
+		if (i == 0) {
+			bean = modelPlayer1.get(0);
+		} else if (i == 1) {
+			bean = modelPlayer2.get(0);
+		} else if (i == 2) {
+			bean = modelPlayer3.get(0);
+		} else if (i == 3) {
+			bean = modelPlayer4.get(0);
+		} else if (i == 4) {
+			bean = modelPlayer5.get(0);
+		} else if (i == 5) {
+			bean = modelPlayer6.get(0);
+		} else if (i == 6) {
+			bean = modelPlayer7.get(0);
+		} else if (i == 7) {
+			bean = modelPlayer8.get(0);
+		} else if (i == 8) {
+			bean = modelPlayer9.get(0);
+		} else if (i == 9) {
+			bean = modelPlayer10.get(0);
+		} else if (i == 10) {
+			bean = modelPlayer11.get(0);
+		} else if (i == 11) {
+			bean = modelPlayer12.get(0);
+		} else if (i == 12) {
+			bean = modelPlayer13.get(0);
+		} else if (i == 13) {
+			bean = modelPlayer14.get(0);
+		} else if (i == 14) {
+			bean = modelPlayer15.get(0);
+		} else if (i == 15) {
+			bean = modelPlayer16.get(0);
+		} else if (i == 16) {
+			bean = modelPlayer17.get(0);
+		} else if (i == 17) {
+			bean = modelPlayer18.get(0);
+		} else if (i == 18) {
+			bean = modelPlayer19.get(0);
+		} else if (i == 19) {
+			bean = modelPlayer20.get(0);
+		} else if (i == 20) {
+			bean = modelPlayer21.get(0);
+		} else if (i == 21) {
+			bean = modelPlayer22.get(0);
+		} else {
+			bean = modelPlayer23.get(0);
+		}
+		return bean;
 	}
 
 	private Grid<FcCalendarioCompetizione> getTablePartite(
@@ -2111,7 +2093,7 @@ public class EmTeamInsertView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						LOG.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
@@ -2142,7 +2124,7 @@ public class EmTeamInsertView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						LOG.error(e.getMessage());
 					}
 				}
 				cellLayout.add(lblSquadra);
@@ -2155,10 +2137,7 @@ public class EmTeamInsertView extends VerticalLayout
 		// nomeSquadraFuoriColumn.setHeader("Fuori");
 		nomeSquadraFuoriColumn.setAutoWidth(true);
 
-		// Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new
-		// LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT,
-		// FormatStyle.SHORT).withLocale(Locale.ITALY)));
-		Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+        Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
 		dataColumn.setSortable(false);
 		dataColumn.setAutoWidth(true);
 		dataColumn.setFlexGrow(2);

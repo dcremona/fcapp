@@ -1,6 +1,7 @@
 package fcweb.backend.tasks;
 
 import java.io.File;
+import java.nio.file.FileSystems;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,9 +32,9 @@ import fcweb.utils.Costants;
 @Component
 public class MyScheduledTasks{
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private static final String FILE_SEP = System.getProperty("file.separator");
+	private static final String FILE_SEP = FileSystems.getDefault().getSeparator();
 
 	@Autowired
 	private Environment env;
@@ -68,11 +69,11 @@ public class MyScheduledTasks{
 	// @Scheduled(cron = "0 59 12 * * *")
 	public void jobUfficiosi() throws Exception {
 
-		log.info("jobUfficiosi start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+        log.info("jobUfficiosi start at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 
 		processResult(false);
 
-		log.info("jobUfficiosi end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+        log.info("jobUfficiosi end at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 	}
 
 	@Scheduled(cron = "#{@getCronValueUfficiali}")
@@ -81,18 +82,18 @@ public class MyScheduledTasks{
 	// @Scheduled(cron = "0 30 16 * * *")
 	public void jobUfficiali() throws Exception {
 
-		log.info("jobUfficiali start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+        log.info("jobUfficiali start at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 
 		processResult(true);
 
-		log.info("jobUfficiali end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+        log.info("jobUfficiali end at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 	}
 
 	private void processResult(boolean flagUfficiali) throws Exception {
 
 		Calendar cal = Calendar.getInstance();
 		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-		log.info("dayOfWeek " + dayOfWeek);
+        log.info("dayOfWeek {}", dayOfWeek);
 
 		String votiExcel = "Voti-Ufficiosi-Excel";
 		String infoResult = "UFFICIOSI";
@@ -103,7 +104,7 @@ public class MyScheduledTasks{
 
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.isEmpty()) {
-			log.error("error lProprieta size" + lProprieta.size());
+			log.error("error lProprieta size" + 0);
 			return;
 		}
 		Properties p = new Properties();
@@ -113,18 +114,18 @@ public class MyScheduledTasks{
 		p.setProperty("INFO_RESULT", infoResult);
 
 		String startJob = dayOfWeek + "_" + infoResult;
-		log.info("startJob " + startJob);
+        log.info("startJob {}", startJob);
 		String valueStart = p.getProperty(startJob);
-		log.info("VALUE_START " + valueStart);
+        log.info("VALUE_START {}", valueStart);
 		if ("0".equals(valueStart)) {
-			log.info("NOT ACTIVE JOB " + startJob);
+            log.info("NOT ACTIVE JOB {}", startJob);
 			return;
 		}
 
 		FcPagelle currentGG = pagelleController.findCurrentGiornata();
 		FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
 
-		log.info("currentGG: " + giornataInfo.getCodiceGiornata());
+        log.info("currentGG: {}", giornataInfo.getCodiceGiornata());
 		FcCampionato campionato = campionatoController.findByActive(true);
 
 		String rootPathOutputPdf = (String) p.get("PATH_OUTPUT_PDF");
@@ -141,7 +142,7 @@ public class MyScheduledTasks{
 		if (!f.exists()) {
 			boolean flag = f.mkdir();
 			if (!flag) {
-				log.info("NO pathOutputPdf exist" + pathOutputPdf);
+                log.info("NO pathOutputPdf exist{}", pathOutputPdf);
 				return;
 			}
 		}
@@ -149,7 +150,7 @@ public class MyScheduledTasks{
 		String pathImg = "images/";
 
 		String basePathData = (String) p.get("PATH_TMP");
-		log.info("basePathData " + basePathData);
+        log.info("basePathData {}", basePathData);
 
 		Thread.sleep(60000L);
 
@@ -184,11 +185,11 @@ public class MyScheduledTasks{
 	@Scheduled(cron = "#{@getCronValueInfoGiocatore}")
 	public void jobSqualificaInfortunati() throws Exception {
 
-		log.info("jobSqualificaInfortunati start at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+        log.info("jobSqualificaInfortunati start at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.isEmpty()) {
-			log.error("error lProprieta size" + lProprieta.size());
+			log.error("error lProprieta size" + 0);
 			return;
 		}
 		Properties p = new Properties();
@@ -199,12 +200,12 @@ public class MyScheduledTasks{
 		String basePathData = (String) p.get("PATH_TMP");
 
 		FcPagelle currentGG = pagelleController.findCurrentGiornata();
-		FcGiornataInfo giornataInfo = null;
+		FcGiornataInfo giornataInfo;
 		if (currentGG != null) {
 			giornataInfo = currentGG.getFcGiornataInfo();
-			log.info("currentGG: " + giornataInfo.getCodiceGiornata());
+            log.info("currentGG: {}", giornataInfo.getCodiceGiornata());
 		} else {
-			giornataInfo = giornataInfoRepository.findByCodiceGiornata(Integer.valueOf(1));
+			giornataInfo = giornataInfoRepository.findByCodiceGiornata(1);
 		}
 
 		String fusoOrario = p.getProperty("FUSO_ORARIO");
@@ -215,7 +216,7 @@ public class MyScheduledTasks{
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		log.info("millisDiff : " + millisDiff);
+        log.info("millisDiff : {}", millisDiff);
 
 		if (millisDiff == 0) {
 			log.error("jobSqualificaInfortunati STOP NO PROCESS");
@@ -224,11 +225,10 @@ public class MyScheduledTasks{
 
 		giornataGiocatoreService.deleteByCustonm(giornataInfo);
 
-		String basePath = basePathData;
-		log.info("basePathData " + basePathData);
+        log.info("basePathData {}", basePathData);
 
 		JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-		String fileName = null;
+		String fileName;
 		boolean bFantaGazzetta = true;
 
 		if (!bFantaGazzetta) {
@@ -237,9 +237,9 @@ public class MyScheduledTasks{
 			// DOWNLOAD FILE SQUALIFICATI
 			// **************************************
 			String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
-			log.info("httpUrlSqualificati " + httpUrlSqualificati);
+            log.info("httpUrlSqualificati {}", httpUrlSqualificati);
 			String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
-			jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
+			jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePathData, fileName1);
 
 			fileName = basePathData + fileName1 + ".csv";
 			jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
@@ -248,9 +248,9 @@ public class MyScheduledTasks{
 			// DOWNLOAD FILE INFORTUNATI
 			// **************************************
 			String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
-			log.info("httpUrlInfortunati " + httpUrlInfortunati);
+            log.info("httpUrlInfortunati {}", httpUrlInfortunati);
 			String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
-			jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
+			jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePathData, fileName2);
 
 			fileName = basePathData + fileName2 + ".csv";
 			jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
@@ -259,12 +259,12 @@ public class MyScheduledTasks{
 			// DOWNLOAD FILE PROBABILI
 			// **************************************
 			String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
-			log.info("httpUrlProbabili " + httpUrlProbabili);
+            log.info("httpUrlProbabili {}", httpUrlProbabili);
 			String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
-			jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+			jobCsv.downloadCsvProbabili(httpUrlProbabili, basePathData, fileName3);
 
 			fileName = basePathData + fileName3 + ".csv";
-			jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+			jobProcessGiornata.initDbProbabili(fileName);
 
 		} else {
 
@@ -273,7 +273,7 @@ public class MyScheduledTasks{
 			// ****************************************************************************
 
 			String fileName5 = "SQUALIFICATI_INFORTUNATI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-			jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName5);
+			jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePathData, fileName5);
 
 			fileName = basePathData + fileName5 + ".csv";
 			jobProcessGiornata.initDbSqualificatiInfortunatiFantaGazzetta(giornataInfo, fileName);
@@ -283,14 +283,14 @@ public class MyScheduledTasks{
 			// **************************************
 
 			String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-			jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName4);
+			jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePathData, fileName4);
 
 			fileName = basePathData + fileName4 + ".csv";
-			jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);
+			jobProcessGiornata.initDbProbabiliFantaGazzetta(fileName);
 
 		}
 
-		log.info("jobSqualificaInfortunati end at " + Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
+        log.info("jobSqualificaInfortunati end at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 	}
 
 	// @Scheduled(cron = "*/120 * * * * *")

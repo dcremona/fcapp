@@ -29,11 +29,6 @@ public class ClassificaService{
 		return classificaRepository.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 	}
 
-	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiDesc(
-			FcCampionato campionato) {
-		return classificaRepository.findByFcCampionatoOrderByTotPuntiDesc(campionato);
-	}
-
 	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiRosaDesc(
 			FcCampionato campionato) {
 		return classificaRepository.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
@@ -51,7 +46,7 @@ public class ClassificaService{
 
 	public String create(FcAttore attore, FcCampionato campionato,
 			Double totPunti) {
-		String id = "";
+		String id;
 		try {
 			FcClassifica clas = new FcClassifica();
 			FcClassificaId classificaPK = new FcClassificaId();
@@ -64,7 +59,7 @@ public class ClassificaService{
 			classificaRepository.save(clas);
 			id = clas.getFcAttore().toString();
 		} catch (Exception ex) {
-			return "Error creating the classifica: " + ex.toString();
+			return "Error creating the classifica: " + ex;
 		}
 		return "classifica succesfully created with id = " + id;
 	}
@@ -73,20 +68,17 @@ public class ClassificaService{
 		FcClassifica fcClassifica = null;
 		try {
 			fcClassifica = classificaRepository.save(classifica);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return fcClassifica;
 	}
 
-	public String deleteClassifica(FcClassifica classifica) {
-		String id = "";
-		try {
+	public void deleteClassifica(FcClassifica classifica) {
+        try {
 			classificaRepository.delete(classifica);
-			id = "" + classifica.getId().getIdCampionato();
-		} catch (Exception ex) {
-			return "Error delete giornata: " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "classifica succesfully delete with id = " + id;
 	}
 
 }

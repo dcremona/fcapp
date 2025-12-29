@@ -1,13 +1,12 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -61,9 +60,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ADMIN")
 public class MercatoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private String idCampionato = null;
 
@@ -140,7 +140,7 @@ public class MercatoView extends VerticalLayout
 			while (numberOfElementsP <= 3) {
 				int randomIndex = rand.nextInt(p.size());
 				Integer randomElement = p.get(randomIndex);
-				if (list.indexOf(randomElement) == -1) {
+				if (!list.contains(randomElement)) {
 					list.add(randomElement);
 					numberOfElementsP++;
 				}
@@ -150,7 +150,7 @@ public class MercatoView extends VerticalLayout
 			while (numberOfElementsD <= 8) {
 				int randomIndex = rand.nextInt(d.size());
 				Integer randomElement = d.get(randomIndex);
-				if (list.indexOf(randomElement) == -1) {
+				if (!list.contains(randomElement)) {
 					list.add(randomElement);
 					numberOfElementsD++;
 				}
@@ -160,7 +160,7 @@ public class MercatoView extends VerticalLayout
 			while (numberOfElementsC <= 8) {
 				int randomIndex = rand.nextInt(c.size());
 				Integer randomElement = c.get(randomIndex);
-				if (list.indexOf(randomElement) == -1) {
+				if (!list.contains(randomElement)) {
 					list.add(randomElement);
 					numberOfElementsC++;
 				}
@@ -170,7 +170,7 @@ public class MercatoView extends VerticalLayout
 			while (numberOfElementsA <= 6) {
 				int randomIndex = rand.nextInt(a.size());
 				Integer randomElement = a.get(randomIndex);
-				if (list.indexOf(randomElement) == -1) {
+				if (!list.contains(randomElement)) {
 					list.add(randomElement);
 					numberOfElementsA++;
 				}
@@ -178,17 +178,16 @@ public class MercatoView extends VerticalLayout
 
 			int ordinamento = 1;
 			for (Integer id : list) {
-				StringBuilder update = new StringBuilder();
-				update.append("UPDATE fc_formazione SET");
-				update.append(" ID_GIOCATORE=" + id.toString() + ",");
-				update.append(" TOT_PAGATO=1");
-				update.append(" WHERE ID_CAMPIONATO = ");
-				update.append(idCampionato);
-				update.append(" AND ID_ATTORE = ");
-				update.append(attore.getIdAttore());
-				update.append(" AND ORDINAMENTO = ");
-				update.append(ordinamento);
-				jdbcTemplate.update(update.toString());
+                String update = "UPDATE fc_formazione SET" +
+                        " ID_GIOCATORE=" + id.toString() + "," +
+                        " TOT_PAGATO=1" +
+                        " WHERE ID_CAMPIONATO = " +
+                        idCampionato +
+                        " AND ID_ATTORE = " +
+                        attore.getIdAttore() +
+                        " AND ORDINAMENTO = " +
+                        ordinamento;
+				jdbcTemplate.update(update);
 				ordinamento++;
 			}
 		}
@@ -369,7 +368,7 @@ public class MercatoView extends VerticalLayout
 				for (FcAttore a : squadre) {
 
 					if (a.isActive()) {
-						List<FcFormazione> data = tablePlayer[att].getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
+						List<FcFormazione> data = tablePlayer[att].getDataProvider().fetch(new Query<>()).toList();
 						for (FcFormazione f : data) {
 							FcGiocatore bean = f.getFcGiocatore();
 							String ordinamento = "" + f.getId().getOrdinamento();
@@ -380,20 +379,17 @@ public class MercatoView extends VerticalLayout
 								String valorePagato = f.getTotPagato().toString();
 
 								update.append("UPDATE fc_formazione SET");
-								update.append(" ID_GIOCATORE=" + valoreIdGiocatore + ",");
-								update.append(" TOT_PAGATO=" + valorePagato);
-								update.append(" WHERE ID_CAMPIONATO = " + idCampionato);
-								update.append(" AND ID_ATTORE = " + a.getIdAttore());
-								update.append(" AND ORDINAMENTO = " + ordinamento);
-							} else {
+								update.append(" ID_GIOCATORE=").append(valoreIdGiocatore).append(",");
+								update.append(" TOT_PAGATO=").append(valorePagato);
+                            } else {
 								update.append("UPDATE fc_formazione SET");
 								update.append(" ID_GIOCATORE=null,");
 								update.append(" TOT_PAGATO=null");
-								update.append(" WHERE ID_CAMPIONATO = " + idCampionato);
-								update.append(" AND ID_ATTORE = " + a.getIdAttore());
-								update.append(" AND ORDINAMENTO = " + ordinamento);
-							}
-							jdbcTemplate.update(update.toString());
+                            }
+                            update.append(" WHERE ID_CAMPIONATO = ").append(idCampionato);
+                            update.append(" AND ID_ATTORE = ").append(a.getIdAttore());
+                            update.append(" AND ORDINAMENTO = ").append(ordinamento);
+                            jdbcTemplate.update(update.toString());
 						}
 					}
 					att++;
@@ -419,12 +415,12 @@ public class MercatoView extends VerticalLayout
 			int countA = 0;
 
 			HashMap<String, String> map = new HashMap<>();
-			List<FcFormazione> data = tablePlayer[i].getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
+			List<FcFormazione> data = tablePlayer[i].getDataProvider().fetch(new Query<>()).toList();
 
-			Integer totCrediti = Integer.valueOf(0);
+			int totCrediti = 0;
 			for (FcClassifica fc : creditiFm) {
 				if (fc.getFcAttore().getIdAttore() == att) {
-					totCrediti = Integer.valueOf(500) + fc.getTotFm();
+					totCrediti = 500 + fc.getTotFm();
 				}
 			}
 
@@ -435,15 +431,12 @@ public class MercatoView extends VerticalLayout
 				descAttore = "[" + f.getFcAttore().getDescAttore() + "]";
 				if (bean != null && f.getTotPagato() != null) {
 					somma += f.getTotPagato();
-					if (bean.getFcRuolo().getIdRuolo().equals(Costants.P)) {
-						countP++;
-					} else if (bean.getFcRuolo().getIdRuolo().equals(Costants.D)) {
-						countD++;
-					} else if (bean.getFcRuolo().getIdRuolo().equals(Costants.C)) {
-						countC++;
-					} else if (bean.getFcRuolo().getIdRuolo().equals(Costants.A)) {
-						countA++;
-					}
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.P -> countP++;
+                        case Costants.D -> countD++;
+                        case Costants.C -> countC++;
+                        case Costants.A -> countA++;
+                    }
 					refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 				}
 			}
@@ -451,31 +444,23 @@ public class MercatoView extends VerticalLayout
 
 			List<FcProperties> list = new ArrayList<>();
 			if (!map.isEmpty()) {
-				Iterator<?> it = map.entrySet().iterator();
-				while (it.hasNext()) {
-					@SuppressWarnings("rawtypes")
-					Map.Entry pairs = (Map.Entry) it.next();
-					FcProperties p = new FcProperties();
-					p.setKey((String) pairs.getKey());
-					p.setValue((String) pairs.getValue());
+                for (Map.Entry<String, String> stringStringEntry : map.entrySet()) {
+                    @SuppressWarnings("rawtypes")
+                    Map.Entry pairs = stringStringEntry;
+                    FcProperties p = new FcProperties();
+                    p.setKey((String) pairs.getKey());
+                    p.setValue((String) pairs.getValue());
 
-					if (Integer.parseInt((String) pairs.getValue()) > 5) {
+                    if (Integer.parseInt((String) pairs.getValue()) > 5) {
 
-						String sq = (String) pairs.getKey();
-						int countPSq = 0;
-						for (FcFormazione f : data) {
-							FcGiocatore bean = f.getFcGiocatore();
-							if (bean != null && f.getTotPagato() != null && Costants.P.equals(bean.getFcRuolo().getIdRuolo()) && sq.equals(bean.getFcSquadra().getNomeSquadra())) {
-								countPSq++;
-							}
-						}
-						int maxG = Integer.parseInt((String) pairs.getValue()) - countPSq;
+                        String sq = (String) pairs.getKey();
+						int maxG = getMaxG(data, sq, pairs);
 						if (maxG > 5) {
-							descError.append(descAttore + " Troppi giocatori per la squadra " + sq + " - ");
-						}
-					}
-					list.add(p);
-				}
+                            descError.append(descAttore).append(" Troppi giocatori per la squadra ").append(sq).append(" - ");
+                        }
+                    }
+                    list.add(p);
+                }
 			}
 
 			list.sort((p1,
@@ -491,7 +476,7 @@ public class MercatoView extends VerticalLayout
 			lblResiduoPlayer[i].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
 			if (residuo < 0) {
 				lblResiduoPlayer[i].getStyle().set(Costants.BACKGROUND, "#EC7063");
-				descError.append(descAttore + " Residuo minore di 0 - Residuo attuale " + residuo);
+				descError.append(descAttore).append(" Residuo minore di 0 - Residuo attuale ").append(residuo);
 			}
 
 			att++;
@@ -506,6 +491,17 @@ public class MercatoView extends VerticalLayout
 		}
 
 		log.info("END updateInfoAttore");
+	}
+
+	private int getMaxG(List<FcFormazione> data, String sq, Map.Entry pairs) {
+		int countPSq = 0;
+		for (FcFormazione f : data) {
+			FcGiocatore bean = f.getFcGiocatore();
+			if (bean != null && f.getTotPagato() != null && Costants.P.equals(bean.getFcRuolo().getIdRuolo()) && sq.equals(bean.getFcSquadra().getNomeSquadra())) {
+				countPSq++;
+			}
+		}
+        return Integer.parseInt((String) pairs.getValue()) - countPSq;
 	}
 
 	private void refreshContaGiocatori(HashMap<String, String> m, String sq) {
@@ -540,7 +536,7 @@ public class MercatoView extends VerticalLayout
 		grid.getEditor().setBinder(binder);
 
 		ComboBox<FcGiocatore> giocatore = new ComboBox<>();
-		giocatore.setItemLabelGenerator(p -> p.getCognGiocatore());
+		giocatore.setItemLabelGenerator(FcGiocatore::getCognGiocatore);
 		giocatore.setClearButtonVisible(true);
 		giocatore.setPlaceholder(Costants.GIOCATORE);
 		giocatore.setRenderer(new ComponentRenderer<>(g -> {
@@ -590,9 +586,8 @@ public class MercatoView extends VerticalLayout
 		totPagatoColumn.setTextAlign(ColumnTextAlign.END);
 
 		binder.addValueChangeListener(evt -> {
-			if (evt.getValue() instanceof FcGiocatore) {
-				FcGiocatore g = ((FcGiocatore) evt.getValue());
-				List<FcFormazione> data = grid.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
+			if (evt.getValue() instanceof FcGiocatore g) {
+                List<FcFormazione> data = grid.getDataProvider().fetch(new Query<>()).toList();
 				for (FcFormazione f : data) {
 					if (f.getFcGiocatore() != null && f.getFcGiocatore().getCognGiocatore().equals(g.getCognGiocatore())) {
 						f.setTotPagato(g.getQuotazione());
@@ -644,7 +639,7 @@ public class MercatoView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 
@@ -658,7 +653,7 @@ public class MercatoView extends VerticalLayout
 		keyColumn.setSortable(false);
 		keyColumn.setAutoWidth(true);
 
-		Column<FcProperties> valueColumn = grid.addColumn(p -> p.getValue());
+		Column<FcProperties> valueColumn = grid.addColumn(FcProperties::getValue);
 		valueColumn.setSortable(false);
 		valueColumn.setAutoWidth(true);
 

@@ -35,24 +35,21 @@ public class SquadraService{
 	}
 
 	public FcSquadra updateSquadra(FcSquadra c) {
-		FcSquadra Squadra = null;
+		FcSquadra Squadra;
 		try {
 			Squadra = squadraRepository.save(c);
 		} catch (Exception ex) {
-			return Squadra;
+			return null;
 		}
 		return Squadra;
 	}
 
-	public String deleteSquadra(FcSquadra c) {
-		String id = "";
-		try {
+	public void deleteSquadra(FcSquadra c) {
+        try {
 			squadraRepository.delete(c);
-			id = "" + c.getIdSquadra();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "Squadra succesfully delete with id = " + id;
 	}
 
 }

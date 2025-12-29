@@ -1,5 +1,6 @@
 package common.util;
 
+import java.io.Serial;
 import java.util.StringTokenizer;
 
 import javax.swing.ComboBoxModel;
@@ -11,7 +12,7 @@ import javax.swing.event.ListDataListener;
 
 /**
  * @author dcremona
- *
+ * <p>
  *         To change this generated comment edit the template variable
  *         "typecomment": Window>Preferences>Java>Templates. To enable and
  *         disable the creation of type comments go to
@@ -22,11 +23,12 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private String asColumnNames[];
-	private String theRecordSet[][];
-	private int aiFieldType[][];
+	private String[] asColumnNames;
+	private String[][] theRecordSet;
+	private int[][] aiFieldType;
 	private int iRecordCount = 0;
 	private int iRowIndex = 0;
 	private String sFindText;
@@ -43,14 +45,18 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	private int ERROR_CODE = 0;
 
 	private String TAG = null,DB_TIME = null,QUERY_NAME = null,EXIT = null;
-	private static String sLine;
 
-	public boolean EOF = true;
+    public boolean EOF = true;
 
-	public Buffer() {
-		// System.out.print("\nNEW"+"_"+this);
+	public Buffer(String[] asColumnNames) {
+        this.asColumnNames = asColumnNames;
+        // System.out.print("\nNEW"+"_"+this);
 
 		resetVar();
+	}
+
+	public Buffer() {
+
 	}
 
 	/**
@@ -58,7 +64,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 */
 	public void clear() {
 		// Generate notification
-		fireIntervalRemoved(this, 0, iRecordCount - 1);
+		fireIntervalRemoved(0, iRecordCount - 1);
 		fireTableRowsDeleted(0, iRecordCount - 1);
 
 		theRecordSet = null;
@@ -103,43 +109,8 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		return iSortedField;
 	}
 
-	/**
-	 * Metodo utilizzato per impostare una propriet@ del Buffer che quando @
-	 * true permette al metodo setSortField(int) di ordinare il Buffer anche se
-	 * risulta essere gi@ ordinato per la stessa colonna indicata in
-	 * setSortField(int).
-	 *
-	 * @param bSortAlways
-	 *            Se True permette di ordinare il Buffer per una colonna anche
-	 *            se risulta gi@ ordinato per la stessa colonna.
-	 * @see #setSortedField(int)
-	 * @see #isSortedAlways()
-	 */
-	public void setSortAlwais(boolean bSortAlways) {
-		this.bSortAlways = bSortAlways;
-	}
-
-	/**
-	 * Ritorna un booleano indicante se chiamando il metodo setSortedField(int),
-	 * l'ordinamento del Buffer viene comunque eseguito, anche quando il Buffer
-	 * risulta essere gi@ ordinato per la stessa colonna impostata in
-	 * setSortedField(int).
-	 *
-	 * @see #setSortedField(int)
-	 * @see #getSortedField()
-	 * @see #setSortAlways(boolean)
-	 */
-
-	public boolean isSortAlwais() {
-		return bSortAlways;
-	}
-
 	public void setDataTypeKnow(boolean bDataTypeKnow) {
 		this.bDataTypeKnow = bDataTypeKnow;
-	}
-
-	public boolean isDataTypeKnow() {
-		return bDataTypeKnow;
 	}
 
 	/**
@@ -147,25 +118,12 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * RecordSet, ad ogni chiamata ad AddItem. La velocit@ di aggiunta @
 	 * proporzionale alla sua grandezza.
 	 *
-	 * @param add
-	 * @see #getDefaultAdd()
-	 */
+     */
 	public void setDefaultAdd(int add) {
 		iDefaultAdd = add;
 	}
 
-	/**
-	 * Ritorna quanti elementi sono inseriti al RecordSet ad ogni chiamata del
-	 * metodo addNew, quando il record che si vuole aggiungere, supera la
-	 * capacit@ attuale.
-	 *
-	 * @see #setDefaultAdd(int)
-	 */
-	public int getDefaultAdd() {
-		return iDefaultAdd;
-	}
-
-	/**
+    /**
 	 * Metodo utilizzato per creare un'altra istanza, ma distinta, del Buffer
 	 * attuale.
 	 *
@@ -181,16 +139,14 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 		clone.setDefaultAdd(iDefaultAdd);
 
-		String asFieldType[] = new String[iFieldCount];
+		String[] asFieldType = new String[iFieldCount];
 		for (int i = 1; i <= iFieldCount; i++) {
 			asFieldType[i - 1] = getFieldType(i);
 		}
 
-		String RecordSetClone[][] = new String[iRecordCount][iFieldCount];
+		String[][] RecordSetClone = new String[iRecordCount][iFieldCount];
 		for (int i = 0; i < iRecordCount; i++) {
-			for (int c = 0; c < iFieldCount; c++) {
-				RecordSetClone[i][c] = theRecordSet[i][c];
-			}
+            System.arraycopy(theRecordSet[i], 0, RecordSetClone[i], 0, iFieldCount);
 		}
 		clone.setRecordSet(RecordSetClone, asFieldType, iFieldCount, iRecordCount);
 
@@ -216,9 +172,8 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * @return Un'istanza distinta del Buffer attuale.
 	 * @see #getClone()
 	 * @see com.siva.util.SivaToolkit
-	 * @see com.siva.util.SivaToolkit#getFieldMatching(Buffer, String[][])
-	 */
-	public Buffer getClone(int aiRecord[]) {
+     */
+	public Buffer getClone(int[] aiRecord) {
 		if (iRecordCount == 0) {
 			return null;
 		}
@@ -228,22 +183,20 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 		clone.setDefaultAdd(aiRecord.length);
 
-		String asRecordSetClone[][] = new String[iCloneLen][iFieldCount];
+		String[][] asRecordSetClone = new String[iCloneLen][iFieldCount];
 
 		for (int i = 0; i < iCloneLen; i++) {
 			System.arraycopy(theRecordSet, aiRecord[i] - 1, asRecordSetClone, i, 1);
 		}
 
-		String asFieldType[] = new String[iFieldCount];
+		String[] asFieldType = new String[iFieldCount];
 		for (int i = 1; i <= iFieldCount; i++) {
 			asFieldType[i - 1] = getFieldType(i);
 		}
 
 		clone.setRecordSet(asRecordSetClone, asFieldType, iFieldCount, iCloneLen);
 
-		asRecordSetClone = null;
-
-		clone.TAG = TAG;
+        clone.TAG = TAG;
 		clone.DB_TIME = DB_TIME;
 		clone.QUERY_NAME = QUERY_NAME;
 		clone.EXIT = EXIT;
@@ -268,15 +221,8 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 			return;
 		}
 
-		// long iAppCampo = 0;
-		// String sAppRiga = new String();
-		// String sAppCampo = new String();
-
-		// long n1 = 0;
-		// long n2 = 0;
-
-		int max = iRecordCount;
-		String sVal[] = new String[max];
+        int max = iRecordCount;
+		String[] sVal = new String[max];
 		for (int i = 0; i < max; i++) {
 			sVal[i] = theRecordSet[i][col - 1];
 		}
@@ -284,16 +230,16 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		if (getFieldType(col).equals("STRING")) {
 			try {
 				MyToolkit.sortBuffer(sVal, theRecordSet);
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		} else if (getFieldType(col).equals("NUMERIC")) {
 			try {
-				long lVal[] = new long[max];
+				long[] lVal = new long[max];
 				for (int i = 0; i < max; i++) {
 					lVal[i] = Long.parseLong(sVal[i]);
 				}
 				MyToolkit.sortBufferN(lVal, theRecordSet);
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		} else if (getFieldType(col).equals("DATE")) {
 			// Se si tratta di una data la formatto in aaaa/mm/gg
@@ -301,17 +247,16 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 			try {
 				String temp;
 				for (int i = 0; i < max; i++) {
-					if (sVal[i].length() > 0) {
-						temp = sVal[i];
-						temp = sVal[i].substring(6, 10) + "/";
+					if (!sVal[i].isEmpty()) {
+                        temp = sVal[i].substring(6, 10) + "/";
 						temp += sVal[i].substring(3, 5) + "/";
-						temp += sVal[i].substring(0, 2) + sVal[i].substring(11, sVal[i].length());
+						temp += sVal[i].substring(0, 2) + sVal[i].substring(11);
 						sVal[i] = temp;
 					}
 				}
 
 				MyToolkit.sortBuffer(sVal, theRecordSet);
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		}
 
@@ -334,7 +279,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	// Metodo utilizzato per ordinare il contenuto del buffer
 	// in base ai campi ricevuti in un array i quali sono in ordine
 	// crescente di importanza
-	public void sort(int colonne[]) {
+	public void sort(int[] colonne) {
 		if (iRecordCount < 2) {
 			return;
 		}
@@ -348,15 +293,15 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		String sType;
 		int iLeadingSpace;
 
-		String sSort[] = new String[iRecordCount];
-		Integer objSortPosition[] = new Integer[iRecordCount];
+		String[] sSort = new String[iRecordCount];
+		Integer[] objSortPosition = new Integer[iRecordCount];
 
-		int app[] = new int[colonne.length];
+		int[] app = new int[colonne.length];
 
 		// per ogni colonna mi trovo la lunghezza massima
 		// e vedo se sono tutti valori numerici oppure no
 		int max;
-		String sVal = new String();
+		String sVal;
 
 		for (int j = 0; j < colonne.length; j++) {
 			max = 0;
@@ -373,7 +318,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 		// Riempio l'array per l'ordinamento sSort
 		for (int i = 0; i < iRecordCount; i++) {
-			objSortPosition[i] = Integer.valueOf(i);
+			objSortPosition[i] = i;
 			sSort[i] = "";
 
 			for (int j = 0; j < colonne.length; j++) {
@@ -394,69 +339,24 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 		try {
 			MyToolkit.sortBuffer(sSort, objSortPosition);
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 
-		String theRecordSetApp[][] = new String[iRecordCount][iFieldCount];
+		String[][] theRecordSetApp = new String[iRecordCount][iFieldCount];
 		for (int i = 0; i < iRecordCount; i++) {
-			System.arraycopy(theRecordSet, objSortPosition[i].intValue(), theRecordSetApp, i, 1);
+			System.arraycopy(theRecordSet, objSortPosition[i], theRecordSetApp, i, 1);
 		}
 
-		theRecordSet = null;
-		theRecordSet = new String[iRecordCount][iFieldCount];
+        theRecordSet = new String[iRecordCount][iFieldCount];
 
 		System.arraycopy(theRecordSetApp, 0, theRecordSet, 0, iRecordCount);
 
-		theRecordSetApp = null;
-
-		// nel caso di Sort su pi@ colonne non tengo pi@ conto della colonna
+        // nel caso di Sort su pi@ colonne non tengo pi@ conto della colonna
 		// su cui @ ordinato il Buffer.
 		setSortedField(0);
 
 		// generate notification
 		fireTableRowsUpdated(0, iRecordCount - 1);
-	}
-
-	/**
-	 * Metodo che restituisce il valore massimo di un campo del buffer, sia che
-	 * si tratti di un numero,di una stringa o di una data.
-	 *
-	 * @param col
-	 *            Campo-colonna del quale si vuole sapere il valore massimo.
-	 * @return Valore massimo trovato nel campo specificato.
-	 * @see #getMin(int)
-	 */
-	// Metodo che restituisce il valore massimo di un campo del buffer,
-	// sia che si tratti di un numero,di una stringa o di una data.
-	public String getMax(int col) {
-		Buffer max = new Buffer();
-		max = getClone();
-		max.sort(col);
-		max.moveLast();
-
-		return max.getField(col);
-	}
-
-	/**
-	 * Metodo che restituisce il valore minimo di un campo del buffer, sia che
-	 * si tratti di un numero, di una stringa o di una data.
-	 *
-	 * @param col
-	 *            Campo-colonna del quale si vuole sapere il valore minimo.
-	 * @return Valore minimo trovato nel campo specificato.
-	 * @see #getMax(int)
-	 */
-	// Metodo che restituisce il valore massimo di un campo del buffer,
-	// sia che si tratti di un numero,di una stringa o di una data.
-	public String getMin(int col) {
-
-		Buffer min = new Buffer();
-		min = getClone();
-		min.sort(col);
-		min.moveFirst();
-
-		return min.getField(col);
-
 	}
 
 	/**
@@ -474,8 +374,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	/**
 	 * Metodo utilizzato per spostarsi alla prima linea del buffer.
 	 *
-	 * @see #moveLast()
-	 * @see #movePrevious()
 	 * @see #moveNext()
 	 */
 	// metodo utilizzato per spostarsi alla prima linea del buffer
@@ -487,43 +385,10 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	}
 
 	/**
-	 * Metodo utilizzato per spostarsi all'ultima linea del buffer.
-	 *
-	 * @see #moveFirst()
-	 * @see #movePrevious()
-	 * @see #moveNext()
-	 */
-	// metodo utilizzato per spostarsi all'ultima linea del buffer
-	public void moveLast() {
-		if (iRecordCount > 0) {
-			iRowIndex = iRecordCount - 1;
-			EOF = false;
-		}
-	}
-
-	/**
-	 * Metodo utilizzato per spostarsi alla linea precedente del buffer.
-	 *
-	 * @see #moveFirst()
-	 * @see #moveLast()
-	 * @see #moveNext()
-	 */
-	// metodo utilizzato per spostarsi alla linea precedente del buffer
-	public void movePrevious() {
-		if (iRowIndex > 0) {
-			iRowIndex--;
-		} else {
-			EOF = true;
-		}
-	}
-
-	/**
 	 * Metodo utilizzato per spostarsi alla linea successiva del buffer.
 	 *
 	 * @see #moveFirst()
-	 * @see #moveLast()
-	 * @see #movePrevious()
-	 */
+     */
 	// metodo utilizzato per spostarsi alla linea successiva del buffer
 	public void moveNext() {
 		if (iRowIndex + 1 < iRecordCount) {
@@ -543,37 +408,42 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		// se il valore del campo @ vuoto, lascio il tipo attuale, se impostato,
 		// quando
 		// questo @ di tipo DATE, altrimenti metto per default NUMERIC
-		if (type.equals("PREC")) {
-			type = getFieldType(field);
+        switch (type) {
+            case "PREC" -> {
+                type = getFieldType(field);
 
-			if (!type.equals("DATE")) {
-				if (aiFieldType[field - 1][1] == 0) {
-					aiFieldType[field - 1][1] = -1;
-				} else {
-					aiFieldType[field - 1][1] = aiFieldType[field - 1][1] * 1;
-				}
+                if (!type.equals("DATE")) {
+                    if (aiFieldType[field - 1][1] == 0) {
+                        aiFieldType[field - 1][1] = -1;
+                    } else {
+                        aiFieldType[field - 1][1] = aiFieldType[field - 1][1];
+                    }
 
-				type = "NUMERIC";
-			}
-		} else if (type.equals("STRING")) {
-			if (aiFieldType[field - 1][0] == 0) {
-				aiFieldType[field - 1][0] = -1;
-			} else {
-				aiFieldType[field - 1][0] = aiFieldType[field - 1][0] * 1;
-			}
-		} else if (type.equals("NUMERIC")) {
-			if (aiFieldType[field - 1][1] == 0) {
-				aiFieldType[field - 1][1] = -1;
-			} else {
-				aiFieldType[field - 1][1] = aiFieldType[field - 1][1] * 1;
-			}
-		} else if (type.equals("DATE")) {
-			if (aiFieldType[field - 1][2] == 0) {
-				aiFieldType[field - 1][2] = -1;
-			} else {
-				aiFieldType[field - 1][2] = aiFieldType[field - 1][2] * 1;
-			}
-		}
+                    type = "NUMERIC";
+                }
+            }
+            case "STRING" -> {
+                if (aiFieldType[field - 1][0] == 0) {
+                    aiFieldType[field - 1][0] = -1;
+                } else {
+                    aiFieldType[field - 1][0] = aiFieldType[field - 1][0];
+                }
+            }
+            case "NUMERIC" -> {
+                if (aiFieldType[field - 1][1] == 0) {
+                    aiFieldType[field - 1][1] = -1;
+                } else {
+                    aiFieldType[field - 1][1] = aiFieldType[field - 1][1];
+                }
+            }
+            case "DATE" -> {
+                if (aiFieldType[field - 1][2] == 0) {
+                    aiFieldType[field - 1][2] = -1;
+                } else {
+                    aiFieldType[field - 1][2] = aiFieldType[field - 1][2];
+                }
+            }
+        }
 
 		return type;
 	}
@@ -592,8 +462,8 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 			return -1;
 		}
 
-		String sCampo = new String();
-		String sCampo2 = new String();
+		String sCampo;
+		String sCampo2;
 
 		if (bFindCaseSensitive) {
 			sCampo2 = sFindText.trim();
@@ -640,8 +510,8 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * @see #findNext()
 	 */
 	public int findFirst(String sText, int col, boolean caseSensitive) {
-		String sCampo = new String();
-		String sCampo2 = new String();
+		String sCampo;
+		String sCampo2;
 
 		if (iRecordCount < 1) {
 			return -1;
@@ -656,7 +526,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 				if (sCampo.equals(sCampo2)) {
 					sFindText = sText;
 					iFindCol = col;
-					bFindCaseSensitive = caseSensitive;
+					bFindCaseSensitive = true;
 
 					iRowIndex = i;
 					EOF = false;
@@ -672,7 +542,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 				if (sCampo.equalsIgnoreCase(sCampo2)) {
 					sFindText = sText;
 					iFindCol = col;
-					bFindCaseSensitive = caseSensitive;
+					bFindCaseSensitive = false;
 
 					iRowIndex = i;
 					EOF = false;
@@ -707,23 +577,19 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 */
 	// Metodo utilizzato per invertire l'ordine dei record del buffer
 	public void revert() {
-		String ArrayApp[][] = new String[iRecordCount][iFieldCount];
+		String[][] ArrayApp = new String[iRecordCount][iFieldCount];
 
 		for (int i = 0; i < iRecordCount; i++) {
-			for (int col = 0; col < iFieldCount; col++) {
-				ArrayApp[i][col] = theRecordSet[iRecordCount - i - 1][col];
-			}
+            System.arraycopy(theRecordSet[iRecordCount - i - 1], 0, ArrayApp[i], 0, iFieldCount);
 		}
 
 		System.arraycopy(ArrayApp, 0, theRecordSet, 0, iRecordCount);
 
-		ArrayApp = null;
-
-		setSortedField(0);
+        setSortedField(0);
 
 		// Generate notification
 		fireTableRowsUpdated(0, iRecordCount - 1);
-		fireContentsChanged(this, 0, iRecordCount - 1);
+		fireContentsChanged(0, iRecordCount - 1);
 	}
 
 	/**
@@ -765,38 +631,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(new JFrame(), "Record, metodo getFieldByInt: " + e + "\nCampo " + iFieldNumber + " non numerico!");
 				// ErrorManager.showErrorMessage("Record, metodo getFieldByInt:
-				// "+e+"\nCampo "+iFieldNumber+" non numerico!");
-				return 0;
-			}
-		}
-	}
-
-	/**
-	 * Ritorna il contenuto del campo della riga correntemente puntata come
-	 * valore di tipo long.
-	 *
-	 * @param iFieldNumber
-	 *            Numero del campo di cui si vuole il valore.
-	 * @return Long indicante il contenuto del campo. Altrimenti 0 in caso di
-	 *         errore.
-	 * @see #getField(int)
-	 * @see #getFieldByInt(int)
-	 * @see #getFieldByLong(int)
-	 * @see #setField(int, int, java.lang.String)
-	 */
-
-	public long getFieldByLong(int iFieldNumber) {
-		if (iFieldNumber > iFieldCount) {
-			JOptionPane.showMessageDialog(new JFrame(), "Buffer, metodo getFieldByLong:\nCampo " + iFieldNumber + " inesistente!");
-			// ErrorManager.showErrorMessage("Buffer, metodo
-			// getFieldByLong:\nCampo "+iFieldNumber+" inesistente!");
-			return 0;
-		} else {
-			try {
-				return Long.parseLong(theRecordSet[iRowIndex][iFieldNumber - 1]);
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(new JFrame(), "Buffer, metodo getFieldByLong:\nCampo " + iFieldNumber + " inesistente!");
-				// ErrorManager.showErrorMessage("Buffer, metodo getFieldByLong:
 				// "+e+"\nCampo "+iFieldNumber+" non numerico!");
 				return 0;
 			}
@@ -866,7 +700,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 */
 	public void delete(int item) {
 		if (iRecordCount > 0) {
-			String ArrayApp[][] = new String[iRecordCount - 1][iFieldCount];
+			String[][] ArrayApp = new String[iRecordCount - 1][iFieldCount];
 
 			if (item > 1) {
 				int numelem = item - 1;
@@ -882,9 +716,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 			theRecordSet = new String[iRecordCount - 1][iFieldCount];
 			System.arraycopy(ArrayApp, 0, theRecordSet, 0, iRecordCount - 1);
 
-			ArrayApp = null;
-
-			// decrementa il numero di elementi presenti nel buffer..
+            // decrementa il numero di elementi presenti nel buffer..
 			iRecordCount--;
 
 			if (iRecordCount == 0) {
@@ -893,7 +725,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 			// Generate notification
 			fireTableRowsDeleted(item - 1, item - 1);
-			fireIntervalRemoved(this, item - 1, item - 1);
+			fireIntervalRemoved(item - 1, item - 1);
 		}
 	}
 
@@ -909,23 +741,13 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	// Metodo utilizzato per sostituire un'intero record del buffer
 	public void replace(int row, String item) {
 		if (iRecordCount < row || row < 1) {
-			return;
-		} else {
+        } else {
 			setRecordValues(item, row - 1);
 
 			// Generate notification
 			fireTableDataChanged();
-			fireContentsChanged(this, row - 1, row - 1);
+			fireContentsChanged(row - 1, row - 1);
 		}
-	}
-
-	/**
-	 * Metodo che restituisce il numero di campi contenuti in un record
-	 *
-	 * @return Indica il numero di campi contenuti in un record del Buffer.
-	 */
-	public int getFieldCount() {
-		return iFieldCount;
 	}
 
 	/**
@@ -962,30 +784,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		iFieldCount = count;
 	}
 
-	/**
-	 * Metodo utilizzato per aggiungere un record vuoto al buffer.
-	 */
-	public void addNew() {
-		String sNewRec = new String();
-
-		if (iFieldCount != -1) {
-			for (int i = 1; i <= iFieldCount; i++) {
-				sNewRec += "@" + i + "  ";
-			}
-			addNew(sNewRec.substring(0, sNewRec.length() - 1));
-
-			// Generate notification
-			fireTableRowsInserted(getRecordCount() - 1, getRecordCount() - 1);
-
-			fireIntervalAdded(this, getRecordCount() - 1, getRecordCount() - 1);
-
-		} else {
-			JOptionPane.showMessageDialog(new JFrame(), "Buffer, metodo addNew:\nNumero di campi del Record non noto !");
-			// ErrorManager.showErrorMessage("Buffer, metodo addNew:\nNumero di
-			// campi del Record non noto !");
-		}
-	}
-
 	private int countRecordField(String record) {
 		int cont = 1,pos = 0;
 		while (true) {
@@ -997,22 +795,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		}
 
 		return cont - 1;
-	}
-
-	// Non usare dall'esterno !
-	// Viene chiamato quando ricevo dal server DATA_TYPE.
-	void createRecordSet(String asFieldType[]) {
-		// instanzia il RecordSet, grande quanto iDefaultAdd
-		// e setta il tipo dei campi del buffer
-		aiFieldType = null;
-		theRecordSet = null;
-
-		aiFieldType = new int[iFieldCount][3];
-		for (int i = 1; i <= iFieldCount; i++) {
-			setFieldType(i, asFieldType[i - 1]);
-		}
-
-		theRecordSet = new String[iDefaultAdd][iFieldCount];
 	}
 
 	// Non usare dall'esterno !
@@ -1204,13 +986,13 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 		// Generate notification
 		fireTableRowsInserted(getRecordCount() - 1, getRecordCount() - 1);
-		fireIntervalAdded(this, getRecordCount() - 1, getRecordCount() - 1);
+		fireIntervalAdded(getRecordCount() - 1, getRecordCount() - 1);
 
 	}
 
 	private void addSpaceForRecord(int iNumRecords) {
 		// dimensiona un array di appoggio grande quanto quello attuale
-		String ArrayApp[][] = new String[iRecordCount][iFieldCount];
+		String[][] ArrayApp = new String[iRecordCount][iFieldCount];
 
 		// copia il contenuto attuale nell'array di appoggio
 		if (iRecordCount > 0) {
@@ -1218,17 +1000,14 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		}
 
 		// ridimensiona l'array originale aumentandolo di DEF_ADD
-		theRecordSet = null;
-		theRecordSet = new String[iRecordCount + iNumRecords][iFieldCount];
+        theRecordSet = new String[iRecordCount + iNumRecords][iFieldCount];
 
 		// copia il contenuto dell'array di appoggio nell'originale
 		if (iRecordCount > 0) {
 			System.arraycopy(ArrayApp, 0, theRecordSet, 0, iRecordCount);
 		}
 
-		ArrayApp = null;
-
-	}
+    }
 
 	/**
 	 * Ritorna il record del Buffer correntemente selezionato.
@@ -1260,79 +1039,16 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 			return "END OF BUFFER";
 		}
 
-		sLine = "";
+        StringBuilder sLine = new StringBuilder();
 		for (int i = 0; i < iFieldCount; i++) {
-			sLine += "@" + (i + 1) + theRecordSet[item][i] + (i == iFieldCount - 1 ? "" : " ");
+			sLine.append("@").append(i + 1).append(theRecordSet[item][i]).append(i == iFieldCount - 1 ? "" : " ");
 		}
 
-		return sLine;
+		return sLine.toString();
 	}
 
-	String[] setDataType(String line) {
-		String asFieldType[] = null,asFieldTypeApp[] = null;
-		String sType = new String(line.substring(line.indexOf("DATA_TYPE=>") + 11).trim());
-		String sToken;
-		int extra;
-
-		iFieldCount = 0;
-		setDataTypeKnow(true);
-
-		StringTokenizer token = new StringTokenizer(sType,"@");
-
-		while (token.hasMoreTokens()) {
-			sToken = token.nextToken().trim();
-
-			if (sToken.indexOf("LEN=") != -1) {
-				try {
-					setDefaultAdd(1 + Integer.parseInt(sToken.substring(sToken.indexOf("LEN=") + 4)));
-				} catch (NumberFormatException e) {
-				}
-
-				continue;
-			}
-
-			if (sToken.indexOf("SORT=") != -1) {
-				try {
-					setSortedField(Integer.parseInt(sToken.substring(sToken.indexOf("SORT=") + 5)));
-				} catch (NumberFormatException e) {
-				}
-
-				break;
-			}
-
-			extra = iFieldCount < 9 ? 1 : 2;
-			sToken = sToken.substring(extra).trim();
-
-			if (iFieldCount == 0) {
-				asFieldType = new String[1];
-			} else {
-				asFieldTypeApp = new String[iFieldCount + 1];
-				System.arraycopy(asFieldType, 0, asFieldTypeApp, 0, iFieldCount);
-				asFieldType = null;
-				asFieldType = new String[iFieldCount + 1];
-				System.arraycopy(asFieldTypeApp, 0, asFieldType, 0, iFieldCount);
-				asFieldTypeApp = null;
-			}
-
-			asFieldType[iFieldCount++] = sToken;
-		}
-
-		return asFieldType;
-	}
-
-	public void setTypeCampiBuffer(String asFieldType[], int iFieldCount,
-			int iRecordCount) {
-		this.iRecordCount = iRecordCount;
-		this.iFieldCount = iFieldCount;
-
-		aiFieldType = new int[iFieldCount][3];
-		for (int i = 1; i <= iFieldCount; i++) {
-			setFieldType(i, asFieldType[i - 1]);
-		}
-	}
-
-	public void setRecordSet(String RecordSet[][], String asFieldType[],
-			int iFieldCount, int iRecordCount) {
+	public void setRecordSet(String[][] RecordSet, String[] asFieldType,
+                             int iFieldCount, int iRecordCount) {
 		this.iRecordCount = iRecordCount;
 		this.iFieldCount = iFieldCount;
 		iRowIndex = 0;
@@ -1344,9 +1060,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		 * theRecordSet[i][c] = RecordSet[i][c];
 		 */
 
-		RecordSet = null;
-
-		aiFieldType = new int[iFieldCount][3];
+        aiFieldType = new int[iFieldCount][3];
 		for (int i = 1; i <= iFieldCount; i++) {
 			setFieldType(i, asFieldType[i - 1]);
 		}
@@ -1362,14 +1076,13 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 
 		// controllo se @ una data
 		if (iLen == 10) {
-			if (sFieldValue.substring(2, 3).equals("/") && sFieldValue.substring(5, 6).equals("/")) {
+			if (sFieldValue.charAt(2) == '/' && sFieldValue.charAt(5) == '/') {
 				return "DATE";
 			} else {
-				bNum = true;
 
-				// controllo se @ un numero
+                // controllo se @ un numero
 				for (int i = 0; i < iLen; i++) {
-					bNum = bNum && Character.isDigit(sFieldValue.charAt(i));
+					bNum = Character.isDigit(sFieldValue.charAt(i));
 					// se false viene impostato il tipo STRING
 					if (!bNum) {
 						return "STRING";
@@ -1380,11 +1093,10 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 				return "NUMERIC";
 			}
 		} else {
-			bNum = true;
 
-			// controllo se @ un numero
+            // controllo se @ un numero
 			for (int i = 0; i < iLen; i++) {
-				bNum = bNum && Character.isDigit(sFieldValue.charAt(i));
+				bNum = Character.isDigit(sFieldValue.charAt(i));
 				// se false viene impostato il tipo STRING
 				if (!bNum) {
 					return "STRING";
@@ -1407,10 +1119,9 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		String sFieldType,sField;
 
 		for (int NumCampo = 1; NumCampo <= iFieldCount; NumCampo++) {
-			In = row.indexOf("@X");
 
-			String campo1 = new String();
-			String campo2 = new String();
+            String campo1;
+			String campo2;
 
 			campo1 = "@" + NumCampo;
 			campo2 = "@" + (NumCampo + 1);
@@ -1433,7 +1144,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 				In = In2;
 			}
 
-			if (Out > In && Out != -1) {
+			if (Out > In) {
 				sField = row.substring(In + campo1.length(), Out - 1);
 			} else {
 				sField = row.substring(In + (campo1.length()));
@@ -1475,63 +1186,12 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		System.gc();
 	}
 
-	public void setParam(String name, String value) {
-		try {
-			if (name.equals("DB_TIME")) {
-				DB_TIME = value;
-			} else if (name.equals("TAG")) {
-				TAG = value;
-			} else if (name.equals("QUERY_NAME")) {
-				QUERY_NAME = value;
-			} else if (name.equals("EXIT")) {
-				EXIT = value;
-			} else {
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(new JFrame(), "Buffer, metodo setParam: " + e);
-			// ErrorManager.showErrorMessage("Buffer, metodo setParam: " + e);
-		}
-	}
-
-	public boolean getErrorState() {
-		return ERROR;
-	}
-
 	public int getErrorCode() {
 		return ERROR_CODE;
 	}
 
-	public void setErrorState(boolean state) {
-		ERROR = state;
-	}
-
 	public void setErrorCode(int code) {
 		ERROR_CODE = code;
-	}
-
-	public String getParam(String name) {
-		if (name.equals("DB_TIME")) {
-			return DB_TIME;
-		} else if (name.equals("QUERY_NAME")) {
-			return QUERY_NAME;
-		} else if (name.equals("TAG")) {
-			return TAG;
-		} else if (name.equals("EXIT")) {
-			return EXIT;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Imposta i nomi delle colonne del Buffer.
-	 *
-	 * @param columnNames
-	 *            Array di String contenenti i nomi da impostare alle colonne
-	 *            del Buffer.
-	 */
-	public void setColumnNames(String columnNames[]) {
-		asColumnNames = columnNames;
 	}
 
 	/**
@@ -1677,8 +1337,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * Richiamato ogni qual volta vengono aggiunti al model uno o pi@ elementi.
 	 * I nuovi elementi sono specificati dall'intervallo chiuso index0, index1.
 	 *
-	 * @param source
-	 *            Il ListModel che cambia, tipicamente "this".
 	 * @param index0
 	 *            Un estremo del nuovo intervallo.
 	 * @param index1
@@ -1687,7 +1345,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * @see ListDataListener
 	 * @see ListDataEvent
 	 */
-	protected void fireIntervalAdded(Object source, int index0, int index1) {
+	protected void fireIntervalAdded(int index0, int index1) {
 		Object[] listeners = listenerList.getListenerList();
 		ListDataEvent e = null;
 
@@ -1706,8 +1364,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * elementi. Gli elementi rimossi sono specificati dall'intervallo chiuso
 	 * index0, index1.
 	 *
-	 * @param source
-	 *            Il ListModel che cambia, tipicamente "this".
 	 * @param index0
 	 *            Un estremo dell' intervallo.
 	 * @param index1
@@ -1716,7 +1372,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * @see ListDataListener
 	 * @see ListDataEvent
 	 */
-	protected void fireIntervalRemoved(Object source, int index0, int index1) {
+	protected void fireIntervalRemoved(int index0, int index1) {
 		Object[] listeners = listenerList.getListenerList();
 		ListDataEvent e = null;
 
@@ -1735,8 +1391,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * Gli elementi cambiati sono specificati dall'intervallo chiuso index0,
 	 * index1.
 	 *
-	 * @param source
-	 *            Il ListModel che cambia, tipicamente "this".
 	 * @param index0
 	 *            Un estremo dell' intervallo.
 	 * @param index1
@@ -1745,7 +1399,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * @see ListDataListener
 	 * @see ListDataEvent
 	 */
-	protected void fireContentsChanged(Object source, int index0, int index1) {
+	protected void fireContentsChanged(int index0, int index1) {
 		Object[] listeners = listenerList.getListenerList();
 		ListDataEvent e = null;
 
@@ -1762,10 +1416,18 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	public void refresh() {
 		// generate notification
 		fireTableRowsUpdated(0, iRecordCount - 1);
-		fireContentsChanged(this, 0, iRecordCount - 1);
+		fireContentsChanged(0, iRecordCount - 1);
 	}
 
-	/*
+    public boolean isERROR() {
+        return ERROR;
+    }
+
+    public void setERROR(boolean ERROR) {
+        this.ERROR = ERROR;
+    }
+
+    /*
 	 * protected void finalize() throws Throwable {
 	 * System.out.print("\nFINALIZE"+"_"+this); super.finalize(); }
 	 */

@@ -1,10 +1,12 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,9 +60,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class FreePlayersView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiocatoreService giocatoreController;
@@ -71,9 +74,7 @@ public class FreePlayersView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	private Button loadButton;
-
-	private RadioButtonGroup<String> radioGroup = null;
+    private RadioButtonGroup<String> radioGroup = null;
 	private TabSheet tabs = null;
 	private Grid<FcGiocatore> gridP = new Grid<>();
 	private Grid<FcGiocatore> gridD = new Grid<>();
@@ -88,9 +89,7 @@ public class FreePlayersView extends VerticalLayout
 
 	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<>();
 
-	private FcGiornataInfo giornataInfo = null;
-
-	public FreePlayersView() {
+    public FreePlayersView() {
 	}
 
 	@PostConstruct
@@ -107,7 +106,7 @@ public class FreePlayersView extends VerticalLayout
 
 	private void initData() {
 
-		giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+        FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
 		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 	}
@@ -122,7 +121,7 @@ public class FreePlayersView extends VerticalLayout
 		RouterLink menuMercato = new RouterLink("",MercatoView.class);
 		menuMercato.getElement().appendChild(button2.getElement());
 
-		loadButton = new Button("Aggiorna");
+        Button loadButton = new Button("Aggiorna");
 		loadButton.addClickListener(this);
 
 		radioGroup = new RadioButtonGroup<>();
@@ -200,7 +199,7 @@ public class FreePlayersView extends VerticalLayout
 
 	private List<FcGiocatore> getModelAsta(String ruolo) {
 
-		log.info("START getModelAsta " + ruolo);
+        log.info("START getModelAsta {}", ruolo);
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		List<FcFormazione> allFormaz = formazioneController.findByFcCampionato(campionato);
@@ -215,7 +214,7 @@ public class FreePlayersView extends VerticalLayout
 		r.setIdRuolo(ruolo);
 
 		// load data
-		List<FcGiocatore> all = null;
+		List<FcGiocatore> all;
 		if (!listNotIn.isEmpty()) {
 			all = giocatoreController.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(r, true, listNotIn);
 		} else {
@@ -226,13 +225,13 @@ public class FreePlayersView extends VerticalLayout
 		for (FcGiocatore g : all) {
 			if (g.getFcStatistiche() == null) {
 				FcStatistiche s = new FcStatistiche();
-				s.setMediaVoto(Double.valueOf(0));
-				s.setFantaMedia(Double.valueOf(0));
+				s.setMediaVoto((double) 0);
+				s.setFantaMedia((double) 0);
 				g.setFcStatistiche(s);
 			}
 		}
 
-		log.info("END getModelAsta " + ruolo);
+        log.info("END getModelAsta {}", ruolo);
 
 		return all;
 	}
@@ -286,7 +285,7 @@ public class FreePlayersView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
@@ -297,8 +296,7 @@ public class FreePlayersView extends VerticalLayout
 		nomeSquadraColumn.setKey("fcSquadra.nomeSquadra");
 		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setSortable(true);
-		nomeSquadraColumn.setComparator((p1,
-				p2) -> p1.getFcSquadra().getNomeSquadra().compareTo(p2.getFcSquadra().getNomeSquadra()));
+		nomeSquadraColumn.setComparator(Comparator.comparing(p -> p.getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> quotazioneColumn = grid.addColumn(g -> g != null ? g.getQuotazione() : 0);
@@ -357,7 +355,7 @@ public class FreePlayersView extends VerticalLayout
 				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (s != null) {
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
@@ -371,8 +369,7 @@ public class FreePlayersView extends VerticalLayout
 			return cellLayout;
 		}));
 		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator((p1,
-				p2) -> p1.getFcStatistiche().getMediaVoto().compareTo(p2.getFcStatistiche().getMediaVoto()));
+		mediaVotoColumn.setComparator(Comparator.comparing(p -> p.getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader(Costants.MV);
 		mediaVotoColumn.setAutoWidth(true);
 		mediaVotoColumn.setKey("fcStatistiche.mediaVoto");
@@ -395,7 +392,7 @@ public class FreePlayersView extends VerticalLayout
 				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (s != null) {
 					d = s.getFantaMedia() / Costants.DIVISORE_100;
 				}
@@ -409,8 +406,7 @@ public class FreePlayersView extends VerticalLayout
 			return cellLayout;
 		}));
 		fmVotoColumn.setSortable(true);
-		fmVotoColumn.setComparator((p1,
-				p2) -> p1.getFcStatistiche().getFantaMedia().compareTo(p2.getFcStatistiche().getFantaMedia()));
+		fmVotoColumn.setComparator(Comparator.comparing(p -> p.getFcStatistiche().getFantaMedia()));
 		fmVotoColumn.setHeader(Costants.FMV);
 		fmVotoColumn.setAutoWidth(true);
 		fmVotoColumn.setKey("fcStatistiche.fantaMedia");
@@ -466,10 +462,10 @@ public class FreePlayersView extends VerticalLayout
 		try {
 			log.info("START AGGIORNA");
 
-			log.info("selAggion " + radioGroup.getValue());
+            log.info("selAggion {}", radioGroup.getValue());
 			if (Costants.RUOLO.equals(radioGroup.getValue())) {
 				String selTab = tabs.getSelectedTab().getLabel();
-				log.info("selTab " + selTab);
+                log.info("selTab {}", selTab);
 				if ("Portieri".equals(selTab)) {
 					gridP.setItems(getModelAsta(Costants.P));
 					gridP.getDataProvider().refreshAll();
@@ -515,7 +511,7 @@ public class FreePlayersView extends VerticalLayout
 		Image img = null;
 		if (gg != null) {
 			if (gg.isInfortunato()) {
-				if (gg.getNote().indexOf("INCERTO") != -1) {
+				if (gg.getNote().contains("INCERTO")) {
 					img = Utils.buildImage("help.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/" + "help.png"));
 					img.setTitle(gg.getNote());
 				} else {

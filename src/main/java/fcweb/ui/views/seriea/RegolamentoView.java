@@ -2,6 +2,7 @@ package fcweb.ui.views.seriea;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,9 +42,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class RegolamentoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AccessoService accessoController;
@@ -78,39 +80,35 @@ public class RegolamentoView extends VerticalLayout
 		List<FcRegolamento> l = regolamentoController.findAll();
 		try {
 
-			BufferedReader br = null;
-			BufferedReader br2 = null;
+			BufferedReader br;
+			BufferedReader br2;
 			if (l != null && !l.isEmpty()) {
 				FcRegolamento r = l.get(0);
 				regolamento = r;
 				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
 				br2 = new BufferedReader(isr2);
 
-				if (br2 != null) {
-					String line2 = null;
-					html = "";
-					while ((line2 = br2.readLine()) != null) {
-						html += line2;
-					}
-				}
+                String line2;
+                html = "";
+                while ((line2 = br2.readLine()) != null) {
+                    html += line2;
+                }
 
-			} else {
+            } else {
 				Resource resource = resourceLoader.getResource("classpath:html/regolamento3.html");
 				InputStreamReader isr = new InputStreamReader(resource.getInputStream());
 				br = new BufferedReader(isr);
 
-				if (br != null) {
-					String line = null;
-					html = "";
-					while ((line = br.readLine()) != null) {
-						html += line;
-					}
-				}
-			}
+                String line;
+                html = "";
+                while ((line = br.readLine()) != null) {
+                    html += line;
+                }
+            }
 			log.debug(html);
 
 		} catch (Exception ex2) {
-			log.error("ex2 " + ex2.getMessage());
+            log.error("ex2 {}", ex2.getMessage());
 		}
 	}
 
@@ -133,8 +131,7 @@ public class RegolamentoView extends VerticalLayout
 
 		this.add(salvaDb);
 
-		/** Document Editor */
-		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
+        decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
 			builder.editorType = EditorType.DECOUPLED;
 			// builder.editorData = html;
 		}).createVaadinCKEditor();
@@ -148,7 +145,7 @@ public class RegolamentoView extends VerticalLayout
 			previewHtml.getElement().setProperty("innerHTML", html);
 			this.add(previewHtml);
 		} catch (Exception ex2) {
-			log.error("ex2 " + ex2.getMessage());
+            log.error("ex2 {}", ex2.getMessage());
 		}
 	}
 
@@ -158,15 +155,10 @@ public class RegolamentoView extends VerticalLayout
 			if (event.getSource() == salvaDb) {
 				log.info("SALVA");
 
-				String valueHtml = null;
+				String valueHtml;
 				valueHtml = decoupledEditor.getValue();
 				log.info(valueHtml);
-				// valueHtml = StringUtils.encodeHtml(valueHtml);
-				// Encoder encoder = Base64.getEncoder();
-				// String encodedString =
-				// encoder.encodeToString(valueHtml.getBytes());
-				// LOG.debug(encodedString);
-				if (regolamento == null) {
+                if (regolamento == null) {
 					regolamento = new FcRegolamento();
 				}
 				regolamento.setData(LocalDateTime.now());

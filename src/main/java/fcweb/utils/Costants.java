@@ -76,11 +76,11 @@ public class Costants{
 	public static final String BG_R = "#FFFF84";
 	public static final String BG_N = "#FF9331";
 
-	public static final Double RANGE_MIN_MV = Double.valueOf(560);
-	public static final Double RANGE_MAX_MV = Double.valueOf(625);
+	public static final Double RANGE_MIN_MV = 560.0;
+	public static final Double RANGE_MAX_MV = 625.0;
 
-	public static final Double EM_RANGE_MIN_MV = Double.valueOf(56);
-	public static final Double EM_RANGE_MAX_MV = Double.valueOf(62);
+	public static final Double EM_RANGE_MIN_MV = 56.0;
+	public static final Double EM_RANGE_MAX_MV = 62.0;
 
 	public static final int DIVISORE_100 = 100;
 	public static final int DIVISORE_10 = 10;

@@ -22,8 +22,7 @@ public class ContentIdGenerator{
 	 * Sequence goes from 0 to 100K, then starts up at 0 again. This is large
 	 * enough, and saves
 	 *
-	 * @return
-	 */
+     */
 	public static synchronized int getSeq() {
 		return (seq++) % 100000;
 	}

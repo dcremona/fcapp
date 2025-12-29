@@ -17,7 +17,7 @@ public interface GiornataDettInfoRepository
 
 	Iterable<FcGiornataDettInfo> findAll(Sort sort);
 
-	public FcGiornataDettInfo findByFcAttoreAndFcGiornataInfo(FcAttore attore,
-			FcGiornataInfo giornataInfo);
+	FcGiornataDettInfo findByFcAttoreAndFcGiornataInfo(FcAttore attore,
+                                                       FcGiornataInfo giornataInfo);
 
 }

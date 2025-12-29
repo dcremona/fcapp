@@ -31,7 +31,7 @@ public class GiornataGiocatoreService{
 			l = (List<FcGiornataGiocatore>) giornataGiocatoreRepository.findAll();
 		} else if (giornataInfo != null && giocatore == null) {
 			l = giornataGiocatoreRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
-		} else if (giornataInfo == null && giocatore != null) {
+		} else if (giornataInfo == null) {
 			l = giornataGiocatoreRepository.findByFcGiocatore(giocatore);
 		}
 		return l;

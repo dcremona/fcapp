@@ -18,12 +18,12 @@ public interface GiornataRepository
 
 	Iterable<FcGiornata> findAll(Sort sort);
 
-	public List<FcGiornata> findByFcGiornataInfo(FcGiornataInfo giornataInfo);
+	List<FcGiornata> findByFcGiornataInfo(FcGiornataInfo giornataInfo);
 
-	public List<FcGiornata> findByFcGiornataInfoOrderByFcTipoGiornata(
-			FcGiornataInfo giornataInfo);
+	List<FcGiornata> findByFcGiornataInfoOrderByFcTipoGiornata(
+            FcGiornataInfo giornataInfo);
 
-	public List<FcGiornata> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(
-			FcGiornataInfo start, FcGiornataInfo end);
+	List<FcGiornata> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(
+            FcGiornataInfo start, FcGiornataInfo end);
 
 }

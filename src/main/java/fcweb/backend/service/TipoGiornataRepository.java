@@ -14,5 +14,4 @@ public interface TipoGiornataRepository
 
 	Iterable<FcTipoGiornata> findAll(Sort sort);
 
-	public FcTipoGiornata findByDescTipoGiornata(String descTipoGiornata);
 }

@@ -2,6 +2,7 @@ package fcweb.ui.views.em;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,9 +42,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class EmRegolamentoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AccessoService accessoController;
@@ -78,48 +80,35 @@ public class EmRegolamentoView extends VerticalLayout
 		List<FcRegolamento> l = regolamentoController.findAll();
 		try {
 
-			BufferedReader br = null;
-			BufferedReader br2 = null;
+			BufferedReader br;
+			BufferedReader br2;
 			if (l != null && l.size() > 0) {
 				FcRegolamento r = l.get(0);
 				regolamento = r;
 				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
 				br2 = new BufferedReader(isr2);
 
-				if (br2 != null) {
-					String line2 = null;
-					html = "";
-					while ((line2 = br2.readLine()) != null) {
-						html += line2;
-					}
-				}
+                String line2;
+                html = "";
+                while ((line2 = br2.readLine()) != null) {
+                    html += line2;
+                }
 
-			} else {
+            } else {
 				Resource resource = resourceLoader.getResource("classpath:html/fcqatar2022_regolamento.html");
 				InputStreamReader isr = new InputStreamReader(resource.getInputStream());
 				br = new BufferedReader(isr);
 
-				if (br != null) {
-					String line = null;
-					html = "";
-					while ((line = br.readLine()) != null) {
-						html += line;
-					}
-				}
-			}
+                String line;
+                html = "";
+                while ((line = br.readLine()) != null) {
+                    html += line;
+                }
+            }
 			LOG.debug(html);
-			// if (l != null && l.size() > 0) {
-			// LOG.debug(html);
-			// String encodedString = html;
-			// LOG.debug(encodedString);
-			// Decoder decoder = Base64.getDecoder();
-			// byte[] bytes = decoder.decode(encodedString);
-			// html = new String(bytes);
-			// LOG.debug(html);
-			// }
 
-		} catch (Exception ex2) {
-			LOG.error("ex2 " + ex2.getMessage());
+        } catch (Exception ex2) {
+            LOG.error("ex2 {}", ex2.getMessage());
 		}
 	}
 
@@ -141,8 +130,7 @@ public class EmRegolamentoView extends VerticalLayout
 
 		this.add(salvaDb);
 
-		/** Document Editor */
-		decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
+        decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
 			builder.editorType = EditorType.DECOUPLED;
 			builder.editorData = html;
 		}).createVaadinCKEditor();
@@ -158,7 +146,7 @@ public class EmRegolamentoView extends VerticalLayout
 			this.add(previewHtml);
 
 		} catch (Exception ex2) {
-			LOG.error("ex2 " + ex2.getMessage());
+            LOG.error("ex2 {}", ex2.getMessage());
 		}
 
 	}

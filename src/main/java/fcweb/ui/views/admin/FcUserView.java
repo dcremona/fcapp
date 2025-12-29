@@ -1,5 +1,6 @@
 package fcweb.ui.views.admin;
 
+import java.io.Serial;
 import java.security.SecureRandom;
 
 import org.slf4j.Logger;
@@ -37,9 +38,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ADMIN")
 public class FcUserView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreService;

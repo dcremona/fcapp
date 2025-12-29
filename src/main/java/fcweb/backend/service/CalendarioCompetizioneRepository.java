@@ -17,15 +17,12 @@ public interface CalendarioCompetizioneRepository
 
 	Iterable<FcCalendarioCompetizione> findAll(Sort sort);
 
-	public List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata);
+	List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata);
 
-	public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(
-			int idGiornata);
+	List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(
+            int idGiornata);
 
-	public List<FcCalendarioCompetizione> findByIdGiornataAndDataGreaterThanEqual(
-			int idGiornata, LocalDateTime data);
-
-	public List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(
-			int idGiornata, LocalDateTime data);
+	List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(
+            int idGiornata, LocalDateTime data);
 
 }

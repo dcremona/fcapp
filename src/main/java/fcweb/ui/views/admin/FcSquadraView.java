@@ -1,6 +1,7 @@
 package fcweb.ui.views.admin;
 
 import java.io.InputStream;
+import java.io.Serial;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -47,9 +48,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class FcSquadraView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private SquadraService squadraController;
@@ -117,12 +119,12 @@ public class FcSquadraView extends VerticalLayout
 					Span lblSquadra = new Span(f.getNomeSquadra());
 					cellLayout.add(lblSquadra);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 			}
 			return cellLayout;
 		}));
-		crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getNomeImg())).setHeader("Nome Img");
+		crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : s.getNomeImg())).setHeader("Nome Img");
 
 		crud.getGrid().addColumn(new ComponentRenderer<>(f -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
@@ -136,7 +138,7 @@ public class FcSquadraView extends VerticalLayout
 						cellLayout.add(img2);
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 			}
 			return cellLayout;
@@ -163,8 +165,8 @@ public class FcSquadraView extends VerticalLayout
 			if (event.getSource() == initDb) {
 				List<FcSquadra> squadreSerieA = squadraController.findAll();
 				for (FcSquadra s : squadreSerieA) {
-					Resource r = null;
-					Resource r2 = null;
+					Resource r;
+					Resource r2;
 					if ("1".equals(campionato.getType())) {
 						r = resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeImg());
 						InputStream inputStream = r.getInputStream();

@@ -15,7 +15,7 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 @Service
 public class GiornataDettService{
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final GiornataDettRepository giornataDettRepository;
 
@@ -34,7 +34,7 @@ public class GiornataDettService{
 	}
 
 	public FcGiornataDett insertGiornataDett(FcGiornataDett c) {
-		FcGiornataDett fcGiornataDett = null;
+		FcGiornataDett fcGiornataDett;
 		try {
 
 			FcGiornataDettId id = new FcGiornataDettId();
@@ -45,32 +45,28 @@ public class GiornataDettService{
 			fcGiornataDett = giornataDettRepository.save(c);
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
-			return fcGiornataDett;
+			return null;
 		}
 		return fcGiornataDett;
 	}
 
 	public FcGiornataDett updateGiornataDett(FcGiornataDett c) {
-		FcGiornataDett fcGiornataDett = null;
+		FcGiornataDett fcGiornataDett;
 		try {
 			fcGiornataDett = giornataDettRepository.save(c);
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
-			return fcGiornataDett;
+			return null;
 		}
 		return fcGiornataDett;
 	}
 
-	public String deleteGiornataDett(FcGiornataDett c) {
-		String id = "";
-		try {
+	public void deleteGiornataDett(FcGiornataDett c) {
+        try {
 			giornataDettRepository.delete(c);
-			id = "" + c.getId();
-		} catch (Exception ex) {
+        } catch (Exception ex) {
 			log.error(ex.getMessage());
-			return "Error delete : " + ex.toString();
 		}
-		return "GiornataDett succesfully delete with id = " + id;
 	}
 
 }

@@ -13,6 +13,6 @@ public interface ProprietaRepository extends CrudRepository<FcProperties, Long>{
 
 	Iterable<FcProperties> findAll(Sort sort);
 
-	public FcProperties findByKey(String key);
+	FcProperties findByKey(String key);
 
 }

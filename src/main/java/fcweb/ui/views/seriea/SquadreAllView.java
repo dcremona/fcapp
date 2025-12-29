@@ -1,12 +1,9 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -55,9 +52,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 public class SquadreAllView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -103,7 +101,6 @@ public class SquadreAllView extends VerticalLayout{
 			add(buildButtonRose(campionato));
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		final HorizontalLayout layoutSq = new HorizontalLayout();
@@ -171,7 +168,7 @@ public class SquadreAllView extends VerticalLayout{
 
 			Map<String, Object> hm = getMapRoseFcAll(campionato);
 			hm.put("titolo", "Rose Fc");
-			Collection<FormazioneJasper> collection = new ArrayList<FormazioneJasper>();
+			Collection<FormazioneJasper> collection = new ArrayList<>();
 			collection.add(new FormazioneJasper("P","G","Sq",0,0));
 			Resource resource = resourceLoader.getResource("classpath:reports/roseFcAll.jasper");
 
@@ -183,7 +180,6 @@ public class SquadreAllView extends VerticalLayout{
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		return null;
@@ -220,7 +216,7 @@ public class SquadreAllView extends VerticalLayout{
 						Image img = Utils.getImage(f.getFcGiocatore().getNomeImg(), f.getFcGiocatore().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblGiocatore = new Span(f.getFcGiocatore().getCognGiocatore());
@@ -241,7 +237,7 @@ public class SquadreAllView extends VerticalLayout{
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(f.getFcGiocatore().getFcSquadra().getNomeSquadra());
@@ -250,8 +246,7 @@ public class SquadreAllView extends VerticalLayout{
 			return cellLayout;
 		}));
 		nomeSquadraColumn.setSortable(true);
-		nomeSquadraColumn.setComparator((p1,
-				p2) -> p1.getFcGiocatore().getFcSquadra().getNomeSquadra().compareTo(p2.getFcGiocatore().getFcSquadra().getNomeSquadra()));
+		nomeSquadraColumn.setComparator(Comparator.comparing(p -> p.getFcGiocatore().getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
@@ -271,7 +266,7 @@ public class SquadreAllView extends VerticalLayout{
 				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (s != null) {
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
@@ -284,8 +279,7 @@ public class SquadreAllView extends VerticalLayout{
 			return cellLayout;
 		}));
 		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator((p1,
-				p2) -> p1.getFcGiocatore().getFcStatistiche().getMediaVoto().compareTo(p2.getFcGiocatore().getFcStatistiche().getMediaVoto()));
+		mediaVotoColumn.setComparator(Comparator.comparing(p -> p.getFcGiocatore().getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader(Costants.MV);
 		mediaVotoColumn.setAutoWidth(true);
 
@@ -294,7 +288,7 @@ public class SquadreAllView extends VerticalLayout{
 		quotazioneColumn.setHeader(Costants.Q);
 		quotazioneColumn.setAutoWidth(true);
 
-		Column<FcFormazione> totPagatoColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato().intValue() : 0);
+		Column<FcFormazione> totPagatoColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato() : 0);
 		totPagatoColumn.setSortable(true);
 		totPagatoColumn.setHeader(Costants.P);
 		totPagatoColumn.setAutoWidth(true);
@@ -327,12 +321,12 @@ public class SquadreAllView extends VerticalLayout{
 		for (FcAttore attore : squadre) {
 			Collection<FormazioneJasper> lSq = new ArrayList<>();
 			List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
-			Double somma = Double.valueOf(0);
-			FormazioneJasper fj = null;
+			Double somma = (double) 0;
+			FormazioneJasper fj;
 			for (FcFormazione f : listFormazione) {
 				if (f.getFcGiocatore() != null && f.getFcGiocatore().getFcRuolo() != null && f.getFcGiocatore().getFcSquadra() != null) {
 					somma += f.getTotPagato();
-					fj = new FormazioneJasper(f.getFcGiocatore().getFcRuolo().getIdRuolo(),f.getFcGiocatore().getCognGiocatore(),f.getFcGiocatore().getFcSquadra().getNomeSquadra(),f.getFcGiocatore().getQuotazione(),f.getTotPagato().intValue());
+					fj = new FormazioneJasper(f.getFcGiocatore().getFcRuolo().getIdRuolo(),f.getFcGiocatore().getCognGiocatore(),f.getFcGiocatore().getFcSquadra().getNomeSquadra(),f.getFcGiocatore().getQuotazione(), f.getTotPagato());
 				} else {
 					fj = new FormazioneJasper("","","",0,0);
 				}

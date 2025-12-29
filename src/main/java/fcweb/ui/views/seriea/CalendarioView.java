@@ -1,5 +1,6 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -44,9 +45,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 public class CalendarioView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataService giornataController;
@@ -77,7 +79,7 @@ public class CalendarioView extends VerticalLayout{
 		initLayout();
 	}
 
-	private List<FcGiornata> initData() {
+	private void initData() {
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
@@ -100,7 +102,6 @@ public class CalendarioView extends VerticalLayout{
 			model = model2;
 		}
 
-		return model;
 	}
 
 	private void initLayout() {
@@ -130,58 +131,56 @@ public class CalendarioView extends VerticalLayout{
 		List<FcGiornata> beanContainer = new ArrayList<>();
 		int conta = 1;
 		int partite = 4;
-		for (int i = 0; i < model.size(); i++) {
+        for (FcGiornata bean : model) {
 
-			FcGiornata bean = model.get(i);
-			beanContainer.add(bean);
-			int gg = bean.getFcGiornataInfo().getIdGiornataFc();
-			if (gg == 17 || gg == 18) {
-				partite = 2;
-			} else if (gg == 19) {
-				partite = 1;
-			}
+            beanContainer.add(bean);
+            int gg = bean.getFcGiornataInfo().getIdGiornataFc();
+            if (gg == 17 || gg == 18) {
+                partite = 2;
+            } else if (gg == 19) {
+                partite = 1;
+            }
 
-			if (conta == partite) {
+            if (conta == partite) {
 
-				String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(), Costants.DATA_FORMATTED);
+                String dataG = Utils.formatLocalDateTime(bean.getFcGiornataInfo().getDataGiornata(), Costants.DATA_FORMATTED);
 
-				String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
-				if (gg > 16) {
-					descG = bean.getFcTipoGiornata().getDescTipoGiornata() + " - " + bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
-				}
-				Grid<FcGiornata> tableGiornata = getTableCalendar(beanContainer);
+                String descG = bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
+                if (gg > 16) {
+                    descG = bean.getFcTipoGiornata().getDescTipoGiornata() + " - " + bean.getFcGiornataInfo().getDescGiornataFc() + " - " + dataG;
+                }
+                Grid<FcGiornata> tableGiornata = getTableCalendar(beanContainer);
 
-				final VerticalLayout layout = new VerticalLayout();
-				Span lblInfoSx = new Span(descG);
-				lblInfoSx.getStyle().set(Costants.FONT_SIZE, "14px");
-				layout.add(lblInfoSx);
-				layout.add(tableGiornata);
+                final VerticalLayout layout = new VerticalLayout();
+                Span lblInfoSx = new Span(descG);
+                lblInfoSx.getStyle().set(Costants.FONT_SIZE, "14px");
+                layout.add(lblInfoSx);
+                layout.add(tableGiornata);
 
-				if (gg < 8) {
-					gridPrimaFaseAndata.add(layout);
-				} else if (gg > 7 && gg < 15) {
-					gridPrimaFaseRitorno.add(layout);
-				} else if (gg == 15 || gg == 16) {
-					gridQuarti.add(layout);
-				} else if (gg == 17 || gg == 18) {
-					gridSemi.add(layout);
-				} else if (gg == 19) {
-					gridFinali.add(layout);
-				}
+                if (gg < 8) {
+                    gridPrimaFaseAndata.add(layout);
+                } else if (gg < 15) {
+                    gridPrimaFaseRitorno.add(layout);
+                } else if (gg == 15 || gg == 16) {
+                    gridQuarti.add(layout);
+                } else if (gg == 17 || gg == 18) {
+                    gridSemi.add(layout);
+                } else if (gg == 19) {
+                    gridFinali.add(layout);
+                }
 
-				conta = 1;
-				beanContainer = new ArrayList<>();
+                conta = 1;
+                beanContainer = new ArrayList<>();
 
-			} else {
-				conta++;
-			}
-		}
+            } else {
+                conta++;
+            }
+        }
 
 		try {
 			this.add(buildButtonCalendarioPdf(campionato));
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		Details paneldPrimaFaseAndata = new Details("Prima Fase Andata",gridPrimaFaseAndata);
@@ -237,7 +236,7 @@ public class CalendarioView extends VerticalLayout{
 
 			if (jdbcTemplate.getDataSource() != null) {
 				Connection conn = jdbcTemplate.getDataSource().getConnection();
-				Map<String, Object> hm = new HashMap<String, Object>();
+				Map<String, Object> hm = new HashMap<>();
 				String start = campionato.getStart().toString();
 				String end = campionato.getEnd().toString();
 				hm.put("START", start);
@@ -250,7 +249,6 @@ public class CalendarioView extends VerticalLayout{
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		return horLayout;
@@ -277,10 +275,10 @@ public class CalendarioView extends VerticalLayout{
 		Column<FcGiornata> punteggioColumn = grid.addColumn(giornata -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 
-			Double dTotCasa = giornata.getTotCasa() != null ? giornata.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
+			Double dTotCasa = giornata.getTotCasa() != null ? giornata.getTotCasa() / Costants.DIVISORE_100 : 0;
 			String sTotCasa = myFormatter.format(dTotCasa);
 
-			Double dTotFuori = giornata.getTotFuori() != null ? giornata.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
+			Double dTotFuori = giornata.getTotFuori() != null ? giornata.getTotFuori() / Costants.DIVISORE_100 : 0;
 			String sTotFuori = myFormatter.format(dTotFuori);
 
 			return sTotCasa + " - " + sTotFuori;

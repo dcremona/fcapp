@@ -13,7 +13,7 @@ public interface SquadraRepository extends CrudRepository<FcSquadra, Long>{
 
 	Iterable<FcSquadra> findAll(Sort sort);
 
-	public FcSquadra findByNomeSquadra(String nomeSquadra);
+	FcSquadra findByNomeSquadra(String nomeSquadra);
 
-	public FcSquadra findByIdSquadra(int idSquadra);
+	FcSquadra findByIdSquadra(int idSquadra);
 }

@@ -20,14 +20,14 @@ public interface ClassificaTotalePuntiRepository
 
 	Iterable<FcClassificaTotPt> findAll(Sort sort);
 
-	public List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(
-			FcCampionato campionato, FcGiornataInfo giornataInfo);
+	List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(
+            FcCampionato campionato, FcGiornataInfo giornataInfo);
 
-	public FcClassificaTotPt findByFcCampionatoAndFcAttoreAndFcGiornataInfo(
-			FcCampionato campionato, FcAttore attore,
-			FcGiornataInfo giornataInfo);
+	FcClassificaTotPt findByFcCampionatoAndFcAttoreAndFcGiornataInfo(
+            FcCampionato campionato, FcAttore attore,
+            FcGiornataInfo giornataInfo);
 
-	public FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore,
-			FcGiornataInfo giornataInfo);
+	FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore,
+                                                      FcGiornataInfo giornataInfo);
 
 }

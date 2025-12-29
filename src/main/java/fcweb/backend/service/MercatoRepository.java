@@ -17,16 +17,13 @@ public interface MercatoRepository extends CrudRepository<FcMercatoDett, Long>{
 
 	Iterable<FcMercatoDett> findAll(Sort sort);
 
-	public List<FcMercatoDett> findByFcGiornataInfo(
-			FcGiornataInfo fcGiornataInfo);
+	List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDesc(
+            FcAttore attore);
 
-	public List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDesc(
-			FcAttore attore);
+	List<FcMercatoDett> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(
+            FcGiornataInfo from, FcGiornataInfo to, FcAttore attore);
 
-	public List<FcMercatoDett> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(
-			FcGiornataInfo from, FcGiornataInfo to, FcAttore attore);
-
-	public List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(
-			FcAttore attore);
+	List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(
+            FcAttore attore);
 
 }

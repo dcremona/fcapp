@@ -1,5 +1,6 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -47,9 +48,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 public class HomeView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataService giornataController;
@@ -61,7 +63,7 @@ public class HomeView extends VerticalLayout{
 	private GiornataRisService giornataRisController;
 
 	@Autowired
-	private AccessoService accessoController;
+	private AccessoService accessController;
 
 	public HomeView() {
 		log.info("HomeView()");
@@ -78,7 +80,7 @@ public class HomeView extends VerticalLayout{
 				return;
 			}
 
-			accessoController.insertAccesso(this.getClass().getName());
+			accessController.insertAccesso(this.getClass().getName());
 
 			add(buildInfoGiornate());
 
@@ -100,7 +102,7 @@ public class HomeView extends VerticalLayout{
 		if (VaadinSession.getCurrent().getAttribute("GIORNATA_INFO") != null) {
 			FcGiornataInfo giornataInfoCurr = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
-			String title = null;
+			String title;
 			if (giornataInfoCurr.getCodiceGiornata() > 1) {
 				FcGiornataInfo giornataInfoPrev = giornataInfoController.findByCodiceGiornata(giornataInfoCurr.getCodiceGiornata() - 1);
 
@@ -145,10 +147,10 @@ public class HomeView extends VerticalLayout{
 
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
 
-			Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
+			Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa() / Costants.DIVISORE_100 : 0;
 			String sTotCasa = myFormatter.format(dTotCasa);
 
-			Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
+			Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori() / Costants.DIVISORE_100 : 0;
 			String sTotFuori = myFormatter.format(dTotFuori);
 
 			Calendario calendario = new Calendario();
@@ -174,10 +176,10 @@ public class HomeView extends VerticalLayout{
 		grid.setAllRowsVisible(true);
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 
-		grid.addColumn(c -> c.getAttoreCasa()).setAutoWidth(true);
-		grid.addColumn(c -> c.getPunteggio()).setAutoWidth(true);
-		grid.addColumn(c -> c.getAttoreFuori()).setAutoWidth(true);
-		grid.addColumn(c -> c.getRisultato()).setAutoWidth(true);
+		grid.addColumn(Calendario::getAttoreCasa).setAutoWidth(true);
+		grid.addColumn(Calendario::getPunteggio).setAutoWidth(true);
+		grid.addColumn(Calendario::getAttoreFuori).setAutoWidth(true);
+		grid.addColumn(Calendario::getRisultato).setAutoWidth(true);
 
 		return grid;
 	}
@@ -268,9 +270,9 @@ public class HomeView extends VerticalLayout{
 		for (FcGiornata g : all) {
 			if (attore.getIdAttore() == g.getFcAttoreByIdAttoreCasa().getIdAttore() || attore.getIdAttore() == g.getFcAttoreByIdAttoreFuori().getIdAttore()) {
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa().doubleValue() / Costants.DIVISORE_100 : 0;
+				Double dTotCasa = g.getTotCasa() != null ? g.getTotCasa() / Costants.DIVISORE_100 : 0;
 				String sTotCasa = myFormatter.format(dTotCasa);
-				Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori().doubleValue() / Costants.DIVISORE_100 : 0;
+				Double dTotFuori = g.getTotFuori() != null ? g.getTotFuori() / Costants.DIVISORE_100 : 0;
 				String sTotFuori = myFormatter.format(dTotFuori);
 				descPartita = g.getFcAttoreByIdAttoreCasa().getDescAttore() + " " + g.getFcAttoreByIdAttoreFuori().getDescAttore();
 				punteggio = g.getGolCasa() != null ? g.getGolCasa() + " - " + g.getGolFuori() : "-";

@@ -19,16 +19,14 @@ public interface PagelleRepository
 
 	Iterable<FcPagelle> findAll(Sort sort);
 
-	FcPagelle findFirstByOrderByFcGiornataInfoAsc();
-
 	FcPagelle findTopByOrderByFcGiornataInfoDesc();
 
-	public List<FcPagelle> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
-			FcGiornataInfo giornataInfo);
+	List<FcPagelle> findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(
+            FcGiornataInfo giornataInfo);
 
-	public List<FcPagelle> findByFcGiocatore(FcGiocatore giocatore);
+	List<FcPagelle> findByFcGiocatore(FcGiocatore giocatore);
 
-	public FcPagelle findByFcGiornataInfoAndFcGiocatore(
-			FcGiornataInfo giornataInfo, FcGiocatore giocatore);
+	FcPagelle findByFcGiornataInfoAndFcGiocatore(
+            FcGiornataInfo giornataInfo, FcGiocatore giocatore);
 
 }

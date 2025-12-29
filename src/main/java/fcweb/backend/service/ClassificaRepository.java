@@ -19,19 +19,19 @@ public interface ClassificaRepository
 
 	Iterable<FcClassifica> findAll(Sort sort);
 
-	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiDesc(
-			FcCampionato campionato);
+	List<FcClassifica> findByFcCampionatoOrderByTotPuntiDesc(
+            FcCampionato campionato);
 
-	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiRosaDesc(
-			FcCampionato campionato);
+	List<FcClassifica> findByFcCampionatoOrderByTotPuntiRosaDesc(
+            FcCampionato campionato);
 
-	public List<FcClassifica> findByFcCampionatoOrderByTotPuntiTvsTDesc(
-			FcCampionato campionato);
+	List<FcClassifica> findByFcCampionatoOrderByTotPuntiTvsTDesc(
+            FcCampionato campionato);
 
-	public FcClassifica findByFcCampionatoAndFcAttore(FcCampionato campionato,
-			FcAttore attore);
+	FcClassifica findByFcCampionatoAndFcAttore(FcCampionato campionato,
+                                               FcAttore attore);
 
-	public List<FcClassifica> findByFcCampionatoOrderByPuntiDescIdPosizAsc(
-			FcCampionato campionato);
+	List<FcClassifica> findByFcCampionatoOrderByPuntiDescIdPosizAsc(
+            FcCampionato campionato);
 
 }

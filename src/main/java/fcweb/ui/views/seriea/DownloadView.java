@@ -1,6 +1,7 @@
 package fcweb.ui.views.seriea;
 
 import java.io.File;
+import java.io.Serial;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +59,13 @@ import jakarta.annotation.security.RolesAllowed;
 public class DownloadView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private Grid<FcExpFreePl> gridFreePl = new Grid<>();
-	private Grid<FcExpRosea> gridRosea = new Grid<>();
+	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
+	private final Grid<FcExpRosea> gridRosea = new Grid<>();
 
 	@Autowired
 	private ExpRoseAService expRoseAController;
@@ -76,7 +79,7 @@ public class DownloadView extends VerticalLayout
 	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
 
-	public List<FcAttore> squadre = new ArrayList<FcAttore>();
+	public List<FcAttore> squadre = new ArrayList<>();
 
 	private Button salvaRoseA = null;
 	private Button salvaFreePl = null;
@@ -107,8 +110,8 @@ public class DownloadView extends VerticalLayout
 		UI.getCurrent().getPage().retrieveExtendedClientDetails(event -> {
 			resX = event.getScreenWidth();
 			resY = event.getScreenHeight();
-			log.info("resX " + resX);
-			log.info("resY " + resY);
+            log.info("resX {}", resX);
+            log.info("resY {}", resY);
 		});
 
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
@@ -141,12 +144,23 @@ public class DownloadView extends VerticalLayout
 
 		String pathPdf = (String) p.get("PATH_OUTPUT_PDF");
 		File rootFile3 = new File(pathPdf);
-		log.info(" pathPdf " + rootFile3.exists());
+        log.info(" pathPdf {}", rootFile3.exists());
 		if (!rootFile3.exists()) {
 			String basePathData = System.getProperty("user.dir");
 			rootFile3 = new File(basePathData);
-			log.info(" pathPdf " + rootFile3.exists());
+            log.info(" pathPdf {}", rootFile3.exists());
 		}
+		FileSelect fileSelect = getFileSelect(rootFile3);
+
+		TabSheet tabSheet = new TabSheet();
+		tabSheet.add("Rose A", layout1);
+		tabSheet.add("Free Players", layout2);
+		tabSheet.add("Pdf", fileSelect);
+		tabSheet.setSizeFull();
+		this.add(tabSheet);
+	}
+
+	private @NonNull FileSelect getFileSelect(File rootFile3) {
 		FileSelect fileSelect = new FileSelect(rootFile3);
 		fileSelect.addValueChangeListener(event -> {
 			File file = fileSelect.getValue();
@@ -166,17 +180,11 @@ public class DownloadView extends VerticalLayout
 		fileSelect.setWidth(resX + "px");
 		fileSelect.setHeight(resY + "px");
 		fileSelect.setLabel("Select file");
-
-		TabSheet tabSheet = new TabSheet();
-		tabSheet.add("Rose A", layout1);
-		tabSheet.add("Free Players", layout2);
-		tabSheet.add("Pdf", fileSelect);
-		tabSheet.setSizeFull();
-		this.add(tabSheet);
+		return fileSelect;
 	}
 
 	private VerticalLayout createDialogLayout(Dialog dialog, File f) {
-		VerticalLayout dialogLayout = null;
+		VerticalLayout dialogLayout;
 
 		int resX2 = resX - 200;
 		int resY2 = resY - 200;
@@ -209,9 +217,9 @@ public class DownloadView extends VerticalLayout
 
 		for (int i = 1; i < 11; i++) {
 
-			Column<FcExpRosea> rxColumn = null;
-			Column<FcExpRosea> sxColumn = null;
-			Column<FcExpRosea> qxColumn = null;
+			Column<FcExpRosea> rxColumn;
+			Column<FcExpRosea> sxColumn;
+			Column<FcExpRosea> qxColumn;
 			if (i == 1) {
 				rxColumn = gridRosea.addColumn(FcExpRosea::getR1);
 				sxColumn = gridRosea.addColumn(FcExpRosea::getS1);
@@ -248,7 +256,7 @@ public class DownloadView extends VerticalLayout
 				rxColumn = gridRosea.addColumn(FcExpRosea::getR9);
 				sxColumn = gridRosea.addColumn(FcExpRosea::getS9);
 				qxColumn = gridRosea.addColumn(FcExpRosea::getQ9);
-			} else if (i == 10) {
+			} else {
 				rxColumn = gridRosea.addColumn(FcExpRosea::getR10);
 				sxColumn = gridRosea.addColumn(FcExpRosea::getS10);
 				qxColumn = gridRosea.addColumn(FcExpRosea::getQ10);
@@ -289,9 +297,9 @@ public class DownloadView extends VerticalLayout
 
 		for (int i = 1; i < 11; i++) {
 
-			Column<FcExpFreePl> rxColumn = null;
-			Column<FcExpFreePl> sxColumn = null;
-			Column<FcExpFreePl> qxColumn = null;
+			Column<FcExpFreePl> rxColumn;
+			Column<FcExpFreePl> sxColumn;
+			Column<FcExpFreePl> qxColumn;
 			if (i == 1) {
 				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR1);
 				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS1);
@@ -328,7 +336,7 @@ public class DownloadView extends VerticalLayout
 				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR9);
 				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS9);
 				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ9);
-			} else if (i == 10) {
+			} else {
 				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR10);
 				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS10);
 				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ10);

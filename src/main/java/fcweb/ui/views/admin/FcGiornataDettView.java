@@ -36,14 +36,17 @@ import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.io.Serial;
+
 @PageTitle("GiornataDett")
 @Route(value = "giornatadett", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcGiornataDettView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -66,8 +69,8 @@ public class FcGiornataDettView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcAttore> attoreFilter = new ComboBox<>();
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+	private final ComboBox<FcAttore> attoreFilter = new ComboBox<>();
+	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 //	private TextField flagAttivoFilter = new TextField();
 
 	public FcGiornataDettView() {
@@ -124,7 +127,7 @@ public class FcGiornataDettView extends VerticalLayout{
 		giornataInfoFilter.setPlaceholder("Giornata");
 		giornataInfoFilter.setItems(giornataInfoController.findAll());
 		if ("1".equals(campionato.getType())) {
-			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
+			giornataInfoFilter.setItemLabelGenerator(Utils::buildInfoGiornata);
 		} else {
 			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
 		}
@@ -139,11 +142,7 @@ public class FcGiornataDettView extends VerticalLayout{
 		attoreFilter.setClearButtonVisible(true);
 		crud.getCrudLayout().addFilterComponent(attoreFilter);
 
-//		flagAttivoFilter.setPlaceholder("filter by flag...");
-//		flagAttivoFilter.addValueChangeListener(e -> crud.refreshGrid());
-//		crud.getCrudLayout().addFilterComponent(flagAttivoFilter);
-
-		Button clearFilters = new Button("clear");
+        Button clearFilters = new Button("clear");
 		clearFilters.addClickListener(event -> {
 //			flagAttivoFilter.clear();
 			attoreFilter.clear();

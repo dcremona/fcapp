@@ -16,6 +16,6 @@ public interface StatisticheRepository
 
 	Iterable<FcStatistiche> findAll(Sort sort);
 
-	public List<FcStatistiche> findByFlagAttivo(boolean flagAttivo);
+	List<FcStatistiche> findByFlagAttivo(boolean flagAttivo);
 
 }

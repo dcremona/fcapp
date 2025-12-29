@@ -68,7 +68,7 @@ public class DateConvertUtils{
 
 	/**
 	 * Creates a {@link java.util.Date} from various date objects. Is null-safe.
-	 * Currently supports:
+	 * Currently, supports:
 	 * <ul>
 	 * <li>{@link java.util.Date}
 	 * <li>{@link java.sql.Date}

@@ -30,24 +30,4 @@ public class StatisticheService{
 		return Sort.by(Sort.Direction.DESC, "idRuolo");
 	}
 
-	public FcStatistiche updateStatistiche(FcStatistiche statistiche) {
-		FcStatistiche fcStatistiche = null;
-		try {
-			fcStatistiche = statisticheRepository.save(statistiche);
-		} catch (Exception ex) {
-		}
-		return fcStatistiche;
-	}
-
-	public String deleteStatistiche(FcStatistiche statistiche) {
-		String id = "";
-		try {
-			statisticheRepository.delete(statistiche);
-			id = "" + statistiche.getIdGiocatore();
-		} catch (Exception ex) {
-			return "Error delete FcStatistiche: " + ex.toString();
-		}
-		return "statistiche succesfully delete with id = " + id;
-	}
-
 }

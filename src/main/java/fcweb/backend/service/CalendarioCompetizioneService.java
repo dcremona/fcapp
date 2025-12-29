@@ -32,17 +32,13 @@ public class CalendarioCompetizioneService{
 	public List<FcCalendarioCompetizione> findCustom(
 			FcGiornataInfo fcGiornataInfo) {
 
-		List<FcCalendarioCompetizione> l = null;
+		List<FcCalendarioCompetizione> l;
 		if (fcGiornataInfo == null) {
 			l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findAll(sortByIdAsc());
 		} else {
 			l = calendarioTimRepository.findByIdGiornataOrderByDataAsc(fcGiornataInfo.getCodiceGiornata());
 		}
 		return l;
-	}
-
-	public List<FcCalendarioCompetizione> findByIdGiornata(int idGiornata) {
-		return calendarioTimRepository.findByIdGiornata(idGiornata);
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(
@@ -60,20 +56,17 @@ public class CalendarioCompetizioneService{
 		FcCalendarioCompetizione fcCalendarioTim = null;
 		try {
 			fcCalendarioTim = calendarioTimRepository.save(calendarioTim);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return fcCalendarioTim;
 	}
 
-	public String deleteCalendarioTim(FcCalendarioCompetizione calendarioTim) {
-		String id = "";
-		try {
+	public void deleteCalendarioTim(FcCalendarioCompetizione calendarioTim) {
+        try {
 			calendarioTimRepository.delete(calendarioTim);
-			id = "" + calendarioTim.getId();
-		} catch (Exception ex) {
-			return "Error delete caledarioTim: " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "caledarioTim succesfully delete with id = " + id;
 	}
 
 }

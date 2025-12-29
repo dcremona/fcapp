@@ -9,11 +9,14 @@ import com.vaadin.flow.router.NotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serial;
+
 @Tag(Tag.DIV)
 public class RouteNotFoundError extends Component
 		implements HasErrorParameter<NotFoundException>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	@Override
 	public int setErrorParameter(BeforeEnterEvent event,

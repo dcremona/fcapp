@@ -1,7 +1,10 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,16 +31,17 @@ import fcweb.backend.service.AttoreService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.security.RolesAllowed;;
+import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Albo")
 @Route(value = "albo", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class AlboView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AlboService alboController;
@@ -50,6 +54,28 @@ public class AlboView extends VerticalLayout{
 
 	public AlboView() {
 		log.info("AlboView()");
+	}
+
+	private static HorizontalLayout apply(FcExpStat s) {
+		HorizontalLayout cellLayout = new HorizontalLayout();
+		cellLayout.setMargin(false);
+		cellLayout.setPadding(false);
+		cellLayout.setSpacing(false);
+		Span lblAttore = null;
+		if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
+			lblAttore = new Span(s.getScudetto());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+		}
+
+		cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+		if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt()) && att.getDescAttore().equals(s.getWinClasReg())) {
+			Objects.requireNonNull(lblAttore).getElement().getThemeList().add("badge contrast pill");
+			cellLayout.getStyle().set("color", Costants.GRAY);
+		}
+
+		return cellLayout;
 	}
 
 	@PostConstruct
@@ -311,27 +337,7 @@ public class AlboView extends VerticalLayout{
 		winTvsTColumn.setResizable(false);
 		winTvsTColumn.setHeader("Clas TvsT");
 
-		Column<FcExpStat> tripleteColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			Span lblAttore = null;
-			if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
-				lblAttore = new Span(s.getScudetto());
-				lblAttore.getStyle().set("fontSize", "smaller");
-				cellLayout.add(lblAttore);
-			}
-
-			cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-			FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-			if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt()) && att.getDescAttore().equals(s.getWinClasReg())) {
-				lblAttore.getElement().getThemeList().add("badge contrast pill");
-				cellLayout.getStyle().set("color", Costants.GRAY);
-			}
-
-			return cellLayout;
-		}));
+		Column<FcExpStat> tripleteColumn = grid.addColumn(new ComponentRenderer<>(AlboView::apply));
 		tripleteColumn.setSortable(false);
 		tripleteColumn.setResizable(false);
 		tripleteColumn.setHeader("Triplete");
@@ -347,7 +353,7 @@ public class AlboView extends VerticalLayout{
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 		grid.setAllRowsVisible(true);
 
-		Column<FcExpStat> annoColumn = grid.addColumn(s -> s.getAnno());
+		Column<FcExpStat> annoColumn = grid.addColumn(FcExpStat::getAnno);
 		annoColumn.setSortable(true);
 		annoColumn.setHeader(Costants.SQUADRA);
 
@@ -360,8 +366,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		scudettoColumn.setSortable(true);
-		scudettoColumn.setComparator((p1,
-				p2) -> p1.getScudetto().compareTo(p2.getScudetto()));
+		scudettoColumn.setComparator(Comparator.comparing(FcExpStat::getScudetto));
 		scudettoColumn.setHeader("Scudetto");
 
 		Column<FcExpStat> p2Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -373,7 +378,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p2Column.setSortable(true);
-		p2Column.setComparator((p1, p2) -> p1.getP2().compareTo(p2.getP2()));
+		p2Column.setComparator(Comparator.comparing(FcExpStat::getP2));
 		p2Column.setHeader("Finalista");
 
 		Column<FcExpStat> p3Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -385,7 +390,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p3Column.setSortable(true);
-		p3Column.setComparator((p1, p2) -> p1.getP3().compareTo(p2.getP3()));
+		p3Column.setComparator(Comparator.comparing(FcExpStat::getP3));
 		p3Column.setHeader("3 Posto");
 
 		Column<FcExpStat> p4Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -397,7 +402,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p4Column.setSortable(true);
-		p4Column.setComparator((p1, p2) -> p1.getP4().compareTo(p2.getP4()));
+		p4Column.setComparator(Comparator.comparing(FcExpStat::getP4));
 		p4Column.setHeader("4 Posto");
 
 		Column<FcExpStat> p5Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -409,7 +414,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p5Column.setSortable(true);
-		p5Column.setComparator((p1, p2) -> p1.getP5().compareTo(p2.getP5()));
+		p5Column.setComparator(Comparator.comparing(FcExpStat::getP5));
 		p5Column.setHeader("5 Posto");
 
 		Column<FcExpStat> p6Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -421,7 +426,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p6Column.setSortable(true);
-		p6Column.setComparator((p1, p2) -> p1.getP6().compareTo(p2.getP6()));
+		p6Column.setComparator(Comparator.comparing(FcExpStat::getP6));
 		p6Column.setHeader("6 Posto");
 
 		Column<FcExpStat> p7Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -433,7 +438,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p7Column.setSortable(true);
-		p7Column.setComparator((p1, p2) -> p1.getP7().compareTo(p2.getP7()));
+		p7Column.setComparator(Comparator.comparing(FcExpStat::getP7));
 		p7Column.setHeader("7 Posto");
 
 		Column<FcExpStat> p8Column = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -445,7 +450,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		p8Column.setSortable(true);
-		p8Column.setComparator((p1, p2) -> p1.getP8().compareTo(p2.getP8()));
+		p8Column.setComparator(Comparator.comparing(FcExpStat::getP8));
 		p8Column.setHeader("8 Posto");
 
 		Column<FcExpStat> winClasPtColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -457,8 +462,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		winClasPtColumn.setSortable(true);
-		winClasPtColumn.setComparator((p1,
-				p2) -> p1.getWinClasPt().compareTo(p2.getWinClasPt()));
+		winClasPtColumn.setComparator(Comparator.comparing(FcExpStat::getWinClasPt));
 		winClasPtColumn.setHeader("Clas Punti");
 
 		Column<FcExpStat> winClasRegColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -470,8 +474,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		winClasRegColumn.setSortable(true);
-		winClasRegColumn.setComparator((p1,
-				p2) -> p1.getWinClasReg().compareTo(p2.getWinClasReg()));
+		winClasRegColumn.setComparator(Comparator.comparing(FcExpStat::getWinClasReg));
 		winClasRegColumn.setHeader("Clas Regolare");
 
 		Column<FcExpStat> winClasTvsTColumn = grid.addColumn(new ComponentRenderer<>(s -> {
@@ -483,8 +486,7 @@ public class AlboView extends VerticalLayout{
 			return cellLayout;
 		}));
 		winClasTvsTColumn.setSortable(true);
-		winClasTvsTColumn.setComparator((p1,
-				p2) -> p1.getWinClasTvsT().compareTo(p2.getWinClasTvsT()));
+		winClasTvsTColumn.setComparator(Comparator.comparing(FcExpStat::getWinClasTvsT));
 		winClasTvsTColumn.setHeader("Clas TvsT");
 
 		return grid;
@@ -493,7 +495,7 @@ public class AlboView extends VerticalLayout{
 
 	private List<FcExpStat> getModelCrosstab(List<FcExpStat> all) {
 
-		List<FcExpStat> beans = new ArrayList<>();
+        ArrayList<FcExpStat> beans = new ArrayList<>();
 
 		List<FcAttore> squadre = attoreController.findAll();
 

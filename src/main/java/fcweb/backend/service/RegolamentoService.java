@@ -13,7 +13,7 @@ import fcweb.backend.data.entity.FcRegolamento;
 @Service
 public class RegolamentoService{
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final RegolamentoRepository regolamentoRepository;
 
@@ -30,26 +30,13 @@ public class RegolamentoService{
 		return Sort.by(Sort.Direction.DESC, "id");
 	}
 
-	public FcRegolamento insertUpdateRegolamento(FcRegolamento r) {
+	public void insertUpdateRegolamento(FcRegolamento r) {
 
-		FcRegolamento fcRegolamento = null;
-		try {
-			fcRegolamento = regolamentoRepository.save(r);
-		} catch (Exception ex) {
+        try {
+            regolamentoRepository.save(r);
+        } catch (Exception ex) {
 			log.error(ex.getMessage());
 		}
-		return fcRegolamento;
-	}
-
-	public String deleteRegolamento(FcRegolamento r) {
-		String id = "";
-		try {
-			regolamentoRepository.delete(r);
-			id = "" + r.getId();
-		} catch (Exception ex) {
-			return "Error delete Regolamento: " + ex.toString();
-		}
-		return "Regolamento succesfully delete with id = " + id;
 	}
 
 }

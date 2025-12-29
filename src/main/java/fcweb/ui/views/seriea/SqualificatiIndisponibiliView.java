@@ -1,5 +1,6 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +51,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class SqualificatiIndisponibiliView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AccessoService accessoController;
@@ -141,16 +143,16 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				}
 			}
 
-			log.info("listSqualificati " + listSqualificati.size());
+            log.info("listSqualificati {}", listSqualificati.size());
 			tableSqualificati.setItems(listSqualificati);
 			tableSqualificati.getDataProvider().refreshAll();
 
-			log.info("listInfortunati " + listInfortunati.size());
+            log.info("listInfortunati {}", listInfortunati.size());
 			tableInfortunati.setItems(listInfortunati);
 			tableInfortunati.getDataProvider().refreshAll();
 
 		} catch (Exception ex2) {
-			log.error("ex2 " + ex2.getMessage());
+            log.error("ex2 {}", ex2.getMessage());
 		}
 
 	}
@@ -165,12 +167,11 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 				String basePathData = (String) p.get("PATH_TMP");
 				String urlFanta = (String) p.get("URL_FANTA");
-				String basePath = basePathData;
 
-				giornataGiocatoreService.deleteByCustonm(giornataInfo);
+                giornataGiocatoreService.deleteByCustonm(giornataInfo);
 
 				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-				String fileName = null;
+				String fileName;
 				boolean bFantaGazzetta = true;
 
 				if (!bFantaGazzetta) {
@@ -178,9 +179,9 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					// DOWNLOAD FILE SQUALIFICATI
 					// **************************************
 					String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
-					log.info("httpUrlSqualificati " + httpUrlSqualificati);
+                    log.info("httpUrlSqualificati {}", httpUrlSqualificati);
 					String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePath, fileName1);
+					jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePathData, fileName1);
 
 					fileName = basePathData + fileName1 + ".csv";
 					jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
@@ -189,9 +190,9 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					// DOWNLOAD FILE INFORTUNATI
 					// **************************************
 					String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
-					log.info("httpUrlInfortunati " + httpUrlInfortunati);
+                    log.info("httpUrlInfortunati {}", httpUrlInfortunati);
 					String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePath, fileName2);
+					jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePathData, fileName2);
 
 					fileName = basePathData + fileName2 + ".csv";
 					jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
@@ -200,11 +201,11 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					// DOWNLOAD FILE PROBABILI
 					// **************************************
 					String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
-					log.info("httpUrlProbabili " + httpUrlProbabili);
+                    log.info("httpUrlProbabili {}", httpUrlProbabili);
 					String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvProbabili(httpUrlProbabili, basePath, fileName3);
+					jobCsv.downloadCsvProbabili(httpUrlProbabili, basePathData, fileName3);
 					fileName = basePathData + fileName3 + ".csv";
-					jobProcessGiornata.initDbProbabili(giornataInfo, fileName);
+					jobProcessGiornata.initDbProbabili(fileName);
 
 				} else {
 
@@ -213,7 +214,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					// ****************************************************************************
 
 					String fileName5 = "SQUALIFICATI_INFORTUNATI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName5);
+					jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePathData, fileName5);
 
 					fileName = basePathData + fileName5 + ".csv";
 					jobProcessGiornata.initDbSqualificatiInfortunatiFantaGazzetta(giornataInfo, fileName);
@@ -222,10 +223,10 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					// DOWNLOAD FILE PROBABILI FANTAGAZZETTA
 					// **************************************
 					String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePath, fileName4);
+					jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePathData, fileName4);
 
 					fileName = basePathData + fileName4 + ".csv";
-					jobProcessGiornata.initDbProbabiliFantaGazzetta(giornataInfo, fileName);
+					jobProcessGiornata.initDbProbabiliFantaGazzetta(fileName);
 
 				}
 
@@ -241,11 +242,11 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					}
 				}
 
-				log.info("listSqualificati " + listSqualificati.size());
+                log.info("listSqualificati {}", listSqualificati.size());
 				tableSqualificati.setItems(listSqualificati);
 				tableSqualificati.getDataProvider().refreshAll();
 
-				log.info("listInfortunati " + listInfortunati.size());
+                log.info("listInfortunati {}", listInfortunati.size());
 				tableInfortunati.setItems(listInfortunati);
 				tableInfortunati.getDataProvider().refreshAll();
 
@@ -283,7 +284,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
 					cellLayout.add(img);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				Span lblGiocatore = new Span(g.getCognGiocatore());
 				cellLayout.add(lblGiocatore);
@@ -304,7 +305,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
@@ -317,7 +318,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
-		Column<FcGiornataGiocatore> noteColumn = grid.addColumn(g -> g.getNote());
+		Column<FcGiornataGiocatore> noteColumn = grid.addColumn(FcGiornataGiocatore::getNote);
 		noteColumn.setSortable(false);
 		noteColumn.setHeader(Costants.NOTE);
 		noteColumn.setAutoWidth(true);

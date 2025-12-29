@@ -13,5 +13,4 @@ public interface RuoloRepository extends CrudRepository<FcRuolo, Long>{
 
 	Iterable<FcRuolo> findAll(Sort sort);
 
-	public FcRuolo findByDescRuolo(String descRuolo);
 }

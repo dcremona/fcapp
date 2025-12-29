@@ -20,21 +20,21 @@ public interface FormazioneRepository
 
 	Iterable<FcFormazione> findAll(Sort sort);
 
-	public List<FcFormazione> findByFcCampionato(FcCampionato campionato);
+	List<FcFormazione> findByFcCampionato(FcCampionato campionato);
 
-	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
-			FcCampionato campionato, FcAttore attore);
+	List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
+            FcCampionato campionato, FcAttore attore);
 
-	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
-			FcCampionato campionato, FcAttore attore);
+	List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
+            FcCampionato campionato, FcAttore attore);
 
-	public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(
-			FcCampionato campionato, FcAttore attore, FcGiocatore giocatore);
+	FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(
+            FcCampionato campionato, FcAttore attore, FcGiocatore giocatore);
 
-	public List<FcFormazione> findByFcCampionatoAndFcGiocatore(
-			FcCampionato campionato, FcGiocatore giocatore);
+	List<FcFormazione> findByFcCampionatoAndFcGiocatore(
+            FcCampionato campionato, FcGiocatore giocatore);
 
-	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
-			FcAttore attore);
+	List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
+            FcAttore attore);
 
 }

@@ -2,7 +2,6 @@ package fcweb.backend.service;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -22,8 +21,8 @@ public class EmailService{
 
 	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
-	private JavaMailSender primarySender;
-	private JavaMailSender secondarySender;
+	private final JavaMailSender primarySender;
+	private final JavaMailSender secondarySender;
 
 	public EmailService(
 			@Qualifier("primarySender") JavaMailSender primarySender,
@@ -33,7 +32,7 @@ public class EmailService{
 	}
 
 	public void sendPrimaryEmail(String from, String to, String subject,
-			String text) throws Exception {
+			String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(from);
 		message.setTo(to);
@@ -45,7 +44,7 @@ public class EmailService{
 	}
 
 	public void sendSecondaryEmail(String from, String to, String subject,
-			String text) throws Exception {
+			String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(from);
 		message.setTo(to);
@@ -57,21 +56,21 @@ public class EmailService{
 	}
 
 	public void sendMail(boolean bPrimary, String from, String[] to,
-			String[] cc, String[] bcc, String subject, String messageBody,
-			String typeMessage, String priority, String[] attachments)
+						 String[] cc, String[] bcc, String subject, String messageBody,
+						 String typeMessage, String[] attachments)
 			throws Exception {
 
 		log.info("****************************************");
 		log.info("INIZIO ESECUZIONE sendMail              ");
 		log.info("****************************************");
 
-		log.info(" bPrimary: " + bPrimary);
-		log.info(" from: " + from);
-		log.info(" subject: " + subject);
-		log.info(" message: " + messageBody);
+        log.info(" bPrimary: {}", bPrimary);
+        log.info(" from: {}", from);
+        log.info(" subject: {}", subject);
+        log.info(" message: {}", messageBody);
 
 		if (attachments != null) {
-			MimeMessage msg = null;
+			MimeMessage msg;
 			if (bPrimary) {
 				msg = primarySender.createMimeMessage();
 			} else {
@@ -80,10 +79,7 @@ public class EmailService{
 			msg.setFrom(from);
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-			// if (!bPrimary) {
-			// helper.setFrom(from, "notifiche-fclt");
-			// }
-			helper.setTo(to);
+            helper.setTo(to);
 			if (cc != null) {
 				helper.setCc(cc);
 			}
@@ -113,7 +109,7 @@ public class EmailService{
 
 			if (typeMessage.equals("text/html")) {
 
-				MimeMessage msg = null;
+				MimeMessage msg;
 				if (bPrimary) {
 					msg = primarySender.createMimeMessage();
 				} else {
@@ -121,10 +117,7 @@ public class EmailService{
 				}
 				msg.setFrom(from);
 				MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-				// if (!bPrimary) {
-				// helper.setFrom(from, "notifiche-fclt");
-				// }
-				helper.setTo(to);
+                helper.setTo(to);
 				if (cc != null) {
 					helper.setCc(cc);
 				}
@@ -169,21 +162,21 @@ public class EmailService{
 
 	public void sendMail2(boolean bPrimary, String from, String[] to,
 			String[] cc, String[] bcc, String subject, String messageBody,
-			String typeMessage, String priority,
-			Map<String, InputStream> images) throws Exception {
+			String typeMessage,
+						  Map<String, InputStream> images) throws Exception {
 
 		log.info("****************************************");
 		log.info("INIZIO ESECUZIONE sendMail2              ");
 		log.info("****************************************");
 
-		log.info(" bPrimary: " + bPrimary);
-		log.info(" from: " + from);
-		log.info(" subject: " + subject);
-		log.info(" message: " + messageBody);
+        log.info(" bPrimary: {}", bPrimary);
+        log.info(" from: {}", from);
+        log.info(" subject: {}", subject);
+        log.info(" message: {}", messageBody);
 
 		if (images != null) {
 
-			MimeMessage msg = null;
+			MimeMessage msg;
 			if (bPrimary) {
 				msg = primarySender.createMimeMessage();
 			} else {
@@ -193,10 +186,7 @@ public class EmailService{
 			msg.setFrom(from);
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-			// if (!bPrimary) {
-			// helper.setFrom(from, "notifiche-fclt");
-			// }
-			helper.setTo(to);
+            helper.setTo(to);
 			if (cc != null) {
 				helper.setCc(cc);
 			}
@@ -211,23 +201,21 @@ public class EmailService{
 				msg.setText(messageBody);
 			}
 
-			Iterator<?> it = images.entrySet().iterator();
-			while (it.hasNext()) {
-				@SuppressWarnings("rawtypes")
-				Map.Entry pairs = (Map.Entry) it.next();
+            for (Map.Entry<String, InputStream> stringInputStreamEntry : images.entrySet()) {
+                @SuppressWarnings("rawtypes")
+                Map.Entry pairs = stringInputStreamEntry;
 
-				InputStream inputStream = (InputStream) pairs.getValue();
-				File somethingFile = File.createTempFile("test", ".png");
-				try {
-					FileUtils.copyInputStreamToFile(inputStream, somethingFile);
-				} catch (Exception e) {
-					e.printStackTrace();
-					log.error(e.getMessage());
-				} finally {
-					IOUtils.closeQuietly(inputStream);
-				}
-				helper.addInline((String) pairs.getKey(), somethingFile);
-			}
+                InputStream inputStream = (InputStream) pairs.getValue();
+                File somethingFile = File.createTempFile("test", ".png");
+                try {
+                    FileUtils.copyInputStreamToFile(inputStream, somethingFile);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                } finally {
+                    IOUtils.closeQuietly(inputStream);
+                }
+                helper.addInline((String) pairs.getKey(), somethingFile);
+            }
 
 			if (bPrimary) {
 				primarySender.send(msg);
@@ -239,7 +227,7 @@ public class EmailService{
 
 			if (typeMessage.equals("text/html")) {
 
-				MimeMessage msg = null;
+				MimeMessage msg;
 				if (bPrimary) {
 					msg = primarySender.createMimeMessage();
 				} else {
@@ -248,10 +236,7 @@ public class EmailService{
 
 				msg.setFrom(from);
 				MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-				// if (!bPrimary) {
-				// helper.setFrom(from, "notifiche-fclt");
-				// }
-				helper.setTo(to);
+                helper.setTo(to);
 				if (cc != null) {
 					helper.setCc(cc);
 				}

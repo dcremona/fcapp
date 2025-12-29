@@ -31,29 +31,22 @@ public class GiornataService{
 		return giornataRepository.findByFcGiornataInfoOrderByFcTipoGiornata(giornataInfo);
 	}
 
-	public List<FcGiornata> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(
-			FcGiornataInfo start, FcGiornataInfo end) {
-		return giornataRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(start, end);
-	}
-
 	public FcGiornata updateGiornata(FcGiornata giornata) {
-		FcGiornata fcGiornata = null;
+		FcGiornata fcGiornata;
 		try {
 			fcGiornata = giornataRepository.save(giornata);
 		} catch (Exception ex) {
-		}
+            throw new RuntimeException(ex);
+        }
 		return fcGiornata;
 	}
 
-	public String deleteGiornata(FcGiornata giornata) {
-		String id = "";
-		try {
+	public void deleteGiornata(FcGiornata giornata) {
+        try {
 			giornataRepository.delete(giornata);
-			id = "" + giornata.getId().getIdGiornata();
-		} catch (Exception ex) {
-			return "Error delete giornata: " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "giornata succesfully delete with id = " + id;
 	}
 
 }

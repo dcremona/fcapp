@@ -1,5 +1,6 @@
 package fcweb.ui.views.admin;
 
+import java.io.Serial;
 import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
@@ -33,9 +34,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ADMIN")
 public class FcGiornataInfoView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataInfoService giornataInfoController;
@@ -97,25 +99,17 @@ public class FcGiornataInfoView extends VerticalLayout{
 		dataPosticipoColumn.setSortable(false);
 		dataPosticipoColumn.setAutoWidth(true);
 
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getDescGiornata()));
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getDescGiornataFc()));
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getDescGiornata()));
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getDescGiornataFc()));
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornataFc()));
 
-		crud.getCrudFormFactory().setFieldProvider("dataAnticipo1", a -> {
-			return new DateTimePicker();
-		});
+		crud.getCrudFormFactory().setFieldProvider("dataAnticipo1", a -> new DateTimePicker());
 
-		crud.getCrudFormFactory().setFieldProvider("dataAnticipo2", a -> {
-			return new DateTimePicker();
-		});
+		crud.getCrudFormFactory().setFieldProvider("dataAnticipo2", a -> new DateTimePicker());
 
-		crud.getCrudFormFactory().setFieldProvider("dataGiornata", a -> {
-			return new DateTimePicker();
-		});
+		crud.getCrudFormFactory().setFieldProvider("dataGiornata", a -> new DateTimePicker());
 
-		crud.getCrudFormFactory().setFieldProvider("dataPosticipo", a -> {
-			return new DateTimePicker();
-		});
+		crud.getCrudFormFactory().setFieldProvider("dataPosticipo", a -> new DateTimePicker());
 
 		crud.setRowCountCaption("%d GiornataInfo(s) found");
 		crud.setClickRowToUpdate(true);

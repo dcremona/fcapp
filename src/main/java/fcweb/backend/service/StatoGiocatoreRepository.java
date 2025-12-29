@@ -14,5 +14,4 @@ public interface StatoGiocatoreRepository
 
 	Iterable<FcStatoGiocatore> findAll(Sort sort);
 
-	public FcStatoGiocatore findByDescStatoGiocatore(String descStatoGiocatore);
 }

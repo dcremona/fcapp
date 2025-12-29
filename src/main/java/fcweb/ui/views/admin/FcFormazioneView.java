@@ -30,14 +30,17 @@ import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.io.Serial;
+
 @PageTitle("Formazione")
 @Route(value = "formazione", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcFormazioneView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;

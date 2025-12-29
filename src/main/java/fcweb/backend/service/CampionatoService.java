@@ -21,10 +21,6 @@ public class CampionatoService{
 		return (List<FcCampionato>) campionatoRepository.findAll();
 	}
 
-	public FcCampionato findByIdCampionato(Integer idCampionato) {
-		return campionatoRepository.findByIdCampionato(idCampionato);
-	}
-
 	public FcCampionato findByActive(boolean active) {
 		return campionatoRepository.findByActive(active);
 	}
@@ -33,21 +29,18 @@ public class CampionatoService{
 		FcCampionato fcCampionato = null;
 		try {
 			fcCampionato = campionatoRepository.save(c);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 
 		}
 		return fcCampionato;
 	}
 
-	public String deleteCampionato(FcCampionato c) {
-		String id = "";
-		try {
+	public void deleteCampionato(FcCampionato c) {
+        try {
 			campionatoRepository.delete(c);
-			id = "" + c.getIdCampionato();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "campionato succesfully delete with id = " + id;
 	}
 
 }

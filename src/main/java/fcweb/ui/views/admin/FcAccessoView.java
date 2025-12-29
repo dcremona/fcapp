@@ -1,5 +1,6 @@
 package fcweb.ui.views.admin;
 
+import java.io.Serial;
 import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
@@ -41,9 +42,10 @@ import jakarta.annotation.security.RolesAllowed;
 public class FcAccessoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AccessoService accessoController;
@@ -96,16 +98,14 @@ public class FcAccessoView extends VerticalLayout
 		dataColumn.setSortable(false);
 		dataColumn.setAutoWidth(true);
 
-		Column<FcAccesso> noteColumn = crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : "" + s.getNote())).setHeader("Info");
+		Column<FcAccesso> noteColumn = crud.getGrid().addColumn(new TextRenderer<>(s -> s == null ? "" : s.getNote())).setHeader("Info");
 		noteColumn.setSortable(false);
 		noteColumn.setAutoWidth(true);
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
 		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("data", a -> {
-			return new DateTimePicker();
-		});
+		crud.getCrudFormFactory().setFieldProvider("data", a -> new DateTimePicker());
 		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Camionato",campionatoController.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
 
 		crud.setRowCountCaption("%d Accesso(s) found");

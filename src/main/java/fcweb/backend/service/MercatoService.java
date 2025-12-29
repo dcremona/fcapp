@@ -24,11 +24,6 @@ public class MercatoService{
 		return (List<FcMercatoDett>) mercatoRepository.findAll(sortByGiornataInfoAndattoreAsc());
 	}
 
-	public List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDesc(
-			FcAttore attore) {
-		return mercatoRepository.findByFcAttoreOrderByFcGiornataInfoDesc(attore);
-	}
-
 	public List<FcMercatoDett> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(
 			FcGiornataInfo from, FcGiornataInfo to, FcAttore attore) {
 		return mercatoRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(from, to, attore);
@@ -40,24 +35,20 @@ public class MercatoService{
 	}
 
 	public FcMercatoDett insertMercatoDett(FcMercatoDett c) {
-		FcMercatoDett fcMercatoDett = null;
+		FcMercatoDett fcMercatoDett;
 		try {
 			fcMercatoDett = mercatoRepository.save(c);
 		} catch (Exception ex) {
-			return fcMercatoDett;
+			return null;
 		}
 		return fcMercatoDett;
 	}
 
-	public String deleteMercatoDett(FcMercatoDett c) {
-		String id = "";
-		try {
+	public void deleteMercatoDett(FcMercatoDett c) {
+        try {
 			mercatoRepository.delete(c);
-			id = "" + c.getId();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
+        } catch (Exception ignored) {
 		}
-		return "FcMercatoDett succesfully delete with id = " + id;
 	}
 
 	private Sort sortByGiornataInfoAndattoreAsc() {

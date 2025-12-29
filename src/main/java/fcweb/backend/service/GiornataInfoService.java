@@ -25,10 +25,6 @@ public class GiornataInfoService{
 		return giornataInfoRepository.findByCodiceGiornata(gg);
 	}
 
-	public FcGiornataInfo findByDescGiornataFc(String descGiornataFc) {
-		return giornataInfoRepository.findByDescGiornataFc(descGiornataFc);
-	}
-
 	public List<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(
 			Integer from, Integer to) {
 		return (List<FcGiornataInfo>) giornataInfoRepository.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
@@ -38,20 +34,17 @@ public class GiornataInfoService{
 		FcGiornataInfo fcGiornataInfo = null;
 		try {
 			fcGiornataInfo = giornataInfoRepository.save(giornataInfo);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return fcGiornataInfo;
 	}
 
-	public String deleteGiornataInfo(FcGiornataInfo giornataInfo) {
-		String id = "";
-		try {
+	public void deleteGiornataInfo(FcGiornataInfo giornataInfo) {
+        try {
 			giornataInfoRepository.delete(giornataInfo);
-			id = "" + giornataInfo.getCodiceGiornata();
-		} catch (Exception ex) {
-			return "Error delete giornataInfo: " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "giornataInfo succesfully delete with id = " + id;
 	}
 
 }

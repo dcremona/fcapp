@@ -32,14 +32,11 @@ public class MercatoInfoService{
 		return mercatoInfoRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
 	}
 
-	public FcMercatoDettInfo insertMercatoDettInfo(
+	public void insertMercatoDettInfo(
 			FcMercatoDettInfo mercatoInfo) {
-		FcMercatoDettInfo fcMercatoDettInfo = null;
-		try {
-			fcMercatoDettInfo = mercatoInfoRepository.save(mercatoInfo);
-		} catch (Exception ex) {
-			return fcMercatoDettInfo;
+        try {
+            mercatoInfoRepository.save(mercatoInfo);
+        } catch (Exception ignored) {
 		}
-		return fcMercatoDettInfo;
 	}
 }

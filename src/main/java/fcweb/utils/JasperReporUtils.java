@@ -24,7 +24,8 @@ public class JasperReporUtils{
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
-		return new ByteArrayInputStream(b);
+        assert b != null;
+        return new ByteArrayInputStream(b);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -39,7 +40,8 @@ public class JasperReporUtils{
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
-		return new ByteArrayInputStream(b);
+        assert b != null;
+        return new ByteArrayInputStream(b);
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -1,11 +1,12 @@
 package fcweb.ui.views.em;
 
+import java.io.Serial;
 import java.sql.Connection;
 import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +57,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 public class EmClassificaView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ClassificaTotalePuntiService classificaTotalePuntiController;
@@ -77,9 +79,8 @@ public class EmClassificaView extends VerticalLayout{
 
 	private List<ClassificaBean> items = null;
 	private FcGiornataInfo giornataInfo = null;
-	private Properties p = null;
 
-	@PostConstruct
+    @PostConstruct
 	void init() throws Exception {
 		LOG.info("init");
 		if (!Utils.isValidVaadinSession()) {
@@ -91,15 +92,15 @@ public class EmClassificaView extends VerticalLayout{
 		initLayout();
 	}
 
-	private void initData() throws Exception {
+	private void initData() {
 
-		p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-		giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+        VaadinSession.getCurrent().getAttribute("PROPERTIES");
+        giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
 		items = classificaTotalePuntiController.getModelClassifica(giornataInfo.getIdGiornataFc());
 	}
 
-	private void initLayout() throws Exception {
+	private void initLayout() {
 
 		LOG.info("initLayout");
 
@@ -115,26 +116,23 @@ public class EmClassificaView extends VerticalLayout{
 			layoutGrid.add(grid);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		try {
-			this.add(buildButtonPdf(p));
+			this.add(buildButtonPdf());
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-			e.printStackTrace();
 		}
 		this.add(layoutGrid);
 		try {
 			this.add(buildGrafico(items));
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Component buildGrafico(List<ClassificaBean> items) throws Exception {
+	public Component buildGrafico(List<ClassificaBean> items) {
 
 		String[] att = new String[items.size()];
 		String[] data = new String[items.size()];
@@ -145,7 +143,7 @@ public class EmClassificaView extends VerticalLayout{
 			String sq = cl.getSquadra();
 			double puntiRosa = (cl.getTotPunti() / Costants.DIVISORE_10);
 			att[i] = sq;
-			data[i] = new String("" + puntiRosa);
+			data[i] = "" + puntiRosa;
 			i++;
 		}
 		series.setData(data);
@@ -166,41 +164,18 @@ public class EmClassificaView extends VerticalLayout{
 		return barChart;
 	}
 
-	private HorizontalLayout buildButtonPdf(Properties p) throws Exception {
+	private HorizontalLayout buildButtonPdf() {
 
-		// Button stampapdf = new Button("Classifica pdf");
-		// stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		// FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new
-		// StreamResource("Classifica.pdf",() -> {
-		// try {
-		// String imgLog = env.getProperty("img.logo");
-		// Map<String, Object> hm = new HashMap<String, Object>();
-		// hm.put("DIVISORE", "" + Costants.DIVISORE_10);
-		// hm.put("PATH_IMG", "images/" + imgLog);
-		// Resource resource =
-		// resourceLoader.getResource("classpath:reports/em/classifica.jasper");
-		// InputStream inputStream = resource.getInputStream();
-		// Connection conn = jdbcTemplate.getDataSource().getConnection();
-		// return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
-		// } catch (Exception ex2) {
-		// }
-		// return null;
-		// }));
-		// button1Wrapper.wrapComponent(stampapdf);
-		//
-		// HorizontalLayout horLayout = new HorizontalLayout();
-		// horLayout.setSpacing(true);
-		// horLayout.add(button1Wrapper);
-
-		HorizontalLayout horLayout = new HorizontalLayout();
+        HorizontalLayout horLayout = new HorizontalLayout();
 		horLayout.setSpacing(true);
 
 		try {
 			Button stampapdf = new Button("Classifica pdf");
 			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
-			Connection conn = jdbcTemplate.getDataSource().getConnection();
-			Map<String, Object> hm = new HashMap<String, Object>();
+            assert jdbcTemplate.getDataSource() != null;
+            Connection conn = jdbcTemplate.getDataSource().getConnection();
+			Map<String, Object> hm = new HashMap<>();
 			String imgLog = env.getProperty("img.logo");
 			hm.put("DIVISORE", "" + Costants.DIVISORE_10);
 			hm.put("PATH_IMG", "images/" + imgLog);
@@ -212,15 +187,13 @@ public class EmClassificaView extends VerticalLayout{
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		return horLayout;
 	}
 
 	private Grid<ClassificaBean> buildTableClassifica(
-			List<ClassificaBean> items, FcGiornataInfo giornataInfo)
-			throws Exception {
+			List<ClassificaBean> items, FcGiornataInfo giornataInfo) {
 
 		Grid<ClassificaBean> grid = new Grid<>();
 		grid.setItems(items);
@@ -231,12 +204,11 @@ public class EmClassificaView extends VerticalLayout{
 
 		Column<ClassificaBean> posizioneColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			int x = items.indexOf(classifica) + 1;
-			Span lblPosizione = new Span("" + x);
-			return lblPosizione;
+            return new Span("" + x);
 		})).setHeader("");
 		posizioneColumn.setSortable(false);
 
-		Column<ClassificaBean> squadraColumn = grid.addColumn(classifica -> classifica.getSquadra());
+		Column<ClassificaBean> squadraColumn = grid.addColumn(ClassificaBean::getSquadra);
 		squadraColumn.setSortable(false);
 		squadraColumn.setHeader(Costants.SQUADRA);
 
@@ -254,8 +226,7 @@ public class EmClassificaView extends VerticalLayout{
 
 		})).setHeader("Totale Punti");
 		totPuntiColumn.setSortable(true);
-		totPuntiColumn.setComparator((p1,
-				p2) -> p1.getTotPunti().compareTo(p2.getTotPunti()));
+		totPuntiColumn.setComparator(Comparator.comparing(ClassificaBean::getTotPunti));
 
 		Column<ClassificaBean> parzialePuntiColumn = grid.addColumn(new ComponentRenderer<>(classifica -> {
 			DecimalFormat myFormatter = new DecimalFormat("#0.00");
@@ -264,8 +235,7 @@ public class EmClassificaView extends VerticalLayout{
 			return new Span(sTotPunti);
 		})).setHeader("Parziale Punti");
 		parzialePuntiColumn.setSortable(true);
-		parzialePuntiColumn.setComparator((p1,
-				p2) -> p1.getTotPuntiParziale().compareTo(p2.getTotPuntiParziale()));
+		parzialePuntiColumn.setComparator(Comparator.comparing(ClassificaBean::getTotPuntiParziale));
 
 		if (giornataInfo.getIdGiornataFc() >= 1) {
 			Column<ClassificaBean> punti1Column = grid.addColumn(new ComponentRenderer<>(classifica -> {
@@ -275,8 +245,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_1");
 			punti1Column.setSortable(true);
-			punti1Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata1().compareTo(p2.getPuntiGiornata1()));
+			punti1Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata1));
 		}
 
 		if (giornataInfo.getIdGiornataFc() >= 2) {
@@ -287,8 +256,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_2");
 			punti2Column.setSortable(true);
-			punti2Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata2().compareTo(p2.getPuntiGiornata2()));
+			punti2Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata2));
 		}
 
 		if (giornataInfo.getIdGiornataFc() >= 3) {
@@ -299,8 +267,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_3");
 			punti3Column.setSortable(true);
-			punti3Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata3().compareTo(p2.getPuntiGiornata3()));
+			punti3Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata3));
 		}
 
 		if (giornataInfo.getIdGiornataFc() >= 4) {
@@ -311,8 +278,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_4");
 			punti4Column.setSortable(true);
-			punti4Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata4().compareTo(p2.getPuntiGiornata4()));
+			punti4Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata4));
 		}
 
 		if (giornataInfo.getIdGiornataFc() >= 5) {
@@ -323,8 +289,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_5");
 			punti5Column.setSortable(true);
-			punti5Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata5().compareTo(p2.getPuntiGiornata5()));
+			punti5Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata5));
 		}
 
 		if (giornataInfo.getIdGiornataFc() >= 6) {
@@ -335,8 +300,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_6");
 			punti6Column.setSortable(true);
-			punti6Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata6().compareTo(p2.getPuntiGiornata6()));
+			punti6Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata6));
 		}
 
 		if (giornataInfo.getIdGiornataFc() >= 7) {
@@ -347,8 +311,7 @@ public class EmClassificaView extends VerticalLayout{
 				return new Span(sTotPunti);
 			})).setHeader("Punti_7");
 			punti7Column.setSortable(true);
-			punti7Column.setComparator((p1,
-					p2) -> p1.getPuntiGiornata7().compareTo(p2.getPuntiGiornata7()));
+			punti7Column.setComparator(Comparator.comparing(ClassificaBean::getPuntiGiornata7));
 		}
 
 		return grid;

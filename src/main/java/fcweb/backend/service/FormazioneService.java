@@ -50,8 +50,8 @@ public class FormazioneService{
 				} else {
 
 					FcStatistiche sNew = new FcStatistiche();
-					sNew.setMediaVoto(Double.valueOf(0));
-					sNew.setFantaMedia(Double.valueOf(0));
+					sNew.setMediaVoto((double) 0);
+					sNew.setFantaMedia((double) 0);
 
 					FcRuolo rNew = new FcRuolo();
 
@@ -59,10 +59,10 @@ public class FormazioneService{
 					gNew.setFcStatistiche(sNew);
 					gNew.setFcRuolo(rNew);
 					gNew.setIdGiocatore(-1);
-					gNew.setQuotazione(Integer.valueOf(0));
+					gNew.setQuotazione(0);
 
 					FcFormazione fNew = new FcFormazione();
-					fNew.setTotPagato(Integer.valueOf(0));
+					fNew.setTotPagato(0);
 					fNew.setFcGiocatore(gNew);
 
 					fNew.setFcAttore(f.getFcAttore());
@@ -80,20 +80,14 @@ public class FormazioneService{
 
 	}
 
-	public FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(
-			FcCampionato campionato, FcAttore attore, FcGiocatore giocatore) {
-		return formazioneRepository.findByFcCampionatoAndFcAttoreAndFcGiocatore(campionato, attore, giocatore);
-	}
-
 	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
 			FcAttore attore) {
 		return formazioneRepository.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
 	}
 
-	public String createFormazione(FcAttore attore, Integer idCampionato,
-			Integer ordinamento) {
-		String id = "";
-		try {
+	public void createFormazione(FcAttore attore, Integer idCampionato,
+								 Integer ordinamento) {
+        try {
 			FcFormazione formazione = new FcFormazione();
 			FcFormazioneId formazionePK = new FcFormazioneId();
 			formazionePK.setIdCampionato(idCampionato);
@@ -101,33 +95,25 @@ public class FormazioneService{
 			formazionePK.setOrdinamento(ordinamento);
 			formazione.setId(formazionePK);
 			formazioneRepository.save(formazione);
-			id = formazionePK.getOrdinamento() + " " + formazionePK.getIdAttore();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return "Error creating the formazione: " + ex.toString();
+        } catch (Exception ignored) {
 		}
-		return "formazione succesfully created with id = " + id;
 	}
 
 	public FcFormazione updateFormazione(FcFormazione c) {
-		FcFormazione giocatore = null;
+		FcFormazione giocatore;
 		try {
 			giocatore = formazioneRepository.save(c);
 		} catch (Exception ex) {
-			return giocatore;
+			return null;
 		}
 		return giocatore;
 	}
 
-	public String deleteFormazione(FcFormazione c) {
-		String id = "";
-		try {
+	public void deleteFormazione(FcFormazione c) {
+        try {
 			formazioneRepository.delete(c);
-			id = "" + c.getId().getOrdinamento();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
+        } catch (Exception ignored) {
 		}
-		return "Formazione succesfully delete with id = " + id;
 	}
 
 }

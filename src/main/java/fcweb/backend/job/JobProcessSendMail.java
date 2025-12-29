@@ -1,6 +1,5 @@
 package fcweb.backend.job;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,17 +87,16 @@ public class JobProcessSendMail{
 	private ResourceLoader resourceLoader;
 
 	public byte[] getJasperRisultati(FcCampionato campionato,
-			FcGiornataInfo giornataInfo, Properties p, String pathImg) {
+									 FcGiornataInfo giornataInfo, String pathImg) {
 		byte[] b = null;
 		try {
 			Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
 			Collection<RisultatoBean> collection = new ArrayList<>();
-			collection.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
+			collection.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
 			Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 			InputStream inputStream = resource.getInputStream();
 			b = JasperReporUtils.getReportByteCollectionDataSource(inputStream, params, collection);
 		} catch (Exception ex2) {
-			ex2.printStackTrace();
 			log.error(ex2.getMessage());
 		}
 		return b;
@@ -113,12 +111,12 @@ public class JobProcessSendMail{
 
 		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
 		Collection<RisultatoBean> l = new ArrayList<>();
-		l.add(new RisultatoBean("P","S1",Double.valueOf(6),Double.valueOf(6),Double.valueOf(6),Double.valueOf(6)));
+		l.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
 		String destFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
 
 		Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 		InputStream inputStream = resource.getInputStream();
-		FileOutputStream outputStream = new FileOutputStream(new File(destFileName1));
+		FileOutputStream outputStream = new FileOutputStream(destFileName1);
 		JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, l);
 
 		Connection conn = null;
@@ -131,8 +129,9 @@ public class JobProcessSendMail{
 			Resource resource2 = resourceLoader.getResource("classpath:reports/classifica.jasper");
 			InputStream inputStream2 = resource2.getInputStream();
 
-			outputStream2 = new FileOutputStream(new File(destFileName2));
-			conn = jdbcTemplate.getDataSource().getConnection();
+			outputStream2 = new FileOutputStream(destFileName2);
+            assert jdbcTemplate.getDataSource() != null;
+            conn = jdbcTemplate.getDataSource().getConnection();
 			JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
 
 			StringBuilder emailDestinatario = new StringBuilder();
@@ -154,27 +153,24 @@ public class JobProcessSendMail{
 				to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
 			}
 
-			String[] cc = null;
-			String[] bcc = null;
-			String[] att = new String[] { destFileName1, destFileName2 };
+            String[] att = new String[] { destFileName1, destFileName2 };
 			String subject = "Risultati " + p.getProperty("INFO_RESULT") + " " + giornataInfo.getDescGiornataFc();
 			String message = getBody();
 
 			try {
 				String from = env.getProperty("spring.mail.secondary.username");
-				emailService.sendMail(false, from, to, cc, bcc, subject, message, "text/html", "3", att);
+				emailService.sendMail(false, from, to, null, null, subject, message, "text/html", att);
 			} catch (Exception e) {
 				log.error(e.getMessage());
 				try {
 					String from = env.getProperty("spring.mail.primary.username");
-					emailService.sendMail(true, from, to, cc, bcc, subject, message, "text/html", "3", att);
+					emailService.sendMail(true, from, to, null, null, subject, message, "text/html", att);
 				} catch (Exception e2) {
 					log.error(e2.getMessage());
 				}
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			log.error(e.getMessage());
 		} finally {
 			if (conn != null) {
@@ -205,7 +201,7 @@ public class JobProcessSendMail{
 	private Map<String, Object> getMap(int giornata, String pathImg,
 			FcCampionato campionato) {
 
-		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(Integer.valueOf(giornata));
+		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(giornata);
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("path_img", pathImg);
@@ -225,7 +221,6 @@ public class JobProcessSendMail{
 				parameters.put("data" + att, mapCasa.get("data"));
 				parameters.put("dataInfo" + att, mapCasa.get("dataInfo"));
 			} catch (Exception e) {
-				e.printStackTrace();
 				log.error(e.getMessage());
 			}
 
@@ -237,7 +232,6 @@ public class JobProcessSendMail{
 				parameters.put("data" + att, mapFuori.get("data"));
 				parameters.put("dataInfo" + att, mapFuori.get("dataInfo"));
 			} catch (Exception e) {
-				e.printStackTrace();
 				log.error(e.getMessage());
 			}
 
@@ -252,8 +246,7 @@ public class JobProcessSendMail{
 
 	private HashMap<String, Collection<RisultatoBean>> buildData(
 			FcCampionato campionato, FcAttore attore, Double totGiornata,
-			FcGiornataInfo giornataInfo, String pathImg, boolean fc)
-			throws Exception {
+			FcGiornataInfo giornataInfo, String pathImg, boolean fc) {
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 
@@ -273,13 +266,11 @@ public class JobProcessSendMail{
 			if (giocatore != null) {
 				FcPagelle pagelle = gd.getFcPagelle();
 				if ("S".equals(gd.getFlagAttivo())) {
-					if (giocatore.getFcRuolo().getIdRuolo().equals("D")) {
-						countD++;
-					} else if (giocatore.getFcRuolo().getIdRuolo().equals("C")) {
-						countC++;
-					} else if (giocatore.getFcRuolo().getIdRuolo().equals("A")) {
-						countA++;
-					}
+                    switch (giocatore.getFcRuolo().getIdRuolo()) {
+                        case "D" -> countD++;
+                        case "C" -> countC++;
+                        case "A" -> countA++;
+                    }
 				}
 
 				bean.setR(giocatore.getFcRuolo().getIdRuolo());
@@ -435,7 +426,7 @@ public class JobProcessSendMail{
 
 		String totaleGiornata = "";
 		if (totGiornata != null) {
-			totaleGiornata = formatter.format(totGiornata.doubleValue() / Double.parseDouble("" + Costants.DIVISORE_100));
+			totaleGiornata = formatter.format(totGiornata / Double.parseDouble("" + Costants.DIVISORE_100));
 		}
 
 		b = new RisultatoBean();
@@ -476,23 +467,14 @@ public class JobProcessSendMail{
 	}
 
 	private String getModificatoreDifesa(String value) {
-		String ret = "";
 
-		if (value.equals("5-4-1")) {
-			ret = "2";
-		} else if (value.equals("5-3-2")) {
-			ret = "1";
-		} else if (value.equals("4-5-1")) {
-			ret = "1";
-		} else if (value.equals("4-3-3")) {
-			ret = "-1";
-		} else if (value.equals("3-4-3")) {
-			ret = "-2";
-		} else {
-			ret = "0";
-		}
-
-		return ret;
+        return switch (value) {
+case "5-4-1" -> "2";
+case "5-3-2", "4-5-1" -> "1";
+            case "4-3-3" -> "-1";
+case "3-4-3" -> "-2";
+default -> "0";
+};
 	}
 
 }

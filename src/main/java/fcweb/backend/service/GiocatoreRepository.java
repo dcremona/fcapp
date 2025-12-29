@@ -18,46 +18,38 @@ public interface GiocatoreRepository extends CrudRepository<FcGiocatore, Long>{
 
 	Iterable<FcGiocatore> findAll(Sort sort);
 
-	public List<FcGiocatore> findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(
-			FcRuolo ruolo, boolean flagAttivo);
+	List<FcGiocatore> findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(
+            FcRuolo ruolo, boolean flagAttivo);
 
-	public List<FcGiocatore> findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(
-			FcRuolo ruolo, boolean flagAttivo, Collection<Integer> giocatore);
+	List<FcGiocatore> findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(
+            FcRuolo ruolo, boolean flagAttivo, Collection<Integer> giocatore);
 
-	public List<FcGiocatore> findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
-			boolean flagAttivo, FcSquadra squadra,
-			Collection<Integer> giocatore);
+	List<FcGiocatore> findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
+            boolean flagAttivo, FcSquadra squadra,
+            Collection<Integer> giocatore);
 
-	public List<FcGiocatore> findByFlagAttivoAndFcSquadraOrderByFcRuoloDescQuotazioneDesc(
-			boolean flagAttivo, FcSquadra squadra);
+	List<FcGiocatore> findByFlagAttivoAndFcSquadraOrderByFcRuoloDescQuotazioneDesc(
+            boolean flagAttivo, FcSquadra squadra);
 
-	public List<FcGiocatore> findByFcRuoloOrderByQuotazioneDesc(FcRuolo ruolo);
+	List<FcGiocatore> findByFcRuoloOrderByQuotazioneDesc(FcRuolo ruolo);
 
-	public List<FcGiocatore> findByFcSquadraOrderByQuotazioneDesc(
-			FcSquadra squadra);
+	List<FcGiocatore> findByFcSquadraOrderByQuotazioneDesc(
+            FcSquadra squadra);
 
-	public List<FcGiocatore> findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
-			FcRuolo ruolo, FcSquadra squadra);
+	List<FcGiocatore> findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
+            FcRuolo ruolo, FcSquadra squadra);
 
-	public List<FcGiocatore> findByCognGiocatoreStartingWith(
-			String cognGiocatore);
+	FcGiocatore findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(
+            String nomeGiocatore, FcSquadra squadra, FcRuolo ruolo);
 
-	public FcGiocatore findByCognGiocatoreStartingWithAndFcSquadra(
-			String nomeGiocatore, FcSquadra squadra);
+	List<FcGiocatore> findByCognGiocatoreContaining(
+            String cognGiocatore);
 
-	public FcGiocatore findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(
-			String nomeGiocatore, FcSquadra squadra, FcRuolo ruolo);
+	FcGiocatore findByNomeImg(String nomeImg);
 
-	public List<FcGiocatore> findByCognGiocatoreContaining(
-			String cognGiocatore);
+	FcGiocatore findByIdGiocatore(int idGiocatore);
 
-	public FcGiocatore findByNomeGiocatoreContaining(String nomeGiocatore);
-
-	public FcGiocatore findByNomeImg(String nomeImg);
-
-	public FcGiocatore findByIdGiocatore(int idGiocatore);
-
-	public List<FcGiocatore> findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
-			Collection<Integer> notIn);
+	List<FcGiocatore> findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
+            Collection<Integer> notIn);
 
 }

@@ -14,9 +14,11 @@ import com.vaadin.flow.theme.Theme;
 
 import fcweb.backend.service.AttoreRepository;
 
+import java.io.Serial;
+
 /**
  * The entry point of the Spring Boot application.
- *
+ * <p>
  * Use the @PWA annotation make the application installable on phones, tablets
  * and some desktop browsers.
  *
@@ -26,7 +28,8 @@ import fcweb.backend.service.AttoreRepository;
 @EnableScheduling
 public class Application implements AppShellConfigurator{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

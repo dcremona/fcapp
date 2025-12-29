@@ -14,7 +14,7 @@ public interface CampionatoRepository
 
 	Iterable<FcCampionato> findAll(Sort sort);
 
-	public FcCampionato findByIdCampionato(Integer idCampionato);
+	FcCampionato findByIdCampionato(Integer idCampionato);
 
-	public FcCampionato findByActive(boolean active);
+	FcCampionato findByActive(boolean active);
 }

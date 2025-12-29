@@ -1,6 +1,7 @@
 package fcweb.ui.views.admin;
 
 import java.io.File;
+import java.io.Serial;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -48,9 +49,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ADMIN")
 public class FcGiocatoreView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiocatoreService giocatoreController;
@@ -67,8 +69,8 @@ public class FcGiocatoreView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
-	private ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
+	private final ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
+	private final ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
 
 	public FcGiocatoreView() {
 		log.info("FcGiocatoreView()");
@@ -113,7 +115,7 @@ public class FcGiocatoreView extends VerticalLayout{
 						Image img = Utils.getImage(g.getNomeImg(), g.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 
 					Image imgOnline = new Image(Costants.HTTP_URL_IMG + g.getNomeImg(),g.getNomeImg());
@@ -125,7 +127,7 @@ public class FcGiocatoreView extends VerticalLayout{
 						try {
 							Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 							String basePathData = (String) p.get("PATH_TMP");
-							log.info("basePathData " + basePathData);
+                            log.info("basePathData {}", basePathData);
 
 							File f = new File(basePathData);
 							if (!f.exists()) {
@@ -134,17 +136,16 @@ public class FcGiocatoreView extends VerticalLayout{
 							}
 
 							String newImg = g.getNomeImg();
-							log.info("newImg " + newImg);
+                            log.info("newImg {}", newImg);
 							log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
-							String imgPath = basePathData;
 
-							boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, imgPath + newImg);
-							log.info("bResult 1 " + flag);
-							flag = Utils.buildFileSmall(imgPath + newImg, imgPath + "small-" + newImg);
-							log.info("bResult 2 " + flag);
+                            boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, basePathData + newImg);
+                            log.info("bResult 1 {}", flag);
+							flag = Utils.buildFileSmall(basePathData + newImg, basePathData + "small-" + newImg);
+                            log.info("bResult 2 {}", flag);
 
-							g.setImg(BlobProxy.generateProxy(Utils.getImage(imgPath + newImg)));
-							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(imgPath + "small-" + newImg)));
+							g.setImg(BlobProxy.generateProxy(Utils.getImage(basePathData + newImg)));
+							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
 
 							log.info("SAVE GIOCATORE ");
 							giocatoreController.updateGiocatore(g);
@@ -165,7 +166,7 @@ public class FcGiocatoreView extends VerticalLayout{
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiocatore())).setHeader("Id");
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcRuolo().getIdRuolo())).setHeader(Costants.RUOLO);
 
-		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCognGiocatore())).setHeader(Costants.GIOCATORE);
+		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getCognGiocatore())).setHeader(Costants.GIOCATORE);
 		giocatoreColumn.setSortable(false);
 		giocatoreColumn.setAutoWidth(true);
 

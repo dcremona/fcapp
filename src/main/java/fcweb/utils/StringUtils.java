@@ -9,18 +9,18 @@ public class StringUtils{
 	static {
 
 		// Special characters for HTML
-		htmlEncodeChars.put('\u0026', "&amp;");
-		htmlEncodeChars.put('\u003C', "&lt;");
-		htmlEncodeChars.put('\u003E', "&gt;");
-		htmlEncodeChars.put('\u0022', "&quot;");
+		htmlEncodeChars.put('&', "&amp;");
+		htmlEncodeChars.put('<', "&lt;");
+		htmlEncodeChars.put('>', "&gt;");
+		htmlEncodeChars.put('"', "&quot;");
 
-		htmlEncodeChars.put('\u0152', "&OElig;");
-		htmlEncodeChars.put('\u0153', "&oelig;");
-		htmlEncodeChars.put('\u0160', "&Scaron;");
-		htmlEncodeChars.put('\u0161', "&scaron;");
-		htmlEncodeChars.put('\u0178', "&Yuml;");
-		htmlEncodeChars.put('\u02C6', "&circ;");
-		htmlEncodeChars.put('\u02DC', "&tilde;");
+		htmlEncodeChars.put('Œ', "&OElig;");
+		htmlEncodeChars.put('œ', "&oelig;");
+		htmlEncodeChars.put('Š', "&Scaron;");
+		htmlEncodeChars.put('š', "&scaron;");
+		htmlEncodeChars.put('Ÿ', "&Yuml;");
+		htmlEncodeChars.put('ˆ', "&circ;");
+		htmlEncodeChars.put('˜', "&tilde;");
 		htmlEncodeChars.put('\u2002', "&ensp;");
 		htmlEncodeChars.put('\u2003', "&emsp;");
 		htmlEncodeChars.put('\u2009', "&thinsp;");
@@ -28,17 +28,17 @@ public class StringUtils{
 		htmlEncodeChars.put('\u200D', "&zwj;");
 		htmlEncodeChars.put('\u200E', "&lrm;");
 		htmlEncodeChars.put('\u200F', "&rlm;");
-		htmlEncodeChars.put('\u2013', "&ndash;");
-		htmlEncodeChars.put('\u2014', "&mdash;");
-		htmlEncodeChars.put('\u2018', "&lsquo;");
-		htmlEncodeChars.put('\u2019', "&rsquo;");
-		htmlEncodeChars.put('\u201A', "&sbquo;");
-		htmlEncodeChars.put('\u201C', "&ldquo;");
-		htmlEncodeChars.put('\u201D', "&rdquo;");
-		htmlEncodeChars.put('\u201E', "&bdquo;");
-		htmlEncodeChars.put('\u2020', "&dagger;");
-		htmlEncodeChars.put('\u2021', "&Dagger;");
-		htmlEncodeChars.put('\u2030', "&permil;");
+		htmlEncodeChars.put('–', "&ndash;");
+		htmlEncodeChars.put('—', "&mdash;");
+		htmlEncodeChars.put('‘', "&lsquo;");
+		htmlEncodeChars.put('’', "&rsquo;");
+		htmlEncodeChars.put('‚', "&sbquo;");
+		htmlEncodeChars.put('“', "&ldquo;");
+		htmlEncodeChars.put('”', "&rdquo;");
+		htmlEncodeChars.put('„', "&bdquo;");
+		htmlEncodeChars.put('†', "&dagger;");
+		htmlEncodeChars.put('‡', "&Dagger;");
+		htmlEncodeChars.put('‰', "&permil;");
 		htmlEncodeChars.put('\u2039', "&lsaquo;");
 		htmlEncodeChars.put('\u203A', "&rsaquo;");
 		htmlEncodeChars.put('\u20AC', "&euro;");
@@ -264,44 +264,39 @@ public class StringUtils{
 		htmlEncodeChars.put('\u25CA', "&loz;");
 		htmlEncodeChars.put('\u2660', "&spades;");
 		htmlEncodeChars.put('\u2663', "&clubs;");
-		htmlEncodeChars.put('\u2665', "&hearts;");
-		htmlEncodeChars.put('\u2666', "&diams;");
+		htmlEncodeChars.put('♥', "&hearts;");
+		htmlEncodeChars.put('♦', "&diams;");
 	}
 
 	private StringUtils() {
 	}
 
 	public static String encodeHtml(String source) {
-		return encode(source, htmlEncodeChars);
+		return encode(source);
 	}
 
-	private static String encode(String source,
-			HashMap<Character, String> encodingTable) {
+	private static String encode(String source) {
 		if (null == source) {
 			return null;
 		}
 
-		if (null == encodingTable) {
-			return source;
-		}
-
-		StringBuffer encodedString = null;
+        StringBuilder encodedString = null;
 		char[] stringtoencodearray = source.toCharArray();
 		int lastmatch = -1;
-		int difference = 0;
+		int difference;
 
 		for (int i = 0; i < stringtoencodearray.length; i++) {
 			char charToEncode = stringtoencodearray[i];
 
-			if (encodingTable.containsKey(charToEncode)) {
+			if (StringUtils.htmlEncodeChars.containsKey(charToEncode)) {
 				if (null == encodedString) {
-					encodedString = new StringBuffer(source.length());
+					encodedString = new StringBuilder(source.length());
 				}
 				difference = i - (lastmatch + 1);
 				if (difference > 0) {
 					encodedString.append(stringtoencodearray, lastmatch + 1, difference);
 				}
-				encodedString.append(encodingTable.get(charToEncode));
+				encodedString.append(StringUtils.htmlEncodeChars.get(charToEncode));
 				lastmatch = i;
 			}
 		}

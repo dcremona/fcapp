@@ -49,7 +49,8 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        assert input != null;
+        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
@@ -118,7 +119,8 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        assert input != null;
+        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 		// Load ArrayList with table row strings
@@ -145,10 +147,10 @@ public class JobProcessFileCsv{
 						if (StringUtils.isNotEmpty(href)) {
 							int idx = href.indexOf("nomegio=");
 							if (idx != -1) {
-								href = href.substring(idx, href.length());
+								href = href.substring(idx);
 								idx = href.indexOf("=");
 								if (idx != -1) {
-									nomegic = href.substring(idx + 1, href.length());
+									nomegic = href.substring(idx + 1);
 									log.info(nomegic);
 									bFind = true;
 								}
@@ -197,7 +199,8 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        assert input != null;
+        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 		// Load ArrayList with table row strings
@@ -266,28 +269,30 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        assert input != null;
+        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		Elements ulRows = doc.select("li");
 
 		for (Element liRow : ulRows) {
 			Element parent = liRow.parent();
-			String classNameParent = parent.className();
+            assert parent != null;
+            String classNameParent = parent.className();
 			String rowData = liRow.text();
 			String className = liRow.className();
 			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && "player-item pill".equals(className)) {
 				String lastCharacter = rowData.substring(rowData.length() - 1);
 				if ("%".equals(lastCharacter)) {
 					Elements children = liRow.children();
-					String href = null;
+					String href;
 					for (Element c : children) {
 						href = c.attr("href");
 						if (StringUtils.isNotEmpty(href) && StringUtils.length(href) > 1) {
 							StringBuilder percentuale = new StringBuilder();
 							char[] letters = rowData.toCharArray();
 							for (char l : letters) {
-								Boolean flag = Character.isDigit(l);
-								if (flag.booleanValue()) {
+								boolean flag = Character.isDigit(l);
+								if (flag) {
 									percentuale.append(l);
 								}
 							}
@@ -295,16 +300,13 @@ public class JobProcessFileCsv{
 							StringBuilder nomeImg = new StringBuilder();
 							char[] letters2 = href.toCharArray();
 							for (char l : letters2) {
-								Boolean flag = Character.isDigit(l);
-								if (flag.booleanValue()) {
+								boolean flag = Character.isDigit(l);
+								if (flag) {
 									nomeImg.append(l);
 								}
 							}
 
-							// log.info(" nomeImg=" + nomeImg + " percentuale="
-							// + percentuale.toString() + " href " + href);
-
-							data.append(nomeImg);
+                            data.append(nomeImg);
 							data.append(";");
 							if ("player-list starters".equals(classNameParent)) {
 								data.append(Costants.TITOLARE);
@@ -312,7 +314,7 @@ public class JobProcessFileCsv{
 								data.append(Costants.PANCHINA);
 							}
 							data.append(";");
-							data.append(percentuale.toString());
+							data.append(percentuale);
 							data.append(";");
 							data.append(href);
 							data.append("\n");
@@ -361,20 +363,23 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+        assert input != null;
+        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		Elements ulRows = doc.select("ul");
 
 		for (Element ulRow : ulRows) {
 			String rowData = ulRow.text();
 			String className = ulRow.className();
-			Element parent =  ulRow.parent().parent();
+            assert ulRow.parent() != null;
+            Element parent =  ulRow.parent().parent();
 			//String rowDataparent = parent.text();
-			String classNameparent = parent.className();
+            assert parent != null;
+            String classNameparent = parent.className();
 
 			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && ("injured-list".equals(className) || "suspendeds-list".equals(className))) {
 				Elements children = ulRow.children();
-				String href = null;
+				String href;
 
 				for (Element c : children) {
 					Elements childrenLi = c.children();
@@ -384,13 +389,13 @@ public class JobProcessFileCsv{
 							StringBuilder nomeImg = new StringBuilder();
 							char[] letters2 = href.toCharArray();
 							for (char l : letters2) {
-								Boolean flag = Character.isDigit(l);
-								if (flag.booleanValue()) {
+								boolean flag = Character.isDigit(l);
+								if (flag) {
 									nomeImg.append(l);
 								}
 							}
 
-							String infoSqualificatoInfortunato = "";
+							String infoSqualificatoInfortunato;
 							String note = "";
 							if ("injured-list".equals(className)) {
 								infoSqualificatoInfortunato = Costants.INFORTUNATO;
@@ -400,11 +405,11 @@ public class JobProcessFileCsv{
 										note = p.text();
 									}
 								}
-							} else if ("suspendeds-list".equals(className) && "suspendeds".equals(classNameparent)) {
+							} else if ("suspendeds".equals(classNameparent)) {
 								infoSqualificatoInfortunato = Costants.SQUALIFICATO;
 								note = Costants.SQUALIFICATO;
 							} else {
-								log.info(" nomeImg=" + nomeImg + " percentuale=0" + " href " + href);
+                                log.info(" nomeImg={} percentuale=0 href {}", nomeImg, href);
 								continue;
 							}
 							
@@ -476,16 +481,16 @@ public class JobProcessFileCsv{
 			SSLContext sc = SSLContext.getInstance("SSL");
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 
 		OutputStream outStream = null;
-		URLConnection uCon = null;
+		URLConnection uCon;
 		InputStream is = null;
 
 		try {
 			byte[] buf;
-			int byteRead = 0;
+			int byteRead;
 			int byteWritten = 0;
 			URL url = new URL(fAddress);
 			outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName));
@@ -497,10 +502,10 @@ public class JobProcessFileCsv{
 				outStream.write(buf, 0, byteRead);
 				byteWritten += byteRead;
 			}
-			log.info("File name: " + localFileName + " bytes: " + byteWritten);
+            log.info("File name: {} bytes: {}", localFileName, byteWritten);
 			log.info("Downloaded Successfully.");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		} finally {
 			if (is != null) {
 				is.close();

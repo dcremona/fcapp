@@ -1,11 +1,13 @@
 package fcweb.backend.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 //Here is a bean
 public class Calendario implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	private int id;
 	private String attoreCasa;

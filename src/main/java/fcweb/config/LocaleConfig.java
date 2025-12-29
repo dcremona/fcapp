@@ -16,7 +16,7 @@ import jakarta.annotation.PostConstruct;
 @Configuration
 public class LocaleConfig{
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ProprietaService proprietaController;
@@ -25,9 +25,9 @@ public class LocaleConfig{
 	public void init() {
 
 		TimeZone.setDefault(TimeZone.getTimeZone("Europe/Berlin"));
-		log.info("Date in Europe/Berlin: " + new Date().toString());
+        log.info("Date in Europe/Berlin: {}", new Date());
 		String basePathData = System.getProperty("user.dir");
-		log.info("basePathData " + basePathData);
+        log.info("basePathData {}", basePathData);
 
 	}
 
@@ -35,7 +35,7 @@ public class LocaleConfig{
 	public String getCronValueUfficiosi() {
 		FcProperties p = proprietaController.findByKey("ufficiosi.cron.expression");
 		if (p != null) {
-			log.info("Ufficiosi cron " + p.getValue());
+            log.info("Ufficiosi cron {}", p.getValue());
 			return p.getValue();
 		} else {
 			return "0 0 9 * * *";
@@ -46,7 +46,7 @@ public class LocaleConfig{
 	public String getCronValueUfficiali() {
 		FcProperties p = proprietaController.findByKey("ufficiali.cron.expression");
 		if (p != null) {
-			log.info("Ufficiali cron " + p.getValue());
+            log.info("Ufficiali cron {}", p.getValue());
 			return p.getValue();
 		} else {
 			return "0 30 16 * * *";
@@ -57,7 +57,7 @@ public class LocaleConfig{
 	public String getCronValueInfoGiocatore() {
 		FcProperties p = proprietaController.findByKey("infoGiocatore.cron.expression");
 		if (p != null) {
-			log.info("infoGiocatore cron " + p.getValue());
+            log.info("infoGiocatore cron {}", p.getValue());
 			return p.getValue();
 		} else {
 			return "0 0 6 * * *";

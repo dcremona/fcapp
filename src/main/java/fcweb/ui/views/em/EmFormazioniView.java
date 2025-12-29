@@ -1,5 +1,6 @@
 package fcweb.ui.views.em;
 
+import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -48,16 +49,17 @@ import fcweb.backend.service.GiornataInfoService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.security.RolesAllowed;;
+import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Formazioni")
 @Route(value = "emformazioni", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmFormazioniView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	private Image iconAmm_ = null;
 	private Image iconEsp_ = null;
@@ -87,13 +89,9 @@ public class EmFormazioniView extends VerticalLayout{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	// @Autowired
-	// private JobProcessSendMail jobProcessSendMail;
+    private final VerticalLayout mainLayout = new VerticalLayout();
 
-	private VerticalLayout mainLayout = new VerticalLayout();
-	private ComboBox<FcGiornataInfo> comboGiornata;
-
-	@Autowired
+    @Autowired
 	private AttoreService attoreController;
 
 	public List<FcAttore> squadre = new ArrayList<>();
@@ -101,7 +99,7 @@ public class EmFormazioniView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	public EmFormazioniView() throws Exception {
+	public EmFormazioniView() {
 		LOG.info("EmFormazioniView()");
 	}
 
@@ -122,7 +120,7 @@ public class EmFormazioniView extends VerticalLayout{
 	private FcCampionato campionato = null;
 	private List<FcGiornataInfo> giornate = null;
 
-	private void initData() throws Exception {
+	private void initData() {
 
 		giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
@@ -134,7 +132,7 @@ public class EmFormazioniView extends VerticalLayout{
 		squadre = attoreController.findByActive(true);
 	}
 
-	private void initImg() throws Exception {
+	private void initImg() {
 
 		LOG.info("initImg()");
 
@@ -160,7 +158,7 @@ public class EmFormazioniView extends VerticalLayout{
 		Button stampapdf = new Button("Risultati pdf");
 		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
-		comboGiornata = new ComboBox<>();
+        ComboBox<FcGiornataInfo> comboGiornata = new ComboBox<>();
 		comboGiornata.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
 		comboGiornata.setItems(giornate);
 		comboGiornata.setClearButtonVisible(true);
@@ -173,12 +171,12 @@ public class EmFormazioniView extends VerticalLayout{
 			} else if (event.getOldValue() == null) {
 				LOG.info("event.getOldValue()");
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-				LOG.info("gioranta " + "" + fcGiornataInfo.getCodiceGiornata());
+                LOG.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
 				stampapdf.setEnabled(true);
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-				LOG.info("gioranta " + "" + fcGiornataInfo.getCodiceGiornata());
+                LOG.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
 				stampapdf.setEnabled(true);
 			}
@@ -221,7 +219,7 @@ public class EmFormazioniView extends VerticalLayout{
 				vCasa.add(tableSqCasaPanchina);
 
 			} catch (Exception e) {
-				LOG.info("NO DATA " + a.getDescAttore());
+                LOG.info("NO DATA {}", a.getDescAttore());
 			}
 			VerticalLayout layoutTotaliCasa = buildTotaliInfo(campionato, a, giornataInfo);
 			vCasa.add(layoutTotaliCasa);
@@ -235,9 +233,9 @@ public class EmFormazioniView extends VerticalLayout{
 	}
 
 	private HashMap<String, Object> buildData(FcAttore attore,
-			FcGiornataInfo giornataInfo) throws Exception {
+			FcGiornataInfo giornataInfo) {
 
-		LOG.info("START buildData " + attore.getDescAttore());
+        LOG.info("START buildData {}", attore.getDescAttore());
 
 		HashMap<String, Object> map = new HashMap<>();
 
@@ -250,13 +248,11 @@ public class EmFormazioniView extends VerticalLayout{
 		for (FcGiornataDett gd : all) {
 			items.add(gd);
 			if (gd.getOrdinamento() < 12) {
-				if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("D")) {
-					countD++;
-				} else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("C")) {
-					countC++;
-				} else if (gd.getFcGiocatore().getFcRuolo().getIdRuolo().equals("A")) {
-					countA++;
-				}
+                switch (gd.getFcGiocatore().getFcRuolo().getIdRuolo()) {
+                    case "D" -> countD++;
+                    case "C" -> countC++;
+                    case "A" -> countA++;
+                }
 			}
 		}
 
@@ -277,7 +273,7 @@ public class EmFormazioniView extends VerticalLayout{
 		map.put("itemsPanchina", itemsPanchina);
 		map.put("schema", schema);
 
-		LOG.info("END buildData " + attore.getDescAttore());
+        LOG.info("END buildData {}", attore.getDescAttore());
 
 		return map;
 	}
@@ -320,7 +316,7 @@ public class EmFormazioniView extends VerticalLayout{
 				cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
 			}
 			FcGiocatore g = gd.getFcGiocatore();
-			if (gd != null && g != null) {
+			if (g != null) {
 				if (!g.isFlagAttivo()) {
 					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
@@ -329,12 +325,12 @@ public class EmFormazioniView extends VerticalLayout{
 				lblGiocatore.getStyle().set("fontSize", "smaller");
 				cellLayout.add(lblGiocatore);
 
-				ArrayList<Image> info = new ArrayList<Image>();
-				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "N".equals(gd.getFlagAttivo().toUpperCase())) {
+				ArrayList<Image> info = new ArrayList<>();
+				if (gd.getOrdinamento() < 12 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "N".equalsIgnoreCase(gd.getFlagAttivo())) {
 					info.add(Utils.buildImage("uscito_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito_s.png")));
 				}
 
-				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "S".equals(gd.getFlagAttivo().toUpperCase())) {
+				if (gd.getOrdinamento() > 11 && StringUtils.isNotEmpty(gd.getFlagAttivo()) && "S".equalsIgnoreCase(gd.getFlagAttivo())) {
 					info.add(Utils.buildImage("entrato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato_s.png")));
 				}
 
@@ -364,7 +360,7 @@ public class EmFormazioniView extends VerticalLayout{
 				cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
 			}
 			FcGiocatore g = gd.getFcGiocatore();
-			if (gd != null && g != null) {
+			if (g != null) {
 				if (!g.isFlagAttivo()) {
 					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
@@ -377,7 +373,7 @@ public class EmFormazioniView extends VerticalLayout{
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						LOG.error(e.getMessage());
 					}
 				}
 				cellLayout.add(lblSquadra);
@@ -401,9 +397,9 @@ public class EmFormazioniView extends VerticalLayout{
 				cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
 			}
 
-			if (gd != null && gd.getFcGiocatore() != null) {
+			if (gd.getFcGiocatore() != null) {
 
-				ArrayList<Image> info = new ArrayList<Image>();
+				ArrayList<Image> info = new ArrayList<>();
 
 				for (int a = 0; a < gd.getFcPagelle().getAmmonizione(); a++) {
 					info.add(Utils.buildImage("amm_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm_s.png")));
@@ -464,10 +460,10 @@ public class EmFormazioniView extends VerticalLayout{
 
 			Span lbl = null;
 			FcGiocatore g = gd.getFcGiocatore();
-			if (gd != null && g != null) {
+			if (g != null) {
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (gd.getVoto() != null) {
 					d = gd.getVoto() / Costants.DIVISORE_10;
 				}
@@ -602,13 +598,8 @@ public class EmFormazioniView extends VerticalLayout{
 		// return cellLayout;
 		//
 		// }));
-		// cognGiocatoreColumn.setSortable(false);
-		// cognGiocatoreColumn.setResizable(false);
-		// cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
-		// // cognGiocatoreColumn.setFlexGrow(0);
-		// cognGiocatoreColumn.setWidth("240px");
 
-		HeaderRow headerRow = grid.prependHeaderRow();
+        HeaderRow headerRow = grid.prependHeaderRow();
 
 		HeaderCell headerCellStatoGiocatore = headerRow.join(ruoloColumn, cognGiocatoreColumn);
 		headerCellStatoGiocatore.setText(statoGiocatore);
@@ -633,7 +624,7 @@ public class EmFormazioniView extends VerticalLayout{
 		NumberFormat formatter = new DecimalFormat("#0.00");
 		String totG = "";
 		if (totPunti != null && totPunti.getTotPt() != null) {
-			totG = formatter.format(totPunti.getTotPt().doubleValue() / Costants.DIVISORE_10);
+			totG = formatter.format(totPunti.getTotPt() / Costants.DIVISORE_10);
 		}
 
 		Span lblTotGiornata = new Span();

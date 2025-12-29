@@ -24,15 +24,18 @@ import fcweb.ui.views.MainLayout;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.io.Serial;
+
 @PageTitle("ExpStat")
 @Route(value = "fcExpStat", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcExpStatView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ExpStatService expStatController;

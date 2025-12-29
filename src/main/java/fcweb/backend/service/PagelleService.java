@@ -31,14 +31,14 @@ public class PagelleService{
 	public List<FcPagelle> findByCustonm(FcGiornataInfo giornataInfo,
 			FcGiocatore giocatore) {
 
-		List<FcPagelle> l = null;
+		List<FcPagelle> l;
 		if (giornataInfo == null && giocatore == null) {
 			l = (List<FcPagelle>) pagelleRepository.findAll();
 		} else if (giornataInfo != null && giocatore == null) {
 			l = pagelleRepository.findByFcGiornataInfoOrderByFcGiocatoreFcSquadraAscFcGiocatoreFcRuoloDescFcGiocatoreAsc(giornataInfo);
-		} else if (giornataInfo == null && giocatore != null) {
+		} else if (giornataInfo == null) {
 			l = pagelleRepository.findByFcGiocatore(giocatore);
-		} else if (giornataInfo != null && giocatore != null) {
+		} else {
 			FcPagelle fcPagelle = pagelleRepository.findByFcGiornataInfoAndFcGiocatore(giornataInfo, giocatore);
 			l = new ArrayList<>();
 			l.add(fcPagelle);
@@ -47,24 +47,20 @@ public class PagelleService{
 	}
 
 	public FcPagelle updatePagelle(FcPagelle c) {
-		FcPagelle fcPagelle = null;
+		FcPagelle fcPagelle;
 		try {
 			fcPagelle = pagelleRepository.save(c);
 		} catch (Exception ex) {
-			return fcPagelle;
+			return null;
 		}
 		return fcPagelle;
 	}
 
-	public String deletePagelle(FcPagelle c) {
-		String id = "";
-		try {
+	public void deletePagelle(FcPagelle c) {
+        try {
 			pagelleRepository.delete(c);
-			id = "" + c.getId();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
+        } catch (Exception ignored) {
 		}
-		return "Pagelle succesfully delete with id = " + id;
 	}
 
 }

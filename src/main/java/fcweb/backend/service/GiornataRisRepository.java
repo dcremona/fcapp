@@ -19,16 +19,13 @@ public interface GiornataRisRepository
 
 	Iterable<FcGiornataRis> findAll(Sort sort);
 
-	public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoAsc(
-			FcAttore fcAttore);
+	List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoAsc(
+            FcAttore fcAttore);
 
-	public List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoDesc(
-			FcAttore fcAttore);
+	List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoDesc(
+            FcAttore fcAttore);
 
-	public List<FcGiornataRis> findByFcGiornataInfoOrderByFcGiornataInfo(
-			FcGiornataInfo giornataInfo);
-
-	public List<FcGiornataRis> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(
-			FcGiornataInfo start, FcGiornataInfo end);
+	List<FcGiornataRis> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(
+            FcGiornataInfo start, FcGiornataInfo end);
 
 }

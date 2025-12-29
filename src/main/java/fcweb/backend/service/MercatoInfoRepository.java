@@ -17,7 +17,7 @@ public interface MercatoInfoRepository
 
 	Iterable<FcMercatoDettInfo> findAll(Sort sort);
 
-	public List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(
-			FcAttore attore);
+	List<FcMercatoDettInfo> findByFcAttoreOrderByFcGiornataInfoAsc(
+            FcAttore attore);
 
 }

@@ -34,22 +34,16 @@ public class GiocatoreService{
 		return giocatoreRepository.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(ruolo, flagAttivo, giocatore);
 	}
 
-	public List<FcGiocatore> findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
-			FcRuolo ruolo, boolean flagAttivo, FcSquadra squadra,
-			Collection<Integer> giocatore) {
-		return giocatoreRepository.findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(flagAttivo, squadra, giocatore);
-	}
-
 	public List<FcGiocatore> findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
 			FcRuolo ruolo, FcSquadra squadra) {
-		List<FcGiocatore> l = null;
+		List<FcGiocatore> l;
 		if (ruolo == null && squadra == null) {
 			l = (List<FcGiocatore>) giocatoreRepository.findAll();
 		} else if (ruolo != null && squadra == null) {
 			l = giocatoreRepository.findByFcRuoloOrderByQuotazioneDesc(ruolo);
-		} else if (ruolo == null && squadra != null) {
+		} else if (ruolo == null) {
 			l = giocatoreRepository.findByFcSquadraOrderByQuotazioneDesc(squadra);
-		} else if (ruolo != null && squadra != null) {
+		} else {
 			l = giocatoreRepository.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(ruolo, squadra);
 		}
 		return l;
@@ -62,24 +56,21 @@ public class GiocatoreService{
 	}
 
 	public FcGiocatore updateGiocatore(FcGiocatore c) {
-		FcGiocatore giocatore = null;
+		FcGiocatore giocatore;
 		try {
 			giocatore = giocatoreRepository.save(c);
 		} catch (Exception ex) {
-			return giocatore;
+			return null;
 		}
 		return giocatore;
 	}
 
-	public String deleteGiocatore(FcGiocatore c) {
-		String id = "";
-		try {
+	public void deleteGiocatore(FcGiocatore c) {
+        try {
 			giocatoreRepository.delete(c);
-			id = "" + c.getIdGiocatore();
-		} catch (Exception ex) {
-			return "Error delete : " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "Giocatore succesfully delete with id = " + id;
 	}
 
 }

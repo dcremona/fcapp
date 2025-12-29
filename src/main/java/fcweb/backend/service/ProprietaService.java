@@ -29,20 +29,16 @@ public class ProprietaService{
 		FcProperties fcProperties = null;
 		try {
 			fcProperties = proprietaRepository.save(proprieta);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return fcProperties;
 	}
 
-	public String deleteProprieta(FcProperties proprieta) {
-		String id = "";
-		try {
+	public void deleteProprieta(FcProperties proprieta) {
+        try {
 			proprietaRepository.delete(proprieta);
-			id = "" + proprieta.getKey();
-		} catch (Exception ex) {
-			return "Error delete proprieta: " + ex.toString();
+        } catch (Exception ignored) {
 		}
-		return "proprieta succesfully delete with id = " + id;
 	}
 
 }

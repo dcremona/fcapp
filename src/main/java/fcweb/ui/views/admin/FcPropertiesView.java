@@ -21,14 +21,17 @@ import fcweb.ui.views.MainLayout;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.io.Serial;
+
 @PageTitle("Proprieta")
 @Route(value = "proprieta", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcPropertiesView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ProprietaService proprietaController;

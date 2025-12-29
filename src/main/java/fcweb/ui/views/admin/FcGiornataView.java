@@ -29,14 +29,17 @@ import fcweb.ui.views.MainLayout;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.io.Serial;
+
 @PageTitle("Giornata")
 @Route(value = "giornata", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcGiornataView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataService giornataController;

@@ -34,14 +34,17 @@ import fcweb.utils.Costants;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.io.Serial;
+
 @PageTitle("Pagelle")
 @Route(value = "pagelle", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcPagelleView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private GiornataInfoService giornataInfoController;
@@ -58,8 +61,8 @@ public class FcPagelleView extends VerticalLayout{
 	@Autowired
 	private AccessoService accessoController;
 
-	private ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
-	private ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<>();
+	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+	private final ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<>();
 
 	public FcPagelleView() {
 		log.info("FcPagelleView()");
@@ -112,7 +115,7 @@ public class FcPagelleView extends VerticalLayout{
 		giornataInfoFilter.setPlaceholder("Giornata");
 		giornataInfoFilter.setItems(giornataInfoController.findAll());
 		if ("1".equals(campionato.getType())) {
-			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornata(g));
+			giornataInfoFilter.setItemLabelGenerator(Utils::buildInfoGiornata);
 		} else {
 			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
 		}

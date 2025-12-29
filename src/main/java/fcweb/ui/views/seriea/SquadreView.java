@@ -1,13 +1,11 @@
 package fcweb.ui.views.seriea;
 
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,9 +60,10 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 public class SquadreView extends VerticalLayout{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private AttoreService attoreController;
@@ -113,9 +112,10 @@ public class SquadreView extends VerticalLayout{
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		Connection conn = null;
 		try {
-			conn = jdbcTemplate.getDataSource().getConnection();
+            assert jdbcTemplate.getDataSource() != null;
+            conn = jdbcTemplate.getDataSource().getConnection();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		TabSheet tabSheet = new TabSheet();
 		for (FcAttore attore : squadre) {
@@ -128,14 +128,12 @@ public class SquadreView extends VerticalLayout{
 					layoutBtn.add(buildButtonRosa(conn, campionato, attore));
 				} catch (Exception e) {
 					log.error(e.getMessage());
-					e.printStackTrace();
 				}
 
 				try {
 					layoutBtn.add(buildButtonVotiRosa(conn, campionato, attore, giornataInfo));
 				} catch (Exception e) {
 					log.error(e.getMessage());
-					e.printStackTrace();
 				}
 
 				List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
@@ -184,7 +182,7 @@ public class SquadreView extends VerticalLayout{
 			Button stampaPdfRosa = new Button("Rosa pdf");
 			stampaPdfRosa.setIcon(VaadinIcon.DOWNLOAD.create());
 
-			Map<String, Object> hm = new HashMap<String, Object>();
+			Map<String, Object> hm = new HashMap<>();
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("ATTORE", idAttore);
 			hm.put("DIVISORE", "" + Costants.DIVISORE_100);
@@ -198,7 +196,6 @@ public class SquadreView extends VerticalLayout{
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		return null;
@@ -218,7 +215,7 @@ public class SquadreView extends VerticalLayout{
 
 			String start = campionato.getStart().toString();
 			String currentGiornata = "" + giornataInfo.getCodiceGiornata();
-			final Map<String, Object> hm = new HashMap<String, Object>();
+			final Map<String, Object> hm = new HashMap<>();
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("START", start);
 			hm.put("END", currentGiornata);
@@ -234,7 +231,6 @@ public class SquadreView extends VerticalLayout{
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 		}
 
 		return null;
@@ -276,7 +272,7 @@ public class SquadreView extends VerticalLayout{
 						Image img = Utils.getImage(f.getFcGiocatore().getNomeImg(), f.getFcGiocatore().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblGiocatore = new Span(f.getFcGiocatore().getCognGiocatore());
@@ -301,7 +297,7 @@ public class SquadreView extends VerticalLayout{
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(f.getFcGiocatore().getFcSquadra().getNomeSquadra());
@@ -312,8 +308,7 @@ public class SquadreView extends VerticalLayout{
 
 		}));
 		nomeSquadraColumn.setSortable(true);
-		nomeSquadraColumn.setComparator((p1,
-				p2) -> p1.getFcGiocatore().getFcSquadra().getNomeSquadra().compareTo(p2.getFcGiocatore().getFcSquadra().getNomeSquadra()));
+		nomeSquadraColumn.setComparator(Comparator.comparing(p -> p.getFcGiocatore().getFcSquadra().getNomeSquadra()));
 		nomeSquadraColumn.setHeader(Costants.SQUADRA);
 		nomeSquadraColumn.setAutoWidth(true);
 
@@ -336,7 +331,7 @@ public class SquadreView extends VerticalLayout{
 				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (s != null) {
 					d = s.getMediaVoto() / Costants.DIVISORE_100;
 				}
@@ -350,8 +345,7 @@ public class SquadreView extends VerticalLayout{
 			return cellLayout;
 		}));
 		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator((p1,
-				p2) -> p1.getFcGiocatore().getFcStatistiche().getMediaVoto().compareTo(p2.getFcGiocatore().getFcStatistiche().getMediaVoto()));
+		mediaVotoColumn.setComparator(Comparator.comparing(p -> p.getFcGiocatore().getFcStatistiche().getMediaVoto()));
 		mediaVotoColumn.setHeader(Costants.MV);
 		mediaVotoColumn.setAutoWidth(true);
 		mediaVotoColumn.setKey("fcStatistiche.mediaVoto");
@@ -374,7 +368,7 @@ public class SquadreView extends VerticalLayout{
 				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
 
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d = Double.valueOf(0);
+				Double d = (double) 0;
 				if (s != null) {
 					d = s.getFantaMedia() / Costants.DIVISORE_100;
 				}
@@ -388,8 +382,7 @@ public class SquadreView extends VerticalLayout{
 			return cellLayout;
 		}));
 		fmVotoColumn.setSortable(true);
-		fmVotoColumn.setComparator((p1,
-				p2) -> p1.getFcGiocatore().getFcStatistiche().getFantaMedia().compareTo(p2.getFcGiocatore().getFcStatistiche().getFantaMedia()));
+		fmVotoColumn.setComparator(Comparator.comparing(p -> p.getFcGiocatore().getFcStatistiche().getFantaMedia()));
 		fmVotoColumn.setHeader(Costants.FMV);
 		fmVotoColumn.setAutoWidth(true);
 		fmVotoColumn.setKey("fcStatistiche.fantaMedia");
@@ -399,7 +392,7 @@ public class SquadreView extends VerticalLayout{
 		quotazioneColumn.setHeader(Costants.Q);
 		quotazioneColumn.setAutoWidth(true);
 
-		Column<FcFormazione> totPagatoColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato().intValue() : 0);
+		Column<FcFormazione> totPagatoColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getTotPagato() : 0);
 		totPagatoColumn.setSortable(true);
 		totPagatoColumn.setHeader(Costants.P);
 		totPagatoColumn.setAutoWidth(true);
@@ -466,7 +459,7 @@ public class SquadreView extends VerticalLayout{
 						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocAcq().getNomeImg(), m.getFcGiocatoreByIdGiocAcq().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 
@@ -504,7 +497,7 @@ public class SquadreView extends VerticalLayout{
 						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocVen().getNomeImg(), m.getFcGiocatoreByIdGiocVen().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 				Span lblGiocatore = new Span(m.getFcGiocatoreByIdGiocVen().getCognGiocatore());
@@ -520,7 +513,7 @@ public class SquadreView extends VerticalLayout{
 		gVenColumn.setHeader(Costants.CESSIONI);
 		gVenColumn.setAutoWidth(true);
 
-		Column<FcMercatoDett> notaColumn = grid.addColumn(mercato -> mercato.getNota());
+		Column<FcMercatoDett> notaColumn = grid.addColumn(FcMercatoDett::getNota);
 		notaColumn.setSortable(false);
 		notaColumn.setHeader(Costants.NOTA);
 		notaColumn.setAutoWidth(true);
