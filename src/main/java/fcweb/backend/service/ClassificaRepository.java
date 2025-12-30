@@ -19,9 +19,6 @@ public interface ClassificaRepository
 
 	Iterable<FcClassifica> findAll(Sort sort);
 
-	List<FcClassifica> findByFcCampionatoOrderByTotPuntiDesc(
-            FcCampionato campionato);
-
 	List<FcClassifica> findByFcCampionatoOrderByTotPuntiRosaDesc(
             FcCampionato campionato);
 

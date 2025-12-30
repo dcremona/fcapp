@@ -1,18 +1,15 @@
 package test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -34,9 +31,9 @@ public class ExcelReader2{
 	public static final String SAMPLE_XLSX_FILE_PATH_OUTPUT1 = "c:\\temp\\Quotazioni_Fantacalcio_Stagione_2022_23_OUTPUT.xlsx";
 
 	public static void main(String[] args)
-			throws Exception, InvalidFormatException {
+			throws Exception {
 
-		processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT1, SAMPLE_XLSX_FILE_PATH_INPUT1);
+		processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT1);
 
 	}
 
@@ -54,7 +51,7 @@ public class ExcelReader2{
 
 		int rowCount = 0;
 		List<Domanda> domandeByDesc = new ArrayList<>(domande.values());
-		Collections.sort(domandeByDesc, Comparator.comparing(Domanda::getDescrizione));
+		domandeByDesc.sort(Comparator.comparing(Domanda::getDescrizione));
 		for (Domanda d : domandeByDesc) {
 
 			CellStyle newStyleD = sheet2.getWorkbook().createCellStyle();
@@ -62,7 +59,7 @@ public class ExcelReader2{
 
 			Risposta r = d.getRisposta();
 			if (r == null) {
-				LOGGER.info("DOMANDA SENZA RISPOSTA --> RIGA=" + d.getRigaXlx() + " DOMANDA=" + d.getDescrizioneOrig());
+                LOGGER.info("DOMANDA SENZA RISPOSTA --> RIGA={} DOMANDA={}", d.getRigaXlx(), d.getDescrizioneOrig());
 				continue;
 			}
 
@@ -106,14 +103,9 @@ public class ExcelReader2{
 				workbook2.write(outputStream);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage());
-				e.printStackTrace();
 			}
-		} catch (FileNotFoundException e1) {
-			LOGGER.error(e1.getMessage());
-			e1.printStackTrace();
 		} catch (IOException e1) {
 			LOGGER.error(e1.getMessage());
-			e1.printStackTrace();
 		}
 		// Closing the workbook
 		workbook2.close();
@@ -138,14 +130,14 @@ public class ExcelReader2{
 		}
 	}
 
-	public static void processSingleFileXls(String input, String output)
+	public static void processSingleFileXls(String input)
 			throws Exception {
 
 		// Creating a Workbook from an Excel file (.xls or .xlsx)
 		Workbook workbook = WorkbookFactory.create(new File(input));
 
 		// Retrieving the number of sheets in the Workbook
-		LOGGER.info("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+        LOGGER.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
 
 		/*
 		 * =============================================================
@@ -158,20 +150,18 @@ public class ExcelReader2{
 		LOGGER.info("Retrieving Sheets using Iterator");
 		while (sheetIterator.hasNext()) {
 			Sheet sheet = sheetIterator.next();
-			LOGGER.info("=> " + sheet.getSheetName());
+            LOGGER.info("=> {}", sheet.getSheetName());
 		}
 
 		// 2. Or you can use a for-each loop
 		LOGGER.info("Retrieving Sheets using for-each loop");
 		for (Sheet sheet : workbook) {
-			LOGGER.info("=> " + sheet.getSheetName());
+            LOGGER.info("=> {}", sheet.getSheetName());
 		}
 
 		// 3. Or you can use a Java 8 forEach with lambda
 		LOGGER.info("Retrieving Sheets using Java 8 forEach with lambda");
-		workbook.forEach(sheet -> {
-			LOGGER.info("=> " + sheet.getSheetName());
-		});
+		workbook.forEach(sheet -> LOGGER.info("=> {}", sheet.getSheetName()));
 
 		/*
 		 * ==================================================================
@@ -217,11 +207,11 @@ public class ExcelReader2{
 			}
 			int rigaXlx = row.getRowNum();
 			if (StringUtils.isEmpty(id) && StringUtils.isEmpty(r) && StringUtils.isEmpty(nome)) {
-				LOGGER.info("SCARTO RIGA VUOTA " + rigaXlx);
+                LOGGER.info("SCARTO RIGA VUOTA {}", rigaXlx);
 				continue;
 			}
 
-			LOGGER.info("id " + id + " r " + r + " rm " + rm + " nome " + nome + " squadra " + squadra + " qta " + qta + " qti " + qti);
+            LOGGER.info("id {} r {} rm {} nome {} squadra {} qta {} qti {}", id, r, rm, nome, squadra, qta, qti);
 
 		}
 		// Closing the workbook

@@ -455,7 +455,7 @@ public class EmImpostazioniView extends VerticalLayout
 				fileName = basePathData + fileName + ".csv";
 				boolean updateQuotazioni = chkUpdateQuotaz.getValue();
 				String percentuale = "" + txtPerc.getValue().intValue();
-				HashMap<Object, Object> map = emjobProcessGiornata.initDbGiocatori(Costants.HTTP_URL_IMG, basePathData, fileName, updateQuotazioni, percentuale);
+				HashMap<Object, Object> map = emjobProcessGiornata.initDbGiocatori(fileName, updateQuotazioni, percentuale);
 
 				@SuppressWarnings("unchecked")
 				ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
@@ -502,18 +502,18 @@ public class EmImpostazioniView extends VerticalLayout
 
                 assert giornataInfo != null;
                 emjobProcessGiornata.emalgoritmo(giornataInfo.getCodiceGiornata(), campionato);
-				emjobProcessGiornata.emstatistiche(giornataInfo.getCodiceGiornata());
+				emjobProcessGiornata.emstatistiche();
 
 			} else if (event.getSource() == ricalcola) {
 
                 assert giornataInfo != null;
                 emjobProcessGiornata.ricalcolaTotPunti(giornataInfo.getCodiceGiornata(), campionato);
-				emjobProcessGiornata.emstatistiche(giornataInfo.getCodiceGiornata());
+				emjobProcessGiornata.emstatistiche();
 
 			} else if (event.getSource() == calcolaStatistiche) {
 
                 assert giornataInfo != null;
-                emjobProcessGiornata.emstatistiche(giornataInfo.getCodiceGiornata());
+                emjobProcessGiornata.emstatistiche();
 
 			} else if (event.getSource() == aggiornaFlagAttivoGiocatore) {
 

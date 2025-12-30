@@ -18,7 +18,7 @@ import fcweb.backend.data.entity.FcCampionato;
 @Service
 public class AccessoService{
 
-	private Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	private final AccessoRepository accessoRepository;
 
@@ -54,7 +54,7 @@ public class AccessoService{
 		} catch (Exception ex) {
 			LOG.error(ex.getMessage());
 		}
-		LOG.info("now : " + now + " attore " + attore.getDescAttore() + " note " + note);
+        LOG.info("now : {} attore {} note {}", now, attore.getDescAttore(), note);
 		return fcAccesso;
 	}
 
@@ -62,20 +62,17 @@ public class AccessoService{
 		FcAccesso fcAccesso = null;
 		try {
 			fcAccesso = accessoRepository.save(accesso);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return fcAccesso;
 	}
 
-	public String deleteAccesso(FcAccesso accesso) {
-		String id = "";
-		try {
+	public void deleteAccesso(FcAccesso accesso) {
+        try {
 			accessoRepository.delete(accesso);
-			id = "" + accesso.getId();
-		} catch (Exception ex) {
-			return "Error delete accesso: " + ex.toString();
+        } catch (Exception ignored) {
+
 		}
-		return "accesso succesfully delete with id = " + id;
 	}
 
 }

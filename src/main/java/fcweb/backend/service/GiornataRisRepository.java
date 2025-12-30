@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 
 import fcweb.backend.data.entity.FcAttore;
-import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcGiornataRis;
 import fcweb.backend.data.entity.FcGiornataRisId;
 
@@ -21,11 +20,5 @@ public interface GiornataRisRepository
 
 	List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoAsc(
             FcAttore fcAttore);
-
-	List<FcGiornataRis> findByFcAttoreOrderByFcGiornataInfoDesc(
-            FcAttore fcAttore);
-
-	List<FcGiornataRis> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqual(
-            FcGiornataInfo start, FcGiornataInfo end);
 
 }

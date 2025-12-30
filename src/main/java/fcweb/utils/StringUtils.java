@@ -39,101 +39,101 @@ public class StringUtils{
 		htmlEncodeChars.put('†', "&dagger;");
 		htmlEncodeChars.put('‡', "&Dagger;");
 		htmlEncodeChars.put('‰', "&permil;");
-		htmlEncodeChars.put('\u2039', "&lsaquo;");
-		htmlEncodeChars.put('\u203A', "&rsaquo;");
-		htmlEncodeChars.put('\u20AC', "&euro;");
+		htmlEncodeChars.put('‹', "&lsaquo;");
+		htmlEncodeChars.put('›', "&rsaquo;");
+		htmlEncodeChars.put('€', "&euro;");
 
 		// Character entity references for ISO 8859-1 characters
 		htmlEncodeChars.put('\u00A0', "&nbsp;");
-		htmlEncodeChars.put('\u00A1', "&iexcl;");
-		htmlEncodeChars.put('\u00A2', "&cent;");
-		htmlEncodeChars.put('\u00A3', "&pound;");
-		htmlEncodeChars.put('\u00A4', "&curren;");
-		htmlEncodeChars.put('\u00A5', "&yen;");
-		htmlEncodeChars.put('\u00A6', "&brvbar;");
-		htmlEncodeChars.put('\u00A7', "&sect;");
-		htmlEncodeChars.put('\u00A8', "&uml;");
-		htmlEncodeChars.put('\u00A9', "&copy;");
-		htmlEncodeChars.put('\u00AA', "&ordf;");
-		htmlEncodeChars.put('\u00AB', "&laquo;");
-		htmlEncodeChars.put('\u00AC', "&not;");
+		htmlEncodeChars.put('¡', "&iexcl;");
+		htmlEncodeChars.put('¢', "&cent;");
+		htmlEncodeChars.put('£', "&pound;");
+		htmlEncodeChars.put('¤', "&curren;");
+		htmlEncodeChars.put('¥', "&yen;");
+		htmlEncodeChars.put('¦', "&brvbar;");
+		htmlEncodeChars.put('§', "&sect;");
+		htmlEncodeChars.put('¨', "&uml;");
+		htmlEncodeChars.put('©', "&copy;");
+		htmlEncodeChars.put('ª', "&ordf;");
+		htmlEncodeChars.put('«', "&laquo;");
+		htmlEncodeChars.put('¬', "&not;");
 		htmlEncodeChars.put('\u00AD', "&shy;");
-		htmlEncodeChars.put('\u00AE', "&reg;");
-		htmlEncodeChars.put('\u00AF', "&macr;");
-		htmlEncodeChars.put('\u00B0', "&deg;");
-		htmlEncodeChars.put('\u00B1', "&plusmn;");
-		htmlEncodeChars.put('\u00B2', "&sup2;");
-		htmlEncodeChars.put('\u00B3', "&sup3;");
-		htmlEncodeChars.put('\u00B4', "&acute;");
-		htmlEncodeChars.put('\u00B5', "&micro;");
-		htmlEncodeChars.put('\u00B6', "&para;");
-		htmlEncodeChars.put('\u00B7', "&middot;");
-		htmlEncodeChars.put('\u00B8', "&cedil;");
-		htmlEncodeChars.put('\u00B9', "&sup1;");
-		htmlEncodeChars.put('\u00BA', "&ordm;");
-		htmlEncodeChars.put('\u00BB', "&raquo;");
-		htmlEncodeChars.put('\u00BC', "&frac14;");
-		htmlEncodeChars.put('\u00BD', "&frac12;");
-		htmlEncodeChars.put('\u00BE', "&frac34;");
-		htmlEncodeChars.put('\u00BF', "&iquest;");
-		htmlEncodeChars.put('\u00C0', "&Agrave;");
-		htmlEncodeChars.put('\u00C1', "&Aacute;");
-		htmlEncodeChars.put('\u00C2', "&Acirc;");
-		htmlEncodeChars.put('\u00C3', "&Atilde;");
-		htmlEncodeChars.put('\u00C4', "&Auml;");
-		htmlEncodeChars.put('\u00C5', "&Aring;");
-		htmlEncodeChars.put('\u00C6', "&AElig;");
-		htmlEncodeChars.put('\u00C7', "&Ccedil;");
-		htmlEncodeChars.put('\u00C8', "&Egrave;");
-		htmlEncodeChars.put('\u00C9', "&Eacute;");
-		htmlEncodeChars.put('\u00CA', "&Ecirc;");
-		htmlEncodeChars.put('\u00CB', "&Euml;");
-		htmlEncodeChars.put('\u00CC', "&Igrave;");
-		htmlEncodeChars.put('\u00CD', "&Iacute;");
-		htmlEncodeChars.put('\u00CE', "&Icirc;");
-		htmlEncodeChars.put('\u00CF', "&Iuml;");
-		htmlEncodeChars.put('\u00D0', "&ETH;");
-		htmlEncodeChars.put('\u00D1', "&Ntilde;");
-		htmlEncodeChars.put('\u00D2', "&Ograve;");
-		htmlEncodeChars.put('\u00D3', "&Oacute;");
-		htmlEncodeChars.put('\u00D4', "&Ocirc;");
-		htmlEncodeChars.put('\u00D5', "&Otilde;");
-		htmlEncodeChars.put('\u00D6', "&Ouml;");
-		htmlEncodeChars.put('\u00D7', "&times;");
-		htmlEncodeChars.put('\u00D8', "&Oslash;");
-		htmlEncodeChars.put('\u00D9', "&Ugrave;");
-		htmlEncodeChars.put('\u00DA', "&Uacute;");
+		htmlEncodeChars.put('®', "&reg;");
+		htmlEncodeChars.put('¯', "&macr;");
+		htmlEncodeChars.put('°', "&deg;");
+		htmlEncodeChars.put('±', "&plusmn;");
+		htmlEncodeChars.put('²', "&sup2;");
+		htmlEncodeChars.put('³', "&sup3;");
+		htmlEncodeChars.put('´', "&acute;");
+		htmlEncodeChars.put('µ', "&micro;");
+		htmlEncodeChars.put('¶', "&para;");
+		htmlEncodeChars.put('·', "&middot;");
+		htmlEncodeChars.put('¸', "&cedil;");
+		htmlEncodeChars.put('¹', "&sup1;");
+		htmlEncodeChars.put('º', "&ordm;");
+		htmlEncodeChars.put('»', "&raquo;");
+		htmlEncodeChars.put('¼', "&frac14;");
+		htmlEncodeChars.put('½', "&frac12;");
+		htmlEncodeChars.put('¾', "&frac34;");
+		htmlEncodeChars.put('¿', "&iquest;");
+		htmlEncodeChars.put('À', "&Agrave;");
+		htmlEncodeChars.put('Á', "&Aacute;");
+		htmlEncodeChars.put('Â', "&Acirc;");
+		htmlEncodeChars.put('Ã', "&Atilde;");
+		htmlEncodeChars.put('Ä', "&Auml;");
+		htmlEncodeChars.put('Å', "&Aring;");
+		htmlEncodeChars.put('Æ', "&AElig;");
+		htmlEncodeChars.put('Ç', "&Ccedil;");
+		htmlEncodeChars.put('È', "&Egrave;");
+		htmlEncodeChars.put('É', "&Eacute;");
+		htmlEncodeChars.put('Ê', "&Ecirc;");
+		htmlEncodeChars.put('Ë', "&Euml;");
+		htmlEncodeChars.put('Ì', "&Igrave;");
+		htmlEncodeChars.put('Í', "&Iacute;");
+		htmlEncodeChars.put('Î', "&Icirc;");
+		htmlEncodeChars.put('Ï', "&Iuml;");
+		htmlEncodeChars.put('Ð', "&ETH;");
+		htmlEncodeChars.put('Ñ', "&Ntilde;");
+		htmlEncodeChars.put('Ò', "&Ograve;");
+		htmlEncodeChars.put('Ó', "&Oacute;");
+		htmlEncodeChars.put('Ô', "&Ocirc;");
+		htmlEncodeChars.put('Õ', "&Otilde;");
+		htmlEncodeChars.put('Ö', "&Ouml;");
+		htmlEncodeChars.put('×', "&times;");
+		htmlEncodeChars.put('Ø', "&Oslash;");
+		htmlEncodeChars.put('Ù', "&Ugrave;");
+		htmlEncodeChars.put('Ú', "&Uacute;");
 		htmlEncodeChars.put('\u00DB', "&Ucirc;");
-		htmlEncodeChars.put('\u00DC', "&Uuml;");
-		htmlEncodeChars.put('\u00DD', "&Yacute;");
-		htmlEncodeChars.put('\u00DE', "&THORN;");
-		htmlEncodeChars.put('\u00DF', "&szlig;");
-		htmlEncodeChars.put('\u00E0', "&agrave;");
-		htmlEncodeChars.put('\u00E1', "&aacute;");
+		htmlEncodeChars.put('Ü', "&Uuml;");
+		htmlEncodeChars.put('Ý', "&Yacute;");
+		htmlEncodeChars.put('Þ', "&THORN;");
+		htmlEncodeChars.put('ß', "&szlig;");
+		htmlEncodeChars.put('à', "&agrave;");
+		htmlEncodeChars.put('á', "&aacute;");
 		htmlEncodeChars.put('\u00E2', "&acirc;");
-		htmlEncodeChars.put('\u00E3', "&atilde;");
-		htmlEncodeChars.put('\u00E4', "&auml;");
-		htmlEncodeChars.put('\u00E5', "&aring;");
-		htmlEncodeChars.put('\u00E6', "&aelig;");
-		htmlEncodeChars.put('\u00E7', "&ccedil;");
-		htmlEncodeChars.put('\u00E8', "&egrave;");
-		htmlEncodeChars.put('\u00E9', "&eacute;");
-		htmlEncodeChars.put('\u00EA', "&ecirc;");
-		htmlEncodeChars.put('\u00EB', "&euml;");
-		htmlEncodeChars.put('\u00EC', "&igrave;");
-		htmlEncodeChars.put('\u00ED', "&iacute;");
-		htmlEncodeChars.put('\u00EE', "&icirc;");
-		htmlEncodeChars.put('\u00EF', "&iuml;");
-		htmlEncodeChars.put('\u00F0', "&eth;");
+		htmlEncodeChars.put('ã', "&atilde;");
+		htmlEncodeChars.put('ä', "&auml;");
+		htmlEncodeChars.put('å', "&aring;");
+		htmlEncodeChars.put('æ', "&aelig;");
+		htmlEncodeChars.put('ç', "&ccedil;");
+		htmlEncodeChars.put('è', "&egrave;");
+		htmlEncodeChars.put('é', "&eacute;");
+		htmlEncodeChars.put('ê', "&ecirc;");
+		htmlEncodeChars.put('ë', "&euml;");
+		htmlEncodeChars.put('ì', "&igrave;");
+		htmlEncodeChars.put('í', "&iacute;");
+		htmlEncodeChars.put('î', "&icirc;");
+		htmlEncodeChars.put('ï', "&iuml;");
+		htmlEncodeChars.put('ð', "&eth;");
 		htmlEncodeChars.put('\u00F1', "&ntilde;");
-		htmlEncodeChars.put('\u00F2', "&ograve;");
-		htmlEncodeChars.put('\u00F3', "&oacute;");
-		htmlEncodeChars.put('\u00F4', "&ocirc;");
-		htmlEncodeChars.put('\u00F5', "&otilde;");
-		htmlEncodeChars.put('\u00F6', "&ouml;");
-		htmlEncodeChars.put('\u00F7', "&divide;");
+		htmlEncodeChars.put('ò', "&ograve;");
+		htmlEncodeChars.put('ó', "&oacute;");
+		htmlEncodeChars.put('ô', "&ocirc;");
+		htmlEncodeChars.put('õ', "&otilde;");
+		htmlEncodeChars.put('ö', "&ouml;");
+		htmlEncodeChars.put('÷', "&divide;");
 		htmlEncodeChars.put('\u00F8', "&oslash;");
-		htmlEncodeChars.put('\u00F9', "&ugrave;");
+		htmlEncodeChars.put('ù', "&ugrave;");
 		htmlEncodeChars.put('\u00FA', "&uacute;");
 		htmlEncodeChars.put('\u00FB', "&ucirc;");
 		htmlEncodeChars.put('\u00FC', "&uuml;");
@@ -241,7 +241,7 @@ public class StringUtils{
 		htmlEncodeChars.put('\u2234', "&there4;");
 		htmlEncodeChars.put('\u223C', "&sim;");
 		htmlEncodeChars.put('\u2245', "&cong;");
-		htmlEncodeChars.put('\u2248', "&asymp;");
+		htmlEncodeChars.put('≈', "&asymp;");
 		htmlEncodeChars.put('\u2260', "&ne;");
 		htmlEncodeChars.put('\u2261', "&equiv;");
 		htmlEncodeChars.put('\u2264', "&le;");
@@ -258,10 +258,10 @@ public class StringUtils{
 		htmlEncodeChars.put('\u2308', "&lceil;");
 		htmlEncodeChars.put('\u2309', "&rceil;");
 		htmlEncodeChars.put('\u230A', "&lfloor;");
-		htmlEncodeChars.put('\u230B', "&rfloor;");
-		htmlEncodeChars.put('\u2329', "&lang;");
+		htmlEncodeChars.put('⌋', "&rfloor;");
+		htmlEncodeChars.put('〈', "&lang;");
 		htmlEncodeChars.put('\u232A', "&rang;");
-		htmlEncodeChars.put('\u25CA', "&loz;");
+		htmlEncodeChars.put('◊', "&loz;");
 		htmlEncodeChars.put('\u2660', "&spades;");
 		htmlEncodeChars.put('\u2663', "&clubs;");
 		htmlEncodeChars.put('♥', "&hearts;");
@@ -269,47 +269,6 @@ public class StringUtils{
 	}
 
 	private StringUtils() {
-	}
-
-	public static String encodeHtml(String source) {
-		return encode(source);
-	}
-
-	private static String encode(String source) {
-		if (null == source) {
-			return null;
-		}
-
-        StringBuilder encodedString = null;
-		char[] stringtoencodearray = source.toCharArray();
-		int lastmatch = -1;
-		int difference;
-
-		for (int i = 0; i < stringtoencodearray.length; i++) {
-			char charToEncode = stringtoencodearray[i];
-
-			if (StringUtils.htmlEncodeChars.containsKey(charToEncode)) {
-				if (null == encodedString) {
-					encodedString = new StringBuilder(source.length());
-				}
-				difference = i - (lastmatch + 1);
-				if (difference > 0) {
-					encodedString.append(stringtoencodearray, lastmatch + 1, difference);
-				}
-				encodedString.append(StringUtils.htmlEncodeChars.get(charToEncode));
-				lastmatch = i;
-			}
-		}
-
-		if (null == encodedString) {
-			return source;
-		} else {
-			difference = stringtoencodearray.length - (lastmatch + 1);
-			if (difference > 0) {
-				encodedString.append(stringtoencodearray, lastmatch + 1, difference);
-			}
-			return encodedString.toString();
-		}
 	}
 
 }

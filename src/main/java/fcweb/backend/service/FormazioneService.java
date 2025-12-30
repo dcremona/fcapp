@@ -3,6 +3,7 @@ package fcweb.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,24 +50,7 @@ public class FormazioneService{
 					lNew.add(f);
 				} else {
 
-					FcStatistiche sNew = new FcStatistiche();
-					sNew.setMediaVoto((double) 0);
-					sNew.setFantaMedia((double) 0);
-
-					FcRuolo rNew = new FcRuolo();
-
-					FcGiocatore gNew = new FcGiocatore();
-					gNew.setFcStatistiche(sNew);
-					gNew.setFcRuolo(rNew);
-					gNew.setIdGiocatore(-1);
-					gNew.setQuotazione(0);
-
-					FcFormazione fNew = new FcFormazione();
-					fNew.setTotPagato(0);
-					fNew.setFcGiocatore(gNew);
-
-					fNew.setFcAttore(f.getFcAttore());
-					fNew.setFcCampionato(f.getFcCampionato());
+					FcFormazione fNew = getFcFormazione(f);
 
 					lNew.add(fNew);
 				}
@@ -78,6 +62,28 @@ public class FormazioneService{
 
 		return l;
 
+	}
+
+	private @NonNull FcFormazione getFcFormazione(FcFormazione f) {
+		FcStatistiche sNew = new FcStatistiche();
+		sNew.setMediaVoto((double) 0);
+		sNew.setFantaMedia((double) 0);
+
+		FcRuolo rNew = new FcRuolo();
+
+		FcGiocatore gNew = new FcGiocatore();
+		gNew.setFcStatistiche(sNew);
+		gNew.setFcRuolo(rNew);
+		gNew.setIdGiocatore(-1);
+		gNew.setQuotazione(0);
+
+		FcFormazione fNew = new FcFormazione();
+		fNew.setTotPagato(0);
+		fNew.setFcGiocatore(gNew);
+
+		fNew.setFcAttore(f.getFcAttore());
+		fNew.setFcCampionato(f.getFcCampionato());
+		return fNew;
 	}
 
 	public List<FcFormazione> findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(

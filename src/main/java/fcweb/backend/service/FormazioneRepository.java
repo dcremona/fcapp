@@ -28,9 +28,6 @@ public interface FormazioneRepository
 	List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
             FcCampionato campionato, FcAttore attore);
 
-	FcFormazione findByFcCampionatoAndFcAttoreAndFcGiocatore(
-            FcCampionato campionato, FcAttore attore, FcGiocatore giocatore);
-
 	List<FcFormazione> findByFcCampionatoAndFcGiocatore(
             FcCampionato campionato, FcGiocatore giocatore);
 

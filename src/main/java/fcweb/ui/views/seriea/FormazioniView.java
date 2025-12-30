@@ -7,7 +7,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -150,8 +149,8 @@ public class FormazioniView extends VerticalLayout{
 
 		log.info("initLayout()");
 
-		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+        VaadinSession.getCurrent().getAttribute("PROPERTIES");
+        FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
 		Integer from = campionato.getStart();

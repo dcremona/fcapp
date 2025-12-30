@@ -4,7 +4,6 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,11 +27,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -49,7 +48,7 @@ import fcweb.utils.JasperReporUtils;
 
 public class Utils{
 
-	private static Logger log = LoggerFactory.getLogger(Utils.class);
+	private static final Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static boolean isValidVaadinSession() {
 		if (VaadinSession.getCurrent().getAttribute("CAMPIONATO") == null || VaadinSession.getCurrent().getAttribute("ATTORE") == null) {
@@ -61,8 +60,8 @@ public class Utils{
 	}
 
 	public static String replaceString(String sText, String Old, String New) {
-		String x1 = new String();
-		String x2 = new String();
+		String x1;
+		String x2;
 
 		int lunOld = Old.length();
 
@@ -76,57 +75,6 @@ public class Utils{
 		}
 
 		return sText;
-	}
-
-	/**
-	 * @param filePath
-	 * @return
-	 */
-	public static Properties readFileProperties(String filePath)
-			throws IOException {
-		Properties props = new Properties();
-		BufferedInputStream bufferedInputStream = null;
-		bufferedInputStream = new BufferedInputStream(new FileInputStream(filePath));
-		props.load(bufferedInputStream);
-		bufferedInputStream.close();
-		return props;
-	}
-
-	public static void writeConfigFile(String filePath, String header)
-			throws IOException {
-
-		Properties props = new Properties();
-		OutputStream outputStream = new FileOutputStream(filePath);
-		props.store(outputStream, header);
-	}
-
-	/**
-	 * @param sTime1
-	 * @return
-	 */
-	public static long timeInSecond(String sTime1) {
-
-		int iHour = 0;
-		int iMin = 0;
-		int iSec = 0;
-		// int frm = 0;
-		try {
-			iHour = Integer.parseInt(sTime1.substring(0, 2)) + 1;
-			iMin = Integer.parseInt(sTime1.substring(3, 5));
-			if (sTime1.length() >= 8) {
-				iSec = Integer.parseInt(sTime1.substring(6, 8));
-			}
-		} catch (NumberFormatException exNum) {
-			log.error(exNum.getMessage());
-			return -1;
-		}
-		Calendar cldTime1 = Calendar.getInstance();
-		cldTime1.clear();
-		cldTime1.set(Calendar.HOUR, iHour);
-		cldTime1.set(Calendar.MINUTE, iMin);
-		cldTime1.set(Calendar.SECOND, iSec);
-
-		return cldTime1.getTimeInMillis() / 1000;
 	}
 
 	public static String formatDate(Date d, String newFormat) {
@@ -168,13 +116,13 @@ public class Utils{
 		int size = 1024;
 
 		OutputStream outStream = null;
-		URLConnection uCon = null;
+		URLConnection uCon;
 
 		InputStream is = null;
 		try {
-			URL url = null;
+			URL url;
 			byte[] buf;
-			int byteRead = 0;
+			int byteRead;
 			url = new URL(fAddress);
 
 			uCon = url.openConnection();
@@ -208,7 +156,7 @@ public class Utils{
 			File initialFile = new File(filePathInput);
 			is = new FileInputStream(initialFile);
 
-			resizeImage(is, filePathOutput, 40, 60);
+			resizeImage(is, filePathOutput);
 			return true;
 
 		} catch (Exception e) {
@@ -221,32 +169,28 @@ public class Utils{
 		}
 	}
 
-	private static InputStream resizeImage(InputStream uploadedInputStream,
-			String fileName, int width, int height) {
+	private static void resizeImage(InputStream uploadedInputStream,
+									String fileName) {
 
 		try {
 			BufferedImage image = ImageIO.read(uploadedInputStream);
-			java.awt.Image originalImage = image.getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT);
+			java.awt.Image originalImage = image.getScaledInstance(40, 60, java.awt.Image.SCALE_DEFAULT);
 
 			int type = ((image.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : image.getType());
-			BufferedImage resizedImage = new BufferedImage(width,height,type);
+			BufferedImage resizedImage = new BufferedImage(40, 60,type);
 
 			Graphics2D g2d = resizedImage.createGraphics();
-			g2d.drawImage(originalImage, 0, 0, width, height, null);
+			g2d.drawImage(originalImage, 0, 0, 40, 60, null);
 			g2d.dispose();
 			g2d.setComposite(AlphaComposite.Src);
 			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(resizedImage, "png", new File(fileName));
 
-			ImageIO.write(resizedImage, "png", new File(fileName));
-
-			return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 		} catch (IOException e) {
 			log.error(e.getMessage());
-			return uploadedInputStream;
 		}
 	}
 
@@ -276,7 +220,7 @@ public class Utils{
 	public static String buildInfoGiornata(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
 		}
 		return "ND";
 	}
@@ -284,7 +228,7 @@ public class Utils{
 	public static String buildInfoGiornataMobile(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getCodiceGiornata() + "° Serie A ";
+			return giornataInfo.getCodiceGiornata() + "° Serie A ";
 		}
 		return "ND";
 	}
@@ -292,7 +236,7 @@ public class Utils{
 	public static String buildInfoGiornataHtml(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - " + giornataInfo.getCodiceGiornata() + " Serie A) ";
+			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - " + giornataInfo.getCodiceGiornata() + " Serie A) ";
 		}
 		return "ND";
 	}
@@ -301,7 +245,7 @@ public class Utils{
 			FcCampionato campionato) {
 
 		if (giornataInfo != null) {
-			return "" + giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
+			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
 		}
 		return "ND";
 	}
@@ -370,11 +314,11 @@ public class Utils{
 				votoGiocatore = votoGiocatore + Costants.DIVISORE_100;
 			}
 		}
-		log.debug("bRoundVoto          -----> " + bRoundVoto);
-		log.debug("VOTO_GIOCATORE      -----> " + votoGiocatore);
+        log.debug("bRoundVoto          -----> {}", bRoundVoto);
+        log.debug("VOTO_GIOCATORE      -----> {}", votoGiocatore);
 		if (bRoundVoto) {
 			int roundVotoGiocatore = Utils.arrotonda(votoGiocatore);
-			log.debug("roundVotoGiocatore      -----> " + roundVotoGiocatore);
+            log.debug("roundVotoGiocatore      -----> {}", roundVotoGiocatore);
 			return roundVotoGiocatore;
 		} else {
 			return votoGiocatore;
@@ -403,20 +347,7 @@ public class Utils{
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime currentDate = LocalDateTime.now();
 
-		LocalDateTime dataAnticipo = null;
-		LocalDateTime dataAnticipo1 = giornataInfo.getDataAnticipo1();
-		LocalDateTime dataAnticipo2 = giornataInfo.getDataAnticipo2();
-		if (dataAnticipo1 != null && dataAnticipo2 != null) {
-			if (now.isBefore(dataAnticipo1)) {
-				dataAnticipo = dataAnticipo1;
-			} else if (now.isAfter(dataAnticipo1) && now.getDayOfWeek() == dataAnticipo2.getDayOfWeek()) {
-				dataAnticipo = dataAnticipo2;
-			} else {
-				dataAnticipo = dataAnticipo1;
-			}
-		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
-			dataAnticipo = dataAnticipo2;
-		}
+		LocalDateTime dataAnticipo = getLocalDateTime(giornataInfo, now);
 		LocalDateTime dataGiornata = giornataInfo.getDataGiornata();
 		LocalDateTime dataPosticipo = giornataInfo.getDataPosticipo();
 
@@ -425,16 +356,16 @@ public class Utils{
 
 			if (dataAnticipo != null) {
 				currentDate = dataAnticipo;
-				log.info("now.getDayOfWeek() : " + now.getDayOfWeek());
-				log.info("dataGiornata.getDayOfWeek() : " + dataGiornata.getDayOfWeek());
+                log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
+                log.info("dataGiornata.getDayOfWeek() : {}", dataGiornata.getDayOfWeek());
 				if (now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
 					currentDate = dataGiornata;
 				}
 			}
 
 			if (dataPosticipo != null) {
-				log.info("now.getDayOfWeek() : " + now.getDayOfWeek());
-				log.info("dataPosticipo.getDayOfWeek() : " + dataPosticipo.getDayOfWeek());
+                log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
+                log.info("dataPosticipo.getDayOfWeek() : {}", dataPosticipo.getDayOfWeek());
 				if (now.getDayOfWeek() == dataPosticipo.getDayOfWeek()) {
 					currentDate = dataGiornata;
 				}
@@ -449,20 +380,34 @@ public class Utils{
 		return currentDate.format(formatter);
 	}
 
+	private static @Nullable LocalDateTime getLocalDateTime(FcGiornataInfo giornataInfo, LocalDateTime now) {
+		LocalDateTime dataAnticipo = null;
+		LocalDateTime dataAnticipo1 = giornataInfo.getDataAnticipo1();
+		LocalDateTime dataAnticipo2 = giornataInfo.getDataAnticipo2();
+		if (dataAnticipo1 != null && dataAnticipo2 != null) {
+			if (now.isBefore(dataAnticipo1)) {
+				dataAnticipo = dataAnticipo1;
+			} else if (now.isAfter(dataAnticipo1) && now.getDayOfWeek() == dataAnticipo2.getDayOfWeek()) {
+				dataAnticipo = dataAnticipo2;
+			} else {
+				dataAnticipo = dataAnticipo1;
+			}
+		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
+			dataAnticipo = dataAnticipo2;
+		}
+		return dataAnticipo;
+	}
+
 	public static long getMillisDiff(String nextDate, String fusoOrario)
 			throws Exception {
 
 		Calendar c = Calendar.getInstance();
 		DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		String currentDataGiornata = fmt.format(c.getTime());
-		// String strDate1 = "2018/12/17 19:00:00";
-		// String strDate2 = "2018/12/17 20:00:00";
-		String strDate1 = currentDataGiornata;
-		String strDate2 = nextDate;
+        String strDate1 = fmt.format(c.getTime());
 
-		fmt.setLenient(false);
+        fmt.setLenient(false);
 		Date d1 = fmt.parse(strDate1);
-		Date d2 = fmt.parse(strDate2);
+		Date d2 = fmt.parse(nextDate);
 
 		// Calculates the difference in milliseconds.
 		long millisDiff = d2.getTime() - d1.getTime();
@@ -471,10 +416,10 @@ public class Utils{
 		int hours = (int) (millisDiff / 3600000 % 24);
 		int days = (int) (millisDiff / 86400000);
 
-		log.info(days + " days, ");
-		log.info(hours + " hours, ");
-		log.info(minutes + " minutes, ");
-		log.info(seconds + " seconds");
+        log.info("{} days, ", days);
+        log.info("{} hours, ", hours);
+        log.info("{} minutes, ", minutes);
+        log.info("{} seconds", seconds);
 
 		long diffFuso = Long.parseLong(fusoOrario) * 3600000;
 		millisDiff = millisDiff - diffFuso;
@@ -487,36 +432,17 @@ public class Utils{
 	}
 
 	public static Image getImage(String nomeImg, InputStream inputStream) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
-			return inputStream;
-		});
+		StreamResource resource = new StreamResource(nomeImg,() -> inputStream);
 		return new Image(resource,"");
 	}
 
-	// public static StreamResource getStreamResource(String nomeImg,
-	// java.sql.Blob
-	// blob) {
-	//
-	// StreamResource resource = new StreamResource(nomeImg,() -> {
-	// InputStream inputStream = null;
-	// try {
-	// inputStream = blob.getBinaryStream();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// return inputStream;
-	// });
-	// return resource;
-	// }
-
-	public static Image buildImage(String nomeImg, Resource r) {
+    public static Image buildImage(String nomeImg, Resource r) {
 		StreamResource resource = new StreamResource(nomeImg,() -> {
 			InputStream inputStream = null;
 			try {
 				inputStream = r.getInputStream();
 			} catch (IOException e) {
 				log.error(e.getMessage());
-				e.printStackTrace();
 			}
 			return inputStream;
 		});
@@ -554,36 +480,5 @@ public class Utils{
 		return new StreamResource(inputStreamName,() -> new ByteArrayInputStream(bytes));
 
 	}
-
-	// public static Image getImage(String nomeImg, InputStream inputStream) {
-	// return buildImage(inputStream, nomeImg, Costants.TYPE_IMAGE_PNG);
-	// }
-	//
-	// public static Image buildImage(InputStream inputStream, String filename,
-	// String contentType) {
-	// InputStreamDownloadHandler inputStreamDownloadHandler = DownloadHandler
-	// .fromInputStream(event -> new DownloadResponse(inputStream, filename,
-	// contentType, -1));
-	// return new Image(inputStreamDownloadHandler, "");
-	// }
-
-	// public static Image buildImageFromFile(String classPath,String filename)
-	// {
-	// FileDownloadHandler fileDownloadHandler;
-	// try {
-	// fileDownloadHandler =
-	// DownloadHandler.forFile(getFile(classPath,filename));
-	// Image img = new Image(fileDownloadHandler,"");
-	// return img;
-	// } catch (FileNotFoundException e) {
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
-	//
-	// public static File getFile(String classPath,String filename)
-	// throws FileNotFoundException {
-	// return ResourceUtils.getFile(classPath + filename);
-	// }
 
 }

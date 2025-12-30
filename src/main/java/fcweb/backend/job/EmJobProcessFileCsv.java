@@ -41,12 +41,12 @@ public class EmJobProcessFileCsv{
 		}
 
 		File input = new File(path_csv + fileName + ".html");
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 
-		String data = "";
+		StringBuilder data = new StringBuilder();
 		// Load ArrayList with table row strings
 		for (Element tableRow : tableRows) {
 
@@ -66,9 +66,9 @@ public class EmJobProcessFileCsv{
 							}
 						}
 						// LOG.debug(rowData);
-						data += rowData + ";";
+						data.append(rowData).append(";");
 					}
-					data += "\n";
+					data.append("\n");
 				}
 			}
 		}
@@ -82,7 +82,7 @@ public class EmJobProcessFileCsv{
 				f.delete();
 			}
 			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
-			byte[] strToBytes = data.getBytes();
+			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
 		} catch (Exception e) {
@@ -105,13 +105,13 @@ public class EmJobProcessFileCsv{
 		}
 
 		File input = new File(path_csv + fileName + ".html");
-		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 
 		HashMap<String, String> mapSQ = new HashMap<>();
-		String data = "";
+		StringBuilder data = new StringBuilder();
 		// Load ArrayList with table row strings
 		for (Element tableRow : tableRows) {
 
@@ -128,9 +128,10 @@ public class EmJobProcessFileCsv{
 					map.put("GDV", "0");
 
 					int c = 0;
-					String rowValue = "";
+					StringBuilder rowValue = new StringBuilder();
 					for (Element tdRow : tdRows) {
-						String rowData = tdRow.text() == null ? "" : tdRow.text();
+                        tdRow.text();
+                        String rowData = tdRow.text();
 						// LOG.debug(rowData);
 						// R;SQ_GIOCATORE;VM;GF;GS;AU;AS;VR;GF;GS;AU;AS;VT;GF;GS;AU;AS;SB;PA;TR;SU;VM;VR;VT;M2;M3;
 						if (c == 0) {
@@ -247,15 +248,14 @@ public class EmJobProcessFileCsv{
 							map.put("M3", rowData);
 						}
 						c++;
-						rowValue += rowData + ";";
+						rowValue.append(rowData).append(";");
 					}
 
 					if (rowValue.indexOf("M2;M3;") != -1) {
 						String squadra = map.get("SQ_GIOCATORE");
 						mapSQ.put("SQUADRA", squadra);
 
-						rowValue = "";
-					} else {
+                    } else {
 						// R;SQ_GIOCATORE;VM;GF;GS;AU;AS;VR;GF;GS;AU;AS;VT;GF;GS;AU;AS;SB;PA;TR;SU;VM;VR;VT;M2;M3;
 
 						String ruolo = map.get("R");
@@ -263,22 +263,22 @@ public class EmJobProcessFileCsv{
 							continue;
 						}
 
-						data += map.get("R") + ";";
-						data += map.get("SQ_GIOCATORE") + ";";
-						data += mapSQ.get("SQUADRA") + ";";
-						data += map.get("VM") + ";";
-						data += map.get("GF") + ";";
-						data += map.get("GS") + ";";
-						data += map.get("GAU") + ";";
-						data += map.get("GAS") + ";";
-						data += map.get("AMM") + ";";
-						data += map.get("ESP") + ";";
-						data += map.get("SB") + ";";
-						data += map.get("PA") + ";";
-						data += map.get("TR") + ";";
-						data += map.get("SU") + ";";
-						data += map.get("GDV") + ";";
-						data += "\n";
+						data.append(map.get("R")).append(";");
+						data.append(map.get("SQ_GIOCATORE")).append(";");
+						data.append(mapSQ.get("SQUADRA")).append(";");
+						data.append(map.get("VM")).append(";");
+						data.append(map.get("GF")).append(";");
+						data.append(map.get("GS")).append(";");
+						data.append(map.get("GAU")).append(";");
+						data.append(map.get("GAS")).append(";");
+						data.append(map.get("AMM")).append(";");
+						data.append(map.get("ESP")).append(";");
+						data.append(map.get("SB")).append(";");
+						data.append(map.get("PA")).append(";");
+						data.append(map.get("TR")).append(";");
+						data.append(map.get("SU")).append(";");
+						data.append(map.get("GDV")).append(";");
+						data.append("\n");
 					}
 				}
 			}
@@ -293,7 +293,7 @@ public class EmJobProcessFileCsv{
 				f.delete();
 			}
 			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
-			byte[] strToBytes = data.getBytes();
+			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
 		} catch (Exception e) {
@@ -304,167 +304,6 @@ public class EmJobProcessFileCsv{
 			}
 		}
 
-	}
-
-	public void downloadCsvOLD(String http_url, String path_csv,
-			String fileName, int giornata) throws Exception {
-		// String fileName = "voti" + giornata + ".html";
-		try {
-			LOG.debug(http_url);
-			fileDownload(http_url, fileName + ".html", path_csv);
-		} catch (Exception ex) {
-			LOG.error(ex.getMessage());
-			// File f = new File(path_csv + fileName);
-			// if (f.exists()) {
-			// f.deleteOnExit();
-			// }
-		}
-
-		String charsetName = "ISO-8859-1";
-		charsetName = "UTF-8";
-		File input = new File(path_csv + fileName + ".html");
-		Document doc = Jsoup.parse(input, charsetName, "http://example.com/");
-
-		// select all <tr> or Table Row Elements
-		Elements tableRows = doc.select("table");
-
-		String data = "ID_GIORNATA;SQUADRA;COGN_GIOCATORE;ID_GIOCATORE;VOTO_GIOCATORE;GOAL_REALIZZATO;GOAL_SUBITO;AMMONIZIONE;ESPULSIONE;RIGORE_SEGNATO;RIGORE_FALLITO;RIGORE_PARATO;AUTORETE;ASSIST;GDV;GDP";
-		data += "\n";
-
-		// Load ArrayList with table row strings
-		for (Element tableRow : tableRows) {
-
-			Elements trRows = tableRow.select("tr");
-			int conta = 0;
-			for (Element trRow : trRows) {
-				conta++;
-				if (conta > 4) {
-					Elements tdRows = trRow.select("td");
-					if (tdRows.size() > 10) {
-
-						data += giornata + ";";
-						data += tdRows.get(4).text().trim() + ";";
-						data += tdRows.get(1).text().trim() + ";";
-						data += giornata + ";";
-						String voto = tdRows.get(6).text().trim();
-						voto = StringUtils.replace(voto, ",", ".");
-						data += voto + ";";
-
-						// GOAL_REALIZZATO
-						try {
-							data += Integer.parseInt(tdRows.get(7).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						// GOAL_SUBITO
-						try {
-							data += Integer.parseInt(tdRows.get(8).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						try {
-							data += Integer.parseInt(tdRows.get(23).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						try {
-							data += Integer.parseInt(tdRows.get(24).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-						// RIGORE_SEGNATO;;
-						try {
-							data += Integer.parseInt(tdRows.get(29).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-						// RIGORE_FALLITO
-						try {
-							data += Integer.parseInt(tdRows.get(27).text()) + ";";
-
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-						// RIGORE_PARATO
-						try {
-							data += Integer.parseInt(tdRows.get(28).text()) + ";";
-
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						try {
-							data += Integer.parseInt(tdRows.get(9).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						try {
-							data += Integer.parseInt(tdRows.get(10).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						try {
-							data += Integer.parseInt(tdRows.get(25).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						try {
-							data += Integer.parseInt(tdRows.get(26).text()) + ";";
-						} catch (Exception e) {
-							data += 0 + ";";
-						}
-
-						data += "\n";
-					}
-				}
-			}
-		}
-
-		FileOutputStream outputStream = null;
-		try {
-
-			// DELETE
-			File f = new File(path_csv + fileName + ".csv");
-			if (f.exists()) {
-				f.delete();
-			}
-			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
-			byte[] strToBytes = data.getBytes();
-			outputStream.write(strToBytes);
-
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
-		}
-
-		/*
-		 * BufferedWriter output = null; try { // Create temp file. File temp =
-		 * File.createTempFile("temp_" + fileName, ".csv"); // Delete temp file
-		 * when program exits. // temp.deleteOnExit();
-		 *
-		 * // Write to temp file output = new BufferedWriter(new
-		 * FileWriter(temp)); output.write(data); output.close();
-		 *
-		 * // DELETE File f = new File(path_csv + fileName + ".csv"); if
-		 * (f.exists()) { f.delete(); }
-		 *
-		 * File dest = new File(path_csv + fileName + ".csv"); // Move file to
-		 * new directory boolean success = temp.renameTo(dest); if (!success) {
-		 * // File was not successfully moved
-		 * LOG.error("File was not successfully moved " + success); }
-		 *
-		 * } catch (IOException e) { LOG.error(e.getMessage()); } finally { if
-		 * (output != null) { output.close(); } }
-		 */
 	}
 
 	public void fileDownload(String fAddress, String localFileName,
@@ -495,11 +334,11 @@ public class EmJobProcessFileCsv{
 			SSLContext sc = SSLContext.getInstance("SSL");
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 
 		OutputStream outStream = null;
-		URLConnection uCon = null;
+		URLConnection uCon;
 		InputStream is = null;
 		try {
 			URL Url;
@@ -518,7 +357,7 @@ public class EmJobProcessFileCsv{
 			LOG.info("Downloaded Successfully.");
 			LOG.debug("File name:\"" + localFileName + "\"\nNo ofbytes :" + ByteWritten);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		} finally {
 			if (is != null) {
 				is.close();

@@ -17,9 +17,6 @@ public interface MercatoRepository extends CrudRepository<FcMercatoDett, Long>{
 
 	Iterable<FcMercatoDett> findAll(Sort sort);
 
-	List<FcMercatoDett> findByFcAttoreOrderByFcGiornataInfoDesc(
-            FcAttore attore);
-
 	List<FcMercatoDett> findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(
             FcGiornataInfo from, FcGiornataInfo to, FcAttore attore);
 

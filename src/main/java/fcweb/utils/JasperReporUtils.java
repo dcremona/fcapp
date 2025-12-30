@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
@@ -19,8 +18,6 @@ public class JasperReporUtils{
 		byte[] b = null;
 		try {
 			b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
-		} catch (JRException ex) {
-			ex.printStackTrace();
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
@@ -35,8 +32,6 @@ public class JasperReporUtils{
 		byte[] b = null;
 		try {
 			b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
-		} catch (JRException ex) {
-			ex.printStackTrace();
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
@@ -51,8 +46,6 @@ public class JasperReporUtils{
 		byte[] b = null;
 		try {
 			b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
-		} catch (JRException ex) {
-			ex.printStackTrace();
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
@@ -66,8 +59,6 @@ public class JasperReporUtils{
 
 		try {
 			JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, new JRBeanCollectionDataSource(coll));
-		} catch (JRException ex) {
-			ex.printStackTrace();
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
@@ -79,8 +70,6 @@ public class JasperReporUtils{
 
 		try {
 			JasperRunManager.runReportToPdfStream(inputStream, outputStream, hm, conn);
-		} catch (JRException ex) {
-			ex.printStackTrace();
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}

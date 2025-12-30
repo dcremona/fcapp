@@ -975,7 +975,7 @@ public class JobProcessGiornata{
 
 	}
 
-	public void checkSeiPolitico(Integer giornata) throws Exception {
+	public void checkSeiPolitico(Integer giornata) {
 
 		log.info("START checkSeiPolitico");
 
@@ -1028,7 +1028,7 @@ public class JobProcessGiornata{
 	}
 
 	public void aggiornaVotiGiocatori(int giornata, int forzaVotoGiocatore,
-			boolean bRoundVoto) throws Exception {
+			boolean bRoundVoto) {
 
 		log.info("START aggiornaVotiGiocatori");
 
@@ -1055,8 +1055,7 @@ public class JobProcessGiornata{
 
 	}
 
-	public void aggiornaTotRosa(String idCampionato, int giornata)
-			throws Exception {
+	public void aggiornaTotRosa(String idCampionato, int giornata) {
 
 		log.info("START aggiornaTotRosa");
 
@@ -1121,8 +1120,7 @@ public class JobProcessGiornata{
 
 	}
 
-	public void aggiornaScore(int giornata, String colPt, String colScore)
-			throws Exception {
+	public void aggiornaScore(int giornata, String colPt, String colScore) {
 
 		log.info("START aggiornaScore");
 
@@ -1569,7 +1567,7 @@ public class JobProcessGiornata{
 	}
 
 	public void algoritmo(Integer giornata, FcCampionato campionato,
-			int forzaVotoGiocatore, boolean bRoundVoto) throws Exception {
+			int forzaVotoGiocatore, boolean bRoundVoto) {
 
 		log.info("START algoritmo");
 

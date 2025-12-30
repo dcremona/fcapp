@@ -16,11 +16,6 @@ public class Costants{
 	public static final String BORDER = "border";
 	public static final String BORDER_COLOR = "1px solid #9E9E9E";
 
-	public static final String BORDER_COLOR_1_P = "1px solid #FFA500";
-	public static final String BORDER_COLOR_1_D = "1px solid #008000";
-	public static final String BORDER_COLOR_1_C = "1px solid #56A5EC";
-	public static final String BORDER_COLOR_1_A = "1px solid #FF0000";
-
 	public static final String BORDER_COLOR_2_P = "2px solid #FFA500";
 	public static final String BORDER_COLOR_2_D = "2px solid #008000";
 	public static final String BORDER_COLOR_2_C = "2px solid #56A5EC";
@@ -35,9 +30,6 @@ public class Costants{
 	public static final String COLOR_D = "#008000";
 	public static final String COLOR_C = "#56A5EC";
 	public static final String COLOR_A = "#FF0000";
-
-	// bianco
-	public static final String WHITE = "#FFFFFF";
 
 	// giallo
 	public static final String YELLOW = "#ffff99";
@@ -94,9 +86,6 @@ public class Costants{
 	public static final String CLASSPATH_IMAGES = "classpath:/images/";
 	public static final String CLASSPATH_IMG_SQUADRE = "classpath:/img/squadre/";
 
-	public static final String TYPE_IMAGE_PNG = "image/png";
-	public static final String TYPE_IMAGE_JPG = "image/jpg";
-
 	public static final String PUNTI = "PUNTI";
 	public static final String TOTALE_PUNTI = "TOTALE_PUNTI";
 	public static final String PT_TVST = "PT_TVST";
@@ -138,21 +127,8 @@ public class Costants{
 	public static final String C = "C";
 	public static final String A = "A";
 
-	public static final String WIDTH_55 = "55px";
-	public static final String HEIGHT_85 = "85px";
-
-	public static final String WIDTH_60 = "60px";
-	public static final String HEIGHT_95 = "95px";
-
-	public static final String WIDTH_85 = "85px";
-	public static final String HEIGHT_120 = "120px";
-
-	public static final String WIDTH_50 = "50px";
-	public static final String WIDTH_90 = "90px";
 	public static final String WIDTH_100 = "100px";
 	public static final String WIDTH_140 = "140px";
-	public static final String WIDTH_150 = "150px";
-	public static final String WIDTH_190 = "190px";
 	public static final String WIDTH_205 = "205px";
 	public static final String WIDTH_240 = "240px";
 	public static final String WIDTH_300 = "300px";

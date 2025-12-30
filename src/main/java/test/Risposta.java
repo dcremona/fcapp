@@ -1,5 +1,6 @@
 package test;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -7,7 +8,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 //Here is a bean
 public class Risposta implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	private int id;
 	private String descrizione;

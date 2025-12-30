@@ -1,11 +1,9 @@
 package test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -69,7 +66,7 @@ public class ExcelReader{
 	public static final String SAMPLE_XLSX_FILE_PATH_FINAL_OUTPUT = "c:\\temp\\FINAL_OUTPUT.xlsx";
 
 	public static void main(String[] args)
-			throws Exception, InvalidFormatException {
+			throws Exception {
 
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT1,SAMPLE_XLSX_FILE_PATH_OUTPUT1);
 		// processSingleFileXls(SAMPLE_XLSX_FILE_PATH_INPUT2,SAMPLE_XLSX_FILE_PATH_OUTPUT2);
@@ -98,21 +95,21 @@ public class ExcelReader{
 
 		for (String f : filesOutput) {
 
-			LOGGER.info("file ==> " + f);
+            LOGGER.info("file ==> {}", f);
 			// Creating a Workbook from an Excel file (.xls or .xlsx)
 			Workbook workbook = WorkbookFactory.create(new File(f));
 
 			int totale = 0;
 
 			// Retrieving the number of sheets in the Workbook
-			LOGGER.info("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+            LOGGER.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
 
 			// 1. You can obtain a sheetIterator and iterate over it
 			Iterator<Sheet> sheetIterator = workbook.sheetIterator();
 			LOGGER.info("Retrieving Sheets using Iterator");
 			while (sheetIterator.hasNext()) {
 				Sheet sheet = sheetIterator.next();
-				LOGGER.info("=> " + sheet.getSheetName());
+                LOGGER.info("=> {}", sheet.getSheetName());
 			}
 
 			// Getting the Sheet at index zero
@@ -135,7 +132,7 @@ public class ExcelReader{
 
 					String cellValue = dataFormatter.formatCellValue(cell);
 					CellStyle cellStyle = cell.getCellStyle();
-					LOGGER.info("cellStyle " + cellStyle);
+                    LOGGER.info("cellStyle {}", cellStyle);
 					if (cell.getColumnIndex() == 0) {
 						a = cellValue;
 					} else if (cell.getColumnIndex() == 1) {
@@ -171,7 +168,8 @@ public class ExcelReader{
 						risposta.setDescrizione(b);
 						risposta.setTipoRisposta(a);
 
-						domanda.setRisposta(risposta);
+                        assert domanda != null;
+                        domanda.setRisposta(risposta);
 					} else {
 						LOGGER.info("NO RISPOSTA ");
 					}
@@ -179,8 +177,8 @@ public class ExcelReader{
 				}
 			}
 
-			LOGGER.info("TOTALE NUMERO DOMANDE " + totale);
-			LOGGER.info("TOTALE COMPLESSIVO DOMANDE " + conta);
+            LOGGER.info("TOTALE NUMERO DOMANDE {}", totale);
+            LOGGER.info("TOTALE COMPLESSIVO DOMANDE {}", conta);
 
 			// Closing the workbook
 			workbook.close();
@@ -204,7 +202,7 @@ public class ExcelReader{
 
 		int rowCount = 0;
 		List<Domanda> domandeByDesc = new ArrayList<>(domande.values());
-		Collections.sort(domandeByDesc, Comparator.comparing(Domanda::getDescrizione));
+		domandeByDesc.sort(Comparator.comparing(Domanda::getDescrizione));
 		for (Domanda d : domandeByDesc) {
 
 			CellStyle newStyleD = sheet2.getWorkbook().createCellStyle();
@@ -212,7 +210,7 @@ public class ExcelReader{
 
 			Risposta r = d.getRisposta();
 			if (r == null) {
-				LOGGER.info("DOMANDA SENZA RISPOSTA --> RIGA=" + d.getRigaXlx() + " DOMANDA=" + d.getDescrizioneOrig());
+                LOGGER.info("DOMANDA SENZA RISPOSTA --> RIGA={} DOMANDA={}", d.getRigaXlx(), d.getDescrizioneOrig());
 				continue;
 			}
 
@@ -256,14 +254,9 @@ public class ExcelReader{
 				workbook2.write(outputStream);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage());
-				e.printStackTrace();
 			}
-		} catch (FileNotFoundException e1) {
-			LOGGER.error(e1.getMessage());
-			e1.printStackTrace();
 		} catch (IOException e1) {
 			LOGGER.error(e1.getMessage());
-			e1.printStackTrace();
 		}
 		// Closing the workbook
 		workbook2.close();
@@ -295,7 +288,7 @@ public class ExcelReader{
 		Workbook workbook = WorkbookFactory.create(new File(input));
 
 		// Retrieving the number of sheets in the Workbook
-		LOGGER.info("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+        LOGGER.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
 
 		/*
 		 * =============================================================
@@ -308,20 +301,18 @@ public class ExcelReader{
 		LOGGER.info("Retrieving Sheets using Iterator");
 		while (sheetIterator.hasNext()) {
 			Sheet sheet = sheetIterator.next();
-			LOGGER.info("=> " + sheet.getSheetName());
+            LOGGER.info("=> {}", sheet.getSheetName());
 		}
 
 		// 2. Or you can use a for-each loop
 		LOGGER.info("Retrieving Sheets using for-each loop");
 		for (Sheet sheet : workbook) {
-			LOGGER.info("=> " + sheet.getSheetName());
+            LOGGER.info("=> {}", sheet.getSheetName());
 		}
 
 		// 3. Or you can use a Java 8 forEach with lambda
 		LOGGER.info("Retrieving Sheets using Java 8 forEach with lambda");
-		workbook.forEach(sheet -> {
-			LOGGER.info("=> " + sheet.getSheetName());
-		});
+		workbook.forEach(sheet -> LOGGER.info("=> {}", sheet.getSheetName()));
 
 		/*
 		 * ==================================================================
@@ -340,22 +331,8 @@ public class ExcelReader{
 		// // them
 		// LOGGER.info("\n\nIterating over Rows and Columns using
 		// Iterator\n");
-		// Iterator<Row> rowIterator = sheet.rowIterator();
-		// while (rowIterator.hasNext()) {
-		// Row row = rowIterator.next();
-		//
-		// // Now let's iterate over the columns of the current row
-		// Iterator<Cell> cellIterator = row.cellIterator();
-		//
-		// while (cellIterator.hasNext()) {
-		// Cell cell = cellIterator.next();
-		// String cellValue = dataFormatter.formatCellValue(cell);
-		// System.out.print(cellValue + "\t");
-		// }
-		// LOGGER.info();
-		// }
 
-		Map<String, Domanda> domande = new HashMap<>();
+        Map<String, Domanda> domande = new HashMap<>();
 		int conta = 1;
 		// 2. Or you can use a for-each loop to iterate over the rows and
 		// columns
@@ -393,16 +370,13 @@ public class ExcelReader{
 				c = d;
 			}
 			if (StringUtils.isEmpty(a) && StringUtils.isEmpty(b) && StringUtils.isEmpty(c)) {
-				LOGGER.info("SCARTO RIGA VUOTA " + rigaXlx);
+                LOGGER.info("SCARTO RIGA VUOTA {}", rigaXlx);
 				continue;
 			}
 
 			String risp = c;
-			if (COLONNA_RISPOSTA.equals("D")) {
-				risp = d;
-			}
 
-			if ("A".equals(a.toUpperCase().trim()) || "B".equals(a.toUpperCase().trim()) || "C".equals(a.toUpperCase().trim()) || "D".equals(a.toUpperCase().trim())) {
+            if ("A".equals(a.toUpperCase().trim()) || "B".equals(a.toUpperCase().trim()) || "C".equals(a.toUpperCase().trim()) || "D".equals(a.toUpperCase().trim())) {
 				// RISPOSTA
 				if ("X".equals(risp.toUpperCase().trim())) {
 					Risposta risposta = new Risposta();
@@ -411,17 +385,19 @@ public class ExcelReader{
 					risposta.setTipoRisposta(a);
 					risposta.setCellStyle(cellStyleB);
 
-					domanda.setRisposta(risposta);
+                    assert domanda != null;
+                    domanda.setRisposta(risposta);
 				} else {
 					if (StringUtils.isNotEmpty(risp)) {
-						LOGGER.info("RECUPERO risposta valore = " + risp);
+                        LOGGER.info("RECUPERO risposta valore = {}", risp);
 						Risposta risposta = new Risposta();
 						risposta.setId(1);
 						risposta.setDescrizione(StringUtils.capitalize(b.trim()));
 						risposta.setTipoRisposta(a);
 						risposta.setCellStyle(cellStyleB);
 
-						domanda.setRisposta(risposta);
+                        assert domanda != null;
+                        domanda.setRisposta(risposta);
 					}
 				}
 
@@ -431,7 +407,7 @@ public class ExcelReader{
 					// DOMANDA
 					String descOrig = a;
 					int idx = a.indexOf(" ");
-					a = a.substring(idx + 1, a.length());
+					a = a.substring(idx + 1);
 
 					a = StringUtils.capitalize(a.trim());
 
@@ -450,7 +426,7 @@ public class ExcelReader{
 			}
 		}
 
-		LOGGER.info("TOTALE NUMERO DOMANDE " + conta);
+        LOGGER.info("TOTALE NUMERO DOMANDE {}", conta);
 
 		// Closing the workbook
 		workbook.close();

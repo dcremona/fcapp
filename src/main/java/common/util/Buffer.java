@@ -171,7 +171,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 *            'clonare' dal Buffer attuale.
 	 * @return Un'istanza distinta del Buffer attuale.
 	 * @see #getClone()
-	 * @see com.siva.util.SivaToolkit
      */
 	public Buffer getClone(int[] aiRecord) {
 		if (iRecordCount == 0) {

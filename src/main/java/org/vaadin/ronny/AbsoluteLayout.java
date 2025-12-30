@@ -7,6 +7,8 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.orderedlayout.ThemableLayout;
 import com.vaadin.flow.dom.Style;
 
+import java.io.Serial;
+
 /**
  * AbsoluteLayout is a component container which allows to put the subcomponents
  * at specific coordinates and thus have absolute control over the layout.
@@ -21,16 +23,8 @@ public class AbsoluteLayout extends Component
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Creates a new instance of the AbsoluteLayout which uses 100% of the
-	 * height and width available to it.
-	 */
-	public AbsoluteLayout() {
-		setSizeFull();
-		getElement().setAttribute("position", "relative");
-	}
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	/**
 	 * Creates a new instance of the AbsoluteLayout with the given width and
@@ -98,29 +92,16 @@ public class AbsoluteLayout extends Component
 	 *            new distance from the left
 	 */
 	public void moveTo(Component c, int left, int top) {
-		if (!getChildren().anyMatch(comp -> comp.equals(c))) {
+		if (getChildren().noneMatch(comp -> comp.equals(c))) {
 			throw new IllegalArgumentException("Component is not a child of this layout.");
 		}
 		Style style = c.getElement().getStyle();
 		style.set("position", "absolute");
-		style.set("left", "" + left + "px");
-		style.set("top", "" + top + "px");
+		style.set("left", left + "px");
+		style.set("top", top + "px");
 	}
 
-	// /**
-	// * Adds a given text as {@link Text} at the top left position (0,0) of the
-	// layout.
-	// * It is recommended to use {@link #add(Component, int, int)} with an
-	// instance
-	// of {@link Text} (or similar) instead
-	// * to control the position the component will be added.
-	// */
-	// @Override
-	// public void add(String text) {
-	// HasOrderedComponents.super.add(text);
-	// }
-
-	/**
+    /**
 	 * Replaces a component and moves the new component to the replacee's old
 	 * position.
 	 */
