@@ -297,7 +297,7 @@ public class EmJobProcessGiornata{
                     c++;
                     // String M2 = record.get(20);
                     c++;
-                    String M3 = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+                    //String M3 = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
                     c++;
                     String ammonizione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
                     c++;
@@ -312,15 +312,6 @@ public class EmJobProcessGiornata{
                     String rigore_parato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGP
                     c++;
                     String rigore_segnato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RT
-                    c++;
-                    c++;
-                    // String T = record.get(30);
-                    c++;
-                    // String VG = record.get(31);
-                    c++;
-                    // String VC = record.get(32);
-                    c++;
-                    // String VTS = record.get(0);
 
                     FcGiocatore giocatore = null;
                     if (StringUtils.isNotEmpty(idGiocatore)) {
@@ -391,11 +382,11 @@ public class EmJobProcessGiornata{
                         BigDecimal risTS = bgTS.multiply(mTS);
                         long votoTS = risTS.longValue();
 
-                        String VOTO_GIOCATORE = Utils.replaceString(M3, ",", ".");
+                        //String VOTO_GIOCATORE = Utils.replaceString(M3, ",", ".");
                         // PORTIERE SV
-                        if (VOTO_GIOCATORE.equals("s.v.") || VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
-                        } else {
-                        }
+                        //if (VOTO_GIOCATORE.equals("s.v.") || VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
+                        //} else {
+                        //}
 
                         if (count_sv == 1) {
                             if ("0".equals(G)) {
@@ -410,7 +401,7 @@ public class EmJobProcessGiornata{
                                 } else {
                                     CS = TS;
                                 }
-                            } else if ("0".equals(TS)) {
+                            } else {
                                 if (votoG <= votoCS) {
                                     TS = G;
                                 } else {
@@ -634,7 +625,7 @@ public class EmJobProcessGiornata{
 
                     String CS = "0";
                     String TS = "0";
-                    String M3 = "0";
+                    //String M3 = "0";
 
                     FcGiocatore giocatore;
 
@@ -708,13 +699,13 @@ public class EmJobProcessGiornata{
                         BigDecimal risTS = bgTS.multiply(mTS);
                         long votoTS = risTS.longValue();
 
-                        String VOTO_GIOCATORE = Utils.replaceString(M3, ",", ".");
+                        //String VOTO_GIOCATORE = Utils.replaceString(M3, ",", ".");
                         // PORTIERE SV
-                        if (VOTO_GIOCATORE.equals("s.v.") || VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
-                        } else {
-                            if (VOTO_GIOCATORE.equals("s,v,")) {
-                            }
-                        }
+                        //if (VOTO_GIOCATORE.equals("s.v.") || VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
+                        //} else {
+                        //    if (VOTO_GIOCATORE.equals("s,v,")) {
+                        //    }
+                        //}
 
                         if (count_sv == 1) {
                             if ("0".equals(G)) {
@@ -731,7 +722,7 @@ public class EmJobProcessGiornata{
                                     CS = TS;
                                 }
                                 // LOG.info("CS = " + CS + " G " + G + " TS " + TS);
-                            } else if ("0".equals(TS)) {
+                            } else {
                                 if (votoG <= votoCS) {
                                     TS = G;
                                 } else {
@@ -860,14 +851,14 @@ public class EmJobProcessGiornata{
 
 		LOG.info("giornata " + giornata);
 
-		List<String> schemi = new ArrayList<>();
-		schemi.add("1-5-4-1");
-		schemi.add("1-5-3-2");
-		schemi.add("1-4-5-1");
-		schemi.add("1-4-4-2");
-		schemi.add("1-4-3-3");
-		schemi.add("1-3-5-2");
-		schemi.add("1-3-4-3");
+		//List<String> schemi = new ArrayList<>();
+		//schemi.add("1-5-4-1");
+		//schemi.add("1-5-3-2");
+		//schemi.add("1-4-5-1");
+		//schemi.add("1-4-4-2");
+		//schemi.add("1-4-3-3");
+		//schemi.add("1-3-5-2");
+		//schemi.add("1-3-4-3");
 
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);

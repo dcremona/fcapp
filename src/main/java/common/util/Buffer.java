@@ -128,7 +128,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 * attuale.
 	 *
 	 * @return Un'istanza distinta del Buffer attuale.
-	 * @see #getClone(int[])
 	 */
 	public Buffer getClone() {
 		Buffer clone = new Buffer();
@@ -153,49 +152,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 		clone.setSortedField(iSortedField);
 
 		clone.TAG = TAG;
-		clone.DB_TIME = DB_TIME;
-		clone.QUERY_NAME = QUERY_NAME;
-		clone.EXIT = EXIT;
-
-		return clone;
-	}
-
-	/**
-	 * Metodo utilizzato per creare un' istanza parziale e distinta, del Buffer
-	 * attuale composta per@ dai soli record indicati nell'array passato.
-	 * Comunemente usato col metodo getFieldMatching(Buffer ,String[][]) di
-	 * SivaToolkit.
-	 *
-	 * @param aiRecord
-	 *            Array di interi indicante quali record che si vogliono
-	 *            'clonare' dal Buffer attuale.
-	 * @return Un'istanza distinta del Buffer attuale.
-	 * @see #getClone()
-     */
-	public Buffer getClone(int[] aiRecord) {
-		if (iRecordCount == 0) {
-			return null;
-		}
-
-		Buffer clone = new Buffer();
-		int iCloneLen = aiRecord.length;
-
-		clone.setDefaultAdd(aiRecord.length);
-
-		String[][] asRecordSetClone = new String[iCloneLen][iFieldCount];
-
-		for (int i = 0; i < iCloneLen; i++) {
-			System.arraycopy(theRecordSet, aiRecord[i] - 1, asRecordSetClone, i, 1);
-		}
-
-		String[] asFieldType = new String[iFieldCount];
-		for (int i = 1; i <= iFieldCount; i++) {
-			asFieldType[i - 1] = getFieldType(i);
-		}
-
-		clone.setRecordSet(asRecordSetClone, asFieldType, iFieldCount, iCloneLen);
-
-        clone.TAG = TAG;
 		clone.DB_TIME = DB_TIME;
 		clone.QUERY_NAME = QUERY_NAME;
 		clone.EXIT = EXIT;
@@ -740,6 +696,7 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	// Metodo utilizzato per sostituire un'intero record del buffer
 	public void replace(int row, String item) {
 		if (iRecordCount < row || row < 1) {
+			System.out.println(row);
         } else {
 			setRecordValues(item, row - 1);
 
@@ -1013,11 +970,6 @@ public class Buffer extends javax.swing.table.AbstractTableModel
 	 */
 	public int getCurrentIndex() {
 		return iRowIndex + 1;
-	}
-
-	// Non utilizzare dall'esterno !
-	public String[][] getRecordSet() {
-		return theRecordSet;
 	}
 
 	/**

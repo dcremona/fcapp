@@ -692,17 +692,6 @@ public class JobProcessGiornata{
                     String rigoreParato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGP
                     c++;
                     String rigoreSegnato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RT
-                    c++;
-                    // String rigore_subito = StringUtils.isEmpty(record.get(c)) ?
-                    // "0" : record.get(c); // RS
-                    c++;
-                    // String T = record.get(30);
-                    c++;
-                    // String VG = record.get(31);
-                    c++;
-                    // String VC = record.get(32);
-                    c++;
-                    // String VTS = record.get(0);
 
                     FcGiocatore giocatore = null;
                     if (StringUtils.isNotEmpty(idGiocatore)) {

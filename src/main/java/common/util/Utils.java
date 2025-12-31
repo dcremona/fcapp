@@ -354,9 +354,9 @@ public class Utils{
 		if (dataGiornata != null) {
 			currentDate = dataGiornata;
 
+			log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
 			if (dataAnticipo != null) {
 				currentDate = dataAnticipo;
-                log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
                 log.info("dataGiornata.getDayOfWeek() : {}", dataGiornata.getDayOfWeek());
 				if (now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
 					currentDate = dataGiornata;
@@ -364,7 +364,6 @@ public class Utils{
 			}
 
 			if (dataPosticipo != null) {
-                log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
                 log.info("dataPosticipo.getDayOfWeek() : {}", dataPosticipo.getDayOfWeek());
 				if (now.getDayOfWeek() == dataPosticipo.getDayOfWeek()) {
 					currentDate = dataGiornata;
