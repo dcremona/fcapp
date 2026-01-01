@@ -168,7 +168,7 @@ public class SquadreAllView extends VerticalLayout{
 
 			Map<String, Object> hm = getMapRoseFcAll(campionato);
 			hm.put("titolo", "Rose Fc");
-			Collection<FormazioneJasper> collection = new ArrayList<>();
+			ArrayList<FormazioneJasper> collection = new ArrayList<>();
 			collection.add(new FormazioneJasper("P","G","Sq",0,0));
 			Resource resource = resourceLoader.getResource("classpath:reports/roseFcAll.jasper");
 

@@ -12,12 +12,8 @@ public class FormazioneJasper implements Serializable{
 	String ruolo;
 	String giocatore;
 	String squadra;
-	int quotazione = 0;
-	int tot_pagato = 0;
-
-	public FormazioneJasper() {
-		super();
-	}
+	int quotazione;
+	int tot_pagato;
 
 	public FormazioneJasper(String ruolo, String giocatore, String squadra,
 			int quotazione, int tot_pagato) {

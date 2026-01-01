@@ -1,5 +1,6 @@
 package fcweb.backend.data.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,7 +20,8 @@ public class FcMercatoDettInfo implements Serializable{
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	// @Id
 	// @GeneratedValue(strategy = IDENTITY)

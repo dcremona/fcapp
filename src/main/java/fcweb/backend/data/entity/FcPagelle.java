@@ -1,6 +1,7 @@
 package fcweb.backend.data.entity;
 // Generated 31-ott-2018 12.15.29 by Hibernate Tools 5.1.7.Final
 
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +26,8 @@ public class FcPagelle implements java.io.Serializable{
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 	private FcPagelleId id;
 	private FcGiocatore fcGiocatore;
 	private FcGiornataInfo fcGiornataInfo;

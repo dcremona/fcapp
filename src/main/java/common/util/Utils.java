@@ -23,14 +23,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import fcweb.backend.data.FormazioneJasper;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -461,8 +458,7 @@ public class Utils{
 		});
 	}
 
-	public static StreamResource getStreamResource(String fiileName,
-			Collection coll, Map<String, Object> hm, InputStream inputStream) {
+	public static StreamResource getStreamResource(String fiileName,ArrayList<FormazioneJasper> coll, Map<String, Object> hm, InputStream inputStream) {
 		return new StreamResource(fiileName,() -> {
 			try {
 				return JasperReporUtils.runReportToPdf(inputStream, hm, coll);
