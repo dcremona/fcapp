@@ -240,8 +240,9 @@ public class EmStatisticheView extends VerticalLayout
 		Series secondaSerie = new Series<>(descAttoreB,dataB.toArray());
 
 		ApexCharts lineChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.LINE).withZoom(ZoomBuilder.get().withEnabled(false).build()).build()).withStroke(StrokeBuilder.get().withCurve(Curve.STRAIGHT).build()).withTitle(TitleSubtitleBuilder.get().withText("Classifica per " + sPunti).withAlign(Align.LEFT).build()).withGrid(GridBuilder.get().withRow(RowBuilder.get().withColors("#f3f3f3", "transparent").withOpacity(0.5).build()).build()).withXaxis(XAxisBuilder.get().withCategories(giornate).build()).withSeries(primaSerie, secondaSerie).build();
-
-		lineChart.setWidth("80%");
+		lineChart.setWidth("600px");
+		lineChart.setHeight("400px");
+		lineChart.setWidth("100%");
 
 		return lineChart;
 	}

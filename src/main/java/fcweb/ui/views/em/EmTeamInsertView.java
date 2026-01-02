@@ -430,7 +430,7 @@ public class EmTeamInsertView extends VerticalLayout
 		absLayout.add(comboModulo, 20, 50);
 
 		absLayout.add(tableFormazione, 10, 150);
-		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource("Costants.CLASSPATH_IMAGES/campo.jpg"));
+		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES+"campo.jpg"));
 		absLayout.add(campo, _350px, 150);
 
 		this.add(absLayout);
