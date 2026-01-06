@@ -178,12 +178,6 @@ public class FormazioniView extends VerticalLayout{
 			stampapdf.setEnabled(false);
 			if (event.getSource().isEmpty()) {
 				log.info("event.getSource().isEmpty()");
-			} else if (event.getOldValue() == null) {
-				log.info("event.getOldValue()");
-				FcGiornataInfo fcGiornataInfo = event.getValue();
-                log.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
-				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
-				stampapdf.setEnabled(true);
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
                 log.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
@@ -267,6 +261,7 @@ public class FormazioniView extends VerticalLayout{
 			horizontalLayout0.add(labelFuori);
 
 			VerticalLayout vCasa = new VerticalLayout();
+			vCasa.setWidth("100%");
 			vCasa.add(tableSqCasaTitolari);
 			vCasa.add(tableSqCasaPanchina);
 			vCasa.add(tableSqCasaTribuna);
@@ -274,6 +269,7 @@ public class FormazioniView extends VerticalLayout{
 			vCasa.add(layoutTotaliCasa);
 
 			VerticalLayout vFuori = new VerticalLayout();
+			vFuori.setWidth("100%");
 			vFuori.add(tableSqFuoriTitolari);
 			vFuori.add(tableSqFuoriPanchina);
 			vFuori.add(tableSqFuoriTribuna);
@@ -282,11 +278,12 @@ public class FormazioniView extends VerticalLayout{
 
 			HorizontalLayout horizontalLayout1 = new HorizontalLayout();
 			horizontalLayout1.setWidth("100%");
-			horizontalLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+			//horizontalLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 			horizontalLayout1.add(vCasa);
 			horizontalLayout1.add(vFuori);
 
 			final VerticalLayout layoutTab = new VerticalLayout();
+			layoutTab.setWidth("100%");
 			layoutTab.setMargin(false);
 			layoutTab.setPadding(false);
 			layoutTab.setSpacing(false);

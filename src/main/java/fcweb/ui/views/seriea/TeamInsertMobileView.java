@@ -256,7 +256,7 @@ public class TeamInsertMobileView extends VerticalLayout
             log.info("resY {}", resY);
             log.info("Math.max {}", Math.max(resX, resY));
 			if (Math.max(resX, resY) < 800) {
-				log.info("small screen detected ");
+	 			log.info("small screen detected initLayout");
 			}
 
 			absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
@@ -275,7 +275,7 @@ public class TeamInsertMobileView extends VerticalLayout
             log.info("winWidth {}", winWidth);
             log.info("winHeight {}", winHeight);
 			if (Math.max(winWidth, winHeight) < 800) {
-				log.info("small screen detected ");
+				log.info("small screen detected addBrowserWindowResizeListener");
 			} else {
 				absLayout.setWidth(winWidth + "px");
 				absLayout.setHeight(winHeight + "px");

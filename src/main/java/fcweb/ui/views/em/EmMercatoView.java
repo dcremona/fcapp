@@ -2579,7 +2579,7 @@ public class EmMercatoView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
                     if (CHECK_TOT_CAMBI_EFFETTUATI > 0) {
-                        LOG.info("click {}", g.getCognGiocatore());
+                        LOG.info("CHECK_TOT_CAMBI_EFFETTUATI {}", CHECK_TOT_CAMBI_EFFETTUATI);
 
 						if (activeFilter) {
 							String idRuolo = g.getFcRuolo().getIdRuolo();
@@ -2692,8 +2692,8 @@ public class EmMercatoView extends VerticalLayout
 
 	private void refreshAndSortGridTabsRuoli(String idRuolo) {
 
+		LOG.info("refreshAndSortGridTabsRuoli ruolo={}", idRuolo);
 		if (StringUtils.isEmpty(idRuolo)) {
-            LOG.info("refreshAndSortGridTabsRuoli ruolo={}", idRuolo);
 			modelPlayerP.sort((p1,
 					p2) -> p2.getQuotazione().compareTo(p1.getQuotazione()));
 			tablePlayerP.getDataProvider().refreshAll();
@@ -2711,7 +2711,6 @@ public class EmMercatoView extends VerticalLayout
 			tablePlayerA.getDataProvider().refreshAll();
 
 		} else {
-            LOG.info("refreshAndSortGridTabsRuoli ruolo={}", idRuolo);
             switch (idRuolo) {
                 case "P" -> {
                     modelPlayerP.sort((p1,

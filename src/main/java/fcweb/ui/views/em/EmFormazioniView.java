@@ -168,12 +168,6 @@ public class EmFormazioniView extends VerticalLayout{
 			stampapdf.setEnabled(false);
 			if (event.getSource().isEmpty()) {
 				LOG.info("event.getSource().isEmpty()");
-			} else if (event.getOldValue() == null) {
-				LOG.info("event.getOldValue()");
-				FcGiornataInfo fcGiornataInfo = event.getValue();
-                LOG.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
-				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
-				stampapdf.setEnabled(true);
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
                 LOG.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
