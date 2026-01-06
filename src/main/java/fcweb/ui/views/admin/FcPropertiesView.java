@@ -13,11 +13,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import common.util.Utils;
 import fcweb.backend.data.entity.FcProperties;
 import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.ProprietaService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 

@@ -24,7 +24,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.security.AuthenticatedUser;
 import fcweb.ui.views.admin.FcAccessoView;
@@ -69,6 +68,7 @@ import fcweb.ui.views.seriea.StatisticheView;
 import fcweb.ui.views.seriea.TeamInsertMobileView;
 import fcweb.ui.views.seriea.TeamInsertView;
 import fcweb.utils.Costants;
+import fcweb.utils.Utils;
 
 /**
  * The main view is a top-level placeholder for other views.

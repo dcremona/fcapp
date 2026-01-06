@@ -38,8 +38,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
-import common.util.ContentIdGenerator;
-import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCalendarioCompetizione;
 import fcweb.backend.data.entity.FcCampionato;
@@ -57,8 +55,10 @@ import fcweb.backend.service.FormazioneService;
 import fcweb.backend.service.GiornataDettService;
 import fcweb.backend.service.SquadraService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.ContentIdGenerator;
 import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
+import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 

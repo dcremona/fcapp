@@ -14,7 +14,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import common.util.Utils;
 import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
@@ -28,6 +27,7 @@ import fcweb.backend.service.GiornataInfoRepository;
 import fcweb.backend.service.PagelleService;
 import fcweb.backend.service.ProprietaService;
 import fcweb.utils.Costants;
+import fcweb.utils.Utils;
 
 @Component
 public class MyScheduledTasks{

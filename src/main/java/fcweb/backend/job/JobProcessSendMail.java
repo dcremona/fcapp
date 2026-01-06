@@ -25,7 +25,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.util.Utils;
 import fcweb.backend.data.RisultatoBean;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
@@ -47,6 +46,7 @@ import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.GiornataService;
 import fcweb.utils.Costants;
 import fcweb.utils.JasperReporUtils;
+import fcweb.utils.Utils;
 
 @Controller
 public class JobProcessSendMail{
@@ -117,7 +117,11 @@ public class JobProcessSendMail{
 		Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 		InputStream inputStream = resource.getInputStream();
 		FileOutputStream outputStream = new FileOutputStream(destFileName1);
-		JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, l);
+		try {
+			JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, l);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
 
 		Connection conn = null;
 		FileOutputStream outputStream2 = null;

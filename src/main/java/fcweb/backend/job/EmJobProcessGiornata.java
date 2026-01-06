@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcGiocatore;
@@ -45,6 +44,7 @@ import fcweb.backend.service.PagelleRepository;
 import fcweb.backend.service.SquadraRepository;
 import fcweb.backend.service.StatisticheRepository;
 import fcweb.utils.Costants;
+import fcweb.utils.Utils;
 
 @Controller
 public class EmJobProcessGiornata{

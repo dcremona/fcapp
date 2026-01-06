@@ -1,4 +1,4 @@
-package common.util;
+package fcweb.utils;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -40,8 +40,6 @@ import com.vaadin.flow.server.VaadinSession;
 import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
-import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
 
 public class Utils{
 

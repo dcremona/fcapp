@@ -1,4 +1,4 @@
-package common.util;
+package fcweb.utils;
 
 import java.net.UnknownHostException;
 import java.util.Random;

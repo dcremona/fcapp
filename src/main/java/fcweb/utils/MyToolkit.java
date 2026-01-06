@@ -2,7 +2,7 @@
  * @(#)SivaToolkit.java	2.2 - 21/12/1999
  */
 
-package common.util;
+package fcweb.utils;
 
 public class MyToolkit{
 

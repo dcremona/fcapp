@@ -25,7 +25,6 @@ import com.wontlost.ckeditor.Constants.EditorType;
 import com.wontlost.ckeditor.VaadinCKEditor;
 import com.wontlost.ckeditor.VaadinCKEditorBuilder;
 
-import common.util.Utils;
 import fcweb.backend.data.Role;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcRegolamento;
@@ -33,6 +32,7 @@ import fcweb.backend.service.AccessoService;
 import fcweb.backend.service.RegolamentoService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.CustomMessageDialog;
+import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 

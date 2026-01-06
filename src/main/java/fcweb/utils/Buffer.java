@@ -1,4 +1,4 @@
-package common.util;
+package fcweb.utils;
 
 import java.io.Serial;
 import java.util.StringTokenizer;

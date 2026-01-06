@@ -15,7 +15,6 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcGiornata;
 import fcweb.backend.data.entity.FcGiornataInfo;
@@ -26,6 +25,7 @@ import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.GiornataService;
 import fcweb.backend.service.TipoGiornataService;
 import fcweb.ui.views.MainLayout;
+import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 

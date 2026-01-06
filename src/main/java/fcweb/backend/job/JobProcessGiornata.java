@@ -39,8 +39,6 @@ import org.springframework.stereotype.Controller;
 
 import com.vaadin.flow.server.VaadinSession;
 
-import common.util.Buffer;
-import common.util.Utils;
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCalendarioCompetizione;
 import fcweb.backend.data.entity.FcCampionato;
@@ -72,7 +70,9 @@ import fcweb.backend.service.GiornataRepository;
 import fcweb.backend.service.PagelleRepository;
 import fcweb.backend.service.SquadraRepository;
 import fcweb.backend.service.StatisticheRepository;
+import fcweb.utils.Buffer;
 import fcweb.utils.Costants;
+import fcweb.utils.Utils;
 
 @Controller
 public class JobProcessGiornata{
