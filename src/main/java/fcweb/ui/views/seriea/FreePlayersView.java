@@ -27,6 +27,8 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
+import com.vaadin.flow.component.progressbar.ProgressBarVariant;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -35,6 +37,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcFormazione;
@@ -311,6 +314,44 @@ public class FreePlayersView extends VerticalLayout
 		nomeGiocatoreColumn.setSortable(true);
 		nomeGiocatoreColumn.setAutoWidth(true);
 
+		Column<FcGiocatore> infoPercColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setAlignItems(Alignment.STRETCH);
+			if (g != null) {
+				String title = Utils.getInfoPlayer(g);
+				int perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
+				double value = Double.parseDouble(Integer.toString(perc)) / Double.parseDouble("100");
+
+				ProgressBar progressBarPerc = new ProgressBar();
+				progressBarPerc.setValue(value);
+
+				Span lblPerc = new Span();
+				lblPerc.setText(perc + "%");
+				lblPerc.setTitle(title);
+
+				if (perc > 60) {
+					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+					lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
+				} else if (perc > 39) {
+					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
+					lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
+				} else {
+					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
+					lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
+				}
+
+				cellLayout.add(progressBarPerc);
+				cellLayout.add(lblPerc);
+			}
+			return cellLayout;
+		}));
+		infoPercColumn.setSortable(false);
+		infoPercColumn.setHeader("");
+		infoPercColumn.setWidth("135px");
+		
 		Column<FcGiocatore> probabileGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			cellLayout.setMargin(false);

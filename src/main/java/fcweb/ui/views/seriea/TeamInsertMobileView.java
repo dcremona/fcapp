@@ -3,8 +3,6 @@ package fcweb.ui.views.seriea;
 import java.io.InputStream;
 import java.io.Serial;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -596,29 +594,6 @@ public class TeamInsertMobileView extends VerticalLayout
 		tablePlayer18.setEnabled(enabled);
 	}
 
-	private String getInfoPlayer(FcGiocatore bean) {
-		String info = bean.getCognGiocatore() + "\n";
-		info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
-		info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
-		if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
-			NumberFormat formatter = new DecimalFormat("#0.00");
-			String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / Costants.DIVISORE_100);
-			String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / Costants.DIVISORE_100);
-
-			info += "MV: " + mv + "\n";
-			info += "FV: " + fv + "\n";
-			info += "Goal: " + bean.getFcStatistiche().getGoalFatto() + "\n";
-			info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
-			info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
-			info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-			if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
-				info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
-			}
-		}
-		info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
-		return info;
-	}
-
 	private void refreshAndSortGridFormazione() {
 		modelFormazione.sort((p1,
 				p2) -> p2.getFcRuolo().getIdRuolo().compareToIgnoreCase(p1.getFcRuolo().getIdRuolo()));
@@ -793,7 +768,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
             if (p != null) {
 
-				String title = getInfoPlayer(p);
+				String title = Utils.getInfoPlayer(p);
 
 				String ruolo = p.getFcRuolo().getIdRuolo();
 				if (Costants.P.equals(ruolo)) {
@@ -959,7 +934,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
-				String title = getInfoPlayer(g);
+				String title = Utils.getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
 					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
 					img.setTitle(title);
@@ -991,7 +966,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
-				String title = getInfoPlayer(g);
+				String title = Utils.getInfoPlayer(g);
 				int perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
 				double value = Double.parseDouble(Integer.toString(perc)) / Double.parseDouble("100");
 

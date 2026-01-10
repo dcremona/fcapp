@@ -20,6 +20,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +30,8 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 import fcweb.backend.data.FormazioneJasper;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +42,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
 import fcweb.backend.data.entity.FcCampionato;
+import fcweb.backend.data.entity.FcGiocatore;
 import fcweb.backend.data.entity.FcGiornataInfo;
 import fcweb.backend.data.entity.FcPagelle;
 
@@ -473,5 +478,29 @@ public class Utils{
 		return new StreamResource(inputStreamName,() -> new ByteArrayInputStream(bytes));
 
 	}
+	
+	public static String getInfoPlayer(FcGiocatore bean) {
+		String info = bean.getCognGiocatore() + "\n";
+		info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
+		info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
+		if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
+			NumberFormat formatter = new DecimalFormat("#0.00");
+			String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / Costants.DIVISORE_100);
+			String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / Costants.DIVISORE_100);
+
+			info += "MV: " + mv + "\n";
+			info += "FV: " + fv + "\n";
+			info += "Goal: " + bean.getFcStatistiche().getGoalFatto() + "\n";
+			info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
+			info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
+			info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
+			if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
+				info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
+			}
+		}
+		info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
+		return info;
+	}
+
 
 }
