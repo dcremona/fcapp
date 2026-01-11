@@ -182,7 +182,7 @@ public class ImpostazioniView extends VerticalLayout
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		log.info(String.format("from {0} and then {1}", from, to));
+		log.info("from and then ({},{})", from, to);
 		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
@@ -348,12 +348,9 @@ public class ImpostazioniView extends VerticalLayout
 
 		InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((
 				metadata, data) -> {
-			// Get other information about the file.
-
             try {
 				InputStream is = new ByteArrayInputStream(data);
 				jobProcessGiornata.updateImgGiocatore(is);
-
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			} catch (Exception e) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
