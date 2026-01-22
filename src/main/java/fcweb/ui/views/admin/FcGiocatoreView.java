@@ -126,7 +126,7 @@ public class FcGiocatoreView extends VerticalLayout{
 					updateImg.addClickListener(event -> {
 						try {
 							Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-							String basePathData = (String) p.get("PATH_TMP");
+							String basePathData = env.getProperty("PATH_TMP");
                             log.info("basePathData {}", basePathData);
 
 							File f = new File(basePathData);

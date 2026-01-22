@@ -128,7 +128,7 @@ public class MyScheduledTasks{
         log.info("currentGG: {}", giornataInfo.getCodiceGiornata());
 		FcCampionato campionato = campionatoController.findByActive(true);
 
-		String rootPathOutputPdf = (String) p.get("PATH_OUTPUT_PDF");
+		String rootPathOutputPdf = env.getProperty("PATH_OUTPUT_PDF");
 		String idCampionato = "" + campionato.getIdCampionato();
 		String folderPdf = env.getProperty("folderPdf");
 		String pathOutput = rootPathOutputPdf + folderPdf + FILE_SEP + "Campionato" + idCampionato;
@@ -149,7 +149,7 @@ public class MyScheduledTasks{
 
 		String pathImg = "images/";
 
-		String basePathData = (String) p.get("PATH_TMP");
+		String basePathData = env.getProperty("PATH_TMP");
         log.info("basePathData {}", basePathData);
 
 		Thread.sleep(60000L);
@@ -197,7 +197,7 @@ public class MyScheduledTasks{
 			p.setProperty(prop.getKey(), prop.getValue());
 		}
 		String urlFanta = (String) p.get("URL_FANTA");
-		String basePathData = (String) p.get("PATH_TMP");
+		String basePathData = env.getProperty("PATH_TMP");
 
 		FcPagelle currentGG = pagelleController.findCurrentGiornata();
 		FcGiornataInfo giornataInfo;

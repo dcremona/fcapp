@@ -13,6 +13,7 @@ import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.vaadin.filesystemdataprovider.FileSelect;
 
 import com.flowingcode.vaadin.addons.gridexporter.GridExporter;
@@ -87,6 +88,9 @@ public class DownloadView extends VerticalLayout
 	@Autowired
 	private AccessoService accessoController;
 
+	@Autowired
+	private Environment env;
+
 	int resX = 0;
 	int resY = 0;
 
@@ -114,8 +118,6 @@ public class DownloadView extends VerticalLayout
             log.info("resY {}", resY);
 		});
 
-		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-
 		salvaRoseA = new Button("Aggiorna");
 		salvaRoseA.setIcon(VaadinIcon.DATABASE.create());
 		salvaRoseA.addClickListener(this);
@@ -142,7 +144,7 @@ public class DownloadView extends VerticalLayout
 		}
 		setFreePlayer(layout2);
 
-		String pathPdf = (String) p.get("PATH_OUTPUT_PDF");
+		String pathPdf = env.getProperty("PATH_OUTPUT_PDF");
 		File rootFile3 = new File(pathPdf);
         log.info(" pathPdf {}", rootFile3.exists());
 		if (!rootFile3.exists()) {

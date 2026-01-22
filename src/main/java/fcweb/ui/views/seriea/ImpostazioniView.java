@@ -568,7 +568,7 @@ public class ImpostazioniView extends VerticalLayout
 			FcAttore attore = comboAttore.getValue();
             log.info("giornata {}", codiceGiornata);
 
-			String basePathData = (String) p.get("PATH_TMP");
+			String basePathData = env.getProperty("PATH_TMP");
             log.info("basePathData {}", basePathData);
 			File f = new File(basePathData);
 			if (!f.exists()) {

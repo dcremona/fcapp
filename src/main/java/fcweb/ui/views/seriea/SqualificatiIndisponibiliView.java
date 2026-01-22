@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -71,6 +72,9 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
 	@Autowired
 	private ResourceLoader resourceLoader;
+	
+	@Autowired
+	private Environment env;
 
 	public SqualificatiIndisponibiliView() {
 		log.info("SqualificatiIndisponibiliView()");
@@ -165,7 +169,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 				FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
-				String basePathData = (String) p.get("PATH_TMP");
+				String basePathData = env.getProperty("PATH_TMP");
 				String urlFanta = (String) p.get("URL_FANTA");
 
                 giornataGiocatoreService.deleteByCustonm(giornataInfo);

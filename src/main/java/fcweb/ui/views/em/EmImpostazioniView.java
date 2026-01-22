@@ -378,7 +378,7 @@ public class EmImpostazioniView extends VerticalLayout
 			}
             LOG.info("giornata {}", giornata);
 
-			String basePathData = (String) p.get("PATH_TMP");
+			String basePathData = env.getProperty("PATH_TMP");
             LOG.info("basePathData {}", basePathData);
 			File f = new File(basePathData);
 			if (!f.exists()) {

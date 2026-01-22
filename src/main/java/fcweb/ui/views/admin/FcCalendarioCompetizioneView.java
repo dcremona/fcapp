@@ -225,7 +225,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 			Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-			String basePathData = (String) p.get("PATH_TMP");
+			String basePathData = env.getProperty("PATH_TMP");
             log.info("basePathData {}", basePathData);
 			File f = new File(basePathData);
 			if (!f.exists()) {
