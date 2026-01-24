@@ -37,8 +37,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Controller;
 
-import com.vaadin.flow.server.VaadinSession;
-
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCalendarioCompetizione;
 import fcweb.backend.data.entity.FcCampionato;
@@ -4485,10 +4483,10 @@ public class JobProcessGiornata{
 						String nomeImgNew = idGiocatore + ".png";
 						g.setNomeImg(nomeImgNew);
 						try {
-							Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 							String basePathData = env.getProperty("PATH_TMP");
                             log.info("basePathData {}", basePathData);
-							File f = new File(basePathData);
+                            assert basePathData != null;
+                            File f = new File(basePathData);
 							if (!f.exists()) {
                                 log.error("Error basePathData {}", basePathData);
 								return;

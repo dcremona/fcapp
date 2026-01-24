@@ -570,7 +570,8 @@ public class ImpostazioniView extends VerticalLayout
 
 			String basePathData = env.getProperty("PATH_TMP");
             log.info("basePathData {}", basePathData);
-			File f = new File(basePathData);
+            assert basePathData != null;
+            File f = new File(basePathData);
 			if (!f.exists()) {
 				CustomMessageDialog.showMessageError("Impossibile trovare il percorso specificato " + basePathData);
 				return;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -145,7 +144,8 @@ public class DownloadView extends VerticalLayout
 		setFreePlayer(layout2);
 
 		String pathPdf = env.getProperty("PATH_OUTPUT_PDF");
-		File rootFile3 = new File(pathPdf);
+        assert pathPdf != null;
+        File rootFile3 = new File(pathPdf);
         log.info(" pathPdf {}", rootFile3.exists());
 		if (!rootFile3.exists()) {
 			String basePathData = System.getProperty("user.dir");

@@ -3,7 +3,6 @@ package fcweb.ui.views.admin;
 import java.io.File;
 import java.io.Serial;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
@@ -125,11 +124,11 @@ public class FcGiocatoreView extends VerticalLayout{
 					updateImg.setIcon(VaadinIcon.DATABASE.create());
 					updateImg.addClickListener(event -> {
 						try {
-							Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 							String basePathData = env.getProperty("PATH_TMP");
                             log.info("basePathData {}", basePathData);
 
-							File f = new File(basePathData);
+                            assert basePathData != null;
+                            File f = new File(basePathData);
 							if (!f.exists()) {
 								CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Impossibile trovare il percorso specificato " + basePathData);
 								return;

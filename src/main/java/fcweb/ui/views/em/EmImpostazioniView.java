@@ -380,7 +380,8 @@ public class EmImpostazioniView extends VerticalLayout
 
 			String basePathData = env.getProperty("PATH_TMP");
             LOG.info("basePathData {}", basePathData);
-			File f = new File(basePathData);
+            assert basePathData != null;
+            File f = new File(basePathData);
 			if (!f.exists()) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Impossibile trovare il percorso specificato " + basePathData);
 				return;
