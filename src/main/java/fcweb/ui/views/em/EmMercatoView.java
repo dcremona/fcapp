@@ -704,161 +704,161 @@ public class EmMercatoView extends VerticalLayout
 		for (int i = 0; i < modelFormazione.size(); i++) {
 			FcGiocatore beanPlayer = modelFormazione.get(i);
 			if (i == 0) {
-				if (modelPlayer1.size() != 0) {
+				if (!modelPlayer1.isEmpty()) {
 					FcGiocatore bean = modelPlayer1.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 1) {
-				if (modelPlayer2.size() != 0) {
+				if (!modelPlayer2.isEmpty()) {
 					FcGiocatore bean = modelPlayer2.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 2) {
-				if (modelPlayer3.size() != 0) {
+				if (!modelPlayer3.isEmpty()) {
 					FcGiocatore bean = modelPlayer3.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 3) {
-				if (modelPlayer4.size() != 0) {
+				if (!modelPlayer4.isEmpty()) {
 					FcGiocatore bean = modelPlayer4.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 4) {
-				if (modelPlayer5.size() != 0) {
+				if (!modelPlayer5.isEmpty()) {
 					FcGiocatore bean = modelPlayer5.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 5) {
-				if (modelPlayer6.size() != 0) {
+				if (!modelPlayer6.isEmpty()) {
 					FcGiocatore bean = modelPlayer6.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 6) {
-				if (modelPlayer7.size() != 0) {
+				if (!modelPlayer7.isEmpty()) {
 					FcGiocatore bean = modelPlayer7.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 7) {
-				if (modelPlayer8.size() != 0) {
+				if (!modelPlayer8.isEmpty()) {
 					FcGiocatore bean = modelPlayer8.get(0);
 					if (beanPlayer.getIdGiocatore() != (bean.getIdGiocatore())) {
 						totCambi++;
 					}
 				}
 			} else if (i == 8) {
-				if (modelPlayer9.size() != 0) {
+				if (!modelPlayer9.isEmpty()) {
 					FcGiocatore bean = modelPlayer9.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 9) {
-				if (modelPlayer10.size() != 0) {
+				if (!modelPlayer10.isEmpty()) {
 					FcGiocatore bean = modelPlayer10.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 10) {
-				if (modelPlayer11.size() != 0) {
+				if (!modelPlayer11.isEmpty()) {
 					FcGiocatore bean = modelPlayer11.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 11) {
-				if (modelPlayer12.size() != 0) {
+				if (!modelPlayer12.isEmpty()) {
 					FcGiocatore bean = modelPlayer12.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 12) {
-				if (modelPlayer13.size() != 0) {
+				if (!modelPlayer13.isEmpty()) {
 					FcGiocatore bean = modelPlayer13.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 13) {
-				if (modelPlayer14.size() != 0) {
+				if (!modelPlayer14.isEmpty()) {
 					FcGiocatore bean = modelPlayer14.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 14) {
-				if (modelPlayer15.size() != 0) {
+				if (!modelPlayer15.isEmpty()) {
 					FcGiocatore bean = modelPlayer15.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 15) {
-				if (modelPlayer16.size() != 0) {
+				if (!modelPlayer16.isEmpty()) {
 					FcGiocatore bean = modelPlayer16.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 16) {
-				if (modelPlayer17.size() != 0) {
+				if (!modelPlayer17.isEmpty()) {
 					FcGiocatore bean = modelPlayer17.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 17) {
-				if (modelPlayer18.size() != 0) {
+				if (!modelPlayer18.isEmpty()) {
 					FcGiocatore bean = modelPlayer18.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 18) {
-				if (modelPlayer19.size() != 0) {
+				if (!modelPlayer19.isEmpty()) {
 					FcGiocatore bean = modelPlayer19.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 19) {
-				if (modelPlayer20.size() != 0) {
+				if (!modelPlayer20.isEmpty()) {
 					FcGiocatore bean = modelPlayer20.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 20) {
-				if (modelPlayer21.size() != 0) {
+				if (!modelPlayer21.isEmpty()) {
 					FcGiocatore bean = modelPlayer21.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 21) {
-				if (modelPlayer22.size() != 0) {
+				if (!modelPlayer22.isEmpty()) {
 					FcGiocatore bean = modelPlayer22.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
 					}
 				}
 			} else if (i == 22) {
-				if (modelPlayer23.size() != 0) {
+				if (!modelPlayer23.isEmpty()) {
 					FcGiocatore bean = modelPlayer23.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						totCambi++;
@@ -885,7 +885,7 @@ public class EmMercatoView extends VerticalLayout
 
 		HashMap<String, String> map = new HashMap<>();
 
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			FcGiocatore bean = modelPlayer1.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -896,7 +896,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			FcGiocatore bean = modelPlayer2.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -907,7 +907,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			FcGiocatore bean = modelPlayer3.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -918,7 +918,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			FcGiocatore bean = modelPlayer4.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -929,7 +929,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			FcGiocatore bean = modelPlayer5.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -940,7 +940,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			FcGiocatore bean = modelPlayer6.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -951,7 +951,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			FcGiocatore bean = modelPlayer7.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -962,7 +962,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			FcGiocatore bean = modelPlayer8.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -973,7 +973,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			FcGiocatore bean = modelPlayer9.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -984,7 +984,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			FcGiocatore bean = modelPlayer10.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -995,7 +995,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			FcGiocatore bean = modelPlayer11.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1006,7 +1006,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			FcGiocatore bean = modelPlayer12.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1017,7 +1017,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			FcGiocatore bean = modelPlayer13.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1028,7 +1028,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			FcGiocatore bean = modelPlayer14.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1039,7 +1039,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			FcGiocatore bean = modelPlayer15.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1050,7 +1050,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			FcGiocatore bean = modelPlayer16.get(0);
 			tot += bean.getQuotazione();
 
@@ -1062,7 +1062,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			FcGiocatore bean = modelPlayer17.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1073,7 +1073,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			FcGiocatore bean = modelPlayer18.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1084,7 +1084,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			FcGiocatore bean = modelPlayer19.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1095,7 +1095,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			FcGiocatore bean = modelPlayer20.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1106,7 +1106,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			FcGiocatore bean = modelPlayer21.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1117,7 +1117,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			FcGiocatore bean = modelPlayer22.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1128,7 +1128,7 @@ public class EmMercatoView extends VerticalLayout
             }
 			refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
 			FcGiocatore bean = modelPlayer23.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1183,21 +1183,21 @@ public class EmMercatoView extends VerticalLayout
 		removeMercatoGiocatore();
 
 		if (activeFilter) {
-			if (modelPlayerP.size() != 0) {
+			if (!modelPlayerP.isEmpty()) {
 				modelPlayerP.clear();
 			}
-			if (modelPlayerD.size() != 0) {
+			if (!modelPlayerD.isEmpty()) {
 				modelPlayerD.clear();
 			}
-			if (modelPlayerC.size() != 0) {
+			if (!modelPlayerC.isEmpty()) {
 				modelPlayerC.clear();
 			}
-			if (modelPlayerA.size() != 0) {
+			if (!modelPlayerA.isEmpty()) {
 				modelPlayerA.clear();
 			}
 			refreshAndSortGridTabsRuoli("");
 		} else {
-			if (modelPlayerG.size() != 0) {
+			if (!modelPlayerG.isEmpty()) {
 				modelPlayerG.clear();
 			}
 			refreshAndSortGridGiocatori();
@@ -1211,95 +1211,95 @@ public class EmMercatoView extends VerticalLayout
 
 	private void removeMercatoGiocatore() {
 		LOG.info("removeMercatoGiocatore");
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			modelPlayer1.clear();
 			tablePlayer1.getDataProvider().refreshAll();
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			modelPlayer2.clear();
 			tablePlayer2.getDataProvider().refreshAll();
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			modelPlayer3.clear();
 			tablePlayer3.getDataProvider().refreshAll();
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			modelPlayer4.clear();
 			tablePlayer4.getDataProvider().refreshAll();
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			modelPlayer5.clear();
 			tablePlayer5.getDataProvider().refreshAll();
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			modelPlayer6.clear();
 			tablePlayer6.getDataProvider().refreshAll();
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			modelPlayer7.clear();
 			tablePlayer7.getDataProvider().refreshAll();
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			modelPlayer8.clear();
 			tablePlayer8.getDataProvider().refreshAll();
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			modelPlayer9.clear();
 			tablePlayer9.getDataProvider().refreshAll();
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			modelPlayer10.clear();
 			tablePlayer10.getDataProvider().refreshAll();
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			modelPlayer11.clear();
 			tablePlayer11.getDataProvider().refreshAll();
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			modelPlayer12.clear();
 			tablePlayer12.getDataProvider().refreshAll();
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			modelPlayer13.clear();
 			tablePlayer13.getDataProvider().refreshAll();
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			modelPlayer14.clear();
 			tablePlayer14.getDataProvider().refreshAll();
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			modelPlayer15.clear();
 			tablePlayer15.getDataProvider().refreshAll();
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			modelPlayer16.clear();
 			tablePlayer16.getDataProvider().refreshAll();
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			modelPlayer17.clear();
 			tablePlayer17.getDataProvider().refreshAll();
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			modelPlayer18.clear();
 			tablePlayer18.getDataProvider().refreshAll();
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			modelPlayer19.clear();
 			tablePlayer19.getDataProvider().refreshAll();
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			modelPlayer20.clear();
 			tablePlayer20.getDataProvider().refreshAll();
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			modelPlayer21.clear();
 			tablePlayer21.getDataProvider().refreshAll();
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			modelPlayer22.clear();
 			tablePlayer22.getDataProvider().refreshAll();
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
 			modelPlayer23.clear();
 			tablePlayer23.getDataProvider().refreshAll();
 		}
@@ -1307,7 +1307,7 @@ public class EmMercatoView extends VerticalLayout
 
 	private void loadFcFormazione(FcAttore att) {
         LOG.info("loadFcFormazione {}", att.getDescAttore());
-		if (modelFormazione.size() != 0) {
+		if (!modelFormazione.isEmpty()) {
 			modelFormazione.clear();
 		}
 		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, att);
@@ -1582,7 +1582,7 @@ public class EmMercatoView extends VerticalLayout
 
 	private boolean check() {
 
-		if (modelPlayer1.size() == 0 || modelPlayer2.size() == 0 || modelPlayer3.size() == 0 || modelPlayer4.size() == 0 || modelPlayer5.size() == 0 || modelPlayer6.size() == 0 || modelPlayer7.size() == 0 || modelPlayer8.size() == 0 || modelPlayer9.size() == 0 || modelPlayer10.size() == 0 || modelPlayer11.size() == 0 || modelPlayer12.size() == 0 || modelPlayer13.size() == 0 || modelPlayer14.size() == 0 || modelPlayer15.size() == 0 || modelPlayer16.size() == 0 || modelPlayer17.size() == 0 || modelPlayer18.size() == 0 || modelPlayer19.size() == 0 || modelPlayer20.size() == 0 || modelPlayer21.size() == 0 || modelPlayer22.size() == 0 || modelPlayer23.size() == 0) {
+		if (modelPlayer1.isEmpty() || modelPlayer2.isEmpty() || modelPlayer3.isEmpty() || modelPlayer4.isEmpty() || modelPlayer5.isEmpty() || modelPlayer6.isEmpty() || modelPlayer7.isEmpty() || modelPlayer8.isEmpty() || modelPlayer9.isEmpty() || modelPlayer10.isEmpty() || modelPlayer11.isEmpty() || modelPlayer12.isEmpty() || modelPlayer13.isEmpty() || modelPlayer14.isEmpty() || modelPlayer15.isEmpty() || modelPlayer16.isEmpty() || modelPlayer17.isEmpty() || modelPlayer18.isEmpty() || modelPlayer19.isEmpty() || modelPlayer20.isEmpty() || modelPlayer21.isEmpty() || modelPlayer22.isEmpty() || modelPlayer23.isEmpty()) {
 			CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_ERROR_INSERT_GIOCATORI);
 			return false;
 		}
@@ -1593,7 +1593,7 @@ public class EmMercatoView extends VerticalLayout
 		int countC = 0;
 		int countA = 0;
 
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			FcGiocatore bean = modelPlayer1.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1603,7 +1603,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			FcGiocatore bean = modelPlayer2.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1613,7 +1613,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			FcGiocatore bean = modelPlayer3.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1623,7 +1623,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			FcGiocatore bean = modelPlayer4.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1633,7 +1633,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			FcGiocatore bean = modelPlayer5.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1643,7 +1643,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			FcGiocatore bean = modelPlayer6.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1653,7 +1653,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			FcGiocatore bean = modelPlayer7.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1663,7 +1663,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			FcGiocatore bean = modelPlayer8.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1673,7 +1673,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			FcGiocatore bean = modelPlayer9.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1683,7 +1683,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			FcGiocatore bean = modelPlayer10.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1693,7 +1693,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			FcGiocatore bean = modelPlayer11.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1703,7 +1703,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			FcGiocatore bean = modelPlayer12.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1713,7 +1713,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			FcGiocatore bean = modelPlayer13.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1723,7 +1723,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			FcGiocatore bean = modelPlayer14.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1733,7 +1733,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			FcGiocatore bean = modelPlayer15.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1743,7 +1743,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			FcGiocatore bean = modelPlayer16.get(0);
 			tot += bean.getQuotazione();
 
@@ -1754,7 +1754,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			FcGiocatore bean = modelPlayer17.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1764,7 +1764,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			FcGiocatore bean = modelPlayer18.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1774,7 +1774,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			FcGiocatore bean = modelPlayer19.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1784,7 +1784,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			FcGiocatore bean = modelPlayer20.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1794,7 +1794,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			FcGiocatore bean = modelPlayer21.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1804,7 +1804,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			FcGiocatore bean = modelPlayer22.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1814,7 +1814,7 @@ public class EmMercatoView extends VerticalLayout
                 case "A" -> countA++;
             }
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
 			FcGiocatore bean = modelPlayer23.get(0);
 			tot += bean.getQuotazione();
             switch (bean.getFcRuolo().getIdRuolo()) {
@@ -1875,7 +1875,7 @@ public class EmMercatoView extends VerticalLayout
 		for (int i = 0; i < modelFormazione.size(); i++) {
 			FcGiocatore beanPlayer = modelFormazione.get(i);
 			if (i == 0) {
-				if (modelPlayer1.size() != 0) {
+				if (!modelPlayer1.isEmpty()) {
 					FcGiocatore bean = modelPlayer1.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1883,7 +1883,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 1) {
-				if (modelPlayer2.size() != 0) {
+				if (!modelPlayer2.isEmpty()) {
 					FcGiocatore bean = modelPlayer2.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1891,7 +1891,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 2) {
-				if (modelPlayer3.size() != 0) {
+				if (!modelPlayer3.isEmpty()) {
 					FcGiocatore bean = modelPlayer3.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1899,7 +1899,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 3) {
-				if (modelPlayer4.size() != 0) {
+				if (!modelPlayer4.isEmpty()) {
 					FcGiocatore bean = modelPlayer4.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1907,7 +1907,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 4) {
-				if (modelPlayer5.size() != 0) {
+				if (!modelPlayer5.isEmpty()) {
 					FcGiocatore bean = modelPlayer5.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1915,7 +1915,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 5) {
-				if (modelPlayer6.size() != 0) {
+				if (!modelPlayer6.isEmpty()) {
 					FcGiocatore bean = modelPlayer6.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1923,7 +1923,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 6) {
-				if (modelPlayer7.size() != 0) {
+				if (!modelPlayer7.isEmpty()) {
 					FcGiocatore bean = modelPlayer7.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1931,7 +1931,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 7) {
-				if (modelPlayer8.size() != 0) {
+				if (!modelPlayer8.isEmpty()) {
 					FcGiocatore bean = modelPlayer8.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1939,7 +1939,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 8) {
-				if (modelPlayer9.size() != 0) {
+				if (!modelPlayer9.isEmpty()) {
 					FcGiocatore bean = modelPlayer9.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1947,7 +1947,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 9) {
-				if (modelPlayer10.size() != 0) {
+				if (!modelPlayer10.isEmpty()) {
 					FcGiocatore bean = modelPlayer10.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1955,7 +1955,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 10) {
-				if (modelPlayer11.size() != 0) {
+				if (!modelPlayer11.isEmpty()) {
 					FcGiocatore bean = modelPlayer11.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1963,7 +1963,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 11) {
-				if (modelPlayer12.size() != 0) {
+				if (!modelPlayer12.isEmpty()) {
 					FcGiocatore bean = modelPlayer12.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1971,7 +1971,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 12) {
-				if (modelPlayer13.size() != 0) {
+				if (!modelPlayer13.isEmpty()) {
 					FcGiocatore bean = modelPlayer13.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1979,7 +1979,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 13) {
-				if (modelPlayer14.size() != 0) {
+				if (!modelPlayer14.isEmpty()) {
 					FcGiocatore bean = modelPlayer14.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1987,7 +1987,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 14) {
-				if (modelPlayer15.size() != 0) {
+				if (!modelPlayer15.isEmpty()) {
 					FcGiocatore bean = modelPlayer15.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -1995,7 +1995,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 15) {
-				if (modelPlayer16.size() != 0) {
+				if (!modelPlayer16.isEmpty()) {
 					FcGiocatore bean = modelPlayer16.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2003,7 +2003,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 16) {
-				if (modelPlayer17.size() != 0) {
+				if (!modelPlayer17.isEmpty()) {
 					FcGiocatore bean = modelPlayer17.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2011,7 +2011,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 17) {
-				if (modelPlayer18.size() != 0) {
+				if (!modelPlayer18.isEmpty()) {
 					FcGiocatore bean = modelPlayer18.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2019,7 +2019,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 18) {
-				if (modelPlayer19.size() != 0) {
+				if (!modelPlayer19.isEmpty()) {
 					FcGiocatore bean = modelPlayer19.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2027,7 +2027,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 19) {
-				if (modelPlayer20.size() != 0) {
+				if (!modelPlayer20.isEmpty()) {
 					FcGiocatore bean = modelPlayer20.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2035,7 +2035,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 20) {
-				if (modelPlayer21.size() != 0) {
+				if (!modelPlayer21.isEmpty()) {
 					FcGiocatore bean = modelPlayer21.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2043,7 +2043,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 21) {
-				if (modelPlayer22.size() != 0) {
+				if (!modelPlayer22.isEmpty()) {
 					FcGiocatore bean = modelPlayer22.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2051,7 +2051,7 @@ public class EmMercatoView extends VerticalLayout
 					}
 				}
 			} else if (i == 22) {
-				if (modelPlayer23.size() != 0) {
+				if (!modelPlayer23.isEmpty()) {
 					FcGiocatore bean = modelPlayer23.get(0);
 					if (beanPlayer.getIdGiocatore() != bean.getIdGiocatore()) {
 						listAcquisti.add(bean);
@@ -2304,7 +2304,7 @@ public class EmMercatoView extends VerticalLayout
 
 			List<FcMercatoDett> modelCambi = mercatoController.findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(attore);
 
-			if (modelCambi.size() > 0) {
+			if (!modelCambi.isEmpty()) {
 				formazioneHtml.append("<BR>\n");
 				formazioneHtml.append("<BR>\n");
 				formazioneHtml.append("<table>\n");
@@ -2938,95 +2938,95 @@ public class EmMercatoView extends VerticalLayout
                 return;
             }
             boolean bDel = false;
-            if (modelPlayer1.size() == 0) {
+            if (modelPlayer1.isEmpty()) {
                 modelPlayer1.add(bean);
                 tablePlayer1.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer2.size() == 0) {
+            } else if (modelPlayer2.isEmpty()) {
                 modelPlayer2.add(bean);
                 tablePlayer2.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer3.size() == 0) {
+            } else if (modelPlayer3.isEmpty()) {
                 modelPlayer3.add(bean);
                 tablePlayer3.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer4.size() == 0) {
+            } else if (modelPlayer4.isEmpty()) {
                 modelPlayer4.add(bean);
                 tablePlayer4.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer5.size() == 0) {
+            } else if (modelPlayer5.isEmpty()) {
                 modelPlayer5.add(bean);
                 tablePlayer5.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer6.size() == 0) {
+            } else if (modelPlayer6.isEmpty()) {
                 modelPlayer6.add(bean);
                 tablePlayer6.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer7.size() == 0) {
+            } else if (modelPlayer7.isEmpty()) {
                 modelPlayer7.add(bean);
                 tablePlayer7.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer8.size() == 0) {
+            } else if (modelPlayer8.isEmpty()) {
                 modelPlayer8.add(bean);
                 tablePlayer8.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer9.size() == 0) {
+            } else if (modelPlayer9.isEmpty()) {
                 modelPlayer9.add(bean);
                 tablePlayer9.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer10.size() == 0) {
+            } else if (modelPlayer10.isEmpty()) {
                 modelPlayer10.add(bean);
                 tablePlayer10.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer11.size() == 0) {
+            } else if (modelPlayer11.isEmpty()) {
                 modelPlayer11.add(bean);
                 tablePlayer11.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer12.size() == 0) {
+            } else if (modelPlayer12.isEmpty()) {
                 modelPlayer12.add(bean);
                 tablePlayer12.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer13.size() == 0) {
+            } else if (modelPlayer13.isEmpty()) {
                 modelPlayer13.add(bean);
                 tablePlayer13.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer14.size() == 0) {
+            } else if (modelPlayer14.isEmpty()) {
                 modelPlayer14.add(bean);
                 tablePlayer14.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer15.size() == 0) {
+            } else if (modelPlayer15.isEmpty()) {
                 modelPlayer15.add(bean);
                 tablePlayer15.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer16.size() == 0) {
+            } else if (modelPlayer16.isEmpty()) {
                 modelPlayer16.add(bean);
                 tablePlayer16.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer17.size() == 0) {
+            } else if (modelPlayer17.isEmpty()) {
                 modelPlayer17.add(bean);
                 tablePlayer17.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer18.size() == 0) {
+            } else if (modelPlayer18.isEmpty()) {
                 modelPlayer18.add(bean);
                 tablePlayer18.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer19.size() == 0) {
+            } else if (modelPlayer19.isEmpty()) {
                 modelPlayer19.add(bean);
                 tablePlayer19.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer20.size() == 0) {
+            } else if (modelPlayer20.isEmpty()) {
                 modelPlayer20.add(bean);
                 tablePlayer20.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer21.size() == 0) {
+            } else if (modelPlayer21.isEmpty()) {
                 modelPlayer21.add(bean);
                 tablePlayer21.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer22.size() == 0) {
+            } else if (modelPlayer22.isEmpty()) {
                 modelPlayer22.add(bean);
                 tablePlayer22.getDataProvider().refreshAll();
                 bDel = true;
-            } else if (modelPlayer23.size() == 0) {
+            } else if (modelPlayer23.isEmpty()) {
                 modelPlayer23.add(bean);
                 tablePlayer23.getDataProvider().refreshAll();
                 bDel = true;
@@ -3135,117 +3135,117 @@ public class EmMercatoView extends VerticalLayout
 
 	private boolean existGiocatore(FcGiocatore g) {
 
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			if (modelPlayer1.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			if (modelPlayer2.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			if (modelPlayer3.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			if (modelPlayer4.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			if (modelPlayer5.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			if (modelPlayer6.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			if (modelPlayer7.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			if (modelPlayer8.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			if (modelPlayer9.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			if (modelPlayer10.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			if (modelPlayer11.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			if (modelPlayer12.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			if (modelPlayer13.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			if (modelPlayer14.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			if (modelPlayer15.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			if (modelPlayer16.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			if (modelPlayer17.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			if (modelPlayer18.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			if (modelPlayer19.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			if (modelPlayer20.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			if (modelPlayer21.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			if (modelPlayer22.contains(g)) {
 				return true;
 			}
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
             return modelPlayer23.contains(g);
 		}
 
@@ -3256,73 +3256,73 @@ public class EmMercatoView extends VerticalLayout
 	private void ordinaMercato() {
 
 		List<FcGiocatore> modelMercatoGiocatori = new ArrayList<>();
-		if (modelPlayer1.size() != 0) {
+		if (!modelPlayer1.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer1.get(0));
 		}
-		if (modelPlayer2.size() != 0) {
+		if (!modelPlayer2.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer2.get(0));
 		}
-		if (modelPlayer3.size() != 0) {
+		if (!modelPlayer3.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer3.get(0));
 		}
-		if (modelPlayer4.size() != 0) {
+		if (!modelPlayer4.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer4.get(0));
 		}
-		if (modelPlayer5.size() != 0) {
+		if (!modelPlayer5.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer5.get(0));
 		}
-		if (modelPlayer6.size() != 0) {
+		if (!modelPlayer6.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer6.get(0));
 		}
-		if (modelPlayer7.size() != 0) {
+		if (!modelPlayer7.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer7.get(0));
 		}
-		if (modelPlayer8.size() != 0) {
+		if (!modelPlayer8.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer8.get(0));
 		}
-		if (modelPlayer9.size() != 0) {
+		if (!modelPlayer9.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer9.get(0));
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer10.get(0));
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer11.get(0));
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer12.get(0));
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer13.get(0));
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer14.get(0));
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer15.get(0));
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer16.get(0));
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer17.get(0));
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer18.get(0));
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer19.get(0));
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer20.get(0));
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer21.get(0));
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer22.get(0));
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
 			modelMercatoGiocatori.add(modelPlayer23.get(0));
 		}
 		removeMercatoGiocatore();

@@ -82,7 +82,7 @@ public class EmRegolamentoView extends VerticalLayout
 
 			BufferedReader br;
 			BufferedReader br2;
-			if (l != null && l.size() > 0) {
+			if (l != null && !l.isEmpty()) {
 				FcRegolamento r = l.get(0);
 				regolamento = r;
 				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());

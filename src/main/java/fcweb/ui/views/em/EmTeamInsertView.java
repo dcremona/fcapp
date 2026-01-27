@@ -1484,72 +1484,72 @@ public class EmTeamInsertView extends VerticalLayout
 				return 9;
 			}
 		}
-		if (modelPlayer10.size() != 0) {
+		if (!modelPlayer10.isEmpty()) {
 			if (modelPlayer10.contains(g)) {
 				return 10;
 			}
 		}
-		if (modelPlayer11.size() != 0) {
+		if (!modelPlayer11.isEmpty()) {
 			if (modelPlayer11.contains(g)) {
 				return 11;
 			}
 		}
-		if (modelPlayer12.size() != 0) {
+		if (!modelPlayer12.isEmpty()) {
 			if (modelPlayer12.contains(g)) {
 				return 12;
 			}
 		}
-		if (modelPlayer13.size() != 0) {
+		if (!modelPlayer13.isEmpty()) {
 			if (modelPlayer13.contains(g)) {
 				return 13;
 			}
 		}
-		if (modelPlayer14.size() != 0) {
+		if (!modelPlayer14.isEmpty()) {
 			if (modelPlayer14.contains(g)) {
 				return 14;
 			}
 		}
-		if (modelPlayer15.size() != 0) {
+		if (!modelPlayer15.isEmpty()) {
 			if (modelPlayer15.contains(g)) {
 				return 15;
 			}
 		}
-		if (modelPlayer16.size() != 0) {
+		if (!modelPlayer16.isEmpty()) {
 			if (modelPlayer16.contains(g)) {
 				return 16;
 			}
 		}
-		if (modelPlayer17.size() != 0) {
+		if (!modelPlayer17.isEmpty()) {
 			if (modelPlayer17.contains(g)) {
 				return 17;
 			}
 		}
-		if (modelPlayer18.size() != 0) {
+		if (!modelPlayer18.isEmpty()) {
 			if (modelPlayer18.contains(g)) {
 				return 18;
 			}
 		}
-		if (modelPlayer19.size() != 0) {
+		if (!modelPlayer19.isEmpty()) {
 			if (modelPlayer19.contains(g)) {
 				return 19;
 			}
 		}
-		if (modelPlayer20.size() != 0) {
+		if (!modelPlayer20.isEmpty()) {
 			if (modelPlayer20.contains(g)) {
 				return 20;
 			}
 		}
-		if (modelPlayer21.size() != 0) {
+		if (!modelPlayer21.isEmpty()) {
 			if (modelPlayer21.contains(g)) {
 				return 21;
 			}
 		}
-		if (modelPlayer22.size() != 0) {
+		if (!modelPlayer22.isEmpty()) {
 			if (modelPlayer22.contains(g)) {
 				return 22;
 			}
 		}
-		if (modelPlayer23.size() != 0) {
+		if (!modelPlayer23.isEmpty()) {
 			if (modelPlayer23.contains(g)) {
 				return 23;
 			}
@@ -1565,7 +1565,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
-		if (lGiocatori.size() == 0) {
+		if (lGiocatori.isEmpty()) {
 			this.comboModulo.setValue(null);
 			removeAllElementsList();
 			return;
@@ -1749,7 +1749,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 	private boolean check() {
 
-		if (modelPlayer1.size() == 0 || modelPlayer2.size() == 0 || modelPlayer3.size() == 0 || modelPlayer4.size() == 0 || modelPlayer5.size() == 0 || modelPlayer6.size() == 0 || modelPlayer7.size() == 0 || modelPlayer8.size() == 0 || modelPlayer9.size() == 0 || modelPlayer10.size() == 0 || modelPlayer11.size() == 0 || modelPlayer12.size() == 0 || modelPlayer13.size() == 0 || modelPlayer14.size() == 0 || modelPlayer15.size() == 0 || modelPlayer16.size() == 0 || modelPlayer17.size() == 0 || modelPlayer18.size() == 0 || modelPlayer19.size() == 0 || modelPlayer20.size() == 0 || modelPlayer21.size() == 0 || modelPlayer22.size() == 0 || modelPlayer23.size() == 0) {
+		if (modelPlayer1.isEmpty() || modelPlayer2.isEmpty() || modelPlayer3.isEmpty() || modelPlayer4.isEmpty() || modelPlayer5.isEmpty() || modelPlayer6.isEmpty() || modelPlayer7.isEmpty() || modelPlayer8.isEmpty() || modelPlayer9.isEmpty() || modelPlayer10.isEmpty() || modelPlayer11.isEmpty() || modelPlayer12.isEmpty() || modelPlayer13.isEmpty() || modelPlayer14.isEmpty() || modelPlayer15.isEmpty() || modelPlayer16.isEmpty() || modelPlayer17.isEmpty() || modelPlayer18.isEmpty() || modelPlayer19.isEmpty() || modelPlayer20.isEmpty() || modelPlayer21.isEmpty() || modelPlayer22.isEmpty() || modelPlayer23.isEmpty()) {
 			CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_ERROR_INSERT_GIOCATORI);
 			return false;
 		}

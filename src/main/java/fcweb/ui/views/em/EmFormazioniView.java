@@ -328,7 +328,7 @@ public class EmFormazioniView extends VerticalLayout{
 					info.add(Utils.buildImage("entrato_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato_s.png")));
 				}
 
-				if (info.size() > 0) {
+				if (!info.isEmpty()) {
 					for (Image e : info) {
 						cellLayout.add(e);
 					}
@@ -435,7 +435,7 @@ public class EmFormazioniView extends VerticalLayout{
 					info.add(Utils.buildImage("golvittoria_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golvittoria_s.png")));
 				}
 
-				if (info.size() > 0) {
+				if (!info.isEmpty()) {
 					for (Image e : info) {
 						cellLayout.add(e);
 					}
