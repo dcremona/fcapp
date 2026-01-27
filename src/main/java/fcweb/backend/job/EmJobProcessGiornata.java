@@ -478,9 +478,6 @@ public class EmJobProcessGiornata{
                 if (email_destinatario != null && !email_destinatario.isEmpty()) {
                     to = Utils.tornaArrayString(email_destinatario, ";");
                 }
-                String[] cc = null;
-                String[] bcc = null;
-                String[] att = null;
                 String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
 
                 formazioneHtml.append("</table>\n");
@@ -500,12 +497,12 @@ public class EmJobProcessGiornata{
 
                 try {
                     String from = env.getProperty("spring.mail.secondary.username");
-                    emailService.sendMail(false, from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", att);
+                    emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     try {
                         String from = env.getProperty("spring.mail.primary.username");
-                        emailService.sendMail(true, from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", att);
+                        emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
                     } catch (Exception e2) {
                         LOG.error(e2.getMessage());
                     }
@@ -633,7 +630,7 @@ public class EmJobProcessGiornata{
                     fcRuolo.setIdRuolo(ruolo);
                     FcSquadra fcSquadra = squadraRepository.findByNomeSquadra(squadra);
                     if (squadra == null) {
-                        LOG.info("SCARTO " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + squadra);
+                        LOG.info("SCARTO " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + null);
                         continue;
                     }
                     // LOG.info("FIND " + cognGiocatore+ " squadra " +squadra);
@@ -801,9 +798,6 @@ public class EmJobProcessGiornata{
                 if (email_destinatario != null && !email_destinatario.isEmpty()) {
                     to = Utils.tornaArrayString(email_destinatario, ";");
                 }
-                String[] cc = null;
-                String[] bcc = null;
-                String[] att = null;
                 String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
                 formazioneHtml.append("</table>\n");
 
@@ -822,12 +816,12 @@ public class EmJobProcessGiornata{
 
                 try {
                     String from = env.getProperty("spring.mail.secondary.username");
-                    emailService.sendMail(false, from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", att);
+                    emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                     try {
                         String from = env.getProperty("spring.mail.primary.username");
-                        emailService.sendMail(true, from, to, cc, bcc, subject, formazioneHtml.toString(), "text/html", att);
+                        emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
                     } catch (Exception e2) {
                         LOG.error(e2.getMessage());
                     }
@@ -1456,7 +1450,7 @@ public class EmJobProcessGiornata{
 				}
 			}
 
-			if (giocatores.size() > 0) {
+			if (!giocatores.isEmpty()) {
 
                 for (FcGiocatore giocatore : giocatores) {
 

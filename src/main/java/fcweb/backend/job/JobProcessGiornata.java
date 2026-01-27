@@ -863,8 +863,6 @@ public class JobProcessGiornata{
                 if (emailDestinatario != null && !emailDestinatario.isEmpty()) {
                     to = Utils.tornaArrayString(emailDestinatario, ";");
                 }
-                String[] bcc = null;
-                String[] att = null;
                 String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
 
                 formazioneHtml.append("</table>\n");
@@ -889,7 +887,7 @@ public class JobProcessGiornata{
                     log.error(e.getMessage());
                     try {
                         String from = env.getProperty("spring.mail.primary.username");
-                        emailService.sendMail(true, from, to, null, bcc, subject, formazioneHtml.toString(), "text/html", att);
+                        emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
                     } catch (Exception e2) {
                         log.error(e2.getMessage());
                     }
