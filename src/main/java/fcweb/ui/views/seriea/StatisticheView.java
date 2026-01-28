@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +123,7 @@ public class StatisticheView extends VerticalLayout
 	private NumberField txtQuotaz;
 	private ToggleButton freePlayers = null;
 	private ComboBox<FcAttore> comboProprietario;
+	private RadioButtonGroup<String> radioGroup = null;
 
 	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
@@ -377,6 +380,12 @@ public class StatisticheView extends VerticalLayout
 			return container;
 		}));
 
+		radioGroup = new RadioButtonGroup<>();
+		radioGroup.setLabel("Giocatori");
+		radioGroup.setItems("Tutti", "Attivi", "Non Attivi");
+		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+		radioGroup.setValue("Tutti");
+
 		hlayoutFilter.add(toggleP);
 		hlayoutFilter.add(toggleD);
 		hlayoutFilter.add(toggleC);
@@ -385,6 +394,7 @@ public class StatisticheView extends VerticalLayout
 		hlayoutFilter.add(txtQuotaz);
 		hlayoutFilter.add(freePlayers);
 		hlayoutFilter.add(comboProprietario);
+		hlayoutFilter.add(radioGroup);
 
 		layout.add(hlayoutFilter);
 
@@ -402,6 +412,7 @@ public class StatisticheView extends VerticalLayout
 		txtQuotaz.addValueChangeListener(event -> applyFilter(dataProvider));
 		freePlayers.addValueChangeListener(event -> applyFilter(dataProvider));
 		comboProprietario.addValueChangeListener(event -> applyFilter(dataProvider));
+		radioGroup.addValueChangeListener(event -> applyFilter(dataProvider));
 
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
@@ -635,6 +646,12 @@ public class StatisticheView extends VerticalLayout
 
 		if (comboProprietario.getValue() != null) {
 			dataProvider.addFilter(s -> comboProprietario.getValue().getDescAttore().equals(s.getProprietario()));
+		}
+
+		if ("Attivi".equals(radioGroup.getValue())) {
+			dataProvider.addFilter(FcStatistiche::isFlagAttivo);
+		} else if ("Non Attivi".equals(radioGroup.getValue())) {
+			dataProvider.addFilter(s -> !s.isFlagAttivo());
 		}
 
 	}

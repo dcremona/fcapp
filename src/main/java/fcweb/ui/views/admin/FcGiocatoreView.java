@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serial;
 import java.sql.SQLException;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,6 +175,13 @@ public class FcGiocatoreView extends VerticalLayout{
 		squadraColumn.setAutoWidth(true);
 
 		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getQuotazione())).setHeader("Quotazione");
+
+		crud.getGrid().addColumn(new ComponentRenderer<>(g -> {
+			Checkbox check = new Checkbox();
+			check.setValue(g.isFlagAttivo());
+			check.setEnabled(false);
+			return check;
+		})).setHeader("Attivo");
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
