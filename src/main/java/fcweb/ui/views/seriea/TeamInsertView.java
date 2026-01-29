@@ -446,7 +446,7 @@ public class TeamInsertView extends VerticalLayout
 		add(absLayout);
 
 		try {
-			loadFcGiornatadett();
+			loadFcGiornataDett();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -645,18 +645,18 @@ public class TeamInsertView extends VerticalLayout
 		lblProbabile.setText("Probabile: " + (StringUtils.isNotEmpty(g.getNomeGiocatore()) ? g.getNomeGiocatore() : "N.D."));
 		contentInfo.add(lblProbabile);
 
-		int perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
-		Span lblPerc = new Span();
-		lblPerc.setText("Percentuale: "+perc + "%");
+		int percentuale = g.getPercentuale() == null ? 0 : g.getPercentuale();
+		Span lblPercentuale = new Span();
+		lblPercentuale.setText("Percentuale: "+percentuale + "%");
 
-		if (perc > 60) {
-			lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
-		} else if (perc > 39) {
-			lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
+		if (percentuale > 60) {
+			lblPercentuale.addClassNames(LumoUtility.TextColor.SUCCESS);
+		} else if (percentuale > 39) {
+			lblPercentuale.addClassNames(LumoUtility.TextColor.ERROR);
 		} else {
-			lblPerc.addClassNames(LumoUtility.TextColor.TERTIARY);
+			lblPercentuale.addClassNames(LumoUtility.TextColor.TERTIARY);
 		}
-		contentInfo.add(lblPerc);
+		contentInfo.add(lblPercentuale);
 
 		popover.add(contentInfo);
 		popover.setAriaLabelledBy("cvv-heading");
@@ -1033,27 +1033,27 @@ public class TeamInsertView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
-				int perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
-				double value = Double.parseDouble(Integer.toString(perc)) / Double.parseDouble("100");
-				ProgressBar progressBarPerc = new ProgressBar();
-				progressBarPerc.setValue(value);
+				int percentuale = g.getPercentuale() == null ? 0 : g.getPercentuale();
+				double value = Double.parseDouble(Integer.toString(percentuale)) / Double.parseDouble("100");
+				ProgressBar progressBarPercentuale = new ProgressBar();
+				progressBarPercentuale.setValue(value);
 
-				Span lblPerc = new Span();
-				lblPerc.setText(perc + "%");
+				Span lblPercentuale = new Span();
+				lblPercentuale.setText(percentuale + "%");
 
-				if (perc > 60) {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
-					lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
-				} else if (perc > 39) {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
-					lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
+				if (percentuale > 60) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.SUCCESS);
+				} else if (percentuale > 39) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.ERROR);
 				} else {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-					lblPerc.addClassNames(LumoUtility.TextColor.TERTIARY);
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.TERTIARY);
 				}
 
-				cellLayout.add(progressBarPerc);
-				cellLayout.add(lblPerc);
+				cellLayout.add(progressBarPercentuale);
+				cellLayout.add(lblPercentuale);
 
 				if (millisDiff != 0) {
 					setPopover(cellLayout, g);
@@ -1533,7 +1533,7 @@ public class TeamInsertView extends VerticalLayout
 		} else return !modelPlayer18.isEmpty() && modelPlayer18.contains(g);
     }
 
-	private void loadFcGiornatadett() {
+	private void loadFcGiornataDett() {
 
 		log.info("START loadFcGiornatadett");
 
@@ -1668,14 +1668,14 @@ public class TeamInsertView extends VerticalLayout
 
 			if (checkMail.getValue()) {
 				try {
-					String dataora = getSysdate();
+					String dataOra = getSysdate();
 
 					sendNewMail(descGiornata);
 
 					log.info("send_mail OK");
 
 					try {
-						insertDettInfo(giornataSerieA, dataora);
+						insertDettInfo(giornataSerieA, dataOra);
 						log.info("insert_dett_info OK");
 					} catch (Exception exd) {
 						log.error(exd.getMessage());
@@ -1684,8 +1684,8 @@ public class TeamInsertView extends VerticalLayout
 
 					CustomMessageDialog.showMessageInfo("Formazione inserita, email inviata con successo!");
 
-				} catch (Exception excpt) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, excpt.getMessage());
+				} catch (Exception exception) {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, exception.getMessage());
 				}
 
 			} else {
@@ -1826,7 +1826,7 @@ public class TeamInsertView extends VerticalLayout
 		}
 	}
 
-	private void insertDettInfo(int giornata, String dataora) {
+	private void insertDettInfo(int giornata, String dataOra) {
 
 		String query;
 		try {
@@ -1834,7 +1834,7 @@ public class TeamInsertView extends VerticalLayout
 			jdbcTemplate.update(query);
 
 			query = " INSERT INTO fc_giornata_dett_info (ID_GIORNATA,ID_ATTORE, FLAG_INVIO,DATA_INVIO) VALUES (" + giornata + ",";
-			query += idAttore + ",1, '" + dataora + "')";
+			query += idAttore + ",1, '" + dataOra + "')";
 
 			jdbcTemplate.update(query);
 

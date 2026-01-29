@@ -37,7 +37,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Regolamento")
-@Route(value = "emregolamento", layout = MainLayout.class)
+@Route(value = "regolamentoEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmRegolamentoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{

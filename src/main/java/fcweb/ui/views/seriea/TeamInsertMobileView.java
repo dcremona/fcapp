@@ -250,7 +250,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		UI.getCurrent().getPage().retrieveExtendedClientDetails(event -> {
 			int resX = event.getScreenWidth();
 			int resY = event.getScreenHeight();
-            log.info("resX {}", resX);
+            log.info("resx {}", resX);
             log.info("resY {}", resY);
             log.info("Math.max {}", Math.max(resX, resY));
 			if (Math.max(resX, resY) < 800) {
@@ -541,7 +541,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		add(absLayout);
 
 		try {
-			loadFcGiornatadett();
+			loadFcGiornataDett();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -967,29 +967,29 @@ public class TeamInsertMobileView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
 				String title = Utils.getInfoPlayer(g);
-				int perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
-				double value = Double.parseDouble(Integer.toString(perc)) / Double.parseDouble("100");
+				int percentuale = g.getPercentuale() == null ? 0 : g.getPercentuale();
+				double value = Double.parseDouble(Integer.toString(percentuale)) / Double.parseDouble("100");
 
-				ProgressBar progressBarPerc = new ProgressBar();
-				progressBarPerc.setValue(value);
+				ProgressBar progressBarPercentuale = new ProgressBar();
+				progressBarPercentuale.setValue(value);
 
-				Span lblPerc = new Span();
-				lblPerc.setText(perc + "%");
-				lblPerc.setTitle(title);
+				Span lblPercentuale = new Span();
+				lblPercentuale.setText(percentuale + "%");
+				lblPercentuale.setTitle(title);
 
-				if (perc > 60) {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
-					lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
-				} else if (perc > 39) {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
-					lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
+				if (percentuale > 60) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.SUCCESS);
+				} else if (percentuale > 39) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.ERROR);
 				} else {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-					lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.DISABLED);
 				}
 
-				cellLayout.add(progressBarPerc);
-				cellLayout.add(lblPerc);
+				cellLayout.add(progressBarPercentuale);
+				cellLayout.add(lblPercentuale);
 			}
 			return cellLayout;
 		}));
@@ -1464,7 +1464,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		} else return !modelPlayer18.isEmpty() && modelPlayer18.contains(g);
     }
 
-	private void loadFcGiornatadett() {
+	private void loadFcGiornataDett() {
 
 		log.info("loadFcGiornatadett");
 
@@ -1595,11 +1595,11 @@ public class TeamInsertMobileView extends VerticalLayout
 
 			if (check()) {
 
-				int giornataSeriea = giornataInfo.getCodiceGiornata();
+				int giornataSerieA = giornataInfo.getCodiceGiornata();
 				String descGiornata = giornataInfo.getDescGiornataFc();
 
 				try {
-					insert(giornataSeriea);
+					insert(giornataSerieA);
 				} catch (Exception exi) {
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exi.getMessage());
 					return;
@@ -1607,14 +1607,14 @@ public class TeamInsertMobileView extends VerticalLayout
 
 				if (checkMail.getValue()) {
 					try {
-						String dataora = getSysdate();
+						String dataOra = getSysdate();
 
 						sendNewMail(descGiornata);
 
 						log.info("send_mail OK");
 
 						try {
-							insertDettInfo(giornataSeriea, dataora);
+							insertDettInfo(giornataSerieA, dataOra);
 							log.info("insert_dett_info OK");
 						} catch (Exception exd) {
 							log.error(exd.getMessage());
@@ -1623,8 +1623,8 @@ public class TeamInsertMobileView extends VerticalLayout
 
 						CustomMessageDialog.showMessageInfo("Formazione inserita, email inviata con successo!");
 
-					} catch (Exception excpt) {
-						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, excpt.getMessage());
+					} catch (Exception exception) {
+						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, exception.getMessage());
 					}
 
 				} else {
@@ -1766,7 +1766,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		}
 	}
 
-	private void insertDettInfo(int giornata, String dataora) {
+	private void insertDettInfo(int giornata, String dataOra) {
 
 		String query;
 		try {
@@ -1774,7 +1774,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			jdbcTemplate.update(query);
 
 			query = " INSERT INTO fc_giornata_dett_info (ID_GIORNATA,ID_ATTORE, FLAG_INVIO,DATA_INVIO) VALUES (" + giornata + ",";
-			query += idAttore + ",1, '" + dataora + "')";
+			query += idAttore + ",1, '" + dataOra + "')";
 
 			jdbcTemplate.update(query);
 

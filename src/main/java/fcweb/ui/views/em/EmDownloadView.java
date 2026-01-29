@@ -46,7 +46,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Download")
-@Route(value = "emdownnload", layout = MainLayout.class)
+@Route(value = "downloadEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmDownloadView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{

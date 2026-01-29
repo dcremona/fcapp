@@ -52,7 +52,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Formazioni")
-@Route(value = "emformazioni", layout = MainLayout.class)
+@Route(value = "formazioniEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmFormazioniView extends VerticalLayout{
 
@@ -66,8 +66,8 @@ public class EmFormazioniView extends VerticalLayout{
 	private Image iconAssist_ = null;
 	private Image iconAutogol_ = null;
 	private Image iconEntrato_ = null;
-	private Image iconGolfatto_ = null;
-	private Image iconGolsubito_ = null;
+	private Image iconGoalFatto_ = null;
+	private Image iconGoalSubito_ = null;
 	private Image iconUscito_ = null;
 	private Image iconRigoreSbagliato_ = null;
 	private Image iconRigoreSegnato_ = null;
@@ -141,8 +141,8 @@ public class EmFormazioniView extends VerticalLayout{
 		iconAssist_ = Utils.buildImage("assist.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
 		iconAutogol_ = Utils.buildImage("autogol.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
 		iconEntrato_ = Utils.buildImage("entrato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
-		iconGolfatto_ = Utils.buildImage("golfatto.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
-		iconGolsubito_ = Utils.buildImage("golsubito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
+		iconGoalFatto_ = Utils.buildImage("golfatto.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
+		iconGoalSubito_ = Utils.buildImage("golsubito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
 		iconUscito_ = Utils.buildImage("uscito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
 		iconRigoreSbagliato_ = Utils.buildImage("rigoresbagliato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato.png"));
 		iconRigoreSegnato_ = Utils.buildImage("rigoresegnato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato.png"));
@@ -155,8 +155,8 @@ public class EmFormazioniView extends VerticalLayout{
 
 		LOG.info("initLayout()");
 
-		Button stampapdf = new Button("Risultati pdf");
-		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+		Button stampaPdf = new Button("Risultati pdf");
+		stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
         ComboBox<FcGiornataInfo> comboGiornata = new ComboBox<>();
 		comboGiornata.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
@@ -165,14 +165,14 @@ public class EmFormazioniView extends VerticalLayout{
 		comboGiornata.setPlaceholder("Seleziona la giornata");
 		comboGiornata.addValueChangeListener(event -> {
 			mainLayout.removeAll();
-			stampapdf.setEnabled(false);
+			stampaPdf.setEnabled(false);
 			if (event.getSource().isEmpty()) {
 				LOG.info("event.getSource().isEmpty()");
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-                LOG.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
+                LOG.info("giornata {}", fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
-				stampapdf.setEnabled(true);
+				stampaPdf.setEnabled(true);
 			}
 		});
 		comboGiornata.setWidthFull();
@@ -647,11 +647,11 @@ public class EmFormazioniView extends VerticalLayout{
 		HorizontalLayout horizontalLayout1 = new HorizontalLayout();
 		horizontalLayout1.setSpacing(true);
 
-		horizontalLayout1.add(iconGolfatto_);
+		horizontalLayout1.add(iconGoalFatto_);
 		Span lbl = new Span("Gol Fatto");
 		horizontalLayout1.add(lbl);
 
-		horizontalLayout1.add(iconGolsubito_);
+		horizontalLayout1.add(iconGoalSubito_);
 		lbl = new Span("Gol Subito");
 		horizontalLayout1.add(lbl);
 

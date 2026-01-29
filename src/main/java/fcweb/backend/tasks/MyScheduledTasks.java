@@ -104,7 +104,7 @@ public class MyScheduledTasks{
 
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.isEmpty()) {
-			log.error("error lProprieta size" + 0);
+			log.error("error lProprietà size" + 0);
 			return;
 		}
 		Properties p = new Properties();
@@ -155,8 +155,8 @@ public class MyScheduledTasks{
 		Thread.sleep(60000L);
 
 		String urlFanta = (String) p.get("URL_FANTA");
-		String httpurl = urlFanta + votiExcel + ".asp?giornataScelta=" + giornataInfo.getCodiceGiornata();
-		jobProcessFileCsv.downloadCsv(httpurl, basePathData, "voti_" + giornataInfo.getCodiceGiornata(), 3);
+		String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + giornataInfo.getCodiceGiornata();
+		jobProcessFileCsv.downloadCsv(httpUrl, basePathData, "voti_" + giornataInfo.getCodiceGiornata(), 3);
 
 		String fileName = basePathData + "/voti_" + giornataInfo.getCodiceGiornata() + ".csv";
 		jobProcessGiornata.aggiornamentoPFGiornata(p, fileName, "" + giornataInfo.getCodiceGiornata());
@@ -189,7 +189,7 @@ public class MyScheduledTasks{
 
 		List<FcProperties> lProprieta = proprietaController.findAll();
 		if (lProprieta.isEmpty()) {
-			log.error("error lProprieta size" + 0);
+			log.error("error lProprietà size" + 0);
 			return;
 		}
 		Properties p = new Properties();

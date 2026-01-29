@@ -249,7 +249,7 @@ public class MainLayout extends AppLayout{
 				}
 
 				if (accessChecker.hasAccess(FcPropertiesView.class)) {
-					adminNav.addItem(new SideNavItem("Proprieta",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
+					adminNav.addItem(new SideNavItem("Proprietà",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
 				}
 
 				if (accessChecker.hasAccess(FcUserView.class)) {
@@ -314,7 +314,7 @@ public class MainLayout extends AppLayout{
 				}
 
 				if (accessChecker.hasAccess(FcPropertiesView.class)) {
-					adminNav.addItem(new SideNavItem("Proprieta",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
+					adminNav.addItem(new SideNavItem("Proprietà",FcPropertiesView.class,LineAwesomeIcon.TOOLBOX_SOLID.create()));
 				}
 
 				if (accessChecker.hasAccess(FcUserView.class)) {

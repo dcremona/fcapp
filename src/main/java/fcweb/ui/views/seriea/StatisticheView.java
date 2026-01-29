@@ -110,7 +110,7 @@ public class StatisticheView extends VerticalLayout
 	private ComboBox<FcAttore> comboAttoreB;
 	private ComboBox<String> comboPunti;
 
-	private List<FcAttore> propretari = new ArrayList<>();
+	private List<FcAttore> proprietari = new ArrayList<>();
 	private List<FcSquadra> squadreSerieA = null;
 	private Button salvaStat = null;
 
@@ -119,8 +119,8 @@ public class StatisticheView extends VerticalLayout
 	private ToggleButton toggleD = null;
 	private ToggleButton toggleC = null;
 	private ToggleButton toggleA = null;
-	private ComboBox<FcSquadra> comboSqudreA;
-	private NumberField txtQuotaz;
+	private ComboBox<FcSquadra> comboSquadreA;
+	private NumberField txtQuotazione;
 	private ToggleButton freePlayers = null;
 	private ComboBox<FcAttore> comboProprietario;
 	private RadioButtonGroup<String> radioGroup = null;
@@ -145,7 +145,7 @@ public class StatisticheView extends VerticalLayout
 		squadreA = attoreController.findByActive(true);
 		squadreB = squadreA;
 		squadreSerieA = squadraController.findAll();
-		propretari = squadreA;
+		proprietari = squadreA;
 	}
 
 	private void initLayout() {
@@ -156,12 +156,12 @@ public class StatisticheView extends VerticalLayout
 		final VerticalLayout layoutStat = new VerticalLayout();
 		setStatisticheA(layoutStat, campionato, att);
 
-		final VerticalLayout layoutConfornti = new VerticalLayout();
-		setConfronti(layoutConfornti, campionato, att);
+		final VerticalLayout layoutConfronti = new VerticalLayout();
+		setConfronti(layoutConfronti, campionato, att);
 
 		TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Statistiche", layoutStat);
-		tabSheet.add("Confronti", layoutConfornti);
+		tabSheet.add("Confronti", layoutConfronti);
 		tabSheet.setSizeFull();
 		add(tabSheet);
 
@@ -170,8 +170,8 @@ public class StatisticheView extends VerticalLayout
 	private void setConfronti(VerticalLayout layout, FcCampionato campionato,
 			FcAttore att) {
 
-		HorizontalLayout hlayout1 = new HorizontalLayout();
-		hlayout1.setSpacing(true);
+		HorizontalLayout layout1 = new HorizontalLayout();
+		layout1.setSpacing(true);
 
 		comboAttoreA = new ComboBox<>();
 		comboAttoreA.setItems(squadreA);
@@ -202,11 +202,11 @@ public class StatisticheView extends VerticalLayout
 			verticalLayoutGrafico.add(buildGrafico(campionato));
 		});
 
-		hlayout1.add(comboAttoreA);
-		hlayout1.add(comboAttoreB);
-		hlayout1.add(comboPunti);
+		layout1.add(comboAttoreA);
+		layout1.add(comboAttoreB);
+		layout1.add(comboPunti);
 
-		layout.add(hlayout1);
+		layout.add(layout1);
 
 		verticalLayoutGrafico.removeAll();
 		verticalLayoutGrafico.add(buildGrafico(campionato));
@@ -268,8 +268,8 @@ public class StatisticheView extends VerticalLayout
 	private void setStatisticheA(VerticalLayout layout, FcCampionato campionato,
 			FcAttore att) {
 
-		HorizontalLayout hlayout1 = new HorizontalLayout();
-		hlayout1.setSpacing(true);
+		HorizontalLayout layout1 = new HorizontalLayout();
+		layout1.setSpacing(true);
 
 		try {
 
@@ -283,7 +283,7 @@ public class StatisticheView extends VerticalLayout
 			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
 
 			button1Wrapper.wrapComponent(stampaPdf);
-			hlayout1.add(button1Wrapper);
+			layout1.add(button1Wrapper);
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -300,7 +300,7 @@ public class StatisticheView extends VerticalLayout
 			FileDownloadWrapper button1Wrapper2 = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVotiFreePlayers.pdf", conn, hm, resource.getInputStream()));
 
 			button1Wrapper2.wrapComponent(stampaPdf2);
-			hlayout1.add(button1Wrapper2);
+			layout1.add(button1Wrapper2);
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -318,13 +318,13 @@ public class StatisticheView extends VerticalLayout
 			salvaStat = new Button("Aggiorna Statistiche");
 			salvaStat.setIcon(VaadinIcon.DATABASE.create());
 			salvaStat.addClickListener(this);
-			hlayout1.add(salvaStat);
+			layout1.add(salvaStat);
 		}
 
-		layout.add(hlayout1);
+		layout.add(layout1);
 
-		HorizontalLayout hlayoutFilter = new HorizontalLayout();
-		hlayoutFilter.setSpacing(true);
+		HorizontalLayout layoutFilter = new HorizontalLayout();
+		layoutFilter.setSpacing(true);
 
 		toggleP = new ToggleButton();
 		toggleP.setLabel(Costants.P);
@@ -339,12 +339,12 @@ public class StatisticheView extends VerticalLayout
 		toggleA.setLabel(Costants.A);
 		toggleA.setValue(true);
 
-		comboSqudreA = new ComboBox<>(Costants.SQUADRA);
-		comboSqudreA.setItems(squadreSerieA);
-		comboSqudreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
-		comboSqudreA.setClearButtonVisible(true);
-		comboSqudreA.setPlaceholder(Costants.SQUADRA);
-		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
+		comboSquadreA = new ComboBox<>(Costants.SQUADRA);
+		comboSquadreA.setItems(squadreSerieA);
+		comboSquadreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
+		comboSquadreA.setClearButtonVisible(true);
+		comboSquadreA.setPlaceholder(Costants.SQUADRA);
+		comboSquadreA.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
 			if (item != null && item.getImg() != null) {
 				try {
@@ -360,16 +360,16 @@ public class StatisticheView extends VerticalLayout
 			return container;
 		}));
 
-		txtQuotaz = new NumberField("Quotazione <=");
-		txtQuotaz.setMin(0d);
-		txtQuotaz.setMax(500d);
+		txtQuotazione = new NumberField("Quotazione <=");
+		txtQuotazione.setMin(0d);
+		txtQuotazione.setMax(500d);
 
 		freePlayers = new ToggleButton();
 		freePlayers.setLabel("Free Players");
 		freePlayers.setValue(false);
 
 		comboProprietario = new ComboBox<>(Costants.PROPETARIO);
-		comboProprietario.setItems(propretari);
+		comboProprietario.setItems(proprietari);
 		comboProprietario.setItemLabelGenerator(FcAttore::getDescAttore);
 		comboProprietario.setClearButtonVisible(true);
 		comboProprietario.setPlaceholder(Costants.PROPETARIO);
@@ -386,17 +386,17 @@ public class StatisticheView extends VerticalLayout
 		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroup.setValue("Tutti");
 
-		hlayoutFilter.add(toggleP);
-		hlayoutFilter.add(toggleD);
-		hlayoutFilter.add(toggleC);
-		hlayoutFilter.add(toggleA);
-		hlayoutFilter.add(comboSqudreA);
-		hlayoutFilter.add(txtQuotaz);
-		hlayoutFilter.add(freePlayers);
-		hlayoutFilter.add(comboProprietario);
-		hlayoutFilter.add(radioGroup);
+		layoutFilter.add(toggleP);
+		layoutFilter.add(toggleD);
+		layoutFilter.add(toggleC);
+		layoutFilter.add(toggleA);
+		layoutFilter.add(comboSquadreA);
+		layoutFilter.add(txtQuotazione);
+		layoutFilter.add(freePlayers);
+		layoutFilter.add(comboProprietario);
+		layoutFilter.add(radioGroup);
 
-		layout.add(hlayoutFilter);
+		layout.add(layoutFilter);
 
 		List<FcStatistiche> items = statisticheController.findByFlagAttivo(true);
 
@@ -408,8 +408,8 @@ public class StatisticheView extends VerticalLayout
 		toggleD.addValueChangeListener(event -> applyFilter(dataProvider));
 		toggleC.addValueChangeListener(event -> applyFilter(dataProvider));
 		toggleA.addValueChangeListener(event -> applyFilter(dataProvider));
-		comboSqudreA.addValueChangeListener(event -> applyFilter(dataProvider));
-		txtQuotaz.addValueChangeListener(event -> applyFilter(dataProvider));
+		comboSquadreA.addValueChangeListener(event -> applyFilter(dataProvider));
+		txtQuotazione.addValueChangeListener(event -> applyFilter(dataProvider));
 		freePlayers.addValueChangeListener(event -> applyFilter(dataProvider));
 		comboProprietario.addValueChangeListener(event -> applyFilter(dataProvider));
 		radioGroup.addValueChangeListener(event -> applyFilter(dataProvider));
@@ -632,12 +632,12 @@ public class StatisticheView extends VerticalLayout
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase("-"));
 		}
 
-		if (comboSqudreA.getValue() != null) {
-			dataProvider.addFilter(s -> comboSqudreA.getValue().getNomeSquadra().equals(s.getNomeSquadra()));
+		if (comboSquadreA.getValue() != null) {
+			dataProvider.addFilter(s -> comboSquadreA.getValue().getNomeSquadra().equals(s.getNomeSquadra()));
 		}
 
-		if (txtQuotaz.getValue() != null) {
-			dataProvider.addFilter(s -> s.getFcGiocatore().getQuotazione() <= txtQuotaz.getValue().intValue());
+		if (txtQuotazione.getValue() != null) {
+			dataProvider.addFilter(s -> s.getFcGiocatore().getQuotazione() <= txtQuotazione.getValue().intValue());
 		}
 
 		if (freePlayers.getValue()) {

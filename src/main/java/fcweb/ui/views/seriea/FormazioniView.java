@@ -75,8 +75,8 @@ public class FormazioniView extends VerticalLayout{
 	private Image iconAssist = null;
 	private Image iconAutogol = null;
 	private Image iconEntrato = null;
-	private Image iconGolfatto = null;
-	private Image iconGolsubito = null;
+	private Image iconGoalFatto = null;
+	private Image iconGoalSubito = null;
 	private Image iconUscito = null;
 	private Image iconRigoreSbagliato = null;
 	private Image iconRigoreSegnato = null;
@@ -136,8 +136,8 @@ public class FormazioniView extends VerticalLayout{
 		iconAssist = Utils.buildImage("assist.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "assist.png"));
 		iconAutogol = Utils.buildImage("autogol.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "autogol.png"));
 		iconEntrato = Utils.buildImage("entrato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "entrato.png"));
-		iconGolfatto = Utils.buildImage("golfatto.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
-		iconGolsubito = Utils.buildImage("golsubito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
+		iconGoalFatto = Utils.buildImage("golfatto.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golfatto.png"));
+		iconGoalSubito = Utils.buildImage("golsubito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "golsubito.png"));
 		iconUscito = Utils.buildImage("uscito.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "uscito.png"));
 		iconRigoreSbagliato = Utils.buildImage("rigoresbagliato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresbagliato.png"));
 		iconRigoreSegnato = Utils.buildImage("rigoresegnato.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "rigoresegnato.png"));
@@ -162,9 +162,9 @@ public class FormazioniView extends VerticalLayout{
 			byte[] b = jobProcessSendMail.getJasperRisultati(campionato, comboGiornata.getValue(), pathImg);
 			return new ByteArrayInputStream(b);
 		}));
-		Button stampapdf = new Button("Risultati pdf");
-		stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
-		button1Wrapper.wrapComponent(stampapdf);
+		Button stampaPdf = new Button("Risultati pdf");
+		stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
+		button1Wrapper.wrapComponent(stampaPdf);
 		add(button1Wrapper);
 
 		comboGiornata = new ComboBox<>();
@@ -175,14 +175,14 @@ public class FormazioniView extends VerticalLayout{
 		comboGiornata.addValueChangeListener(event -> {
 			log.info("addValueChangeListener ");
 			mainLayout.removeAll();
-			stampapdf.setEnabled(false);
+			stampaPdf.setEnabled(false);
 			if (event.getSource().isEmpty()) {
 				log.info("event.getSource().isEmpty()");
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-                log.info("gioranta {}", fcGiornataInfo.getCodiceGiornata());
+                log.info("giornata {}", fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
-				stampapdf.setEnabled(true);
+				stampaPdf.setEnabled(true);
 			}
 		});
 		comboGiornata.setWidthFull();
@@ -323,13 +323,13 @@ public class FormazioniView extends VerticalLayout{
 		}
 
 		if (items.size() != 26) {
-			int addGioc = 26 - items.size();
-			int incr = items.size();
-			for (int g = 0; g < addGioc; g++) {
+			int addGiocate = 26 - items.size();
+			int incremento = items.size();
+			for (int g = 0; g < addGiocate; g++) {
 				FcGiornataDett gDett = new FcGiornataDett();
-				gDett.setOrdinamento(incr);
+				gDett.setOrdinamento(incremento);
 				items.add(gDett);
-				incr++;
+				incremento++;
 			}
 		}
 
@@ -759,8 +759,8 @@ public class FormazioniView extends VerticalLayout{
 		FormLayout layout = new FormLayout();
 		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 
-		layout.addFormItem(iconGolfatto, "Gol Fatto (+3)");
-		layout.addFormItem(iconGolsubito, "Gol Subito (-1)");
+		layout.addFormItem(iconGoalFatto, "Goal Fatto (+3)");
+		layout.addFormItem(iconGoalSubito, "Goal Subito (-1)");
 		layout.addFormItem(iconAmm, "Ammonizione (-0.5)");
 		layout.addFormItem(iconEsp, "Espulsione (-1)");
 		layout.addFormItem(iconAssist, "Assist (+1)");

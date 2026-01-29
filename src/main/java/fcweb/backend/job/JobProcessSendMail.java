@@ -112,11 +112,11 @@ public class JobProcessSendMail{
 		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
 		Collection<RisultatoBean> l = new ArrayList<>();
 		l.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
-		String destFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
+		String testFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
 
 		Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 		InputStream inputStream = resource.getInputStream();
-		FileOutputStream outputStream = new FileOutputStream(destFileName1);
+		FileOutputStream outputStream = new FileOutputStream(testFileName1);
 		try {
 			JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, l);
 		} catch (Exception e) {
@@ -129,11 +129,11 @@ public class JobProcessSendMail{
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			parameters.put("DIVISORE", "" + Costants.DIVISORE_100);
-			String destFileName2 = pathOutputPdf + "Classifica.pdf";
+			String testFileName2 = pathOutputPdf + "Classifica.pdf";
 			Resource resource2 = resourceLoader.getResource("classpath:reports/classifica.jasper");
 			InputStream inputStream2 = resource2.getInputStream();
 
-			outputStream2 = new FileOutputStream(destFileName2);
+			outputStream2 = new FileOutputStream(testFileName2);
             assert jdbcTemplate.getDataSource() != null;
             conn = jdbcTemplate.getDataSource().getConnection();
 			JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
@@ -157,7 +157,7 @@ public class JobProcessSendMail{
 				to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
 			}
 
-            String[] att = new String[] { destFileName1, destFileName2 };
+            String[] att = new String[] { testFileName1, testFileName2 };
 			String subject = "Risultati " + p.getProperty("INFO_RESULT") + " " + giornataInfo.getDescGiornataFc();
 			String message = getBody();
 
@@ -211,11 +211,11 @@ public class JobProcessSendMail{
 		parameters.put("path_img", pathImg);
 		parameters.put("titolo", giornataInfo.getDescGiornataFc());
 
-		List<FcGiornata> listCalen = giornataController.findByFcGiornataInfo(giornataInfo);
+		List<FcGiornata> listCalendario = giornataController.findByFcGiornataInfo(giornataInfo);
 
 		int partita = 0;
 		int att = 0;
-		for (FcGiornata cal : listCalen) {
+		for (FcGiornata cal : listCalendario) {
 
 			HashMap<String, Collection<RisultatoBean>> mapCasa;
 			try {
@@ -320,14 +320,14 @@ public class JobProcessSendMail{
 		}
 
 		if (data.size() != 26) {
-			int addGioc = 26 - data.size();
-			int incr = data.size();
-			for (int g = 0; g < addGioc; g++) {
+			int addGiocatore = 26 - data.size();
+			int incremento = data.size();
+			for (int g = 0; g < addGiocatore; g++) {
 				RisultatoBean r = new RisultatoBean();
-				r.setOrdinamento(incr);
+				r.setOrdinamento(incremento);
 				r.setFlag_attivo("N");
 				data.add(r);
-				incr++;
+				incremento++;
 			}
 		}
 

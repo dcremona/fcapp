@@ -56,7 +56,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Rose")
-@Route(value = "emsquadre", layout = MainLayout.class)
+@Route(value = "squadreEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmSquadreView extends VerticalLayout{
 

@@ -163,8 +163,8 @@ public class SquadreAllView extends VerticalLayout{
 	private FileDownloadWrapper buildButtonRose(FcCampionato campionato) {
 
 		try {
-			Button stampapdfRose = new Button("Tutte le Rose pdf");
-			stampapdfRose.setIcon(VaadinIcon.DOWNLOAD.create());
+			Button stampaPdfRose = new Button("Tutte le Rose pdf");
+			stampaPdfRose.setIcon(VaadinIcon.DOWNLOAD.create());
 
 			Map<String, Object> hm = getMapRoseFcAll(campionato);
 			hm.put("titolo", "Rose Fc");
@@ -174,7 +174,7 @@ public class SquadreAllView extends VerticalLayout{
 
 			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("RoseFcAll.pdf", collection, hm, resource.getInputStream()));
 
-			button1Wrapper.wrapComponent(stampapdfRose);
+			button1Wrapper.wrapComponent(stampaPdfRose);
 
 			return button1Wrapper;
 

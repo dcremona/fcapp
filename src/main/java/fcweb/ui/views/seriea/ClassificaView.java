@@ -228,8 +228,8 @@ public class ClassificaView extends VerticalLayout{
 		horLayout.setSpacing(true);
 
 		try {
-			Button stampapdf = new Button("Classifica pdf");
-			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+			Button stampaPdf = new Button("Classifica pdf");
+			stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
 			if (jdbcTemplate.getDataSource() != null) {
 
@@ -240,7 +240,7 @@ public class ClassificaView extends VerticalLayout{
 				Resource resource = resourceLoader.getResource("classpath:reports/classifica.jasper");
 				FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
 
-				button1Wrapper.wrapComponent(stampapdf);
+				button1Wrapper.wrapComponent(stampaPdf);
 				horLayout.add(button1Wrapper);
 			}
 
@@ -347,7 +347,7 @@ public class ClassificaView extends VerticalLayout{
             int ptTvsT;
             int score18;
             int score11;
-            int scoreGrandPrix;
+            int scoreGrandPix;
 
             while (rs.next()) {
                 descAttore = rs.getString(1);
@@ -357,7 +357,7 @@ public class ClassificaView extends VerticalLayout{
                 ptTvsT = rs.getInt(5);
                 score18 = rs.getInt(6);
                 score11 = rs.getInt(7);
-                scoreGrandPrix = rs.getInt(8);
+                scoreGrandPix = rs.getInt(8);
 
                 FcClassificaTotPt clasPt = new FcClassificaTotPt();
                 FcAttore att = new FcAttore();
@@ -369,7 +369,7 @@ public class ClassificaView extends VerticalLayout{
                 clasPt.setPtTvsT(ptTvsT);
                 clasPt.setScore(score18);
                 clasPt.setScoreOld(score11);
-                clasPt.setScoreGrandPrix(scoreGrandPrix);
+                clasPt.setScoreGrandPrix(scoreGrandPix);
 
                 dm.add(clasPt);
             }

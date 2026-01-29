@@ -53,7 +53,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Classifica")
-@Route(value = "emclassifica", layout = MainLayout.class)
+@Route(value = "classificaEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmClassificaView extends VerticalLayout{
 
@@ -170,8 +170,8 @@ public class EmClassificaView extends VerticalLayout{
 		horLayout.setSpacing(true);
 
 		try {
-			Button stampapdf = new Button("Classifica pdf");
-			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+			Button stampaPdf = new Button("Classifica pdf");
+			stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
             assert jdbcTemplate.getDataSource() != null;
             Connection conn = jdbcTemplate.getDataSource().getConnection();
@@ -182,7 +182,7 @@ public class EmClassificaView extends VerticalLayout{
 			Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
 			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Classifica.pdf", conn, hm, resource.getInputStream()));
 
-			button1Wrapper.wrapComponent(stampapdf);
+			button1Wrapper.wrapComponent(stampaPdf);
 			horLayout.add(button1Wrapper);
 
 		} catch (Exception e) {

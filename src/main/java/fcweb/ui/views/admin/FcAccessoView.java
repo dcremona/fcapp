@@ -106,7 +106,7 @@ public class FcAccessoView extends VerticalLayout
 
 		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
 		crud.getCrudFormFactory().setFieldProvider("data", a -> new DateTimePicker());
-		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Camionato",campionatoController.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
+		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Campionato",campionatoController.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
 
 		crud.setRowCountCaption("%d Accesso(s) found");
 		crud.setClickRowToUpdate(true);

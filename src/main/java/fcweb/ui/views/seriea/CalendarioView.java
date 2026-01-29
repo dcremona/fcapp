@@ -183,45 +183,45 @@ public class CalendarioView extends VerticalLayout{
 			log.error(e.getMessage());
 		}
 
-		Details paneldPrimaFaseAndata = new Details("Prima Fase Andata",gridPrimaFaseAndata);
-		paneldPrimaFaseAndata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		paneldPrimaFaseAndata.setEnabled(true);
-		paneldPrimaFaseAndata.setOpened(true);
+		Details panelsPrimaFaseAndata = new Details("Prima Fase Andata",gridPrimaFaseAndata);
+		panelsPrimaFaseAndata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+		panelsPrimaFaseAndata.setEnabled(true);
+		panelsPrimaFaseAndata.setOpened(true);
 
-		add(paneldPrimaFaseAndata);
+		add(panelsPrimaFaseAndata);
 
-		Details paneldPrimaFaseRitorno = new Details("Prima Fase Ritorno",gridPrimaFaseRitorno);
-		paneldPrimaFaseRitorno.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		paneldPrimaFaseRitorno.setEnabled(true);
-		paneldPrimaFaseRitorno.setOpened(true);
+		Details panelsPrimaFaseRitorno = new Details("Prima Fase Ritorno",gridPrimaFaseRitorno);
+		panelsPrimaFaseRitorno.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+		panelsPrimaFaseRitorno.setEnabled(true);
+		panelsPrimaFaseRitorno.setOpened(true);
 
-		this.add(paneldPrimaFaseRitorno);
+		this.add(panelsPrimaFaseRitorno);
 
 		if (gridQuarti.getComponentCount() > 0) {
-			Details paneldQuarti = new Details("Quarti",gridQuarti);
-			paneldQuarti.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-			paneldQuarti.setEnabled(true);
-			paneldQuarti.setOpened(true);
+			Details panelsQuarti = new Details("Quarti",gridQuarti);
+			panelsQuarti.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+			panelsQuarti.setEnabled(true);
+			panelsQuarti.setOpened(true);
 
-			this.add(paneldQuarti);
+			this.add(panelsQuarti);
 		}
 
 		if (gridSemi.getComponentCount() > 0) {
-			Details paneldSemi = new Details("Semifinali",gridSemi);
-			paneldSemi.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-			paneldSemi.setEnabled(true);
-			paneldSemi.setOpened(true);
+			Details panelsSemi = new Details("Semifinali",gridSemi);
+			panelsSemi.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+			panelsSemi.setEnabled(true);
+			panelsSemi.setOpened(true);
 
-			this.add(paneldSemi);
+			this.add(panelsSemi);
 		}
 
 		if (gridFinali.getComponentCount() > 0) {
-			Details paneldFinali = new Details("Finali",gridFinali);
-			paneldFinali.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-			paneldFinali.setEnabled(true);
-			paneldFinali.setOpened(true);
+			Details panelsFinali = new Details("Finali",gridFinali);
+			panelsFinali.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+			panelsFinali.setEnabled(true);
+			panelsFinali.setOpened(true);
 
-			this.add(paneldFinali);
+			this.add(panelsFinali);
 		}
 	}
 
@@ -231,8 +231,8 @@ public class CalendarioView extends VerticalLayout{
 		horLayout.setSpacing(true);
 
 		try {
-			Button stampapdf = new Button("Calendario Pdf");
-			stampapdf.setIcon(VaadinIcon.DOWNLOAD.create());
+			Button stampaPdf = new Button("Calendario Pdf");
+			stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
 
 			if (jdbcTemplate.getDataSource() != null) {
 				Connection conn = jdbcTemplate.getDataSource().getConnection();
@@ -243,7 +243,7 @@ public class CalendarioView extends VerticalLayout{
 				hm.put("END", end);
 				Resource resource = resourceLoader.getResource("classpath:reports/calendario.jasper");
 				FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("Calendario.pdf", conn, hm, resource.getInputStream()));
-				button1Wrapper.wrapComponent(stampapdf);
+				button1Wrapper.wrapComponent(stampaPdf);
 				horLayout.add(button1Wrapper);
 			}
 

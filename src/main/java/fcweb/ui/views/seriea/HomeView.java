@@ -84,9 +84,9 @@ public class HomeView extends VerticalLayout{
 
 			add(buildInfoGiornate());
 
-			add(builLayoutAvviso());
+			add(buildLayoutAvviso());
 
-			add(builLayoutRisultati());
+			add(buildLayoutRisultati());
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -184,7 +184,7 @@ public class HomeView extends VerticalLayout{
 		return grid;
 	}
 
-	private VerticalLayout builLayoutAvviso() {
+	private VerticalLayout buildLayoutAvviso() {
 
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		String nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
@@ -217,7 +217,7 @@ public class HomeView extends VerticalLayout{
 		return layoutAvviso;
 	}
 
-	private VerticalLayout builLayoutRisultati() {
+	private VerticalLayout buildLayoutRisultati() {
 
 		FormLayout layout = new FormLayout();
 		layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);

@@ -39,7 +39,7 @@ import jakarta.annotation.security.RolesAllowed;
 import java.io.Serial;
 
 @PageTitle("GiornataDett")
-@Route(value = "giornatadett", layout = MainLayout.class)
+@Route(value = "giornataDett", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcGiornataDettView extends VerticalLayout{
 

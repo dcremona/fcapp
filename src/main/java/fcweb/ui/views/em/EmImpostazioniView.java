@@ -73,7 +73,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Impostazioni")
-@Route(value = "emadmin", layout = MainLayout.class)
+@Route(value = "adminEm", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class EmImpostazioniView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
@@ -127,9 +127,9 @@ public class EmImpostazioniView extends VerticalLayout
 	private Button ultimaFormazione;
 	private ComboBox<FcAttore> comboAttore;
 
-	private Button downloadQuotaz;
+	private Button downloadQuotazione;
 	private Button updateGiocatori;
-	private Checkbox chkUpdateQuotaz;
+	private Checkbox chkUpdateQuotazione;
 	private Grid<FcGiocatore> tableGiocatoreAdd;
 	private Grid<FcGiocatore> tableGiocatoreDel;
 
@@ -138,7 +138,7 @@ public class EmImpostazioniView extends VerticalLayout
 	private Button calcola;
 	private Button ricalcola;
 	private Checkbox chkUfficiali;
-	private NumberField txtPerc;
+	private NumberField txtPercentuale;
 	private RadioButtonGroup<String> radioGroupVotiExcel = null;
 
 	private Button calcolaStatistiche;
@@ -230,29 +230,29 @@ public class EmImpostazioniView extends VerticalLayout
 		layoutUpdateRow1.add(comboAttore);
 		layoutUpdateRow1.add(ultimaFormazione);
 
-		downloadQuotaz = new Button("Download Quotazioni");
-		downloadQuotaz.setIcon(VaadinIcon.DOWNLOAD.create());
-		downloadQuotaz.addClickListener(this);
+		downloadQuotazione = new Button("Download Quotazioni");
+		downloadQuotazione.setIcon(VaadinIcon.DOWNLOAD.create());
+		downloadQuotazione.addClickListener(this);
 
 		updateGiocatori = new Button("Update Giocatori");
 		updateGiocatori.setIcon(VaadinIcon.PIN.create());
 		updateGiocatori.addClickListener(this);
 
-		chkUpdateQuotaz = new Checkbox("Update Quotazioni");
+		chkUpdateQuotazione = new Checkbox("Update Quotazioni");
 
-		txtPerc = new NumberField();
-		txtPerc.setMin(0d);
-		txtPerc.setMax(100d);
+		txtPercentuale = new NumberField();
+		txtPercentuale.setMin(0d);
+		txtPercentuale.setMax(100d);
 		// txtPerc.setHasControls(true);
-		txtPerc.setValue(50d);
+		txtPercentuale.setValue(50d);
 
 		HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
 		layoutUpdateRow2.setMargin(true);
 
-		layoutUpdateRow2.add(downloadQuotaz);
+		layoutUpdateRow2.add(downloadQuotazione);
 		layoutUpdateRow2.add(updateGiocatori);
-		layoutUpdateRow2.add(txtPerc);
-		layoutUpdateRow2.add(chkUpdateQuotaz);
+		layoutUpdateRow2.add(txtPercentuale);
+		layoutUpdateRow2.add(chkUpdateQuotazione);
 
 		HorizontalLayout layoutUpdateRow3 = new HorizontalLayout();
 		layoutUpdateRow3.setMargin(true);
@@ -407,7 +407,7 @@ public class EmImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == initDbAttore) {
 
 				FcAttore attore = comboAttore.getValue();
-                LOG.info("attore {}", attore.getDescAttore());
+                LOG.info("getDescAttore {}", attore.getDescAttore());
 
 				for (int j = 1; j <= 23; j++) {
 					formazioneController.createFormazione(attore, campionato.getIdCampionato(), j);
@@ -417,7 +417,7 @@ public class EmImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == ultimaFormazione) {
 
 				FcAttore attore = comboAttore.getValue();
-                LOG.info("attore {}", attore.getDescAttore());
+                LOG.info("descAttore {}", attore.getDescAttore());
 
 				emjobProcessGiornata.eminserisciUltimaFormazione(attore.getIdAttore(), giornata);
 
@@ -432,16 +432,16 @@ public class EmImpostazioniView extends VerticalLayout
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
 				}
 
-			} else if (event.getSource() == downloadQuotaz) {
+			} else if (event.getSource() == downloadQuotazione) {
 
 				// **************************************
 				// DOWNLOAD FILE QUOTAZIONI
 				// **************************************
 				String urlFanta = (String) p.get("URL_FANTA");
                 // String quotaz = "mondiale-giocatori-quotazioni-excel";
-				String quotaz = "europei-giocatori-quotazioni-excel";
+				String quotazione = "europei-giocatori-quotazioni-excel";
 				// https://www.pianetafanta.it/mondiale-giocatori-quotazioni-excel.asp?giornata=0&Nome=&Squadre=&Ruolo=&Ruolo2=&Quota=&Quota1=
-				String httpUrl = urlFanta + quotaz + ".asp?giornata=" + giornata;
+				String httpUrl = urlFanta + quotazione + ".asp?giornata=" + giornata;
                 LOG.info("httpUrl {}", httpUrl);
 				String fileName = "Q_" + giornata;
 				EmJobProcessFileCsv jobCsv = new EmJobProcessFileCsv();
@@ -454,8 +454,8 @@ public class EmImpostazioniView extends VerticalLayout
 				// **************************************
                 String fileName = "Q_" + giornata;
 				fileName = basePathData + fileName + ".csv";
-				boolean updateQuotazioni = chkUpdateQuotaz.getValue();
-				String percentuale = "" + txtPerc.getValue().intValue();
+				boolean updateQuotazioni = chkUpdateQuotazione.getValue();
+				String percentuale = "" + txtPercentuale.getValue().intValue();
 				HashMap<Object, Object> map = emjobProcessGiornata.initDbGiocatori(fileName, updateQuotazioni, percentuale);
 
 				@SuppressWarnings("unchecked")
@@ -532,8 +532,8 @@ public class EmImpostazioniView extends VerticalLayout
                 Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg);
 				Collection<RisultatoBean> collection = new ArrayList<>();
 				collection.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
-				String destFileName1 = basePathData + giornataInfo.getDescGiornataFc() + ".pdf";
-				FileOutputStream outputStream = new FileOutputStream(destFileName1);
+				String testFileName1 = basePathData + giornataInfo.getDescGiornataFc() + ".pdf";
+				FileOutputStream outputStream = new FileOutputStream(testFileName1);
                 JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, collection);
 
 				Resource resource2 = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
@@ -541,8 +541,8 @@ public class EmImpostazioniView extends VerticalLayout
 				Map<String, Object> params2 = new HashMap<>();
 				params2.put("DIVISORE", "" + Costants.DIVISORE_10);
 				params2.put("PATH_IMG", pathImg + imgLog);
-				String destFileName2 = basePathData + "Classifica.pdf";
-				FileOutputStream outputStream2 = new FileOutputStream(destFileName2);
+				String testFileName2 = basePathData + "Classifica.pdf";
+				FileOutputStream outputStream2 = new FileOutputStream(testFileName2);
                 assert jdbcTemplate.getDataSource() != null;
                 Connection conn = jdbcTemplate.getDataSource().getConnection();
                 JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, params2, conn);
@@ -564,7 +564,7 @@ public class EmImpostazioniView extends VerticalLayout
 				if (!email_destinatario.toString().isEmpty()) {
 					to = Utils.tornaArrayString(email_destinatario.toString(), ";");
 				}
-                String[] att = new String[] { destFileName1, destFileName2 };
+                String[] att = new String[] { testFileName1, testFileName2 };
 				String subject = "Risultati " + giornataInfo.getDescGiornataFc();
 				if (chkUfficiali.getValue()) {
 					subject += " - Ufficiali";

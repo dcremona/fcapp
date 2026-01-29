@@ -51,7 +51,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Calendario Competizione")
-@Route(value = "calelndarioCompetizione", layout = MainLayout.class)
+@Route(value = "calendarioCompetizione", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcCalendarioCompetizioneView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
@@ -248,7 +248,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 						String urlFanta = (String) p.get("URL_FANTA");
                         String calendario = "Serie-A-Calendario";
 						String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornata + "&Tipolink=0";
-                        log.info("httpUrl {}", httpUrl);
+                        log.info("url {}", httpUrl);
 						String fileName = "TIM_" + giornata;
 						JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 						jobCsv.downloadCsv(httpUrl, basePathData, fileName, 0);
@@ -294,10 +294,10 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 					// **************************************
 					String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
 					String urlFanta = (String) p.get("URL_FANTA");
-                    String quotaz = "Serie-A-Calendario";
-					String httpUrl = urlFanta + quotaz + ".asp?GiornataA=" + giornata + "&Tipolink=0";
+                    String quotazione = "Serie-A-Calendario";
+					String httpUrl = urlFanta + quotazione + ".asp?GiornataA=" + giornata + "&Tipolink=0";
 					// ="https://www.pianetafanta.it/Serie-A-Calendario.asp?GiornataA=5&Tipolink=0";
-                    log.info("httpUrl {}", httpUrl);
+                    log.info("url {}", httpUrl);
 					String fileName = "TIM_" + giornata;
 					JobProcessFileCsv jobCsv = new JobProcessFileCsv();
 					jobCsv.downloadCsv(httpUrl, basePathData, fileName, 0);
@@ -314,8 +314,8 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 					String giornata = "" + giornataInfoFilter.getValue().getCodiceGiornata();
 					String urlFanta = (String) p.get("URL_FANTA");
                     // String quotaz = "Mondiale-Calendario";
-					String quotaz = "europei-calendario";
-					String httpUrl = urlFanta + quotaz + ".asp?GiornataAM=" + giornata + "&Tipolink=0";
+					String quotazione = "europei-calendario";
+					String httpUrl = urlFanta + quotazione + ".asp?GiornataAM=" + giornata + "&Tipolink=0";
                     log.info("httpUrl {}", httpUrl);
 					// String fileName = "MONDIALE_" + giornata;
 					String fileName = "EUROPEI_" + giornata;

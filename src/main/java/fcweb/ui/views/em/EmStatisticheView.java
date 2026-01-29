@@ -71,7 +71,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Statistiche")
-@Route(value = "emstatistiche", layout = MainLayout.class)
+@Route(value = "statisticheEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmStatisticheView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
@@ -117,7 +117,7 @@ public class EmStatisticheView extends VerticalLayout
 	private ToggleButton toggleA = null;
 	// FILTER
 	private ComboBox<FcSquadra> comboNazione;
-	private NumberField txtQuotaz;
+	private NumberField txtQuotazione;
 	private RadioButtonGroup<String> radioGroup = null;
 
 	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
@@ -151,12 +151,12 @@ public class EmStatisticheView extends VerticalLayout
 		final VerticalLayout layoutStat = new VerticalLayout();
 		setStatisticheA(layoutStat, campionato, att);
 
-		final VerticalLayout layoutConfornti = new VerticalLayout();
-		setConfronti(layoutConfornti, campionato, att);
+		final VerticalLayout layoutConfronti = new VerticalLayout();
+		setConfronti(layoutConfronti, campionato, att);
 
         TabSheet tabSheet = new TabSheet();
 		tabSheet.add("Statistiche", layoutStat);
-		tabSheet.add("Confronti", layoutConfornti);
+		tabSheet.add("Confronti", layoutConfronti);
 		add(tabSheet);
 
 	}
@@ -164,8 +164,8 @@ public class EmStatisticheView extends VerticalLayout
 	private void setConfronti(VerticalLayout layout, FcCampionato campionato,
 			FcAttore att) {
 
-		HorizontalLayout hlayout1 = new HorizontalLayout();
-		hlayout1.setSpacing(true);
+		HorizontalLayout layout1 = new HorizontalLayout();
+		layout1.setSpacing(true);
 
 		comboAttoreA = new ComboBox<>();
 		comboAttoreA.setItems(squadreA);
@@ -190,17 +190,17 @@ public class EmStatisticheView extends VerticalLayout
 		comboPunti = new ComboBox<>();
 		comboPunti.setItems("TOTALE_PUNTI");
 		comboPunti.setValue("TOTALE_PUNTI");
-		comboPunti.setPlaceholder("Claasifica per");
+		comboPunti.setPlaceholder("Classifica per");
 		comboPunti.addValueChangeListener(event -> {
 			verticalLayoutGrafico.removeAll();
 			verticalLayoutGrafico.add(buildGrafico(campionato));
 		});
 
-		hlayout1.add(comboAttoreA);
-		hlayout1.add(comboAttoreB);
-		hlayout1.add(comboPunti);
+		layout1.add(comboAttoreA);
+		layout1.add(comboAttoreB);
+		layout1.add(comboPunti);
 
-		layout.add(hlayout1);
+		layout.add(layout1);
 
 		verticalLayoutGrafico.removeAll();
 		verticalLayoutGrafico.add(buildGrafico(campionato));
@@ -250,8 +250,8 @@ public class EmStatisticheView extends VerticalLayout
 	private void setStatisticheA(VerticalLayout layout, FcCampionato campionato,
 								 FcAttore att) {
 
-		HorizontalLayout hlayout1 = new HorizontalLayout();
-		hlayout1.setSpacing(true);
+		HorizontalLayout layout1 = new HorizontalLayout();
+		layout1.setSpacing(true);
 
         try {
 
@@ -265,7 +265,7 @@ public class EmStatisticheView extends VerticalLayout
 			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
 
 			button1Wrapper.wrapComponent(stampaPdf);
-			hlayout1.add(button1Wrapper);
+			layout1.add(button1Wrapper);
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
@@ -276,16 +276,16 @@ public class EmStatisticheView extends VerticalLayout
 				salvaStat = new Button("Aggiorna Statistiche");
 				salvaStat.setIcon(VaadinIcon.DATABASE.create());
 				salvaStat.addClickListener(this);
-				hlayout1.add(salvaStat);
+				layout1.add(salvaStat);
 
 				break;
 			}
 		}
 
-		layout.add(hlayout1);
+		layout.add(layout1);
 
-		HorizontalLayout hlayoutFilter = new HorizontalLayout();
-		hlayoutFilter.setSpacing(true);
+		HorizontalLayout layoutFilter = new HorizontalLayout();
+		layoutFilter.setSpacing(true);
 
 		toggleP = new ToggleButton();
 		toggleP.setLabel("P");
@@ -320,10 +320,10 @@ public class EmStatisticheView extends VerticalLayout
 			return container;
 		}));
 
-		txtQuotaz = new NumberField("Quotazione <=");
-		txtQuotaz.setMin(0d);
-		txtQuotaz.setMax(500d);
-		txtQuotaz.setStepButtonsVisible(true);
+		txtQuotazione = new NumberField("Quotazione <=");
+		txtQuotazione.setMin(0d);
+		txtQuotazione.setMax(500d);
+		txtQuotazione.setStepButtonsVisible(true);
 
 		radioGroup = new RadioButtonGroup<>();
 		radioGroup.setLabel("Giocatori");
@@ -331,15 +331,15 @@ public class EmStatisticheView extends VerticalLayout
 		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroup.setValue("Tutti");
 
-		hlayoutFilter.add(toggleP);
-		hlayoutFilter.add(toggleD);
-		hlayoutFilter.add(toggleC);
-		hlayoutFilter.add(toggleA);
-		hlayoutFilter.add(comboNazione);
-		hlayoutFilter.add(txtQuotaz);
-		hlayoutFilter.add(radioGroup);
+		layoutFilter.add(toggleP);
+		layoutFilter.add(toggleD);
+		layoutFilter.add(toggleC);
+		layoutFilter.add(toggleA);
+		layoutFilter.add(comboNazione);
+		layoutFilter.add(txtQuotazione);
+		layoutFilter.add(radioGroup);
 
-		layout.add(hlayoutFilter);
+		layout.add(layoutFilter);
 
 		List<FcStatistiche> items = statisticheController.findAll();
 
@@ -352,7 +352,7 @@ public class EmStatisticheView extends VerticalLayout
 		toggleC.addValueChangeListener(event -> applyFilter(dataProvider));
 		toggleA.addValueChangeListener(event -> applyFilter(dataProvider));
 		comboNazione.addValueChangeListener(event -> applyFilter(dataProvider));
-		txtQuotaz.addValueChangeListener(event -> applyFilter(dataProvider));
+		txtQuotazione.addValueChangeListener(event -> applyFilter(dataProvider));
 		radioGroup.addValueChangeListener(event -> applyFilter(dataProvider));
 
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
@@ -729,8 +729,8 @@ public class EmStatisticheView extends VerticalLayout
 		if (comboNazione.getValue() != null) {
 			dataProvider.addFilter(s -> comboNazione.getValue().getNomeSquadra().equals(s.getNomeSquadra()));
 		}
-		if (txtQuotaz.getValue() != null) {
-			dataProvider.addFilter(s -> s.getFcGiocatore().getQuotazione() <= txtQuotaz.getValue().intValue());
+		if (txtQuotazione.getValue() != null) {
+			dataProvider.addFilter(s -> s.getFcGiocatore().getQuotazione() <= txtQuotazione.getValue().intValue());
 		}
 
 		if ("Attivi".equals(radioGroup.getValue())) {

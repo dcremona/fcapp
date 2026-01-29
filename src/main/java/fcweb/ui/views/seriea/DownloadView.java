@@ -54,7 +54,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Download")
-@Route(value = "downnload", layout = MainLayout.class)
+@Route(value = "download", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class DownloadView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
@@ -113,7 +113,7 @@ public class DownloadView extends VerticalLayout
 		UI.getCurrent().getPage().retrieveExtendedClientDetails(event -> {
 			resX = event.getScreenWidth();
 			resY = event.getScreenHeight();
-            log.info("resX {}", resX);
+            log.info("resx {}", resX);
             log.info("resY {}", resY);
 		});
 
@@ -279,8 +279,8 @@ public class DownloadView extends VerticalLayout
 		GridExporter<FcExpRosea> exporter = GridExporter.createFor(gridRosea);
 		exporter.setAutoAttachExportButtons(false);
 		exporter.setAutoSizeColumns(false);
-		exporter.setTitle("roseA");
-		exporter.setFileName("roseA" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
+		exporter.setTitle("rosea");
+		exporter.setFileName("rosea" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
 		Anchor excelLink = new Anchor("","Export to Excel");
 		excelLink.setHref(exporter.getExcelStreamResource());
 		excelLink.getElement().setAttribute("download", true);

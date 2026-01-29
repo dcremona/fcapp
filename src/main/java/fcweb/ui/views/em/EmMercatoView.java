@@ -76,7 +76,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Mercato")
-@Route(value = "emmercato", layout = MainLayout.class)
+@Route(value = "mercatoEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmMercatoView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
@@ -113,7 +113,7 @@ public class EmMercatoView extends VerticalLayout
 	private Button saveSendMail;
 
     private ComboBox<FcSquadra> comboNazione;
-	private NumberField txtQuotaz;
+	private NumberField txtQuotazione;
 
 	private Span txtCrediti;
 	private Span txtCambi;
@@ -362,10 +362,10 @@ public class EmMercatoView extends VerticalLayout
 			return container;
 		}));
 
-		txtQuotaz = new NumberField("Quotazione <=");
-		txtQuotaz.setMin(0d);
-		txtQuotaz.setMax(500d);
-		txtQuotaz.setStepButtonsVisible(true);
+		txtQuotazione = new NumberField("Quotazione <=");
+		txtQuotazione.setMin(0d);
+		txtQuotazione.setMax(500d);
+		txtQuotazione.setStepButtonsVisible(true);
 
 		setModelGiocatori(attore);
 
@@ -405,7 +405,7 @@ public class EmMercatoView extends VerticalLayout
 		HorizontalLayout layoutFilterRow1 = new HorizontalLayout();
 		layoutFilterRow1.setMargin(false);
 		layoutFilterRow1.add(comboNazione);
-		layoutFilterRow1.add(txtQuotaz);
+		layoutFilterRow1.add(txtQuotazione);
 
 		VerticalLayout layoutFilter = new VerticalLayout();
 		layoutFilter.setMargin(false);
@@ -501,10 +501,10 @@ public class EmMercatoView extends VerticalLayout
         txtCrediti.getElement().getStyle().set("color", Costants.RED);
 		txtCrediti.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 
-		Span lblCanmbi = new Span();
-		lblCanmbi.setText("Cambi:");
-		lblCanmbi.getElement().getStyle().set("color", Costants.BLUE);
-		lblCanmbi.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
+		Span lblCambi = new Span();
+		lblCambi.setText("Cambi:");
+		lblCambi.getElement().getStyle().set("color", Costants.BLUE);
+		lblCambi.getElement().getStyle().set("-webkit-text-fill-color", Costants.BLUE);
 
 		txtCambi = new Span();
 		txtCambi.setText("" + CHECK_TOT_CAMBI_EFFETTUATI);
@@ -514,7 +514,7 @@ public class EmMercatoView extends VerticalLayout
 		layoutInfoGenerali.add(lblInfo);
 		layoutInfoGenerali.add(lblCrediti);
 		layoutInfoGenerali.add(txtCrediti);
-		layoutInfoGenerali.add(lblCanmbi);
+		layoutInfoGenerali.add(lblCambi);
 		layoutInfoGenerali.add(txtCambi);
 
 		top = 160;
@@ -1465,7 +1465,7 @@ public class EmMercatoView extends VerticalLayout
 				// CHECK_TOT_CAMBI_EFFETTUATI = TOT_CAMBI_EFFETTUATI;
 				// txtCambi.setText("" + CHECK_TOT_CAMBI_EFFETTUATI);
 				//
-				// String info = "Operazione effettuata con succcesso.";
+				// String info = "Operazione effettuata con success.";
 				// info += "Se hai attiva la notifica email sul profilo, a breve
 				// riceverai una
 				// email di conferma.";
@@ -1477,7 +1477,7 @@ public class EmMercatoView extends VerticalLayout
 				// try {
 				// sendNewMail();
 				// LOG.info("send_mail OK");
-				// } catch (Exception excpt) {
+				// } catch (Exception except) {
 				// LOG.error(excpt.getMessage());
 				// CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO,
 				// excpt.getMessage());
@@ -1487,7 +1487,7 @@ public class EmMercatoView extends VerticalLayout
 				// CustomMessageDialog.showMessageInfo(info);
 				// Notification.show(CustomMessageDialog.LABEL_SALVA);
 				//
-				// } catch (Exception excpt) {
+				// } catch (Exception except) {
 				// CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC,
 				// excpt.getMessage());
 				// }
@@ -1545,7 +1545,7 @@ public class EmMercatoView extends VerticalLayout
 				CHECK_TOT_CAMBI_EFFETTUATI = TOT_CAMBI_EFFETTUATI;
 				txtCambi.setText("" + CHECK_TOT_CAMBI_EFFETTUATI);
 
-				String info = "Operazione effettuata con succcesso.";
+				String info = "Operazione effettuata con success.";
 				info += "Se hai attiva la notifica email sul profilo, a breve riceverai una email di conferma.";
 
 				this.saveSendMail.setEnabled(false);
@@ -1555,16 +1555,16 @@ public class EmMercatoView extends VerticalLayout
 				try {
 					sendNewMail();
 					LOG.info("send_mail OK");
-				} catch (Exception excpt) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, excpt.getMessage());
+				} catch (Exception except) {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, except.getMessage());
 					return;
 				}
 
 				CustomMessageDialog.showMessageInfo(info);
 				Notification.show(CustomMessageDialog.LABEL_SALVA);
 
-			} catch (Exception excpt) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
+			} catch (Exception except) {
+				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, except.getMessage());
 			}
 		});
 		return dialog;
@@ -2809,7 +2809,7 @@ public class EmMercatoView extends VerticalLayout
 		grid.setItems(dataProvider);
 
         comboNazione.addValueChangeListener(event -> applyFilter(dataProvider));
-		txtQuotaz.addValueChangeListener(event -> applyFilter(dataProvider));
+		txtQuotazione.addValueChangeListener(event -> applyFilter(dataProvider));
 
 		// grid.setHeightByRows(true);
 		grid.addThemeVariants(GridVariant.LUMO_COMPACT);
@@ -3064,8 +3064,8 @@ public class EmMercatoView extends VerticalLayout
         if (comboNazione.getValue() != null) {
 			dataProvider.addFilter(s -> comboNazione.getValue().getIdSquadra() == s.getFcSquadra().getIdSquadra());
 		}
-		if (txtQuotaz.getValue() != null) {
-			dataProvider.addFilter(s -> s.getQuotazione() <= txtQuotaz.getValue().intValue());
+		if (txtQuotazione.getValue() != null) {
+			dataProvider.addFilter(s -> s.getQuotazione() <= txtQuotazione.getValue().intValue());
 		}
 
 	}

@@ -205,9 +205,9 @@ public class FreePlayersView extends VerticalLayout
         log.info("START getModelAsta {}", ruolo);
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		List<FcFormazione> allFormaz = formazioneController.findByFcCampionato(campionato);
+		List<FcFormazione> allFormazione = formazioneController.findByFcCampionato(campionato);
 		List<Integer> listNotIn = new ArrayList<>();
-		for (FcFormazione f : allFormaz) {
+		for (FcFormazione f : allFormazione) {
 			if (f.getFcGiocatore() != null) {
 				listNotIn.add(f.getFcGiocatore().getIdGiocatore());
 			}
@@ -270,7 +270,7 @@ public class FreePlayersView extends VerticalLayout
 		ruoloColumn.setAutoWidth(true);
 
 		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(g -> g != null ? g.getCognGiocatore() : "-");
-		cognGiocatoreColumn.setKey("cognGiocatore");
+		cognGiocatoreColumn.setKey("cognomeGiocatore");
 		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
 		cognGiocatoreColumn.setSortable(true);
 		cognGiocatoreColumn.setAutoWidth(true);
@@ -322,29 +322,29 @@ public class FreePlayersView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (g != null) {
 				String title = Utils.getInfoPlayer(g);
-				int perc = g.getPercentuale() == null ? 0 : g.getPercentuale();
-				double value = Double.parseDouble(Integer.toString(perc)) / Double.parseDouble("100");
+				int percentuale = g.getPercentuale() == null ? 0 : g.getPercentuale();
+				double value = Double.parseDouble(Integer.toString(percentuale)) / Double.parseDouble("100");
 
-				ProgressBar progressBarPerc = new ProgressBar();
-				progressBarPerc.setValue(value);
+				ProgressBar progressBarPercentuale = new ProgressBar();
+				progressBarPercentuale.setValue(value);
 
-				Span lblPerc = new Span();
-				lblPerc.setText(perc + "%");
-				lblPerc.setTitle(title);
+				Span lblPercentuale = new Span();
+				lblPercentuale.setText(percentuale + "%");
+				lblPercentuale.setTitle(title);
 
-				if (perc > 60) {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
-					lblPerc.addClassNames(LumoUtility.TextColor.SUCCESS);
-				} else if (perc > 39) {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
-					lblPerc.addClassNames(LumoUtility.TextColor.ERROR);
+				if (percentuale > 60) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.SUCCESS);
+				} else if (percentuale > 39) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.ERROR);
 				} else {
-					progressBarPerc.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-					lblPerc.addClassNames(LumoUtility.TextColor.DISABLED);
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.DISABLED);
 				}
 
-				cellLayout.add(progressBarPerc);
-				cellLayout.add(lblPerc);
+				cellLayout.add(progressBarPercentuale);
+				cellLayout.add(lblPercentuale);
 			}
 			return cellLayout;
 		}));
@@ -502,11 +502,9 @@ public class FreePlayersView extends VerticalLayout
 	public void onComponentEvent(ClickEvent<Button> event) {
 		try {
 			log.info("START AGGIORNA");
-
-            log.info("selAggion {}", radioGroup.getValue());
 			if (Costants.RUOLO.equals(radioGroup.getValue())) {
 				String selTab = tabs.getSelectedTab().getLabel();
-                log.info("selTab {}", selTab);
+                log.info("selectedTab {}", selTab);
 				if ("Portieri".equals(selTab)) {
 					gridP.setItems(getModelAsta(Costants.P));
 					gridP.getDataProvider().refreshAll();

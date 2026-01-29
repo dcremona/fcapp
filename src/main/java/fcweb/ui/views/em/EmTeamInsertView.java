@@ -63,7 +63,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Schiera Formazione")
-@Route(value = "eminsert", layout = MainLayout.class)
+@Route(value = "insertEm", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class EmTeamInsertView extends VerticalLayout
 		implements ComponentEventListener<ClickEvent<Button>>{
@@ -436,7 +436,7 @@ public class EmTeamInsertView extends VerticalLayout
 		this.add(absLayout);
 
 		try {
-			loadFcGiornatadett(attore, giornataInfo);
+			loadFcGiornataDett(attore, giornataInfo);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
@@ -755,7 +755,7 @@ public class EmTeamInsertView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
 
-                    LOG.info("click {}", g.getCognGiocatore());
+                    LOG.info("giocatore {}", g.getCognGiocatore());
 					modelFormazione.add(g);
 					refreshAndSortGridFormazione();
 
@@ -1558,7 +1558,7 @@ public class EmTeamInsertView extends VerticalLayout
 		return 0;
 	}
 
-	private void loadFcGiornatadett(FcAttore attore,
+	private void loadFcGiornataDett(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
 
 		LOG.info("loadFcGiornatadett");
@@ -1709,14 +1709,14 @@ public class EmTeamInsertView extends VerticalLayout
 
 			if (checkMail.getValue()) {
 				try {
-					String dataora = getSysdate();
+					String dataOra = getSysdate();
 
 					sendNewMail(giornataInfo.getDescGiornataFc());
 
 					LOG.info("send_mail OK");
 
 					try {
-						insert_dett_info(giornataInfo.getCodiceGiornata(), dataora);
+						insert_dett_info(giornataInfo.getCodiceGiornata(), dataOra);
 						LOG.info("insert_dett_info OK");
 					} catch (Exception exd) {
 						LOG.error(exd.getMessage());
@@ -1725,8 +1725,8 @@ public class EmTeamInsertView extends VerticalLayout
 
 					CustomMessageDialog.showMessageInfo("Formazione inserita, email inviata con successo!");
 
-				} catch (Exception excpt) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, excpt.getMessage());
+				} catch (Exception exception) {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, exception.getMessage());
                 }
 
 			} else {
@@ -1877,7 +1877,7 @@ public class EmTeamInsertView extends VerticalLayout
 		}
 	}
 
-	private void insert_dett_info(int giornata, String dataora) {
+	private void insert_dett_info(int giornata, String dataOra) {
 
 		String query;
 		try {
@@ -1886,7 +1886,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 			String ID_GIORNATA = "" + giornata;
 			query = " INSERT INTO fc_giornata_dett_info (ID_GIORNATA,ID_ATTORE, FLAG_INVIO,DATA_INVIO) VALUES (" + ID_GIORNATA + ",";
-			query += idAttore + ",1,'" + dataora + "')";
+			query += idAttore + ",1,'" + dataOra + "')";
 
 			jdbcTemplate.update(query);
 		} catch (Exception e) {

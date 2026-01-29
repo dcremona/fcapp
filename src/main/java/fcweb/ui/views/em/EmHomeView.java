@@ -43,7 +43,7 @@ import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-@Route(value = "emhome", layout = MainLayout.class)
+@Route(value = "homeEm", layout = MainLayout.class)
 // @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("Home")
 @RolesAllowed("USER")
@@ -89,7 +89,7 @@ public class EmHomeView extends VerticalLayout{
 			this.add(img);
 			setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, img);
 
-			this.add(builLayoutAvviso());
+			this.add(buildLayoutAvviso());
 
 			buildGiornate();
 
@@ -191,7 +191,7 @@ public class EmHomeView extends VerticalLayout{
 		return grid;
 	}
 
-	private VerticalLayout builLayoutAvviso() {
+	private VerticalLayout buildLayoutAvviso() {
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");

@@ -130,11 +130,11 @@ public class ImpostazioniView extends VerticalLayout
 	private Button ultimaFormazione;
 	private Button formazione422;
 
-	private Button downloadQuotaz;
+	private Button downloadQuotazioni;
 	private Button updateGiocatori;
-	private Checkbox chkUpdateQuotaz;
+	private Checkbox chkUpdateQuotazioni;
 	private Checkbox chkUpdateImg;
-	private NumberField txtPerc;
+	private NumberField txtPercentuale;
 	private Grid<FcGiocatore> tableGiocatoreAdd;
 	private Grid<FcGiocatore> tableGiocatoreDel;
 
@@ -144,7 +144,7 @@ public class ImpostazioniView extends VerticalLayout
 	private Button init;
 	private Button download;
 	private Button seiPolitico;
-	private ComboBox<FcSquadra> comboSqudreA;
+	private ComboBox<FcSquadra> comboSquadreA;
 	private Button calcola;
 	private ToggleButton chkForzaVotoGiocatore;
 	private ToggleButton chkRoundVotoGiocatore;
@@ -214,7 +214,7 @@ public class ImpostazioniView extends VerticalLayout
 				fcGiornataInfo2 = event.getValue();
 			}
 			if (fcGiornataInfo2 != null && da1 != null && da2 != null && dg != null && dp != null) {
-                log.info("gioranta {}", fcGiornataInfo2.getCodiceGiornata());
+                log.info("giornata {}", fcGiornataInfo2.getCodiceGiornata());
 				if (fcGiornataInfo2.getDataAnticipo1() != null) {
 					da1.setValue(fcGiornataInfo2.getDataAnticipo1());
 				}
@@ -291,30 +291,30 @@ public class ImpostazioniView extends VerticalLayout
 		layoutUpdateRow1.add(ultimaFormazione);
 		layoutUpdateRow1.add(formazione422);
 
-		downloadQuotaz = new Button("Download Quotazioni");
-		downloadQuotaz.setIcon(VaadinIcon.DOWNLOAD.create());
-		downloadQuotaz.addClickListener(this);
+		downloadQuotazioni = new Button("Download Quotazioni");
+		downloadQuotazioni.setIcon(VaadinIcon.DOWNLOAD.create());
+		downloadQuotazioni.addClickListener(this);
 
 		updateGiocatori = new Button("Update Giocatori");
 		updateGiocatori.setIcon(VaadinIcon.PIN.create());
 		updateGiocatori.addClickListener(this);
 
-		txtPerc = new NumberField();
-		txtPerc.setMin(0d);
-		txtPerc.setMax(100d);
-		txtPerc.setStepButtonsVisible(true);
-		txtPerc.setValue(70d);
+		txtPercentuale = new NumberField();
+		txtPercentuale.setMin(0d);
+		txtPercentuale.setMax(100d);
+		txtPercentuale.setStepButtonsVisible(true);
+		txtPercentuale.setValue(70d);
 
-		chkUpdateQuotaz = new Checkbox("Update Quotazioni");
+		chkUpdateQuotazioni = new Checkbox("Update Quotazioni");
 		chkUpdateImg = new Checkbox("Update Img");
 
 		HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
 		layoutUpdateRow2.setMargin(true);
 
-		layoutUpdateRow2.add(downloadQuotaz);
+		layoutUpdateRow2.add(downloadQuotazioni);
 		layoutUpdateRow2.add(updateGiocatori);
-		layoutUpdateRow2.add(txtPerc);
-		layoutUpdateRow2.add(chkUpdateQuotaz);
+		layoutUpdateRow2.add(txtPercentuale);
+		layoutUpdateRow2.add(chkUpdateQuotazioni);
 		layoutUpdateRow2.add(chkUpdateImg);
 
 		HorizontalLayout layoutUpdateRow3 = new HorizontalLayout();
@@ -379,12 +379,12 @@ public class ImpostazioniView extends VerticalLayout
 		seiPolitico.setIcon(VaadinIcon.PIN.create());
 		seiPolitico.addClickListener(this);
 
-		comboSqudreA = new ComboBox<>();
-		comboSqudreA.setItems(squadreSerieA);
-		comboSqudreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
-		comboSqudreA.setClearButtonVisible(true);
-		comboSqudreA.setPlaceholder(Costants.SQUADRA);
-		comboSqudreA.setRenderer(new ComponentRenderer<>(item -> {
+		comboSquadreA = new ComboBox<>();
+		comboSquadreA.setItems(squadreSerieA);
+		comboSquadreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
+		comboSquadreA.setClearButtonVisible(true);
+		comboSquadreA.setPlaceholder(Costants.SQUADRA);
+		comboSquadreA.setRenderer(new ComponentRenderer<>(item -> {
 			VerticalLayout container = new VerticalLayout();
 			if (item != null && item.getImg() != null) {
 				try {
@@ -429,7 +429,7 @@ public class ImpostazioniView extends VerticalLayout
 		vHor.add(download);
 		vHor.add(chkUfficiali);
 		vHor.add(seiPolitico);
-		vHor.add(comboSqudreA);
+		vHor.add(comboSquadreA);
 
 		HorizontalLayout vHor2 = new HorizontalLayout();
 		vHor2.add(calcola);
@@ -521,10 +521,10 @@ public class ImpostazioniView extends VerticalLayout
 		layoutDate.add(layoutRow22);
 		layoutDate.add(layoutRow3);
 
-		Details panelGiorn = new Details("Imposta Date",layoutDate);
-		panelGiorn.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelGiorn.setOpened(true);
-		this.add(panelGiorn);
+		Details panelGiornata = new Details("Imposta Date",layoutDate);
+		panelGiornata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+		panelGiornata.setOpened(true);
+		this.add(panelGiornata);
 	}
 
 	private Checkbox getCheck(String key, String label) {
@@ -566,7 +566,7 @@ public class ImpostazioniView extends VerticalLayout
 				codiceGiornata = giornataInfo.getCodiceGiornata();
 			}
 			FcAttore attore = comboAttore.getValue();
-            log.info("giornata {}", codiceGiornata);
+            log.info("codice giornata {}", codiceGiornata);
 
 			String basePathData = env.getProperty("PATH_TMP");
             log.info("basePathData {}", basePathData);
@@ -619,15 +619,15 @@ public class ImpostazioniView extends VerticalLayout
 					return;
 				}
 
-			} else if (event.getSource() == downloadQuotaz) {
+			} else if (event.getSource() == downloadQuotazioni) {
 
 				// **************************************
 				// DOWNLOAD FILE QUOTAZIONI
 				// **************************************
 
 				String urlFanta = (String) p.get("URL_FANTA");
-                String quotaz = "Giocatori-Quotazioni-Excel";
-				String httpUrl = urlFanta + quotaz + ".asp?giornata=" + codiceGiornata;
+                String quotazioni = "Giocatori-Quotazioni-Excel";
+				String httpUrl = urlFanta + quotazioni + ".asp?giornata=" + codiceGiornata;
 
                 log.info("httpUrl {}", httpUrl);
 				String fileName = "Q_" + codiceGiornata;
@@ -643,9 +643,9 @@ public class ImpostazioniView extends VerticalLayout
 				log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
                 String fileName = "Q_" + codiceGiornata;
 				fileName = basePathData + fileName + ".csv";
-				boolean updateQuotazioni = chkUpdateQuotaz.getValue();
+				boolean updateQuotazioni = chkUpdateQuotazioni.getValue();
 				boolean updateImg = chkUpdateImg.getValue();
-				String percentuale = "" + txtPerc.getValue().intValue();
+				String percentuale = "" + txtPercentuale.getValue().intValue();
 				HashMap<Object, Object> map = jobProcessGiornata.initDbGiocatori(Costants.HTTP_URL_IMG, basePathData, fileName, updateQuotazioni, updateImg, percentuale);
 
 				@SuppressWarnings("unchecked")
@@ -669,7 +669,7 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == formazione422) {
 
 				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligaria");
+					CustomMessageDialog.showMessageError("Giornata obbligatoria");
 					return;
 				}
 
@@ -681,12 +681,12 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == resetFormazione) {
 
 				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligaria");
+					CustomMessageDialog.showMessageError("Giornata obbligatoria");
 					return;
 				}
 
 				if (attore == null) {
-					CustomMessageDialog.showMessageError("Attore obbligario");
+					CustomMessageDialog.showMessageError("Attore obbligatorio");
 					return;
 				}
 
@@ -695,12 +695,12 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == ultimaFormazione) {
 
 				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligaria");
+					CustomMessageDialog.showMessageError("Giornata obbligatoria");
 					return;
 				}
 
 				if (attore == null) {
-					CustomMessageDialog.showMessageError("Attore obbligario");
+					CustomMessageDialog.showMessageError("Attore obbligatorio");
 					return;
 				}
 
@@ -709,7 +709,7 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == init) {
 
 				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligaria");
+					CustomMessageDialog.showMessageError("Giornata obbligatoria");
 					return;
 				}
 
@@ -730,9 +730,9 @@ public class ImpostazioniView extends VerticalLayout
 					votiExcel = "Voti-Ufficiali-Excel";
 				}
 
-				String httpurl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
+				String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
 				String fileName = "voti_" + codiceGiornata;
-				jobProcessFileCsv.downloadCsv(httpurl, basePathData, fileName, 3);
+				jobProcessFileCsv.downloadCsv(httpUrl, basePathData, fileName, 3);
 
 				fileName = basePathData + "voti_" + codiceGiornata + ".csv";
 				jobProcessGiornata.aggiornamentoPFGiornata(p, fileName, "" + codiceGiornata);
@@ -742,9 +742,9 @@ public class ImpostazioniView extends VerticalLayout
 
 			} else if (event.getSource() == seiPolitico) {
 
-				FcSquadra squadra = this.comboSqudreA.getValue();
+				FcSquadra squadra = this.comboSquadreA.getValue();
 				if (squadra == null) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Squadra obbligaria");
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Squadra obbligatoria");
 					return;
 				}
 
@@ -805,18 +805,18 @@ public class ImpostazioniView extends VerticalLayout
                 log.info("1 {}", dg.getValue());
                 log.info("1 {}", dp.getValue());
 
-				List<FcCalendarioCompetizione> listCalend = calendarioTimController.findCustom(giornataInfo);
-				LocalDateTime appo = listCalend.get(0).getData();
+				List<FcCalendarioCompetizione> listCalendario = calendarioTimController.findCustom(giornataInfo);
+				LocalDateTime tmpData = listCalendario.get(0).getData();
 				ArrayList<LocalDateTime> listDate = new ArrayList<>();
-				for (FcCalendarioCompetizione c : listCalend) {
-                    log.info("{}", appo.getDayOfWeek());
-					if (appo.getDayOfWeek() != (c.getData().getDayOfWeek())) {
-						listDate.add(appo);
-						appo = c.getData();
+				for (FcCalendarioCompetizione c : listCalendario) {
+                    log.info("{}", tmpData.getDayOfWeek());
+					if (tmpData.getDayOfWeek() != (c.getData().getDayOfWeek())) {
+						listDate.add(tmpData);
+						tmpData = c.getData();
 					}
 				}
 
-				listDate.add(appo);
+				listDate.add(tmpData);
 
 				if (listDate.size() == 1) {
 					LocalDateTime localDateTime1 = listDate.get(0);
@@ -883,8 +883,8 @@ public class ImpostazioniView extends VerticalLayout
 				}
 
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			} catch (Exception excpt) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, excpt.getMessage());
+			} catch (Exception exception) {
+				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exception.getMessage());
 			}
 		});
 		return dialog;

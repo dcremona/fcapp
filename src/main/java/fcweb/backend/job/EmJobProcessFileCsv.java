@@ -43,7 +43,6 @@ public class EmJobProcessFileCsv{
 		File input = new File(path_csv + fileName + ".html");
 		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
-		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 
 		StringBuilder data = new StringBuilder();

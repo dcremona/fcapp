@@ -23,8 +23,8 @@ import jakarta.annotation.security.RolesAllowed;
 
 import java.io.Serial;
 
-@PageTitle("Proprieta")
-@Route(value = "proprieta", layout = MainLayout.class)
+@PageTitle("Proprietà")
+@Route(value = "proprietà", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class FcPropertiesView extends VerticalLayout{
 

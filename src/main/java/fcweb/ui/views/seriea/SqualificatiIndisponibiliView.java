@@ -46,7 +46,7 @@ import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-@Route(value = "squalind", layout = MainLayout.class)
+@Route(value = "SqualificatiIndisponibili", layout = MainLayout.class)
 @RolesAllowed("USER")
 @PageTitle("Squalificati-Indisponibili")
 public class SqualificatiIndisponibiliView extends VerticalLayout
@@ -147,11 +147,11 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 				}
 			}
 
-            log.info("listSqualificati {}", listSqualificati.size());
+            log.info("listaSqualificati {}", listSqualificati.size());
 			tableSqualificati.setItems(listSqualificati);
 			tableSqualificati.getDataProvider().refreshAll();
 
-            log.info("listInfortunati {}", listInfortunati.size());
+            log.info("listaInfortunati {}", listInfortunati.size());
 			tableInfortunati.setItems(listInfortunati);
 			tableInfortunati.getDataProvider().refreshAll();
 
