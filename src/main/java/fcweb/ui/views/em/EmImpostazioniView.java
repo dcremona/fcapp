@@ -67,7 +67,7 @@ import fcweb.backend.service.GiornataInfoService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
 import fcweb.utils.CustomMessageDialog;
-import fcweb.utils.JasperReporUtils;
+import fcweb.utils.JasperReportUtils;
 import fcweb.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
@@ -534,7 +534,7 @@ public class EmImpostazioniView extends VerticalLayout
 				collection.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
 				String testFileName1 = basePathData + giornataInfo.getDescGiornataFc() + ".pdf";
 				FileOutputStream outputStream = new FileOutputStream(testFileName1);
-                JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, collection);
+                JasperReportUtils.runReportToPdfStream(inputStream, outputStream, params, collection);
 
 				Resource resource2 = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
 				InputStream inputStream2 = resource2.getInputStream();
@@ -545,7 +545,7 @@ public class EmImpostazioniView extends VerticalLayout
 				FileOutputStream outputStream2 = new FileOutputStream(testFileName2);
                 assert jdbcTemplate.getDataSource() != null;
                 Connection conn = jdbcTemplate.getDataSource().getConnection();
-                JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, params2, conn);
+                JasperReportUtils.runReportToPdfStream(inputStream2, outputStream2, params2, conn);
 
 				StringBuilder email_destinatario = new StringBuilder();
 

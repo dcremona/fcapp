@@ -45,7 +45,7 @@ import fcweb.backend.service.GiornataDettService;
 import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.GiornataService;
 import fcweb.utils.Costants;
-import fcweb.utils.JasperReporUtils;
+import fcweb.utils.JasperReportUtils;
 import fcweb.utils.Utils;
 
 @Controller
@@ -95,7 +95,7 @@ public class JobProcessSendMail{
 			collection.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
 			Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 			InputStream inputStream = resource.getInputStream();
-			b = JasperReporUtils.getReportByteCollectionDataSource(inputStream, params, collection);
+			b = JasperReportUtils.getReportByteCollectionDataSource(inputStream, params, collection);
 		} catch (Exception ex2) {
 			log.error(ex2.getMessage());
 		}
@@ -118,7 +118,7 @@ public class JobProcessSendMail{
 		InputStream inputStream = resource.getInputStream();
 		FileOutputStream outputStream = new FileOutputStream(testFileName1);
 		try {
-			JasperReporUtils.runReportToPdfStream(inputStream, outputStream, params, l);
+			JasperReportUtils.runReportToPdfStream(inputStream, outputStream, params, l);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -136,7 +136,7 @@ public class JobProcessSendMail{
 			outputStream2 = new FileOutputStream(testFileName2);
             assert jdbcTemplate.getDataSource() != null;
             conn = jdbcTemplate.getDataSource().getConnection();
-			JasperReporUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
+			JasperReportUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
 
 			StringBuilder emailDestinatario = new StringBuilder();
 			String activeMail = p.getProperty("ACTIVE_MAIL");

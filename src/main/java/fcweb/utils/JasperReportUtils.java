@@ -10,7 +10,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-public class JasperReporUtils{
+public class JasperReportUtils {
 
 	public static ByteArrayInputStream runReportToPdf(InputStream inputStream,
 			Map<String, Object> hm, Connection conn) throws Exception {

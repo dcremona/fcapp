@@ -453,7 +453,7 @@ public class Utils{
 			Connection conn, Map<String, Object> hm, InputStream inputStream) {
 		return new StreamResource(fiileName,() -> {
 			try {
-				return JasperReporUtils.runReportToPdf(inputStream, hm, conn);
+				return JasperReportUtils.runReportToPdf(inputStream, hm, conn);
 			} catch (Exception ex2) {
 				log.error(ex2.getMessage());
 			}
@@ -464,7 +464,7 @@ public class Utils{
 	public static StreamResource getStreamResource(String fiileName,ArrayList<FormazioneJasper> coll, Map<String, Object> hm, InputStream inputStream) {
 		return new StreamResource(fiileName,() -> {
 			try {
-				return JasperReporUtils.runReportToPdf(inputStream, hm, coll);
+				return JasperReportUtils.runReportToPdf(inputStream, hm, coll);
 			} catch (Exception ex2) {
 				log.error(ex2.getMessage());
 			}
