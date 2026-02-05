@@ -36,6 +36,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -398,7 +399,7 @@ public class StatisticheView extends VerticalLayout
 
 		layout.add(layoutFilter);
 
-		List<FcStatistiche> items = statisticheController.findByFlagAttivo(true);
+		List<FcStatistiche> items = statisticheController.findAll();
 
 		PaginatedGrid<FcStatistiche, ?> grid = new PaginatedGrid<>();
 		ListDataProvider<FcStatistiche> dataProvider = new ListDataProvider<>(items);
@@ -427,6 +428,13 @@ public class StatisticheView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			cellLayout.setSizeFull();
 			if (g != null && g.getIdRuolo() != null) {
+				
+				Checkbox check = new Checkbox();
+				check.setValue(g.isFlagAttivo());
+				check.setEnabled(false);
+				
+				cellLayout.add(check);
+				
 				Image img = Utils.buildImage(g.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getIdRuolo().toLowerCase() + ".png"));
 				cellLayout.add(img);
 			}

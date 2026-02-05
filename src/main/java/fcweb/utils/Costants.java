@@ -116,6 +116,7 @@ public class Costants{
 	public static final String RS = "Rs";
 	public static final String AMM = "Amm";
 	public static final String ESP = "Esp";
+	public static final String ATTIVO = "Attivo";
 	public static final String G = "G";
 	public static final String NOTE = "Note";
 	public static final String FV = "Fv";
