@@ -118,10 +118,10 @@ public class FcMercatoDettView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> mercatoService.findAll());
-		crud.setAddOperation(g -> mercatoService.insertMercatoDett(g));
-		crud.setUpdateOperation(g -> mercatoService.insertMercatoDett(g));
-		crud.setDeleteOperation(g -> mercatoService.deleteMercatoDett(g));
+		crud.setFindAllOperation(mercatoService::findAll);
+		crud.setAddOperation(mercatoService::insertMercatoDett);
+		crud.setUpdateOperation(mercatoService::insertMercatoDett);
+		crud.setDeleteOperation(mercatoService::deleteMercatoDett);
 
 		add(crud);
 	}

@@ -148,10 +148,10 @@ public class FcSquadraView extends VerticalLayout
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> squadraService.findAll());
-		crud.setAddOperation(p -> squadraService.updateSquadra(p));
-		crud.setUpdateOperation(p -> squadraService.updateSquadra(p));
-		crud.setDeleteOperation(p -> squadraService.deleteSquadra(p));
+		crud.setFindAllOperation(squadraService::findAll);
+		crud.setAddOperation(squadraService::updateSquadra);
+		crud.setUpdateOperation(squadraService::updateSquadra);
+		crud.setDeleteOperation(squadraService::deleteSquadra);
 
 		add(initDb);
 		add(crud);

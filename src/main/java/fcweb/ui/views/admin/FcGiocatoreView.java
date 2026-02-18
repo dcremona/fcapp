@@ -211,9 +211,9 @@ public class FcGiocatoreView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
 		crud.setFindAllOperation(() -> giocatoreService.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(ruoloFilter.getValue(), squadraFilter.getValue()));
-		crud.setAddOperation(g -> giocatoreService.updateGiocatore(g));
-		crud.setUpdateOperation(g -> giocatoreService.updateGiocatore(g));
-		crud.setDeleteOperation(g -> giocatoreService.deleteGiocatore(g));
+		crud.setAddOperation(giocatoreService::updateGiocatore);
+		crud.setUpdateOperation(giocatoreService::updateGiocatore);
+		crud.setDeleteOperation(giocatoreService::deleteGiocatore);
 
 		add(crud);
 

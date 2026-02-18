@@ -206,9 +206,9 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
 		crud.setFindAllOperation(() -> calendarioCompetizioneService.findCustom(giornataInfoFilter.getValue()));
-		crud.setAddOperation(user -> calendarioCompetizioneService.updateCalendarioTim(user));
-		crud.setUpdateOperation(user -> calendarioCompetizioneService.updateCalendarioTim(user));
-		crud.setDeleteOperation(user -> calendarioCompetizioneService.deleteCalendarioTim(user));
+		crud.setAddOperation(calendarioCompetizioneService::updateCalendarioTim);
+		crud.setUpdateOperation(calendarioCompetizioneService::updateCalendarioTim);
+		crud.setDeleteOperation(calendarioCompetizioneService::deleteCalendarioTim);
 
 		add(initDb);
 		add(updateGiornata);

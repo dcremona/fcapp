@@ -82,10 +82,10 @@ public class FcExpStatView extends VerticalLayout
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> expStatService.findAll());
-		crud.setAddOperation(s -> expStatService.updateExpStat(s));
-		crud.setUpdateOperation(s -> expStatService.updateExpStat(s));
-		crud.setDeleteOperation(s -> expStatService.deleteExpStat(s));
+		crud.setFindAllOperation(expStatService::findAll);
+		crud.setAddOperation(expStatService::updateExpStat);
+		crud.setUpdateOperation(expStatService::updateExpStat);
+		crud.setDeleteOperation(expStatService::deleteExpStat);
 
 		add(crud);
 	}

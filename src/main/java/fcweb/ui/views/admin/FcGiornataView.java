@@ -108,10 +108,10 @@ public class FcGiornataView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> giornataService.findAll());
-		crud.setAddOperation(user -> giornataService.updateGiornata(user));
-		crud.setUpdateOperation(user -> giornataService.updateGiornata(user));
-		crud.setDeleteOperation(user -> giornataService.deleteGiornata(user));
+		crud.setFindAllOperation(giornataService::findAll);
+		crud.setAddOperation(giornataService::updateGiornata);
+		crud.setUpdateOperation(giornataService::updateGiornata);
+		crud.setDeleteOperation(giornataService::deleteGiornata);
 
 		add(crud);
 	}

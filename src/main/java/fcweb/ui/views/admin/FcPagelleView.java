@@ -151,9 +151,9 @@ public class FcPagelleView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
 		crud.setFindAllOperation(() -> pagelleService.findByCustonm(giornataInfoFilter.getValue(), giocatoreFilter.getValue()));
-		crud.setAddOperation(user -> pagelleService.updatePagelle(user));
-		crud.setUpdateOperation(user -> pagelleService.updatePagelle(user));
-		crud.setDeleteOperation(user -> pagelleService.deletePagelle(user));
+		crud.setAddOperation(pagelleService::updatePagelle);
+		crud.setUpdateOperation(pagelleService::updatePagelle);
+		crud.setDeleteOperation(pagelleService::deletePagelle);
 
 		add(crud);
 	}

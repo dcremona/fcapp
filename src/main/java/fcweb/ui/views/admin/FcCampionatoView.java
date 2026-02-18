@@ -88,10 +88,10 @@ public class FcCampionatoView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> campionatoService.findAll());
-		crud.setAddOperation(c -> campionatoService.updateCampionato(c));
-		crud.setUpdateOperation(c -> campionatoService.updateCampionato(c));
-		crud.setDeleteOperation(c -> campionatoService.deleteCampionato(c));
+		crud.setFindAllOperation(campionatoService::findAll);
+		crud.setAddOperation(campionatoService::updateCampionato);
+		crud.setUpdateOperation(campionatoService::updateCampionato);
+		crud.setDeleteOperation(campionatoService::deleteCampionato);
 
 		add(crud);
 	}

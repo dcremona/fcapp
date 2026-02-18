@@ -70,10 +70,10 @@ public class DownloadView extends VerticalLayout
 	@Autowired
 	private Environment env;
 
-	private ExpRoseAService expRoseAService;
-	private ExpFreePlService expFreePlService;
-	private AttoreService attoreService;
-	private AccessoService accessoService;
+	private final ExpRoseAService expRoseAService;
+	private final ExpFreePlService expFreePlService;
+	private final AttoreService attoreService;
+	private final AccessoService accessoService;
 
 	public List<FcAttore> squadre = new ArrayList<>();
 

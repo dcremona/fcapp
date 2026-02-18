@@ -160,7 +160,7 @@ public class JobProcessGiornata{
 			List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
 			// giocatoreService.deleteAll();
-			List<FcGiocatore> listG = (List<FcGiocatore>) giocatoreService.findAll();
+			List<FcGiocatore> listG = giocatoreService.findAll();
 
 			LocalDateTime now = LocalDateTime.now();
 
@@ -414,7 +414,7 @@ public class JobProcessGiornata{
 	public void initPagelle(Integer giornata) {
 		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
         log.debug("{}", giornataInfo.getCodiceGiornata());
-		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreService.findAll();
+		List<FcGiocatore> giocatores = giocatoreService.findAll();
 		for (FcGiocatore giocatore : giocatores) {
 			FcPagelle pagelle = new FcPagelle();
 			FcPagelleId pagellePK = new FcPagelleId();
@@ -439,7 +439,7 @@ public class JobProcessGiornata{
 
 		jdbcTemplate.update("delete from " + table);
 
-		List<FcSquadra> ls = (List<FcSquadra>) squadraService.findAll();
+		List<FcSquadra> ls = squadraService.findAll();
 		int numRighe = 81;
 		if (ls.size() > 20) {
 			numRighe = 121;
@@ -962,7 +962,7 @@ public class JobProcessGiornata{
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
 
-		List<FcSquadra> ls = (List<FcSquadra>) squadraService.findAll();
+		List<FcSquadra> ls = squadraService.findAll();
 		for (FcSquadra s : ls) {
 
 			String sql = getString(giornata, s);
@@ -1160,7 +1160,7 @@ public class JobProcessGiornata{
 
 		log.info("START statistiche");
 
-		List<FcPagelle> lPagelle = (List<FcPagelle>) pagelleService.findAll();
+		List<FcPagelle> lPagelle = pagelleService.findAll();
 
 		int giocate = 0;
 

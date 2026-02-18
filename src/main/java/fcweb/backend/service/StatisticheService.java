@@ -24,10 +24,6 @@ public class StatisticheService{
 		return (List<FcStatistiche>) statisticheRepository.findAll(sortByIdRuoloDesc());
 	}
 
-	public List<FcStatistiche> findByFlagAttivo(boolean flagAttivo) {
-		return statisticheRepository.findByFlagAttivo(flagAttivo);
-	}
-
 	private Sort sortByIdRuoloDesc() {
 		return Sort.by(Sort.Direction.DESC, "idRuolo");
 	}

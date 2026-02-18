@@ -153,7 +153,7 @@ public class FcUserView extends VerticalLayout{
 		crud.setUpdateOperationVisible(true);
 
 		// logic configuration
-		crud.setOperations(() -> attoreService.findAll(), user -> attoreService.update(user), user -> {
+		crud.setOperations(attoreService::findAll, attoreService::update, user -> {
 			// String password = user.getHashedPassword();
 			int strength = 10; // work factor of bcrypt
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength,new SecureRandom());
