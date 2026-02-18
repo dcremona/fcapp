@@ -43,24 +43,21 @@ public class FcClassificaView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private ClassificaService classificaController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private CampionatoService campionatoController;
-
-	@Autowired
 	public Environment env;
+
+	private final ClassificaService classificaService;
+	private final AttoreService attoreService;
+	private final CampionatoService campionatoService;
+	private final AccessoService accessoService;
 
 	private final ComboBox<FcCampionato> campionatoFilter = new ComboBox<>();
 
-	@Autowired
-	private AccessoService accessoController;
-
-	public FcClassificaView() {
+	public FcClassificaView(ClassificaService classificaService,AttoreService attoreService,CampionatoService campionatoService,AccessoService accessoService) {
 		log.info("FcClassificaView()");
+		this.classificaService = classificaService;
+		this.attoreService = attoreService;
+		this.campionatoService = campionatoService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -69,7 +66,7 @@ public class FcClassificaView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -103,15 +100,15 @@ public class FcClassificaView extends VerticalLayout{
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Campionato",campionatoController.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Campionato",campionatoService.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
+		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
 
 		crud.setRowCountCaption("%d Classifica(s) found");
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
 		campionatoFilter.setPlaceholder("Campionato");
-		campionatoFilter.setItems(campionatoController.findAll());
+		campionatoFilter.setItems(campionatoService.findAll());
 		campionatoFilter.setItemLabelGenerator(FcCampionato::getDescCampionato);
 		campionatoFilter.addValueChangeListener(e -> crud.refreshGrid());
 		crud.getCrudLayout().addFilterComponent(campionatoFilter);
@@ -122,10 +119,10 @@ public class FcClassificaView extends VerticalLayout{
 		clearFilters.addClickListener(event -> campionatoFilter.clear());
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		crud.setFindAllOperation(() -> classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionatoFilter.getValue()));
-		crud.setAddOperation(user -> classificaController.updateClassifica(user));
-		crud.setUpdateOperation(user -> classificaController.updateClassifica(user));
-		crud.setDeleteOperation(user -> classificaController.deleteClassifica(user));
+		crud.setFindAllOperation(() -> classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionatoFilter.getValue()));
+		crud.setAddOperation(user -> classificaService.updateClassifica(user));
+		crud.setUpdateOperation(user -> classificaService.updateClassifica(user));
+		crud.setDeleteOperation(user -> classificaService.deleteClassifica(user));
 
 		add(crud);
 	}

@@ -4,7 +4,11 @@ package fcweb.ui.views.seriea;
 import java.io.Serial;
 import java.sql.Connection;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -65,16 +69,19 @@ public class ClassificaView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private ClassificaService classificaController;
-
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final ClassificaService classificaService;
+	private final AccessoService accessoService;
+
+	public ClassificaView(ClassificaService classificaService,AccessoService accessoService) {
+		log.info("ClassificaView()");
+		this.classificaService = classificaService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() {
@@ -82,7 +89,7 @@ public class ClassificaView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -140,7 +147,7 @@ public class ClassificaView extends VerticalLayout{
 		String[] att = new String[8];
 		ArrayList<Double> data = new ArrayList<>();
 
-		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
+		List<FcClassifica> all = classificaService.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
 
 		int i = 0;
 		for (FcClassifica cl : all) {
@@ -184,7 +191,7 @@ public class ClassificaView extends VerticalLayout{
 		String[] att = new String[8];
 		ArrayList<Integer> data = new ArrayList<>();
 
-		List<FcClassifica> all = classificaController.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
+		List<FcClassifica> all = classificaService.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
 
 		int i = 0;
 		for (FcClassifica cl : all) {
@@ -253,7 +260,7 @@ public class ClassificaView extends VerticalLayout{
 
 	private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato) {
 
-		List<FcClassifica> items = classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
+		List<FcClassifica> items = classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 
 		Grid<FcClassifica> grid = new Grid<>();
 		grid.setItems(items);

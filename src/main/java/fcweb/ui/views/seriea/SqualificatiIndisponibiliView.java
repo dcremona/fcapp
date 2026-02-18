@@ -58,17 +58,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private GiornataGiocatoreService giornataGiocatoreService;
-
-	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
-
-	private Button salvaDb;
-	private Grid<FcGiornataGiocatore> tableSqualificati;
-	private Grid<FcGiornataGiocatore> tableInfortunati;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -76,8 +66,17 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	@Autowired
 	private Environment env;
 
-	public SqualificatiIndisponibiliView() {
+	private final AccessoService accessoService;
+	private final GiornataGiocatoreService giornataGiocatoreService;
+
+	private Button salvaDb;
+	private Grid<FcGiornataGiocatore> tableSqualificati;
+	private Grid<FcGiornataGiocatore> tableInfortunati;
+
+	public SqualificatiIndisponibiliView(AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
 		log.info("SqualificatiIndisponibiliView()");
+		this.accessoService = accessoService;
+		this.giornataGiocatoreService = giornataGiocatoreService;
 	}
 
 	@PostConstruct
@@ -85,7 +84,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 

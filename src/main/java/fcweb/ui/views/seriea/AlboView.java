@@ -9,7 +9,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -43,39 +42,15 @@ public class AlboView extends VerticalLayout{
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private AlboService alboController;
+	private final AlboService alboService;
+	private final AttoreService attoreService;
+	private final AccessoService accessoService;
 
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private AccessoService accessoController;
-
-	public AlboView() {
+	public AlboView(AlboService alboService,AttoreService attoreService,AccessoService accessoService) {
 		log.info("AlboView()");
-	}
-
-	private static HorizontalLayout apply(FcExpStat s) {
-		HorizontalLayout cellLayout = new HorizontalLayout();
-		cellLayout.setMargin(false);
-		cellLayout.setPadding(false);
-		cellLayout.setSpacing(false);
-		Span lblAttore = null;
-		if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
-			lblAttore = new Span(s.getScudetto());
-			lblAttore.getStyle().set("fontSize", "smaller");
-			cellLayout.add(lblAttore);
-		}
-
-		cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
-		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-		if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt()) && att.getDescAttore().equals(s.getWinClasReg())) {
-			Objects.requireNonNull(lblAttore).getElement().getThemeList().add("badge contrast pill");
-			cellLayout.getStyle().set("color", Costants.GRAY);
-		}
-
-		return cellLayout;
+		this.alboService = alboService; 
+		this.attoreService = attoreService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -84,14 +59,14 @@ public class AlboView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initLayout();
 	}
 
 	private void initLayout() {
 
-		List<FcExpStat> items = alboController.findAll();
+		List<FcExpStat> items = alboService.findAll();
 		this.add(getGrid(items));
 
 		List<FcExpStat> modelCrosstab = getModelCrosstab(items);
@@ -497,7 +472,7 @@ public class AlboView extends VerticalLayout{
 
         ArrayList<FcExpStat> beans = new ArrayList<>();
 
-		List<FcAttore> squadre = attoreController.findAll();
+		List<FcAttore> squadre = attoreService.findAll();
 
 		for (FcAttore attore : squadre) {
 
@@ -571,6 +546,28 @@ public class AlboView extends VerticalLayout{
 		}
 
 		return beans;
+	}
+
+	private static HorizontalLayout apply(FcExpStat s) {
+		HorizontalLayout cellLayout = new HorizontalLayout();
+		cellLayout.setMargin(false);
+		cellLayout.setPadding(false);
+		cellLayout.setSpacing(false);
+		Span lblAttore = null;
+		if (s.getScudetto().equals(s.getWinClasPt()) && s.getScudetto().equals(s.getWinClasReg())) {
+			lblAttore = new Span(s.getScudetto());
+			lblAttore.getStyle().set("fontSize", "smaller");
+			cellLayout.add(lblAttore);
+		}
+
+		cellLayout.getStyle().set("color", Costants.LIGHT_GRAY);
+		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+		if (att.getDescAttore().equals(s.getScudetto()) && att.getDescAttore().equals(s.getWinClasPt()) && att.getDescAttore().equals(s.getWinClasReg())) {
+			Objects.requireNonNull(lblAttore).getElement().getThemeList().add("badge contrast pill");
+			cellLayout.getStyle().set("color", Costants.GRAY);
+		}
+
+		return cellLayout;
 	}
 
 }

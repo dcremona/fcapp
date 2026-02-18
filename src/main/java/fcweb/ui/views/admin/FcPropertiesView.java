@@ -34,16 +34,15 @@ public class FcPropertiesView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private ProprietaService proprietaController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final ProprietaService proprietaService;
+	private final AccessoService accessoService;
 
-	public FcPropertiesView() {
+	public FcPropertiesView(ProprietaService proprietaService,AccessoService accessoService) {
 		log.info("FcPropertiesView()");
+		this.proprietaService = proprietaService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -52,7 +51,7 @@ public class FcPropertiesView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -81,10 +80,10 @@ public class FcPropertiesView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> proprietaController.findAll());
-		crud.setAddOperation(p -> proprietaController.updateProprieta(p));
-		crud.setUpdateOperation(p -> proprietaController.updateProprieta(p));
-		crud.setDeleteOperation(p -> proprietaController.deleteProprieta(p));
+		crud.setFindAllOperation(() -> proprietaService.findAll());
+		crud.setAddOperation(p -> proprietaService.updateProprieta(p));
+		crud.setUpdateOperation(p -> proprietaService.updateProprieta(p));
+		crud.setDeleteOperation(p -> proprietaService.deleteProprieta(p));
 
 		add(crud);
 	}

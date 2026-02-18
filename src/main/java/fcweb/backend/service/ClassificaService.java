@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcAttore;
@@ -13,9 +14,10 @@ import fcweb.backend.data.entity.FcClassificaId;
 @Service
 public class ClassificaService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final ClassificaRepository classificaRepository;
 
-	@Autowired
 	public ClassificaService(ClassificaRepository classificaRepository) {
 		this.classificaRepository = classificaRepository;
 	}
@@ -68,7 +70,8 @@ public class ClassificaService{
 		FcClassifica fcClassifica = null;
 		try {
 			fcClassifica = classificaRepository.save(classifica);
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
 		}
 		return fcClassifica;
 	}
@@ -76,8 +79,8 @@ public class ClassificaService{
 	public void deleteClassifica(FcClassifica classifica) {
         try {
 			classificaRepository.delete(classifica);
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

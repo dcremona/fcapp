@@ -19,7 +19,7 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService{
 
-	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final JavaMailSender primarySender;
 	private final JavaMailSender secondarySender;

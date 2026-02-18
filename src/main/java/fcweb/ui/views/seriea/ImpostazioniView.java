@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
@@ -89,15 +93,6 @@ public class ImpostazioniView extends VerticalLayout
 	private Environment env;
 
 	@Autowired
-	private EmailService emailService;
-
-	@Autowired
-	private CalendarioCompetizioneService calendarioTimController;
-
-	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
 	private JobProcessFileCsv jobProcessFileCsv;
 
 	@Autowired
@@ -106,21 +101,16 @@ public class ImpostazioniView extends VerticalLayout
 	@Autowired
 	private JobProcessSendMail jobProcessSendMail;
 
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
-	private ClassificaService classificaController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private ProprietaService proprietaController;
-
+	private final CalendarioCompetizioneService calendarioCompetizioneService;
+	private final GiornataInfoService giornataInfoService;
+	private final AttoreService attoreService;
+	private final SquadraService squadraService;
+	private final ClassificaService classificaService;
+	private final FormazioneService formazioneService;
+	private final ProprietaService proprietaService;
+	private final AccessoService accessoService;
+	private final EmailService emailService;
+	
 	private Button initDb;
 	private Button generaCalendar;
 	private ComboBox<FcGiornataInfo> comboGiornata;
@@ -162,8 +152,26 @@ public class ImpostazioniView extends VerticalLayout
 	private DateTimePicker dg;
 	private DateTimePicker dp;
 
-	@Autowired
-	private AccessoService accessoController;
+	public ImpostazioniView(CalendarioCompetizioneService calendarioCompetizioneService,
+			GiornataInfoService giornataInfoService,
+			AttoreService attoreService,
+			SquadraService squadraService,
+			ClassificaService classificaService,
+			FormazioneService formazioneService,
+			ProprietaService proprietaService,
+			AccessoService accessoService,
+			EmailService emailService) {
+		log.info("ImpostazioniView()");
+		this.calendarioCompetizioneService = calendarioCompetizioneService;
+		this.giornataInfoService = giornataInfoService;
+		this.attoreService = attoreService;
+		this.squadraService = squadraService;
+		this.classificaService = classificaService;
+		this.formazioneService = formazioneService;
+		this.proprietaService = proprietaService;
+		this.accessoService = accessoService;
+		this.emailService = emailService;
+	}
 
 	@PostConstruct
 	void init() {
@@ -171,19 +179,19 @@ public class ImpostazioniView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadre = attoreController.findByActive(true);
-		squadreSerieA = squadraController.findAll();
+		squadre = attoreService.findByActive(true);
+		squadreSerieA = squadraService.findAll();
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
 		log.info("from and then ({},{})", from, to);
-		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
 	private void initLayout() {
@@ -541,7 +549,7 @@ public class ImpostazioniView extends VerticalLayout
 				FcProperties proprieta = new FcProperties();
 				proprieta.setKey(key);
 				proprieta.setValue(value ? "1" : "0");
-				proprietaController.updateProprieta(proprieta);
+				proprietaService.updateProprieta(proprieta);
 				p.setProperty(key, value ? "1" : "0");
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			} catch (Exception e) {
@@ -579,13 +587,13 @@ public class ImpostazioniView extends VerticalLayout
 
 			if (event.getSource() == initDb) {
 
-				List<FcAttore> attori = attoreController.findAll();
+				List<FcAttore> attori = attoreService.findAll();
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 26; j++) {
-							formazioneController.createFormazione(a, campionato.getIdCampionato(), j);
+							formazioneService.createFormazione(a, campionato.getIdCampionato(), j);
 						}
-						classificaController.create(a, campionato, (double) 0);
+						classificaService.create(a, campionato, (double) 0);
 					}
 				}
 
@@ -794,7 +802,7 @@ public class ImpostazioniView extends VerticalLayout
                 log.info("getDataAnticipo2 {}", giornataInfo.getDataAnticipo2());
                 log.info("getDataGiornata {}", giornataInfo.getDataGiornata());
                 log.info("getDataPosticipo {}", giornataInfo.getDataPosticipo());
-				giornataInfoController.updateGiornataInfo(giornataInfo);
+				giornataInfoService.updateGiornataInfo(giornataInfo);
 			} else if (event.getSource() == resetDate) {
 				da1.setValue(null);
 				da2.setValue(null);
@@ -805,7 +813,7 @@ public class ImpostazioniView extends VerticalLayout
                 log.info("1 {}", dg.getValue());
                 log.info("1 {}", dp.getValue());
 
-				List<FcCalendarioCompetizione> listCalendario = calendarioTimController.findCustom(giornataInfo);
+				List<FcCalendarioCompetizione> listCalendario = calendarioCompetizioneService.findCustom(giornataInfo);
 				LocalDateTime tmpData = listCalendario.get(0).getData();
 				ArrayList<LocalDateTime> listDate = new ArrayList<>();
 				for (FcCalendarioCompetizione c : listCalendario) {
@@ -891,7 +899,7 @@ public class ImpostazioniView extends VerticalLayout
 	}
 
 	@Autowired
-	private GiornataService giornataController;
+	private GiornataService giornataService;
 
 	private void sendMailInfoGiornata(FcGiornataInfo ggInfo) throws Exception {
 
@@ -906,7 +914,7 @@ public class ImpostazioniView extends VerticalLayout
 
 		formazioneHtml.append("<table>");
 
-		List<FcGiornata> all = giornataController.findByFcGiornataInfo(ggInfo);
+		List<FcGiornata> all = giornataService.findByFcGiornataInfo(ggInfo);
 		for (FcGiornata g : all) {
 			formazioneHtml.append("<tr>");
 			formazioneHtml.append("<td>");
@@ -938,7 +946,7 @@ public class ImpostazioniView extends VerticalLayout
 		StringBuilder emailDestinatario = new StringBuilder();
 		String activeMail = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(activeMail)) {
-			List<FcAttore> attori = attoreController.findByActive(true);
+			List<FcAttore> attori = attoreService.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					emailDestinatario.append(a.getEmail());

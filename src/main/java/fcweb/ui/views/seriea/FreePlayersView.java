@@ -69,14 +69,13 @@ public class FreePlayersView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private GiocatoreService giocatoreController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
-
+	
+	private final GiocatoreService giocatoreService;
+	private final FormazioneService formazioneService;
+	private final AccessoService accessoService;
+	private final GiornataGiocatoreService giornataGiocatoreService;
+	
     private RadioButtonGroup<String> radioGroup = null;
 	private TabSheet tabs = null;
 	private Grid<FcGiocatore> gridP = new Grid<>();
@@ -84,15 +83,14 @@ public class FreePlayersView extends VerticalLayout
 	private Grid<FcGiocatore> gridC = new Grid<>();
 	private Grid<FcGiocatore> gridA = new Grid<>();
 
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private GiornataGiocatoreService giornataGiocatoreService;
-
 	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<>();
 
-    public FreePlayersView() {
+    public FreePlayersView(GiocatoreService giocatoreService,FormazioneService formazioneService,AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
+    	log.info("FreePlayersView");
+    	this.giocatoreService = giocatoreService;
+    	this.formazioneService = formazioneService;
+    	this.accessoService = accessoService;
+    	this.giornataGiocatoreService = giornataGiocatoreService;
 	}
 
 	@PostConstruct
@@ -101,7 +99,7 @@ public class FreePlayersView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 
 		initData();
@@ -205,7 +203,7 @@ public class FreePlayersView extends VerticalLayout
         log.info("START getModelAsta {}", ruolo);
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		List<FcFormazione> allFormazione = formazioneController.findByFcCampionato(campionato);
+		List<FcFormazione> allFormazione = formazioneService.findByFcCampionato(campionato);
 		List<Integer> listNotIn = new ArrayList<>();
 		for (FcFormazione f : allFormazione) {
 			if (f.getFcGiocatore() != null) {
@@ -219,9 +217,9 @@ public class FreePlayersView extends VerticalLayout
 		// load data
 		List<FcGiocatore> all;
 		if (!listNotIn.isEmpty()) {
-			all = giocatoreController.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(r, true, listNotIn);
+			all = giocatoreService.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(r, true, listNotIn);
 		} else {
-			all = giocatoreController.findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(r, true);
+			all = giocatoreService.findByFcRuoloAndFlagAttivoOrderByQuotazioneDesc(r, true);
 		}
 
 		// FIX

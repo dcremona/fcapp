@@ -44,16 +44,15 @@ public class FcUserView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AttoreService attoreService;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final AttoreService attoreService;
+	private final AccessoService accessoService;
 
-	public FcUserView() {
+	public FcUserView(AttoreService attoreService,AccessoService accessoService) {
 		log.info("FcUserView()");
+		this.attoreService = attoreService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -62,7 +61,7 @@ public class FcUserView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 

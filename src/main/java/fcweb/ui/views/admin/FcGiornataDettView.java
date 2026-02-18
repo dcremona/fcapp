@@ -49,32 +49,28 @@ public class FcGiornataDettView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
-	private GiocatoreService giocatoreController;
-
-	@Autowired
-	private StatoGiocatoreService statoGiocatoreController;
-
-	@Autowired
-	private GiornataDettService giornataDettController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final AttoreService attoreService;
+	private final GiornataInfoService giornataInfoService;
+	private final GiocatoreService giocatoreService;
+	private final StatoGiocatoreService statoGiocatoreService;
+	private final GiornataDettService giornataDettService;
+	private final AccessoService accessoService;
 
 	private final ComboBox<FcAttore> attoreFilter = new ComboBox<>();
 	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 //	private TextField flagAttivoFilter = new TextField();
 
-	public FcGiornataDettView() {
+	public FcGiornataDettView(AttoreService attoreService,GiornataInfoService giornataInfoService,GiocatoreService giocatoreService,
+			StatoGiocatoreService statoGiocatoreService,GiornataDettService giornataDettService,AccessoService accessoService) {
 		log.info("FcGiornataDettView()");
+		this.attoreService = attoreService;
+		this.giornataInfoService = giornataInfoService;
+		this.giocatoreService = giocatoreService;
+		this.statoGiocatoreService = statoGiocatoreService;
+		this.giornataDettService = giornataDettService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -83,7 +79,7 @@ public class FcGiornataDettView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -114,10 +110,10 @@ public class FcGiornataDettView extends VerticalLayout{
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoController.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
-		crud.getCrudFormFactory().setFieldProvider("fcStatoGiocatore", new ComboBoxProvider<>("Stato",statoGiocatoreController.findAll(),new TextRenderer<>(FcStatoGiocatore::getDescStatoGiocatore),FcStatoGiocatore::getDescStatoGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoService.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
+		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreService.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcStatoGiocatore", new ComboBoxProvider<>("Stato",statoGiocatoreService.findAll(),new TextRenderer<>(FcStatoGiocatore::getDescStatoGiocatore),FcStatoGiocatore::getDescStatoGiocatore));
 
 		crud.setRowCountCaption("%d Giornata(s) found");
 		crud.setClickRowToUpdate(true);
@@ -125,7 +121,7 @@ public class FcGiornataDettView extends VerticalLayout{
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		giornataInfoFilter.setPlaceholder("Giornata");
-		giornataInfoFilter.setItems(giornataInfoController.findAll());
+		giornataInfoFilter.setItems(giornataInfoService.findAll());
 		if ("1".equals(campionato.getType())) {
 			giornataInfoFilter.setItemLabelGenerator(Utils::buildInfoGiornata);
 		} else {
@@ -136,7 +132,7 @@ public class FcGiornataDettView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
 
 		attoreFilter.setPlaceholder("Attore");
-		attoreFilter.setItems(attoreController.findByActive(true));
+		attoreFilter.setItems(attoreService.findByActive(true));
 		attoreFilter.setItemLabelGenerator(FcAttore::getDescAttore);
 		attoreFilter.addValueChangeListener(e -> crud.refreshGrid());
 		attoreFilter.setClearButtonVisible(true);
@@ -149,10 +145,10 @@ public class FcGiornataDettView extends VerticalLayout{
 		});
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		crud.setFindAllOperation(() -> giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attoreFilter.getValue(), giornataInfoFilter.getValue()));
-		crud.setAddOperation(g -> giornataDettController.insertGiornataDett(g));
-		crud.setUpdateOperation(g -> giornataDettController.updateGiornataDett(g));
-		crud.setDeleteOperation(g -> giornataDettController.deleteGiornataDett(g));
+		crud.setFindAllOperation(() -> giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attoreFilter.getValue(), giornataInfoFilter.getValue()));
+		crud.setAddOperation(g -> giornataDettService.insertGiornataDett(g));
+		crud.setUpdateOperation(g -> giornataDettService.updateGiornataDett(g));
+		crud.setDeleteOperation(g -> giornataDettService.deleteGiornataDett(g));
 
 		add(crud);
 

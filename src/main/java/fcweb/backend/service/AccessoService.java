@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,10 @@ import fcweb.backend.data.entity.FcCampionato;
 @Service
 public class AccessoService{
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final AccessoRepository accessoRepository;
 
-	@Autowired
 	public AccessoService(AccessoRepository accessoRepository) {
 		this.accessoRepository = accessoRepository;
 	}
@@ -52,9 +50,9 @@ public class AccessoService{
 		try {
 			fcAccesso = accessoRepository.save(a);
 		} catch (Exception ex) {
-			LOG.error(ex.getMessage());
+			log.error(ex.getMessage());
 		}
-        LOG.info("now : {} attore {} note {}", now, attore.getDescAttore(), note);
+        log.info("now : {} attore {} note {}", now, attore.getDescAttore(), note);
 		return fcAccesso;
 	}
 
@@ -62,7 +60,8 @@ public class AccessoService{
 		FcAccesso fcAccesso = null;
 		try {
 			fcAccesso = accessoRepository.save(accesso);
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
 		}
 		return fcAccesso;
 	}
@@ -70,8 +69,8 @@ public class AccessoService{
 	public void deleteAccesso(FcAccesso accesso) {
         try {
 			accessoRepository.delete(accesso);
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

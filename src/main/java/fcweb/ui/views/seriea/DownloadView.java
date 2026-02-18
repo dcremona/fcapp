@@ -64,34 +64,33 @@ public class DownloadView extends VerticalLayout
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
-	private final Grid<FcExpRosea> gridRosea = new Grid<>();
-
-	@Autowired
-	private ExpRoseAService expRoseAController;
-
-	@Autowired
-	private ExpFreePlService expFreePlController;
-
-	@Autowired
-	private AttoreService attoreController;
-
 	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
-
-	public List<FcAttore> squadre = new ArrayList<>();
-
-	private Button salvaRoseA = null;
-	private Button salvaFreePl = null;
-
-	@Autowired
-	private AccessoService accessoController;
 
 	@Autowired
 	private Environment env;
 
+	private ExpRoseAService expRoseAService;
+	private ExpFreePlService expFreePlService;
+	private AttoreService attoreService;
+	private AccessoService accessoService;
+
+	public List<FcAttore> squadre = new ArrayList<>();
+
+	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
+	private final Grid<FcExpRosea> gridRosea = new Grid<>();
+	private Button salvaRoseA = null;
+	private Button salvaFreePl = null;
 	int resX = 0;
 	int resY = 0;
+
+	public DownloadView(ExpRoseAService expRoseAService,ExpFreePlService expFreePlService,AttoreService attoreService,AccessoService accessoService) {
+		log.info("DownloadView()");
+		this.expRoseAService = expRoseAService;
+		this.expFreePlService = expFreePlService;
+		this.attoreService = attoreService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() {
@@ -99,13 +98,13 @@ public class DownloadView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadre = attoreController.findByActive(true);
+		squadre = attoreService.findByActive(true);
 	}
 
 	private void initLayout() {
@@ -210,7 +209,7 @@ public class DownloadView extends VerticalLayout
 
 	private void setRoseA(VerticalLayout layout) {
 
-		List<FcExpRosea> items = expRoseAController.findAll();
+		List<FcExpRosea> items = expRoseAService.findAll();
 
 		gridRosea.setItems(items);
 		gridRosea.setSelectionMode(Grid.SelectionMode.SINGLE);
@@ -291,7 +290,7 @@ public class DownloadView extends VerticalLayout
 
 	private void setFreePlayer(VerticalLayout layout) {
 
-		List<FcExpFreePl> items = expFreePlController.findAll();
+		List<FcExpFreePl> items = expFreePlService.findAll();
 		gridFreePl.setItems(items);
 		gridFreePl.setSelectionMode(Grid.SelectionMode.SINGLE);
 		gridFreePl.setAllRowsVisible(true);
@@ -381,14 +380,14 @@ public class DownloadView extends VerticalLayout
 			if (event.getSource() == salvaRoseA) {
 				jobProcessGiornata.executeUpdateDbFcExpRoseA(false, campionato.getIdCampionato());
 
-				List<FcExpRosea> items = expRoseAController.findAll();
+				List<FcExpRosea> items = expRoseAService.findAll();
 				gridRosea.setItems(items);
 				gridRosea.getDataProvider().refreshAll();
 
 			} else if (event.getSource() == salvaFreePl) {
 				jobProcessGiornata.executeUpdateDbFcExpRoseA(true, campionato.getIdCampionato());
 
-				List<FcExpFreePl> items = expFreePlController.findAll();
+				List<FcExpFreePl> items = expFreePlService.findAll();
 				gridFreePl.setItems(items);
 				gridFreePl.getDataProvider().refreshAll();
 			}

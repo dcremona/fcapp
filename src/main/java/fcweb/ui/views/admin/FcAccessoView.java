@@ -48,19 +48,17 @@ public class FcAccessoView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private CampionatoService campionatoController;
-
-	@Autowired
 	public Environment env;
 
-	public FcAccessoView() {
+	private final AccessoService accessoService;
+	private final AttoreService attoreService;
+	private final CampionatoService campionatoService;
+
+	public FcAccessoView(AccessoService accessoService,AttoreService attoreService,CampionatoService campionatoService) {
 		log.info("FcAccessoView()");
+		this.accessoService = accessoService;
+		this.attoreService = attoreService;
+		this.campionatoService = campionatoService;
 	}
 
 	@PostConstruct
@@ -69,7 +67,7 @@ public class FcAccessoView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -104,18 +102,18 @@ public class FcAccessoView extends VerticalLayout
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
 		crud.getCrudFormFactory().setFieldProvider("data", a -> new DateTimePicker());
-		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Campionato",campionatoController.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
+		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Campionato",campionatoService.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
 
 		crud.setRowCountCaption("%d Accesso(s) found");
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> accessoController.findAll());
-		crud.setAddOperation(user -> accessoController.updateAccesso(user));
-		crud.setUpdateOperation(user -> accessoController.updateAccesso(user));
-		crud.setDeleteOperation(user -> accessoController.deleteAccesso(user));
+		crud.setFindAllOperation(() -> accessoService.findAll());
+		crud.setAddOperation(user -> accessoService.updateAccesso(user));
+		crud.setUpdateOperation(user -> accessoService.updateAccesso(user));
+		crud.setDeleteOperation(user -> accessoService.deleteAccesso(user));
 
 		add(crud);
 	}

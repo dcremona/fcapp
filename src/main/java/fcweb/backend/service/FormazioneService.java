@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcAttore;
@@ -18,9 +19,10 @@ import fcweb.backend.data.entity.FcStatistiche;
 @Service
 public class FormazioneService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final FormazioneRepository formazioneRepository;
 
-	@Autowired
 	public FormazioneService(FormazioneRepository formazioneRepository) {
 		this.formazioneRepository = formazioneRepository;
 	}
@@ -36,6 +38,11 @@ public class FormazioneService{
 	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(
 			FcCampionato campionato, FcAttore attore) {
 		return formazioneRepository.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
+	}
+	
+	public List<FcFormazione> findByFcCampionatoAndFcGiocatore(
+            FcCampionato campionato, FcGiocatore giocatore) {
+		return formazioneRepository.findByFcCampionatoAndFcGiocatore(campionato,giocatore);
 	}
 
 	public List<FcFormazione> findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(
@@ -106,11 +113,11 @@ public class FormazioneService{
 	}
 
 	public FcFormazione updateFormazione(FcFormazione c) {
-		FcFormazione giocatore;
+		FcFormazione giocatore = null;
 		try {
 			giocatore = formazioneRepository.save(c);
 		} catch (Exception ex) {
-			return null;
+			log.error(ex.getMessage());
 		}
 		return giocatore;
 	}
@@ -118,7 +125,8 @@ public class FormazioneService{
 	public void deleteFormazione(FcFormazione c) {
         try {
 			formazioneRepository.delete(c);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

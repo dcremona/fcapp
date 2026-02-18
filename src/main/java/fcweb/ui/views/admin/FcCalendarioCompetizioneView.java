@@ -62,30 +62,27 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private CalendarioCompetizioneService calendarioTimController;
-
-	@Autowired
 	public Environment env;
-
-	private Button initDb;
-	private Button updateGiornata;
 
 	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
 
-	@Autowired
-	private GiornataInfoService giornataInfoController;
+	private final CalendarioCompetizioneService calendarioCompetizioneService;
+	private final GiornataInfoService giornataInfoService;
+	private final AccessoService accessoService;
+	private final SquadraService squadraService;
+
+	private Button initDb;
+	private Button updateGiornata;
 
 	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private SquadraService squadraController;
-
-	public FcCalendarioCompetizioneView() {
+	public FcCalendarioCompetizioneView(CalendarioCompetizioneService calendarioCompetizioneService,GiornataInfoService giornataInfoService,AccessoService accessoService,SquadraService squadraService) {
 		log.info("FcCalendarioCompetizioneView()");
+		this.calendarioCompetizioneService = calendarioCompetizioneService;
+		this.giornataInfoService = giornataInfoService;
+		this.accessoService = accessoService;
+		this.squadraService = squadraService;
 	}
 
 	@PostConstruct
@@ -94,7 +91,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -140,7 +137,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getSquadraCasa() != null) {
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraCasa());
+				FcSquadra sq = squadraService.findByIdSquadra(s.getIdSquadraCasa());
 				if (sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
@@ -164,7 +161,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getSquadraFuori() != null) {
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraFuori());
+				FcSquadra sq = squadraService.findByIdSquadra(s.getIdSquadraFuori());
 				if (sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
@@ -192,7 +189,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 		crud.setUpdateOperationVisible(true);
 
 		giornataInfoFilter.setPlaceholder("Giornata");
-		giornataInfoFilter.setItems(giornataInfoController.findAll());
+		giornataInfoFilter.setItems(giornataInfoService.findAll());
 		if ("1".equals(campionato.getType())) {
 			giornataInfoFilter.setItemLabelGenerator(Utils::buildInfoGiornata);
 		} else {
@@ -208,10 +205,10 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 		clearFilters.addClickListener(event -> giornataInfoFilter.clear());
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		crud.setFindAllOperation(() -> calendarioTimController.findCustom(giornataInfoFilter.getValue()));
-		crud.setAddOperation(user -> calendarioTimController.updateCalendarioTim(user));
-		crud.setUpdateOperation(user -> calendarioTimController.updateCalendarioTim(user));
-		crud.setDeleteOperation(user -> calendarioTimController.deleteCalendarioTim(user));
+		crud.setFindAllOperation(() -> calendarioCompetizioneService.findCustom(giornataInfoFilter.getValue()));
+		crud.setAddOperation(user -> calendarioCompetizioneService.updateCalendarioTim(user));
+		crud.setUpdateOperation(user -> calendarioCompetizioneService.updateCalendarioTim(user));
+		crud.setDeleteOperation(user -> calendarioCompetizioneService.deleteCalendarioTim(user));
 
 		add(initDb);
 		add(updateGiornata);

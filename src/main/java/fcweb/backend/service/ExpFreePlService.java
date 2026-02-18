@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ import fcweb.backend.data.entity.FcExpFreePl;
 @Service
 public class ExpFreePlService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final ExpFreePlRepository expFreePlRepository;
 
-	@Autowired
 	public ExpFreePlService(ExpFreePlRepository expFreePlRepository) {
 		this.expFreePlRepository = expFreePlRepository;
 	}
@@ -25,5 +27,16 @@ public class ExpFreePlService{
 	private Sort sortByIdAsc() {
 		return Sort.by(Sort.Direction.ASC, "id");
 	}
+	
+	public FcExpFreePl save(FcExpFreePl c) {
+		FcExpFreePl fcExpFreePl = null;
+		try {
+			fcExpFreePl = expFreePlRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcExpFreePl;
+	}
+
 
 }

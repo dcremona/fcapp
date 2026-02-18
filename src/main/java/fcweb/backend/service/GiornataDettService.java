@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcAttore;
@@ -19,7 +18,6 @@ public class GiornataDettService{
 
 	private final GiornataDettRepository giornataDettRepository;
 
-	@Autowired
 	public GiornataDettService(GiornataDettRepository giornataDettRepository) {
 		this.giornataDettRepository = giornataDettRepository;
 	}
@@ -51,12 +49,11 @@ public class GiornataDettService{
 	}
 
 	public FcGiornataDett updateGiornataDett(FcGiornataDett c) {
-		FcGiornataDett fcGiornataDett;
+		FcGiornataDett fcGiornataDett = null;
 		try {
 			fcGiornataDett = giornataDettRepository.save(c);
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
-			return null;
 		}
 		return fcGiornataDett;
 	}

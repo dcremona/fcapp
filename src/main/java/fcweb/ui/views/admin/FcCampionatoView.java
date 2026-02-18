@@ -36,16 +36,15 @@ public class FcCampionatoView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private CampionatoService campionatoController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final AccessoService accessoService;
+	private final CampionatoService campionatoService;
 
-	public FcCampionatoView() {
+	public FcCampionatoView(AccessoService accessoService,CampionatoService campionatoService) {
 		log.info("FcCampionatoView()");
+		this.accessoService = accessoService;
+		this.campionatoService = campionatoService;
 	}
 
 	@PostConstruct
@@ -54,7 +53,7 @@ public class FcCampionatoView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -89,10 +88,10 @@ public class FcCampionatoView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> campionatoController.findAll());
-		crud.setAddOperation(c -> campionatoController.updateCampionato(c));
-		crud.setUpdateOperation(c -> campionatoController.updateCampionato(c));
-		crud.setDeleteOperation(c -> campionatoController.deleteCampionato(c));
+		crud.setFindAllOperation(() -> campionatoService.findAll());
+		crud.setAddOperation(c -> campionatoService.updateCampionato(c));
+		crud.setUpdateOperation(c -> campionatoService.updateCampionato(c));
+		crud.setDeleteOperation(c -> campionatoService.deleteCampionato(c));
 
 		add(crud);
 	}

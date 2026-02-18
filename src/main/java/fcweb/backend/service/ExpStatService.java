@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ import fcweb.backend.data.entity.FcExpStat;
 @Service
 public class ExpStatService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final ExpStatRepository expStatRepository;
 
-	@Autowired
 	public ExpStatService(ExpStatRepository expStatRepository) {
 		this.expStatRepository = expStatRepository;
 	}
@@ -30,7 +32,8 @@ public class ExpStatService{
 		FcExpStat fcExpStat = null;
 		try {
 			fcExpStat = expStatRepository.save(expStat);
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
 		}
 		return fcExpStat;
 	}
@@ -38,8 +41,8 @@ public class ExpStatService{
 	public void deleteExpStat(FcExpStat expStat) {
         try {
 			expStatRepository.delete(expStat);
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

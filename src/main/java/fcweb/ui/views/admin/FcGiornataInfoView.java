@@ -40,16 +40,15 @@ public class FcGiornataInfoView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final GiornataInfoService giornataInfoService;
+	private final AccessoService accessoService;
 
-	public FcGiornataInfoView() {
+	public FcGiornataInfoView(GiornataInfoService giornataInfoService,AccessoService accessoService) {
 		log.info("FcGiornataInfoView()");
+		this.giornataInfoService = giornataInfoService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -58,7 +57,7 @@ public class FcGiornataInfoView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -115,10 +114,10 @@ public class FcGiornataInfoView extends VerticalLayout{
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> giornataInfoController.findAll());
-		crud.setAddOperation(user -> giornataInfoController.updateGiornataInfo(user));
-		crud.setUpdateOperation(user -> giornataInfoController.updateGiornataInfo(user));
-		crud.setDeleteOperation(user -> giornataInfoController.deleteGiornataInfo(user));
+		crud.setFindAllOperation(() -> giornataInfoService.findAll());
+		crud.setAddOperation(user -> giornataInfoService.updateGiornataInfo(user));
+		crud.setUpdateOperation(user -> giornataInfoService.updateGiornataInfo(user));
+		crud.setDeleteOperation(user -> giornataInfoService.deleteGiornataInfo(user));
 
 		add(crud);
 	}

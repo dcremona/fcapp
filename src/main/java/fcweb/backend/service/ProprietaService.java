@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcProperties;
@@ -10,9 +11,10 @@ import fcweb.backend.data.entity.FcProperties;
 @Service
 public class ProprietaService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final ProprietaRepository proprietaRepository;
 
-	@Autowired
 	public ProprietaService(ProprietaRepository proprietaRepository) {
 		this.proprietaRepository = proprietaRepository;
 	}
@@ -29,7 +31,8 @@ public class ProprietaService{
 		FcProperties fcProperties = null;
 		try {
 			fcProperties = proprietaRepository.save(proprieta);
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
 		}
 		return fcProperties;
 	}
@@ -37,7 +40,8 @@ public class ProprietaService{
 	public void deleteProprieta(FcProperties proprieta) {
         try {
 			proprietaRepository.delete(proprieta);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

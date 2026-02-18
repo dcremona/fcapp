@@ -3,6 +3,8 @@ package fcweb.backend.service;
 import java.util.List;
 
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,10 @@ import fcweb.utils.Costants;
 @Service
 public class ClassificaTotalePuntiService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final ClassificaTotalePuntiRepository classificaTotalePuntiRepository;
 
-	@Autowired
 	public ClassificaTotalePuntiService(
 			ClassificaTotalePuntiRepository classificaTotalePuntiRepository) {
 		this.classificaTotalePuntiRepository = classificaTotalePuntiRepository;
@@ -39,6 +42,11 @@ public class ClassificaTotalePuntiService{
 	public FcClassificaTotPt findByFcAttoreAndFcGiornataInfo(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
 		return classificaTotalePuntiRepository.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
+	}
+	
+	public List<FcClassificaTotPt> findByFcCampionatoAndFcGiornataInfo(
+            FcCampionato campionato, FcGiornataInfo giornataInfo) {
+		return classificaTotalePuntiRepository.findByFcCampionatoAndFcGiornataInfo(campionato,giornataInfo);
 	}
 
 	@Autowired
@@ -234,5 +242,16 @@ public class ClassificaTotalePuntiService{
         } catch (Exception ignored) {
 		}
 	}
+	
+	public FcClassificaTotPt save(FcClassificaTotPt c) {
+		FcClassificaTotPt fcClassificaTotPt = null;
+		try {
+			fcClassificaTotPt = classificaTotalePuntiRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcClassificaTotPt;
+	}
+
 
 }

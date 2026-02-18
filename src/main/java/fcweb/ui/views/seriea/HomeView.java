@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
 import com.vaadin.flow.component.card.Card;
@@ -53,20 +52,17 @@ public class HomeView extends VerticalLayout{
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private GiornataService giornataController;
+	private final GiornataService giornataService;
+	private final GiornataInfoService giornataInfoService;
+	private final GiornataRisService giornataRisService;
+	private final AccessoService accessoService;
 
-	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
-	private GiornataRisService giornataRisController;
-
-	@Autowired
-	private AccessoService accessController;
-
-	public HomeView() {
+	public HomeView(GiornataService giornataService,GiornataInfoService giornataInfoService,GiornataRisService giornataRisService,AccessoService accessoService) {
 		log.info("HomeView()");
+		this.giornataService = giornataService;
+		this.giornataInfoService = giornataInfoService;
+		this.giornataRisService = giornataRisService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -80,7 +76,7 @@ public class HomeView extends VerticalLayout{
 				return;
 			}
 
-			accessController.insertAccesso(this.getClass().getName());
+			accessoService.insertAccesso(this.getClass().getName());
 
 			add(buildInfoGiornate());
 
@@ -104,7 +100,7 @@ public class HomeView extends VerticalLayout{
 
 			String title;
 			if (giornataInfoCurr.getCodiceGiornata() > 1) {
-				FcGiornataInfo giornataInfoPrev = giornataInfoController.findByCodiceGiornata(giornataInfoCurr.getCodiceGiornata() - 1);
+				FcGiornataInfo giornataInfoPrev = giornataInfoService.findByCodiceGiornata(giornataInfoCurr.getCodiceGiornata() - 1);
 
 				final VerticalLayout layoutSx = new VerticalLayout();
 				title = "Ultima Giornata - " + Utils.buildInfoGiornata(giornataInfoPrev);
@@ -138,7 +134,7 @@ public class HomeView extends VerticalLayout{
 
 	private List<Calendario> getDataTable(FcGiornataInfo ggInfo) {
 
-		List<FcGiornata> all = giornataController.findByFcGiornataInfo(ggInfo);
+		List<FcGiornata> all = giornataService.findByFcGiornataInfo(ggInfo);
 
 		List<Calendario> list = new ArrayList<>();
 
@@ -224,7 +220,7 @@ public class HomeView extends VerticalLayout{
 		layout.setResponsiveSteps(new ResponsiveStep("1px",1), new ResponsiveStep("500px",2), new ResponsiveStep("600px",3), new ResponsiveStep("700px",4), new ResponsiveStep("800px",5));
 
 		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-		List<FcGiornataRis> l = giornataRisController.findByFcAttoreOrderByFcGiornataInfoAsc(attore);
+		List<FcGiornataRis> l = giornataRisService.findByFcAttoreOrderByFcGiornataInfoAsc(attore);
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
@@ -232,7 +228,7 @@ public class HomeView extends VerticalLayout{
 		for (FcGiornataRis fcGiornataRis : l) {
 			int cg = fcGiornataRis.getFcGiornataInfo().getCodiceGiornata();
 			if (cg >= from) {
-				FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(cg);
+				FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(cg);
 				Card card = getCard(giornataInfo, attore, fcGiornataRis);
 				layout.add(card);
 			}
@@ -266,7 +262,7 @@ public class HomeView extends VerticalLayout{
 		String punteggio = "";
 		String totPunteggio = "";
 
-		List<FcGiornata> all = giornataController.findByFcGiornataInfo(giornataInfo);
+		List<FcGiornata> all = giornataService.findByFcGiornataInfo(giornataInfo);
 		for (FcGiornata g : all) {
 			if (attore.getIdAttore() == g.getFcAttoreByIdAttoreCasa().getIdAttore() || attore.getIdAttore() == g.getFcAttoreByIdAttoreFuori().getIdAttore()) {
 				DecimalFormat myFormatter = new DecimalFormat("#0.00");

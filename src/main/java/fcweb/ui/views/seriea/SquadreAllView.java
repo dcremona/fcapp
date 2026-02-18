@@ -58,21 +58,19 @@ public class SquadreAllView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private final AttoreService attoreService;
+	private final FormazioneService formazioneService;
+	private final AccessoService accessoService;
 
 	private List<FcAttore> squadre = new ArrayList<>();
 
-	@Autowired
-	private AccessoService accessoController;
-
-	public SquadreAllView() {
+	public SquadreAllView(AttoreService attoreService,FormazioneService formazioneService,AccessoService accessoService) {
 		log.info("SquadreAllView()");
+		this.attoreService = attoreService;
+		this.formazioneService = formazioneService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -83,14 +81,14 @@ public class SquadreAllView extends VerticalLayout{
 			return;
 		}
 
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadre = attoreController.findByActive(true);
+		squadre = attoreService.findByActive(true);
 	}
 
 	private void initLayout() {
@@ -129,7 +127,7 @@ public class SquadreAllView extends VerticalLayout{
 
 		for (FcAttore attore : squadre) {
 
-			List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
+			List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
 			Double somma = 0d;
 			for (FcFormazione f : listFormazione) {
 				if (f.getTotPagato() != null) {
@@ -320,7 +318,7 @@ public class SquadreAllView extends VerticalLayout{
 		Map<String, Object> parameters = new HashMap<>();
 		for (FcAttore attore : squadre) {
 			Collection<FormazioneJasper> lSq = new ArrayList<>();
-			List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
+			List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
 			Double somma = (double) 0;
 			FormazioneJasper fj;
 			for (FcFormazione f : listFormazione) {

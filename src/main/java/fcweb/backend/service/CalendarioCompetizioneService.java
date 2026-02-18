@@ -3,7 +3,8 @@ package fcweb.backend.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +13,18 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 
 @Service
 public class CalendarioCompetizioneService{
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private final CalendarioCompetizioneRepository calendarioCompetizioneRepository;
 
-	private final CalendarioCompetizioneRepository calendarioTimRepository;
-
-	@Autowired
 	public CalendarioCompetizioneService(
-			CalendarioCompetizioneRepository calendarioTimRepository) {
-		this.calendarioTimRepository = calendarioTimRepository;
+			CalendarioCompetizioneRepository calendarioCompetizioneRepository) {
+		this.calendarioCompetizioneRepository = calendarioCompetizioneRepository;
 	}
 
 	public List<FcCalendarioCompetizione> findAll() {
-		return (List<FcCalendarioCompetizione>) calendarioTimRepository.findAll(sortByIdAsc());
+		return (List<FcCalendarioCompetizione>) calendarioCompetizioneRepository.findAll(sortByIdAsc());
 	}
 
 	private Sort sortByIdAsc() {
@@ -34,28 +36,33 @@ public class CalendarioCompetizioneService{
 
 		List<FcCalendarioCompetizione> l;
 		if (fcGiornataInfo == null) {
-			l = (List<FcCalendarioCompetizione>) calendarioTimRepository.findAll(sortByIdAsc());
+			l = (List<FcCalendarioCompetizione>) calendarioCompetizioneRepository.findAll(sortByIdAsc());
 		} else {
-			l = calendarioTimRepository.findByIdGiornataOrderByDataAsc(fcGiornataInfo.getCodiceGiornata());
+			l = calendarioCompetizioneRepository.findByIdGiornataOrderByDataAsc(fcGiornataInfo.getCodiceGiornata());
 		}
 		return l;
+	}
+	
+	public List<FcCalendarioCompetizione> findByIdGiornata(
+			int idGiornata) {
+		return calendarioCompetizioneRepository.findByIdGiornata(idGiornata);
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataOrderByDataAsc(
 			int idGiornata) {
-		return calendarioTimRepository.findByIdGiornataOrderByDataAsc(idGiornata);
+		return calendarioCompetizioneRepository.findByIdGiornataOrderByDataAsc(idGiornata);
 	}
 
 	public List<FcCalendarioCompetizione> findByIdGiornataAndDataLessThanEqual(
 			int idGiornata, LocalDateTime data) {
-		return calendarioTimRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
+		return calendarioCompetizioneRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
 	}
 
 	public FcCalendarioCompetizione updateCalendarioTim(
 			FcCalendarioCompetizione calendarioTim) {
 		FcCalendarioCompetizione fcCalendarioTim = null;
 		try {
-			fcCalendarioTim = calendarioTimRepository.save(calendarioTim);
+			fcCalendarioTim = calendarioCompetizioneRepository.save(calendarioTim);
 		} catch (Exception ignored) {
 		}
 		return fcCalendarioTim;
@@ -63,10 +70,25 @@ public class CalendarioCompetizioneService{
 
 	public void deleteCalendarioTim(FcCalendarioCompetizione calendarioTim) {
         try {
-			calendarioTimRepository.delete(calendarioTim);
+        	calendarioCompetizioneRepository.delete(calendarioTim);
         } catch (Exception ignored) {
 
 		}
 	}
+	
+	public FcCalendarioCompetizione save(FcCalendarioCompetizione c) {
+		FcCalendarioCompetizione fcCalendarioCompetizione = null;
+		try {
+			fcCalendarioCompetizione = calendarioCompetizioneRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcCalendarioCompetizione;
+	}
+	
+	public void deleteAll() {
+		calendarioCompetizioneRepository.deleteAll();	
+	}
+
 
 }

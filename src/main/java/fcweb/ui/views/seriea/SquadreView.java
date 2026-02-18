@@ -66,27 +66,24 @@ public class SquadreView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private MercatoService mercatoController;
-
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	private final AttoreService attoreService;
+	private final FormazioneService formazioneService;
+	private final MercatoService mercatoService;
+	private final AccessoService accessoService;
+
 	private List<FcAttore> squadre = new ArrayList<>();
 
-	@Autowired
-	private AccessoService accessoController;
-
-	public SquadreView() {
+	public SquadreView(AttoreService attoreService,FormazioneService formazioneService,MercatoService mercatoService,AccessoService accessoService) {
 		log.info("SquadreView()");
+		this.attoreService = attoreService;
+		this.formazioneService = formazioneService;
+		this.mercatoService = mercatoService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -96,14 +93,14 @@ public class SquadreView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadre = attoreController.findByActive(true);
+		squadre = attoreService.findByActive(true);
 	}
 
 	private void initLayout() {
@@ -136,7 +133,7 @@ public class SquadreView extends VerticalLayout{
 					log.error(e.getMessage());
 				}
 
-				List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
+				List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, true);
 				Double somma = 0d;
 				for (FcFormazione f : listFormazione) {
 					if (f.getTotPagato() != null) {
@@ -151,7 +148,7 @@ public class SquadreView extends VerticalLayout{
 				FcGiornataInfo end = new FcGiornataInfo();
 				end.setCodiceGiornata(to);
 
-				List<FcMercatoDett> listMercato = mercatoController.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(start, end, attore);
+				List<FcMercatoDett> listMercato = mercatoService.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(start, end, attore);
 
 				Grid<FcFormazione> tableFormazione = getTableFormazione(listFormazione, somma.intValue());
 				Grid<FcMercatoDett> tableMercato = getTableMercato(listMercato);

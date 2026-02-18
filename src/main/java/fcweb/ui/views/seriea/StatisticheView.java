@@ -4,10 +4,12 @@ import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,8 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -88,22 +92,16 @@ public class StatisticheView extends VerticalLayout
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
-
-	@Autowired
-	private StatisticheService statisticheController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
 
 	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final StatisticheService statisticheService;
+	private final AttoreService attoreService;
+	private final SquadraService squadraService;
+	private final AccessoService accessoService;
 
 	private List<FcAttore> squadreA = new ArrayList<>();
 	private List<FcAttore> squadreB = new ArrayList<>();
@@ -128,8 +126,18 @@ public class StatisticheView extends VerticalLayout
 
 	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
-	@Autowired
-	private AccessoService accessoController;
+	public StatisticheView(	ClassificaTotalePuntiService classificaTotalePuntiService,
+			StatisticheService statisticheService,
+			AttoreService attoreService,
+			SquadraService squadraService,
+			AccessoService accessoService) {
+		log.info("StatisticheView()");
+		this.classificaTotalePuntiService = classificaTotalePuntiService;
+		this.statisticheService = statisticheService;
+		this.attoreService = attoreService;
+		this.squadraService = squadraService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() {
@@ -137,15 +145,15 @@ public class StatisticheView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadreA = attoreController.findByActive(true);
+		squadreA = attoreService.findByActive(true);
 		squadreB = squadreA;
-		squadreSerieA = squadraController.findAll();
+		squadreSerieA = squadraService.findAll();
 		proprietari = squadreA;
 	}
 
@@ -224,7 +232,7 @@ public class StatisticheView extends VerticalLayout
 		String idAttoreB = "" + comboAttoreB.getValue().getIdAttore();
 		String descAttoreB = comboAttoreB.getValue().getDescAttore();
 		String sPunti = comboPunti.getValue();
-		List<ClassificaBean> items = classificaTotalePuntiController.getModelGrafico(idAttoreA, idAttoreB, campionato);
+		List<ClassificaBean> items = classificaTotalePuntiService.getModelGrafico(idAttoreA, idAttoreB, campionato);
 
 		ArrayList<String> giornate = new ArrayList<>();
 		ArrayList<Double> dataA = new ArrayList<>();
@@ -399,7 +407,7 @@ public class StatisticheView extends VerticalLayout
 
 		layout.add(layoutFilter);
 
-		List<FcStatistiche> items = statisticheController.findAll();
+		List<FcStatistiche> items = statisticheService.findAll();
 
 		PaginatedGrid<FcStatistiche, ?> grid = new PaginatedGrid<>();
 		ListDataProvider<FcStatistiche> dataProvider = new ListDataProvider<>(items);

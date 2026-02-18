@@ -43,22 +43,19 @@ public class FcFormazioneView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private GiocatoreService giocatoreController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final AttoreService attoreService;
+	private final FormazioneService formazioneService;
+	private final GiocatoreService giocatoreService;
+	private final AccessoService accessoService;
 
-	public FcFormazioneView() {
+	public FcFormazioneView(AttoreService attoreService,FormazioneService formazioneService,GiocatoreService giocatoreService,AccessoService accessoService) {
 		log.info("FcFormazioneView()");
+		this.attoreService = attoreService;
+		this.formazioneService = formazioneService;
+		this.giocatoreService = giocatoreService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -67,7 +64,7 @@ public class FcFormazioneView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -96,8 +93,8 @@ public class FcFormazioneView extends VerticalLayout{
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreController.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreService.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
 
 		crud.setRowCountCaption("%d Formazione(s) found");
 		crud.setClickRowToUpdate(true);
@@ -105,10 +102,10 @@ public class FcFormazioneView extends VerticalLayout{
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
-		crud.setFindAllOperation(() -> formazioneController.findByFcCampionato(campionato));
-		crud.setAddOperation(user -> formazioneController.updateFormazione(user));
-		crud.setUpdateOperation(user -> formazioneController.updateFormazione(user));
-		crud.setDeleteOperation(user -> formazioneController.deleteFormazione(user));
+		crud.setFindAllOperation(() -> formazioneService.findByFcCampionato(campionato));
+		crud.setAddOperation(user -> formazioneService.updateFormazione(user));
+		crud.setUpdateOperation(user -> formazioneService.updateFormazione(user));
+		crud.setDeleteOperation(user -> formazioneService.deleteFormazione(user));
 
 		add(crud);
 

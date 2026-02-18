@@ -68,19 +68,14 @@ public class MercatoView extends VerticalLayout
 	private String idCampionato = null;
 
 	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private GiocatoreService giocatoreController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private ClassificaService classificaController;
-
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	private final AttoreService attoreService;
+	private final GiocatoreService giocatoreService;
+	private final FormazioneService formazioneService;
+	private final ClassificaService classificaService;
+	private final AccessoService accessoService;
+	private final SquadraService squadraService;
 
 	private Button randomSaveButton;
 	private Button saveButton;
@@ -97,14 +92,20 @@ public class MercatoView extends VerticalLayout
 	private List<FcGiocatore> giocatori = new ArrayList<>();
 	private List<FcClassifica> creditiFm = new ArrayList<>();
 
-	@Autowired
-	private AccessoService accessoController;
 
-	@Autowired
-	private SquadraService squadraController;
-
-	public MercatoView() {
+	public MercatoView(AttoreService attoreService,
+			GiocatoreService giocatoreService,
+			FormazioneService formazioneService,
+			ClassificaService classificaService,
+			AccessoService accessoService,
+			SquadraService squadraService) {
 		log.info("MercatoView");
+		this.attoreService = attoreService;
+		this.giocatoreService = giocatoreService;
+		this.formazioneService = formazioneService;
+		this.classificaService = classificaService;
+		this.accessoService = accessoService;
+		this.squadraService = squadraService;
 	}
 
 	private void randomFormazioni() {
@@ -199,17 +200,17 @@ public class MercatoView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
 		log.info("initData");
-		squadre = attoreController.findByActive(true);
-		giocatori = giocatoreController.findAll();
+		squadre = attoreService.findByActive(true);
+		giocatori = giocatoreService.findAll();
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		creditiFm = classificaController.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
+		creditiFm = classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -520,7 +521,7 @@ public class MercatoView extends VerticalLayout
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		idCampionato = "" + campionato.getIdCampionato();
 
-		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
+		List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
 
 		Grid<FcFormazione> grid = new Grid<>();
 		grid.setAllRowsVisible(true);
@@ -633,7 +634,7 @@ public class MercatoView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 
 			if (f != null && f.getKey() != null) {
-				FcSquadra sq = squadraController.findByNomeSquadra(f.getKey());
+				FcSquadra sq = squadraService.findByNomeSquadra(f.getKey());
 				if (sq != null && sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());

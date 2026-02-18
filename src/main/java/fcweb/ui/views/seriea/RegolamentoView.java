@@ -48,22 +48,20 @@ public class RegolamentoView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private RegolamentoService regolamentoController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private final AccessoService accessoService;
+	private final RegolamentoService regolamentoService;
+
 	private String html = "";
 	private FcRegolamento regolamento = null;
-
 	private VaadinCKEditor decoupledEditor = null;
-
 	private Button salvaDb;
 
-	public RegolamentoView() {
+	public RegolamentoView(AccessoService accessoService,RegolamentoService regolamentoService) {
 		log.info("RegolamentoView()");
+		this.accessoService = accessoService;
+		this.regolamentoService = regolamentoService;
 	}
 
 	@PostConstruct
@@ -71,13 +69,13 @@ public class RegolamentoView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		List<FcRegolamento> l = regolamentoController.findAll();
+		List<FcRegolamento> l = regolamentoService.findAll();
 		try {
 
 			BufferedReader br;
@@ -164,7 +162,7 @@ public class RegolamentoView extends VerticalLayout
 				regolamento.setData(LocalDateTime.now());
 				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
 
-				regolamentoController.insertUpdateRegolamento(regolamento);
+				regolamentoService.insertUpdateRegolamento(regolamento);
 
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			}

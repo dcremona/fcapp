@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ import fcweb.backend.data.entity.FcRuolo;
 @Service
 public class RuoloService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final RuoloRepository ruoloRepository;
 
-	@Autowired
 	public RuoloService(RuoloRepository ruoloRepository) {
 		this.ruoloRepository = ruoloRepository;
 	}
@@ -24,6 +26,16 @@ public class RuoloService{
 
 	private Sort sortByIdRuoloDesc() {
 		return Sort.by(Sort.Direction.DESC, "idRuolo");
+	}
+
+	public FcRuolo save(FcRuolo c) {
+		FcRuolo fcRuolo = null;
+		try {
+			fcRuolo = ruoloRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcRuolo;
 	}
 
 }

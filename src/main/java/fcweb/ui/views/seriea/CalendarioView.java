@@ -51,21 +51,20 @@ public class CalendarioView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private GiornataService giornataController;
-
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final GiornataService giornataService;
+	private final AccessoService accessoService;
 
 	private List<FcGiornata> model = new ArrayList<>();
 
-	public CalendarioView() {
+	public CalendarioView(GiornataService giornataService,AccessoService accessoService) {
 		log.info("CalendarioView()");
+		this.giornataService = giornataService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -74,7 +73,7 @@ public class CalendarioView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
@@ -86,7 +85,7 @@ public class CalendarioView extends VerticalLayout{
 		List<FcGiornata> model1 = new ArrayList<>();
 		List<FcGiornata> model2 = new ArrayList<>();
 
-		List<FcGiornata> all = giornataController.findAll();
+		List<FcGiornata> all = giornataService.findAll();
 		for (FcGiornata g : all) {
 			int gg = g.getFcGiornataInfo().getCodiceGiornata();
 			if (gg < 20) {

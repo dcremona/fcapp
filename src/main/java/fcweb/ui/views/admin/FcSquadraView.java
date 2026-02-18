@@ -54,21 +54,20 @@ public class FcSquadraView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
 	public Environment env;
-
-	private Button initDb;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final SquadraService squadraService;
+	private final AccessoService accessoService;
 
-	public FcSquadraView() {
+	private Button initDb;
+
+	public FcSquadraView(SquadraService squadraService,AccessoService accessoService) {
 		log.info("FcSquadraView()");
+		this.squadraService = squadraService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -77,7 +76,7 @@ public class FcSquadraView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -149,10 +148,10 @@ public class FcSquadraView extends VerticalLayout
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> squadraController.findAll());
-		crud.setAddOperation(p -> squadraController.updateSquadra(p));
-		crud.setUpdateOperation(p -> squadraController.updateSquadra(p));
-		crud.setDeleteOperation(p -> squadraController.deleteSquadra(p));
+		crud.setFindAllOperation(() -> squadraService.findAll());
+		crud.setAddOperation(p -> squadraService.updateSquadra(p));
+		crud.setUpdateOperation(p -> squadraService.updateSquadra(p));
+		crud.setDeleteOperation(p -> squadraService.deleteSquadra(p));
 
 		add(initDb);
 		add(crud);
@@ -163,7 +162,7 @@ public class FcSquadraView extends VerticalLayout
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		try {
 			if (event.getSource() == initDb) {
-				List<FcSquadra> squadreSerieA = squadraController.findAll();
+				List<FcSquadra> squadreSerieA = squadraService.findAll();
 				for (FcSquadra s : squadreSerieA) {
 					Resource r;
 					Resource r2;
@@ -184,7 +183,7 @@ public class FcSquadraView extends VerticalLayout
 						byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
 						s.setImg40(BlobProxy.generateProxy(targetArray2));
 					}
-					squadraController.updateSquadra(s);
+					squadraService.updateSquadra(s);
 				}
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			}

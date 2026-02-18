@@ -55,25 +55,22 @@ public class FcGiocatoreView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private GiocatoreService giocatoreController;
-
-	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
-	private RuoloService ruoloController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final GiocatoreService giocatoreService;
+	private final SquadraService squadraService;
+	private final RuoloService ruoloService;
+	private final AccessoService accessoService;
 
 	private final ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
 	private final ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
 
-	public FcGiocatoreView() {
+	public FcGiocatoreView(GiocatoreService giocatoreService,SquadraService squadraService,RuoloService ruoloService,AccessoService accessoService) {
 		log.info("FcGiocatoreView()");
+		this.giocatoreService = giocatoreService;
+		this.squadraService = squadraService;
+		this.ruoloService = ruoloService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -82,7 +79,7 @@ public class FcGiocatoreView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -148,7 +145,7 @@ public class FcGiocatoreView extends VerticalLayout{
 							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
 
 							log.info("SAVE GIOCATORE ");
-							giocatoreController.updateGiocatore(g);
+							giocatoreService.updateGiocatore(g);
 
 							CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 						} catch (Exception e) {
@@ -185,22 +182,22 @@ public class FcGiocatoreView extends VerticalLayout{
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
-		formFactory.setFieldProvider("fcSquadra", new ComboBoxProvider<>("fcSquadra",squadraController.findAll(),new TextRenderer<>(FcSquadra::getNomeSquadra),FcSquadra::getNomeSquadra));
-		formFactory.setFieldProvider("fcRuolo", new ComboBoxProvider<>("fcRuolo",ruoloController.findAll(),new TextRenderer<>(FcRuolo::getDescRuolo),FcRuolo::getDescRuolo));
+		formFactory.setFieldProvider("fcSquadra", new ComboBoxProvider<>("fcSquadra",squadraService.findAll(),new TextRenderer<>(FcSquadra::getNomeSquadra),FcSquadra::getNomeSquadra));
+		formFactory.setFieldProvider("fcRuolo", new ComboBoxProvider<>("fcRuolo",ruoloService.findAll(),new TextRenderer<>(FcRuolo::getDescRuolo),FcRuolo::getDescRuolo));
 
 		crud.setRowCountCaption("%d Giocatore(s) found");
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
 		ruoloFilter.setPlaceholder(Costants.RUOLO);
-		ruoloFilter.setItems(ruoloController.findAll());
+		ruoloFilter.setItems(ruoloService.findAll());
 		ruoloFilter.setItemLabelGenerator(FcRuolo::getIdRuolo);
 		ruoloFilter.setClearButtonVisible(true);
 		ruoloFilter.addValueChangeListener(e -> crud.refreshGrid());
 		crud.getCrudLayout().addFilterComponent(ruoloFilter);
 
 		squadraFilter.setPlaceholder(Costants.SQUADRA);
-		squadraFilter.setItems(squadraController.findAll());
+		squadraFilter.setItems(squadraService.findAll());
 		squadraFilter.setItemLabelGenerator(FcSquadra::getNomeSquadra);
 		squadraFilter.setClearButtonVisible(true);
 		squadraFilter.addValueChangeListener(e -> crud.refreshGrid());
@@ -213,10 +210,10 @@ public class FcGiocatoreView extends VerticalLayout{
 		});
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
-		crud.setFindAllOperation(() -> giocatoreController.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(ruoloFilter.getValue(), squadraFilter.getValue()));
-		crud.setAddOperation(g -> giocatoreController.updateGiocatore(g));
-		crud.setUpdateOperation(g -> giocatoreController.updateGiocatore(g));
-		crud.setDeleteOperation(g -> giocatoreController.deleteGiocatore(g));
+		crud.setFindAllOperation(() -> giocatoreService.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(ruoloFilter.getValue(), squadraFilter.getValue()));
+		crud.setAddOperation(g -> giocatoreService.updateGiocatore(g));
+		crud.setUpdateOperation(g -> giocatoreService.updateGiocatore(g));
+		crud.setDeleteOperation(g -> giocatoreService.deleteGiocatore(g));
 
 		add(crud);
 

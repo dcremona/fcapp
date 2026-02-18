@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ import fcweb.backend.data.entity.FcSquadra;
 @Service
 public class SquadraService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final SquadraRepository squadraRepository;
 
-	@Autowired
 	public SquadraService(SquadraRepository squadraRepository) {
 		this.squadraRepository = squadraRepository;
 	}
@@ -35,13 +37,13 @@ public class SquadraService{
 	}
 
 	public FcSquadra updateSquadra(FcSquadra c) {
-		FcSquadra Squadra;
+		FcSquadra squadra = null;
 		try {
-			Squadra = squadraRepository.save(c);
+			squadra = squadraRepository.save(c);
 		} catch (Exception ex) {
-			return null;
+			log.error(ex.getMessage());
 		}
-		return Squadra;
+		return squadra;
 	}
 
 	public void deleteSquadra(FcSquadra c) {

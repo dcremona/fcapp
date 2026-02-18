@@ -38,16 +38,15 @@ public class FcExpStatView extends VerticalLayout
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private ExpStatService expStatController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final ExpStatService expStatService;
+	private final AccessoService accessoService;
 
-	public FcExpStatView() {
+	public FcExpStatView(ExpStatService expStatService,AccessoService accessoService) {
 		log.info("FcExpStatView()");
+		this.expStatService = expStatService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -56,7 +55,7 @@ public class FcExpStatView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -83,10 +82,10 @@ public class FcExpStatView extends VerticalLayout
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> expStatController.findAll());
-		crud.setAddOperation(s -> expStatController.updateExpStat(s));
-		crud.setUpdateOperation(s -> expStatController.updateExpStat(s));
-		crud.setDeleteOperation(s -> expStatController.deleteExpStat(s));
+		crud.setFindAllOperation(() -> expStatService.findAll());
+		crud.setAddOperation(s -> expStatService.updateExpStat(s));
+		crud.setUpdateOperation(s -> expStatService.updateExpStat(s));
+		crud.setDeleteOperation(s -> expStatService.deleteExpStat(s));
 
 		add(crud);
 	}

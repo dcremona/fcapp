@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcStatoGiocatore;
@@ -10,9 +11,10 @@ import fcweb.backend.data.entity.FcStatoGiocatore;
 @Service
 public class StatoGiocatoreService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final StatoGiocatoreRepository statoGiocatoreRepository;
 
-	@Autowired
 	public StatoGiocatoreService(
 			StatoGiocatoreRepository statoGiocatoreRepository) {
 		this.statoGiocatoreRepository = statoGiocatoreRepository;
@@ -20,6 +22,16 @@ public class StatoGiocatoreService{
 
 	public List<FcStatoGiocatore> findAll() {
 		return (List<FcStatoGiocatore>) statoGiocatoreRepository.findAll();
+	}
+
+	public FcStatoGiocatore save(FcStatoGiocatore c) {
+		FcStatoGiocatore fcStatoGiocatore = null;
+		try {
+			fcStatoGiocatore = statoGiocatoreRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcStatoGiocatore;
 	}
 
 }

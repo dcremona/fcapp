@@ -60,25 +60,25 @@ public class JobProcessSendMail{
 	private EmailService emailService;
 
 	@Autowired
-	private GiornataInfoService giornataInfoController;
+	private GiornataInfoService giornataInfoService;
 
 	@Autowired
-	private AttoreService attoreController;
+	private AttoreService attoreService;
 
 	@Autowired
-	private GiornataService giornataController;
+	private GiornataService giornataService;
 
 	@Autowired
-	private GiornataDettService giornataDettController;
+	private GiornataDettService giornataDettService;
 
 	@Autowired
-	private ClassificaService classificaController;
+	private ClassificaService classificaService;
 
 	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
+	private ClassificaTotalePuntiService classificaTotalePuntiService;
 
 	@Autowired
-	private GiornataDettInfoService giornataDettInfoController;
+	private GiornataDettInfoService giornataDettInfoService;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -141,7 +141,7 @@ public class JobProcessSendMail{
 			StringBuilder emailDestinatario = new StringBuilder();
 			String activeMail = p.getProperty("ACTIVE_MAIL");
 			if ("true".equals(activeMail)) {
-				List<FcAttore> attori = attoreController.findByActive(true);
+				List<FcAttore> attori = attoreService.findByActive(true);
 				for (FcAttore a : attori) {
 					if (a.isNotifiche()) {
 						emailDestinatario.append(a.getEmail());
@@ -205,13 +205,13 @@ public class JobProcessSendMail{
 	private Map<String, Object> getMap(int giornata, String pathImg,
 			FcCampionato campionato) {
 
-		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(giornata);
+		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("path_img", pathImg);
 		parameters.put("titolo", giornataInfo.getDescGiornataFc());
 
-		List<FcGiornata> listCalendario = giornataController.findByFcGiornataInfo(giornataInfo);
+		List<FcGiornata> listCalendario = giornataService.findByFcGiornataInfo(giornataInfo);
 
 		int partita = 0;
 		int att = 0;
@@ -256,7 +256,7 @@ public class JobProcessSendMail{
 
 		final Collection<RisultatoBean> data = new ArrayList<>();
 
-		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 		int countD = 0;
 		int countC = 0;
 		int countA = 0;
@@ -389,7 +389,7 @@ public class JobProcessSendMail{
 		}
 
 		if (giornataInfo.getIdGiornataFc() == 15) {
-			FcClassifica cl = classificaController.findByFcCampionatoAndFcAttore(campionato, attore);
+			FcClassifica cl = classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
 			String res = "0";
 			if (cl.getIdPosiz() == 1) {
 				res = "8";
@@ -407,7 +407,7 @@ public class JobProcessSendMail{
 		}
 
 		if (giornataInfo.getIdGiornataFc() == 17) {
-			FcClassifica cl = classificaController.findByFcCampionatoAndFcAttore(campionato, attore);
+			FcClassifica cl = classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
 			b = new RisultatoBean();
 			b.setDesc("Bonus Semifinali:");
 			b.setValue("" + cl.getVinte());
@@ -438,7 +438,7 @@ public class JobProcessSendMail{
 		b.setValue(totaleGiornata);
 		dataInfo.add(b);
 
-		FcClassificaTotPt totPunti = classificaTotalePuntiController.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
+		FcClassificaTotPt totPunti = classificaTotalePuntiService.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
 		String puntiTotali = "";
 		if (totPunti != null) {
 			puntiTotali = formatter.format(totPunti.getTotPtRosa() / Double.parseDouble("" + Costants.DIVISORE_100));
@@ -456,7 +456,7 @@ public class JobProcessSendMail{
 		}
 		dataInfo.add(b);
 
-		FcGiornataDettInfo info = giornataDettInfoController.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
+		FcGiornataDettInfo info = giornataDettInfoService.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
 
 		b = new RisultatoBean();
 		b.setDesc("Inviata alle:");

@@ -23,7 +23,7 @@ import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.job.JobProcessSendMail;
 import fcweb.backend.service.CampionatoService;
 import fcweb.backend.service.GiornataGiocatoreService;
-import fcweb.backend.service.GiornataInfoRepository;
+import fcweb.backend.service.GiornataInfoService;
 import fcweb.backend.service.PagelleService;
 import fcweb.backend.service.ProprietaService;
 import fcweb.utils.Costants;
@@ -40,13 +40,19 @@ public class MyScheduledTasks{
 	private Environment env;
 
 	@Autowired
-	private ProprietaService proprietaController;
+	private ProprietaService proprietaService;
 
 	@Autowired
-	private CampionatoService campionatoController;
+	private CampionatoService campionatoService;
 
 	@Autowired
-	private PagelleService pagelleController;
+	private PagelleService pagelleService;
+
+	@Autowired
+	private GiornataGiocatoreService giornataGiocatoreService;
+
+	@Autowired
+	private GiornataInfoService giornataInfoService;
 
 	@Autowired
 	private JobProcessFileCsv jobProcessFileCsv;
@@ -56,12 +62,6 @@ public class MyScheduledTasks{
 
 	@Autowired
 	private JobProcessSendMail jobProcessSendMail;
-
-	@Autowired
-	private GiornataGiocatoreService giornataGiocatoreService;
-
-	@Autowired
-	private GiornataInfoRepository giornataInfoRepository;
 
 	@Scheduled(cron = "#{@getCronValueUfficiosi}")
 	// @Scheduled(cron = "${ufficiosi.cron.expression}")
@@ -102,7 +102,7 @@ public class MyScheduledTasks{
 			infoResult = "UFFICIALI";
 		}
 
-		List<FcProperties> lProprieta = proprietaController.findAll();
+		List<FcProperties> lProprieta = proprietaService.findAll();
 		if (lProprieta.isEmpty()) {
 			log.error("error lProprietà size" + 0);
 			return;
@@ -122,11 +122,11 @@ public class MyScheduledTasks{
 			return;
 		}
 
-		FcPagelle currentGG = pagelleController.findCurrentGiornata();
+		FcPagelle currentGG = pagelleService.findCurrentGiornata();
 		FcGiornataInfo giornataInfo = currentGG.getFcGiornataInfo();
 
         log.info("currentGG: {}", giornataInfo.getCodiceGiornata());
-		FcCampionato campionato = campionatoController.findByActive(true);
+		FcCampionato campionato = campionatoService.findByActive(true);
 
 		String rootPathOutputPdf = env.getProperty("PATH_OUTPUT_PDF");
 		String idCampionato = "" + campionato.getIdCampionato();
@@ -187,7 +187,7 @@ public class MyScheduledTasks{
 
         log.info("jobSqualificaInfortunati start at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
 
-		List<FcProperties> lProprieta = proprietaController.findAll();
+		List<FcProperties> lProprieta = proprietaService.findAll();
 		if (lProprieta.isEmpty()) {
 			log.error("error lProprietà size" + 0);
 			return;
@@ -199,13 +199,13 @@ public class MyScheduledTasks{
 		String urlFanta = (String) p.get("URL_FANTA");
 		String basePathData = env.getProperty("PATH_TMP");
 
-		FcPagelle currentGG = pagelleController.findCurrentGiornata();
+		FcPagelle currentGG = pagelleService.findCurrentGiornata();
 		FcGiornataInfo giornataInfo;
 		if (currentGG != null) {
 			giornataInfo = currentGG.getFcGiornataInfo();
             log.info("currentGG: {}", giornataInfo.getCodiceGiornata());
 		} else {
-			giornataInfo = giornataInfoRepository.findByCodiceGiornata(1);
+			giornataInfo = giornataInfoService.findByCodiceGiornata(1);
 		}
 
 		String fusoOrario = p.getProperty("FUSO_ORARIO");

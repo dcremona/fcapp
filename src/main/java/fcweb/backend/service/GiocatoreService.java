@@ -3,7 +3,8 @@ package fcweb.backend.service;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcGiocatore;
@@ -13,9 +14,10 @@ import fcweb.backend.data.entity.FcSquadra;
 @Service
 public class GiocatoreService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final GiocatoreRepository giocatoreRepository;
 
-	@Autowired
 	public GiocatoreService(GiocatoreRepository giocatoreRepository) {
 		this.giocatoreRepository = giocatoreRepository;
 	}
@@ -34,6 +36,23 @@ public class GiocatoreService{
 		return giocatoreRepository.findByFcRuoloAndFlagAttivoAndIdGiocatoreNotInOrderByQuotazioneDesc(ruolo, flagAttivo, giocatore);
 	}
 
+	public List<FcGiocatore> findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
+            boolean flagAttivo, FcSquadra squadra,
+            Collection<Integer> giocatore) {
+		return giocatoreRepository.findByFlagAttivoAndFcSquadraAndIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(flagAttivo, squadra, giocatore);
+	}
+
+	public List<FcGiocatore> findByFlagAttivoAndFcSquadraOrderByFcRuoloDescQuotazioneDesc(
+            boolean flagAttivo, FcSquadra squadra) {
+		return giocatoreRepository.findByFlagAttivoAndFcSquadraOrderByFcRuoloDescQuotazioneDesc(flagAttivo, squadra);
+	}
+	
+	public List<FcGiocatore> findByCognGiocatoreContaining(
+            String cognGiocatore) {
+		return giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+	}
+
+	
 	public List<FcGiocatore> findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
 			FcRuolo ruolo, FcSquadra squadra) {
 		List<FcGiocatore> l;
@@ -48,6 +67,14 @@ public class GiocatoreService{
 		}
 		return l;
 	}
+	
+	public FcGiocatore findByNomeImg(String nomeImg) {
+		return giocatoreRepository.findByNomeImg(nomeImg);
+	}
+	
+	public FcGiocatore findByIdGiocatore(int idGiocatore) {
+		return giocatoreRepository.findByIdGiocatore(idGiocatore);
+	}
 
 	// em
 	public List<FcGiocatore> findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(
@@ -55,12 +82,22 @@ public class GiocatoreService{
 		return giocatoreRepository.findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(notIn);
 	}
 
-	public FcGiocatore updateGiocatore(FcGiocatore c) {
-		FcGiocatore giocatore;
+	public FcGiocatore save(FcGiocatore c) {
+		FcGiocatore giocatore = null;
 		try {
 			giocatore = giocatoreRepository.save(c);
 		} catch (Exception ex) {
-			return null;
+			log.error(ex.getMessage());
+		}
+		return giocatore;
+	}
+
+	public FcGiocatore updateGiocatore(FcGiocatore c) {
+		FcGiocatore giocatore = null;
+		try {
+			giocatore = giocatoreRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
 		}
 		return giocatore;
 	}
@@ -68,8 +105,8 @@ public class GiocatoreService{
 	public void deleteGiocatore(FcGiocatore c) {
         try {
 			giocatoreRepository.delete(c);
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

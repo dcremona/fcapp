@@ -3,6 +3,8 @@ package fcweb.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,43 +15,55 @@ import fcweb.backend.data.entity.FcAttore;
 @Service
 public class AttoreService{
 
-	private final AttoreRepository repository;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private final AttoreRepository attoreRepository;
 
-	public AttoreService(AttoreRepository repository) {
-		this.repository = repository;
+	public AttoreService(AttoreRepository attoreRepository) {
+		this.attoreRepository = attoreRepository;
 	}
 
 	public Optional<FcAttore> get(Long id) {
-		return repository.findById(id);
+		return attoreRepository.findById(id);
 	}
 
 	public FcAttore update(FcAttore entity) {
-		return repository.save(entity);
+		return attoreRepository.save(entity);
 	}
 
 	public void delete(Long id) {
-		repository.deleteById(id);
+		attoreRepository.deleteById(id);
 	}
 
 	public Page<FcAttore> list(Pageable pageable) {
-		return repository.findAll(pageable);
+		return attoreRepository.findAll(pageable);
 	}
 
 	public Page<FcAttore> list(Pageable pageable,
 			Specification<FcAttore> filter) {
-		return repository.findAll(filter, pageable);
+		return attoreRepository.findAll(filter, pageable);
 	}
 
 	public int count() {
-		return (int) repository.count();
+		return (int) attoreRepository.count();
 	}
 
 	public List<FcAttore> findAll() {
-		return repository.findAll();
+		return attoreRepository.findAll();
 	}
 
 	public List<FcAttore> findByActive(boolean active) {
-		return repository.findByActive(active);
+		return attoreRepository.findByActive(active);
+	}
+
+	public FcAttore save(FcAttore c) {
+		FcAttore fcAttore = null;
+		try {
+			fcAttore = attoreRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcAttore;
 	}
 
 }

@@ -87,13 +87,19 @@ public class TeamInsertMobileView extends VerticalLayout
 	private Environment env;
 
 	@Autowired
-	private EmailService emailService;
-
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private AttoreService attoreController;
+	private ResourceLoader resourceLoader;
+
+	private final FormazioneService formazioneService;
+	private final GiornataDettService giornataDettService;
+	private final CalendarioCompetizioneService calendarioCompetizioneService;
+	private final AccessoService accessoService;
+	private final SquadraService squadraService;
+	private final GiornataGiocatoreService giornataGiocatoreService;
+	private final AttoreService attoreService;
+	private final EmailService emailService;
 
 	private static final int WINWIDTH = 400;
 	private static final int WINHEIGHT = 800;
@@ -185,26 +191,24 @@ public class TeamInsertMobileView extends VerticalLayout
 	private final List<FcGiocatore> modelPlayer17 = new ArrayList<>();
 	private final List<FcGiocatore> modelPlayer18 = new ArrayList<>();
 
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private GiornataDettService giornataDettController;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	@Autowired
-	private CalendarioCompetizioneService calendarioTimController;
-
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
-	private GiornataGiocatoreService giornataGiocatoreService;
+	public TeamInsertMobileView(FormazioneService formazioneService,
+			GiornataDettService giornataDettService,
+			CalendarioCompetizioneService calendarioCompetizioneService,
+			AccessoService accessoService,
+			SquadraService squadraService,
+			GiornataGiocatoreService giornataGiocatoreService,
+			AttoreService attoreService,
+			EmailService emailService) {
+		log.info("TeamInsertMobileView()");
+		this.formazioneService = formazioneService;
+		this.giornataDettService = giornataDettService;
+		this.calendarioCompetizioneService = calendarioCompetizioneService;
+		this.accessoService = accessoService;
+		this.squadraService = squadraService;
+		this.giornataGiocatoreService = giornataGiocatoreService;
+		this.attoreService = attoreService;
+		this.emailService = emailService;
+	}
 
 	@PostConstruct
 	void init() throws Exception {
@@ -212,7 +216,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initData();
 
@@ -235,8 +239,8 @@ public class TeamInsertMobileView extends VerticalLayout
 		modelFormazione = getModelFormazione();
 
 		LocalDateTime now = LocalDateTime.now();
-		listPartiteGiocate = calendarioTimController.findByIdGiornataAndDataLessThanEqual(giornataInfo.getCodiceGiornata(), now);
-		listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
+		listPartiteGiocate = calendarioCompetizioneService.findByIdGiornataAndDataLessThanEqual(giornataInfo.getCodiceGiornata(), now);
+		listPartite = calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
 
 		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 	}
@@ -735,7 +739,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 	private ArrayList<FcGiocatore> getModelFormazione() {
 
-		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
+		List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
 
 		ArrayList<FcGiocatore> beans = new ArrayList<>();
 		for (FcFormazione f : listFormazione) {
@@ -1468,7 +1472,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 		log.info("loadFcGiornatadett");
 
-		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
 		if (lGiocatori.isEmpty()) {
 			comboModulo.setValue(null);
@@ -1950,7 +1954,7 @@ public class TeamInsertMobileView extends VerticalLayout
 		StringBuilder emailDestinatario = new StringBuilder();
 		String activeMail = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(activeMail)) {
-			List<FcAttore> attori = attoreController.findByActive(true);
+			List<FcAttore> attori = attoreService.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					emailDestinatario.append(a.getEmail());
@@ -2040,7 +2044,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (s != null && s.getSquadraCasa() != null) {
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraCasa());
+				FcSquadra sq = squadraService.findByIdSquadra(s.getIdSquadraCasa());
 				if (sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
@@ -2066,7 +2070,7 @@ public class TeamInsertMobileView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 
 			if (s != null && s.getSquadraCasa() != null) {
-				FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraFuori());
+				FcSquadra sq = squadraService.findByNomeSquadra(s.getSquadraFuori());
 				if (sq != null && sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
@@ -2114,7 +2118,7 @@ public class TeamInsertMobileView extends VerticalLayout
 
 			enabledComponent(true);
 
-			List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+			List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
 			modelFormazione.clear();
 			refreshAndSortGridFormazione();

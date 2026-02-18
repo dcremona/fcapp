@@ -42,25 +42,21 @@ public class FcGiornataView extends VerticalLayout{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private GiornataService giornataController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
-	private TipoGiornataService tipoGiornataController;
-
-	@Autowired
 	public Environment env;
 
-	@Autowired
-	private AccessoService accessoController;
+	private final GiornataService giornataService;
+	private final AttoreService attoreService;
+	private final GiornataInfoService giornataInfoService;
+	private final TipoGiornataService tipoGiornataService;
+	private final AccessoService accessoService;
 
-	public FcGiornataView() {
+	public FcGiornataView(GiornataService giornataService,AttoreService attoreService,GiornataInfoService giornataInfoService,TipoGiornataService tipoGiornataService,AccessoService accessoService) {
 		log.info("FcGiornataView()");
+		this.giornataService = giornataService;
+		this.attoreService = attoreService;
+		this.giornataInfoService = giornataInfoService;
+		this.tipoGiornataService = tipoGiornataService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
@@ -69,7 +65,7 @@ public class FcGiornataView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
 	}
 
@@ -103,19 +99,19 @@ public class FcGiornataView extends VerticalLayout{
 
 		crud.getGrid().setColumnReorderingAllowed(true);
 
-		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoController.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
-		crud.getCrudFormFactory().setFieldProvider("fcAttoreByIdAttoreCasa", new ComboBoxProvider<>("Attore Casa",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcAttoreByIdAttoreFuori", new ComboBoxProvider<>("Attore Fuori",attoreController.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcTipoGiornata", new ComboBoxProvider<>("Tipo Giornata",tipoGiornataController.findAll(),new TextRenderer<>(FcTipoGiornata::getDescTipoGiornata),FcTipoGiornata::getDescTipoGiornata));
+		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoService.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
+		crud.getCrudFormFactory().setFieldProvider("fcAttoreByIdAttoreCasa", new ComboBoxProvider<>("Attore Casa",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcAttoreByIdAttoreFuori", new ComboBoxProvider<>("Attore Fuori",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+		crud.getCrudFormFactory().setFieldProvider("fcTipoGiornata", new ComboBoxProvider<>("Tipo Giornata",tipoGiornataService.findAll(),new TextRenderer<>(FcTipoGiornata::getDescTipoGiornata),FcTipoGiornata::getDescTipoGiornata));
 
 		crud.setRowCountCaption("%d Giornata(s) found");
 		crud.setClickRowToUpdate(true);
 		crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(() -> giornataController.findAll());
-		crud.setAddOperation(user -> giornataController.updateGiornata(user));
-		crud.setUpdateOperation(user -> giornataController.updateGiornata(user));
-		crud.setDeleteOperation(user -> giornataController.deleteGiornata(user));
+		crud.setFindAllOperation(() -> giornataService.findAll());
+		crud.setAddOperation(user -> giornataService.updateGiornata(user));
+		crud.setUpdateOperation(user -> giornataService.updateGiornata(user));
+		crud.setDeleteOperation(user -> giornataService.deleteGiornata(user));
 
 		add(crud);
 	}

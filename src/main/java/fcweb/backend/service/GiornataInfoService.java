@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcGiornataInfo;
@@ -10,9 +11,10 @@ import fcweb.backend.data.entity.FcGiornataInfo;
 @Service
 public class GiornataInfoService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final GiornataInfoRepository giornataInfoRepository;
 
-	@Autowired
 	public GiornataInfoService(GiornataInfoRepository giornataInfoRepository) {
 		this.giornataInfoRepository = giornataInfoRepository;
 	}
@@ -39,11 +41,21 @@ public class GiornataInfoService{
 		return fcGiornataInfo;
 	}
 
+	public FcGiornataInfo save(FcGiornataInfo c) {
+		FcGiornataInfo fcGiornataInfo = null;
+		try {
+			fcGiornataInfo = giornataInfoRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcGiornataInfo;
+	}
+
 	public void deleteGiornataInfo(FcGiornataInfo giornataInfo) {
         try {
 			giornataInfoRepository.delete(giornataInfo);
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

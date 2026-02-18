@@ -84,36 +84,33 @@ public class FormazioniView extends VerticalLayout{
 	private Image iconBonusPortiere = null;
 
 	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
-	private GiornataService giornataController;
-
-	@Autowired
-	private GiornataDettService giornataDettController;
-
-	@Autowired
-	private GiornataDettInfoService giornataDettInfoController;
-
-	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
-
-	@Autowired
-	private ClassificaService classificaController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
 
 	@Autowired
 	private JobProcessSendMail jobProcessSendMail;
 
+	private final GiornataInfoService giornataInfoService;
+	private final GiornataService giornataService;
+	private final GiornataDettService giornataDettService;
+	private final GiornataDettInfoService giornataDettInfoService;
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final ClassificaService classificaService;
+	private final AccessoService accessoService;
+
 	private final VerticalLayout mainLayout = new VerticalLayout();
 	private ComboBox<FcGiornataInfo> comboGiornata;
 
-	@Autowired
-	private AccessoService accessoController;
-
-	public FormazioniView() {
+	public FormazioniView(GiornataInfoService giornataInfoService,GiornataService giornataService,
+			GiornataDettService giornataDettService,GiornataDettInfoService giornataDettInfoService,
+			ClassificaTotalePuntiService classificaTotalePuntiService,ClassificaService classificaService,AccessoService accessoService) {
+		log.info("FormazioniView()");
+		this.giornataInfoService=giornataInfoService;
+		this.giornataService=giornataService;
+		this.giornataDettService=giornataDettService;
+		this.giornataDettInfoService=giornataDettInfoService;
+		this.classificaTotalePuntiService=classificaTotalePuntiService;
+		this.classificaService=classificaService;
+		this.accessoService=accessoService;
 	}
 
 	@PostConstruct
@@ -122,7 +119,7 @@ public class FormazioniView extends VerticalLayout{
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initImg();
 		initLayout();
 	}
@@ -155,7 +152,7 @@ public class FormazioniView extends VerticalLayout{
 
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		List<FcGiornataInfo> giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		List<FcGiornataInfo> giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 
 		FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(new StreamResource("Risultati.pdf",() -> {
 			String pathImg = "images/";
@@ -206,8 +203,8 @@ public class FormazioniView extends VerticalLayout{
 
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer currGG = Integer.valueOf(giornata);
-		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(currGG);
-		List<FcGiornata> partite = giornataController.findByFcGiornataInfo(giornataInfo);
+		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(currGG);
+		List<FcGiornata> partite = giornataService.findByFcGiornataInfo(giornataInfo);
 
 		for (FcGiornata p : partite) {
 
@@ -305,7 +302,7 @@ public class FormazioniView extends VerticalLayout{
 
 		HashMap<String, Object> map = new HashMap<>();
 
-		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> all = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 		List<FcGiornataDett> items = new ArrayList<>();
 
 		int countD = 0;
@@ -631,7 +628,7 @@ public class FormazioniView extends VerticalLayout{
 		items.add(b);
 
 		if (giornataInfo.getIdGiornataFc() == 15) {
-			FcClassifica cl = classificaController.findByFcCampionatoAndFcAttore(campionato, attore);
+			FcClassifica cl = classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
 			String res = "0";
 			if (cl.getIdPosiz() == 1) {
 				res = "8";
@@ -647,7 +644,7 @@ public class FormazioniView extends VerticalLayout{
 			b.setValue(res);
 			items.add(b);
 		} else if (giornataInfo.getIdGiornataFc() == 17) {
-			FcClassifica cl = classificaController.findByFcCampionatoAndFcAttore(campionato, attore);
+			FcClassifica cl = classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
 			b = new FcProperties();
 			b.setKey("Bonus Semifinali:");
 			b.setValue("" + cl.getVinte());
@@ -704,8 +701,8 @@ public class FormazioniView extends VerticalLayout{
 		VerticalLayout layoutMain = new VerticalLayout();
 		layoutMain.setWidth("100%");
 
-		FcGiornataDettInfo info = giornataDettInfoController.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
-		FcClassificaTotPt totPunti = classificaTotalePuntiController.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
+		FcGiornataDettInfo info = giornataDettInfoService.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
+		FcClassificaTotPt totPunti = classificaTotalePuntiService.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 		String totG = "0";

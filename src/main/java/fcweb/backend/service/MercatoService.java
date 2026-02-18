@@ -2,7 +2,8 @@ package fcweb.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,10 @@ import fcweb.backend.data.entity.FcMercatoDett;
 @Service
 public class MercatoService{
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final MercatoRepository mercatoRepository;
 
-	@Autowired
 	public MercatoService(MercatoRepository mercatoRepository) {
 		this.mercatoRepository = mercatoRepository;
 	}
@@ -35,11 +37,11 @@ public class MercatoService{
 	}
 
 	public FcMercatoDett insertMercatoDett(FcMercatoDett c) {
-		FcMercatoDett fcMercatoDett;
+		FcMercatoDett fcMercatoDett = null;
 		try {
 			fcMercatoDett = mercatoRepository.save(c);
 		} catch (Exception ex) {
-			return null;
+			log.error(ex.getMessage());
 		}
 		return fcMercatoDett;
 	}
@@ -47,7 +49,8 @@ public class MercatoService{
 	public void deleteMercatoDett(FcMercatoDett c) {
         try {
 			mercatoRepository.delete(c);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 
