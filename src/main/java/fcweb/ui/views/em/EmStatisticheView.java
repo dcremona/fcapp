@@ -79,28 +79,22 @@ public class EmStatisticheView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
-
-	@Autowired
-	private StatisticheService statisticheController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
 	private JobProcessGiornata jobProcessGiornata;
 
 	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final StatisticheService statisticheService;
+	private final AttoreService attoreService;
+	private final SquadraService squadraService;
+	private final AccessoService accessoService;
 
 	public List<FcAttore> squadreA = new ArrayList<>();
 	public List<FcAttore> squadreB = new ArrayList<>();
@@ -122,24 +116,33 @@ public class EmStatisticheView extends VerticalLayout
 
 	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
-	@Autowired
-	private AccessoService accessoController;
+	public EmStatisticheView(
+			ClassificaTotalePuntiService classificaTotalePuntiService,
+			StatisticheService statisticheService, AttoreService attoreService,
+			SquadraService squadraService, AccessoService accessoService) {
+		log.info("EmStatisticheView()");
+		this.classificaTotalePuntiService = classificaTotalePuntiService;
+		this.statisticheService = statisticheService;
+		this.attoreService = attoreService;
+		this.squadraService = squadraService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadreA = attoreController.findByActive(true);
+		squadreA = attoreService.findByActive(true);
 		squadreB = squadreA;
-		squadre = squadraController.findAll();
+		squadre = squadraService.findAll();
 	}
 
 	private void initLayout() {
@@ -216,7 +219,7 @@ public class EmStatisticheView extends VerticalLayout
 		String idAttoreB = "" + comboAttoreB.getValue().getIdAttore();
 		String descAttoreB = comboAttoreB.getValue().getDescAttore();
 		String sPunti = comboPunti.getValue();
-		List<ClassificaBean> items = classificaTotalePuntiController.getModelGraficoEm(idAttoreA, idAttoreB, campionato);
+		List<ClassificaBean> items = classificaTotalePuntiService.getModelGraficoEm(idAttoreA, idAttoreB, campionato);
 
 		ArrayList<String> giornate = new ArrayList<>();
 		ArrayList<Double> dataA = new ArrayList<>();
@@ -268,7 +271,7 @@ public class EmStatisticheView extends VerticalLayout
 			layout1.add(button1Wrapper);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		for (Role r : att.getRoles()) {
@@ -312,7 +315,7 @@ public class EmStatisticheView extends VerticalLayout
 					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
 					container.add(img);
 				} catch (SQLException e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 				}
 			}
 			Span lblSquadra = new Span(item.getNomeSquadra());
@@ -341,7 +344,7 @@ public class EmStatisticheView extends VerticalLayout
 
 		layout.add(layoutFilter);
 
-		List<FcStatistiche> items = statisticheController.findAll();
+		List<FcStatistiche> items = statisticheService.findAll();
 
 		PaginatedGrid<FcStatistiche, ?> grid = new PaginatedGrid<>();
 		ListDataProvider<FcStatistiche> dataProvider = new ListDataProvider<>(items);
@@ -413,13 +416,13 @@ public class EmStatisticheView extends VerticalLayout
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
 				if (s.getNomeSquadra() != null) {
-					FcSquadra sq = squadraController.findByNomeSquadra(s.getNomeSquadra());
+					FcSquadra sq = squadraService.findByNomeSquadra(s.getNomeSquadra());
 					if (sq.getImg() != null) {
 						try {
 							Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 							cellLayout.add(img);
 						} catch (SQLException e) {
-							LOG.error(e.getMessage());
+							log.error(e.getMessage());
 						}
 					}
 					Span span = new Span();

@@ -52,7 +52,7 @@ public class EmHomeView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Environment env;
@@ -60,30 +60,27 @@ public class EmHomeView extends VerticalLayout{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	@Autowired
-	private GiornataInfoService giornataInfoController;
+	private final GiornataInfoService giornataInfoService;
+	private final CalendarioCompetizioneService calendarioCompetizioneService;
+	private final AccessoService accessoService;
+	private final SquadraService squadraService;
 
-	@Autowired
-	private CalendarioCompetizioneService calendarioTimController;
-
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private SquadraService squadraController;
-
-	public EmHomeView() {
-		LOG.info("EmHomeView()");
+	public EmHomeView(GiornataInfoService giornataInfoService,CalendarioCompetizioneService calendarioCompetizioneService,AccessoService accessoService,SquadraService squadraService) {
+		log.info("EmHomeView()");
+		this.giornataInfoService = giornataInfoService;
+		this.calendarioCompetizioneService = calendarioCompetizioneService;
+		this.accessoService = accessoService;
+		this.squadraService = squadraService;
 	}
 
 	@PostConstruct
 	void init() {
 		try {
-			LOG.info("init");
+			log.info("init");
 			if (!Utils.isValidVaadinSession()) {
 				return;
 			}
-			accessoController.insertAccesso(this.getClass().getName());
+			accessoService.insertAccesso(this.getClass().getName());
 
 			Image img = Utils.buildImage(env.getProperty("img.logo"), resourceLoader.getResource(Costants.CLASSPATH_IMAGES + env.getProperty("img.logo")));
 			this.add(img);
@@ -94,7 +91,7 @@ public class EmHomeView extends VerticalLayout{
 			buildGiornate();
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 
@@ -104,11 +101,11 @@ public class EmHomeView extends VerticalLayout{
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		List<FcGiornataInfo> giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		List<FcGiornataInfo> giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 
         TabSheet tabSheet = new TabSheet();
 		for (FcGiornataInfo g : giornate) {
-			List<FcCalendarioCompetizione> listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(g.getCodiceGiornata());
+			List<FcCalendarioCompetizione> listPartite = calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(g.getCodiceGiornata());
 			Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
 			final VerticalLayout layout = new VerticalLayout();
 			layout.setMargin(false);
@@ -119,7 +116,7 @@ public class EmHomeView extends VerticalLayout{
 			// Tab tab = tabs.add(g.getDescGiornata(), layout, false);
 			Tab tab = tabSheet.add(g.getDescGiornata(), layout);
 			if (g.getDescGiornata().equals(giornataInfo.getDescGiornata())) {
-                LOG.info(" selected tab {}", giornataInfo.getDescGiornata());
+                log.info(" selected tab {}", giornataInfo.getDescGiornata());
 				// tabs.select(tab);
 				tabSheet.setSelectedTab(tab);
 			}
@@ -145,13 +142,13 @@ public class EmHomeView extends VerticalLayout{
 		Column<FcCalendarioCompetizione> nomeSquadraCasaColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
             if (s != null && s.getSquadraCasa() != null) {
-                FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraCasa());
+                FcSquadra sq = squadraService.findByNomeSquadra(s.getSquadraCasa());
 				if (sq != null && sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
@@ -166,13 +163,13 @@ public class EmHomeView extends VerticalLayout{
 		Column<FcCalendarioCompetizione> nomeSquadraFuoriColumn = grid.addColumn(new ComponentRenderer<>(s -> {
 			HorizontalLayout cellLayout = new HorizontalLayout();
             if (s != null && s.getSquadraCasa() != null) {
-                FcSquadra sq = squadraController.findByNomeSquadra(s.getSquadraFuori());
+                FcSquadra sq = squadraService.findByNomeSquadra(s.getSquadraFuori());
 				if (sq != null && sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
@@ -197,7 +194,7 @@ public class EmHomeView extends VerticalLayout{
 		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 		String nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
 		long millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
-        LOG.info("millisDiff {}", millisDiff);
+        log.info("millisDiff {}", millisDiff);
 
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);

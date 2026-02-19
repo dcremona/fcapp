@@ -2,7 +2,6 @@ package fcweb.ui.views.em;
 
 import java.io.Serial;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -36,7 +35,6 @@ import fcweb.backend.data.entity.FcCampionato;
 import fcweb.backend.data.entity.FcExpRosea;
 import fcweb.backend.job.JobProcessGiornata;
 import fcweb.backend.service.AccessoService;
-import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.ExpRoseAService;
 import fcweb.ui.views.MainLayout;
 import fcweb.utils.Costants;
@@ -54,15 +52,7 @@ public class EmDownloadView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
-	private final Grid<FcExpRosea> gridRosea = new Grid<>();
-
-	@Autowired
-	private ExpRoseAService expRoseAController;
-
-    @Autowired
-	private AttoreService attoreController;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
 	private JobProcessGiornata jobProcessGiornata;
@@ -70,27 +60,27 @@ public class EmDownloadView extends VerticalLayout
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public List<FcAttore> squadre = new ArrayList<>();
+	private final ExpRoseAService expRoseAService;
+	private final AccessoService accessoService;
 
+	private final Grid<FcExpRosea> gridRosea = new Grid<>();
 	private Button salvaRoseA = null;
 	private Button salvaStat = null;
 
-	@Autowired
-	private AccessoService accessoController;
+	public EmDownloadView(ExpRoseAService expRoseAService,AccessoService accessoService) {
+		log.info("EmDownloadView()");
+		this.expRoseAService = expRoseAService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
-		initData();
+		accessoService.insertAccesso(this.getClass().getName());
 		initLayout();
-	}
-
-	private void initData() {
-		squadre = attoreController.findByActive(true);
 	}
 
 	private void initLayout() {
@@ -123,7 +113,7 @@ public class EmDownloadView extends VerticalLayout
 
 	private void setRoseA(VerticalLayout layout) {
 
-		List<FcExpRosea> items = expRoseAController.findAll();
+		List<FcExpRosea> items = expRoseAService.findAll();
 
         gridRosea.setItems(items);
 		gridRosea.setSelectionMode(Grid.SelectionMode.SINGLE);
@@ -272,7 +262,7 @@ public class EmDownloadView extends VerticalLayout
 			if (event.getSource() == salvaRoseA) {
 				jobProcessGiornata.executeUpdateDbFcExpRoseA(false, campionato.getIdCampionato());
 
-				List<FcExpRosea> items = expRoseAController.findAll();
+				List<FcExpRosea> items = expRoseAService.findAll();
 				gridRosea.setItems(items);
 				gridRosea.getDataProvider().refreshAll();
 

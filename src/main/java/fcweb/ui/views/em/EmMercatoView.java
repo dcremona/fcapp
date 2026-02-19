@@ -84,13 +84,26 @@ public class EmMercatoView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Environment env;
 
 	@Autowired
-	private EmailService emailService;
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private ResourceLoader resourceLoader;
+
+	private final EmailService emailService;
+	private final GiocatoreService giocatoreService;
+	private final AttoreService attoreService;
+	private final RuoloService ruoloService;
+	private final SquadraService squadraService;
+	private final FormazioneService formazioneService;
+	private final MercatoService mercatoService;
+	private final MercatoInfoService mercatoInfoService;
+	private final AccessoService accessoService;
 
 	private static final String width = "100px";
 	private static final String height = "120px";
@@ -196,43 +209,31 @@ public class EmMercatoView extends VerticalLayout
 	private final List<FcGiocatore> modelPlayer22 = new ArrayList<>();
 	private final List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private GiocatoreService giocatoreController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private RuoloService ruoloController;
-
-	@Autowired
-	private SquadraService squadraController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private MercatoService mercatoController;
-
-	@Autowired
-	private MercatoInfoService mercatoInfoController;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	@Autowired
-	private AccessoService accessoController;
+	public EmMercatoView(EmailService emailService,
+			GiocatoreService giocatoreService, AttoreService attoreService,
+			RuoloService ruoloService, SquadraService squadraService,
+			FormazioneService formazioneService, MercatoService mercatoService,
+			MercatoInfoService mercatoInfoService,
+			AccessoService accessoService) {
+		log.info("EmMercatoView()");
+		this.emailService = emailService;
+		this.giocatoreService = giocatoreService;
+		this.attoreService = attoreService;
+		this.ruoloService = ruoloService;
+		this.squadraService = squadraService;
+		this.formazioneService = formazioneService;
+		this.mercatoService = mercatoService;
+		this.mercatoInfoService = mercatoInfoService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() throws Exception {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
@@ -251,9 +252,9 @@ public class EmMercatoView extends VerticalLayout
 
 		CREDITI_MERCATO = (String) p.get("CREDITI_MERCATO");
 
-		attori = attoreController.findByActive(true);
-		ruoli = ruoloController.findAll();
-		squadre = squadraController.findAll();
+		attori = attoreService.findByActive(true);
+		ruoli = ruoloService.findAll();
+		squadre = squadraService.findAll();
 	}
 
 	private void showMessageStopInsert() {
@@ -278,7 +279,7 @@ public class EmMercatoView extends VerticalLayout
 		comboAttore.addValueChangeListener(event -> {
 			FcAttore attoreSel;
 			if (event.getSource().isEmpty()) {
-				LOG.info("event.getSource().isEmpty()");
+				log.info("event.getSource().isEmpty()");
 				removeAllElementsList();
 				setModelGiocatori(null);
 				if (activeFilter) {
@@ -295,9 +296,9 @@ public class EmMercatoView extends VerticalLayout
 				lblInfoC.setText("0");
 				lblInfoA.setText("0");
             } else if (event.getOldValue() == null) {
-				LOG.info("event.getOldValue()");
+				log.info("event.getOldValue()");
             } else {
-				LOG.info("new Value attore");
+				log.info("new Value attore");
 				attoreSel = event.getValue();
 				attore = attoreSel;
 				try {
@@ -315,7 +316,7 @@ public class EmMercatoView extends VerticalLayout
 					CHECK_TOT_CAMBI_EFFETTUATI = TOT_CAMBI_EFFETTUATI;
 					txtCambi.setText("" + CHECK_TOT_CAMBI_EFFETTUATI);
 				} catch (Exception e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 				}
 			}
@@ -354,7 +355,7 @@ public class EmMercatoView extends VerticalLayout
 					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
 					container.add(img);
 				} catch (SQLException e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 				}
 			}
 			Span lblSquadra = new Span(item.getNomeSquadra());
@@ -451,7 +452,7 @@ public class EmMercatoView extends VerticalLayout
 		layoutAvviso.add(cssLayout2);
 
 		if (millisDiff == 0) {
-            LOG.info("millisDiff {}", millisDiff);
+            log.info("millisDiff {}", millisDiff);
 		} else {
 			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
 			timer.setHours(true);
@@ -483,7 +484,7 @@ public class EmMercatoView extends VerticalLayout
 		int cambiEff = getCambiEffettuati();
 		TOT_CAMBI_EFFETTUATI = MAX_CAMBI - cambiEff;
 		CHECK_TOT_CAMBI_EFFETTUATI = TOT_CAMBI_EFFETTUATI;
-        LOG.info("DESC_ATTORE {} cambi {}", attore.getDescAttore(), CHECK_TOT_CAMBI_EFFETTUATI);
+        log.info("DESC_ATTORE {} cambi {}", attore.getDescAttore(), CHECK_TOT_CAMBI_EFFETTUATI);
 		if (CHECK_TOT_CAMBI_EFFETTUATI <= 0) {
 			this.saveSendMail.setEnabled(false);
 		}
@@ -674,7 +675,7 @@ public class EmMercatoView extends VerticalLayout
 			loadFcFormazione(attore);
 			updateTot();
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
 		}
 
@@ -685,20 +686,20 @@ public class EmMercatoView extends VerticalLayout
 
 	private void updateLabelCambi() {
 
-		LOG.info("START updateLabelCambi");
+		log.info("START updateLabelCambi");
 
 		int totaleCambi = calcolaCambi();
 
-        LOG.debug("totaleCambi {}", totaleCambi);
+        log.debug("totaleCambi {}", totaleCambi);
 		CHECK_TOT_CAMBI_EFFETTUATI = TOT_CAMBI_EFFETTUATI - totaleCambi;
 		txtCambi.setText("" + CHECK_TOT_CAMBI_EFFETTUATI);
 
-		LOG.info("END updateLabelCambi ");
+		log.info("END updateLabelCambi ");
 	}
 
 	private int calcolaCambi() {
 
-		LOG.info("START calcolaCambi");
+		log.info("START calcolaCambi");
 
 		int totCambi = 0;
 		for (int i = 0; i < modelFormazione.size(); i++) {
@@ -867,14 +868,14 @@ public class EmMercatoView extends VerticalLayout
 			}
 		}
 
-		LOG.info("END calcolaCambi");
+		log.info("END calcolaCambi");
 
 		return totCambi;
 	}
 
 	private void updateTot() {
 
-		LOG.info("START updateTot");
+		log.info("START updateTot");
 
 		int tot = 0;
 
@@ -1163,7 +1164,7 @@ public class EmMercatoView extends VerticalLayout
 		tableContaPlayer.setItems(modelContaPlayer);
 		tableContaPlayer.getDataProvider().refreshAll();
 
-		LOG.info("END updateTot");
+		log.info("END updateTot");
 	}
 
 	private void refreshContaGiocatori(HashMap<String, String> m, String sq) {
@@ -1178,7 +1179,7 @@ public class EmMercatoView extends VerticalLayout
 	}
 
 	private void removeAllElementsList() {
-		LOG.info("removeAllElementsList");
+		log.info("removeAllElementsList");
 
 		removeMercatoGiocatore();
 
@@ -1210,7 +1211,7 @@ public class EmMercatoView extends VerticalLayout
 	}
 
 	private void removeMercatoGiocatore() {
-		LOG.info("removeMercatoGiocatore");
+		log.info("removeMercatoGiocatore");
 		if (!modelPlayer1.isEmpty()) {
 			modelPlayer1.clear();
 			tablePlayer1.getDataProvider().refreshAll();
@@ -1306,11 +1307,11 @@ public class EmMercatoView extends VerticalLayout
 	}
 
 	private void loadFcFormazione(FcAttore att) {
-        LOG.info("loadFcFormazione {}", att.getDescAttore());
+        log.info("loadFcFormazione {}", att.getDescAttore());
 		if (!modelFormazione.isEmpty()) {
 			modelFormazione.clear();
 		}
-		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, att);
+		List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, att);
 		for (FcFormazione f : listFormazione) {
 			FcGiocatore bean = f.getFcGiocatore();
 			if (bean != null) {
@@ -1456,7 +1457,7 @@ public class EmMercatoView extends VerticalLayout
 				// }
 				// mercatoDettInfo.setFlagInvio("S");
 				// mercatoDettInfo.setDataInvio(new Date());
-				// mercatoInfoController.insertMercatoDettInfo(mercatoDettInfo);
+				// mercatoInfoService.insertMercatoDettInfo(mercatoDettInfo);
 				//
 				// LOG.info("insert MercatoDettInfo OK");
 				//
@@ -1536,9 +1537,9 @@ public class EmMercatoView extends VerticalLayout
 				}
 				mercatoDettInfo.setFlagInvio("S");
 				mercatoDettInfo.setDataInvio(new Date());
-				mercatoInfoController.insertMercatoDettInfo(mercatoDettInfo);
+				mercatoInfoService.insertMercatoDettInfo(mercatoDettInfo);
 
-				LOG.info("insert MercatoDettInfo OK");
+				log.info("insert MercatoDettInfo OK");
 
 				int cambiEff = getCambiEffettuati();
 				TOT_CAMBI_EFFETTUATI = MAX_CAMBI - cambiEff;
@@ -1554,7 +1555,7 @@ public class EmMercatoView extends VerticalLayout
 
 				try {
 					sendNewMail();
-					LOG.info("send_mail OK");
+					log.info("send_mail OK");
 				} catch (Exception except) {
 					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, except.getMessage());
 					return;
@@ -1572,7 +1573,7 @@ public class EmMercatoView extends VerticalLayout
 
 	private int getCambiEffettuati() {
 
-		List<FcMercatoDettInfo> modelCambiInfo = mercatoInfoController.findByFcAttoreOrderByFcGiornataInfoAsc(attore);
+		List<FcMercatoDettInfo> modelCambiInfo = mercatoInfoService.findByFcAttoreOrderByFcGiornataInfoAsc(attore);
 		int tot = 0;
 		for (FcMercatoDettInfo mi : modelCambiInfo) {
 			tot = tot + mi.getTotCambi();
@@ -2068,9 +2069,9 @@ public class EmMercatoView extends VerticalLayout
 			mercato.setFcGiocatoreByIdGiocVen(g);
 			mercato.setFcGiornataInfo(giornataInfo);
 			mercato.setNota("+" + g.getQuotazione());
-			mercatoController.insertMercatoDett(mercato);
+			mercatoService.insertMercatoDett(mercato);
 
-			LOG.info("insertMercatoDett CESSIONI ok");
+			log.info("insertMercatoDett CESSIONI ok");
 		}
 
 		int totCambi = 0;
@@ -2082,19 +2083,19 @@ public class EmMercatoView extends VerticalLayout
 			mercato.setFcGiocatoreByIdGiocAcq(g);
 			mercato.setFcGiornataInfo(giornataInfo);
 			mercato.setNota("-" + g.getQuotazione());
-			mercatoController.insertMercatoDett(mercato);
+			mercatoService.insertMercatoDett(mercato);
 
-			LOG.info("insertMercatoDett ACQUISTI ok");
+			log.info("insertMercatoDett ACQUISTI ok");
 		}
 
-        LOG.info("totCambi {}", totCambi);
+        log.info("totCambi {}", totCambi);
 		return totCambi;
 
 	}
 
 	private void insertFormazione() {
 
-		LOG.info("START insertFormazione");
+		log.info("START insertFormazione");
 		String query;
 		String del = "delete from fc_giornata_dett where id_attore=" + attore.getIdAttore() + " AND ID_GIORNATA=" + currentGiornata;
 		jdbcTemplate.update(del);
@@ -2206,15 +2207,15 @@ public class EmMercatoView extends VerticalLayout
 
 		}
 
-		LOG.info("END insertFormazione");
+		log.info("END insertFormazione");
 
 	}
 
 	private void sendNewMail() throws Exception {
-		LOG.info("START sendNewMail");
+		log.info("START sendNewMail");
 
 		String subject = "Mercato-Cambi " + attore.getDescAttore() + " - " + currentDescGiornata;
-        LOG.info("subject {}", subject);
+        log.info("subject {}", subject);
 		StringBuilder formazioneHtml = new StringBuilder();
 		formazioneHtml.append("<html><head><title>FC</title></head>\n");
 		formazioneHtml.append("<body>\n");
@@ -2267,7 +2268,7 @@ public class EmMercatoView extends VerticalLayout
 				try {
 					listImg.put(cidNomeSq, sq.getImg().getBinaryStream());
 				} catch (SQLException e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 				}
 			}
 
@@ -2302,7 +2303,7 @@ public class EmMercatoView extends VerticalLayout
 
 		if (!currentGiornata.equals("1")) {
 
-			List<FcMercatoDett> modelCambi = mercatoController.findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(attore);
+			List<FcMercatoDett> modelCambi = mercatoService.findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(attore);
 
 			if (!modelCambi.isEmpty()) {
 				formazioneHtml.append("<BR>\n");
@@ -2350,7 +2351,7 @@ public class EmMercatoView extends VerticalLayout
 							try {
 								listImg.put(cidNomeSqAcq, sqAcq.getImg().getBinaryStream());
 							} catch (SQLException e) {
-								LOG.error(e.getMessage());
+								log.error(e.getMessage());
 							}
 						}
 					}
@@ -2363,7 +2364,7 @@ public class EmMercatoView extends VerticalLayout
 							try {
 								listImg.put(cidNomeSqVen, sqVen.getImg().getBinaryStream());
 							} catch (SQLException e) {
-								LOG.error(e.getMessage());
+								log.error(e.getMessage());
 							}
 						}
 					}
@@ -2412,7 +2413,7 @@ public class EmMercatoView extends VerticalLayout
 		StringBuilder email_destinatario = new StringBuilder();
 		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findByActive(true);
+			List<FcAttore> attori = attoreService.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario.append(a.getEmail()).append(";");
@@ -2431,17 +2432,17 @@ public class EmMercatoView extends VerticalLayout
 			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			try {
 				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
 			} catch (Exception e2) {
-				LOG.error(e2.getMessage());
+				log.error(e2.getMessage());
 				throw e2;
 			}
 		}
 
-		LOG.info("END sendNewMail");
+		log.info("END sendNewMail");
 
 	}
 
@@ -2556,7 +2557,7 @@ public class EmMercatoView extends VerticalLayout
 							cellLayout.add(img);
 							cellLayout.setAlignSelf(Alignment.START, img);
 						} catch (SQLException e) {
-							LOG.error(e.getMessage());
+							log.error(e.getMessage());
 						}
 					}
                     Span lblInfoNomeSquadra = new Span();
@@ -2579,7 +2580,7 @@ public class EmMercatoView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
                     if (CHECK_TOT_CAMBI_EFFETTUATI > 0) {
-                        LOG.info("CHECK_TOT_CAMBI_EFFETTUATI {}", CHECK_TOT_CAMBI_EFFETTUATI);
+                        log.info("CHECK_TOT_CAMBI_EFFETTUATI {}", CHECK_TOT_CAMBI_EFFETTUATI);
 
 						if (activeFilter) {
 							String idRuolo = g.getFcRuolo().getIdRuolo();
@@ -2684,7 +2685,7 @@ public class EmMercatoView extends VerticalLayout
 	}
 
 	private void refreshAndSortGridGiocatori() {
-		LOG.info("refreshAndSortGridGiocatori1");
+		log.info("refreshAndSortGridGiocatori1");
 		modelPlayerG.sort((p1,
 				p2) -> p2.getFcRuolo().getIdRuolo().compareToIgnoreCase(p1.getFcRuolo().getIdRuolo()));
 		tableGiocatori.getDataProvider().refreshAll();
@@ -2692,7 +2693,7 @@ public class EmMercatoView extends VerticalLayout
 
 	private void refreshAndSortGridTabsRuoli(String idRuolo) {
 
-		LOG.info("refreshAndSortGridTabsRuoli ruolo={}", idRuolo);
+		log.info("refreshAndSortGridTabsRuoli ruolo={}", idRuolo);
 		if (StringUtils.isEmpty(idRuolo)) {
 			modelPlayerP.sort((p1,
 					p2) -> p2.getQuotazione().compareTo(p1.getQuotazione()));
@@ -2737,13 +2738,13 @@ public class EmMercatoView extends VerticalLayout
 	}
 
 	private void setModelGiocatori(FcAttore att) {
-		LOG.info("START setModelGiocatori ");
+		log.info("START setModelGiocatori ");
 		List<FcGiocatore> listGiocatore;
 		if (att == null) {
-			listGiocatore = giocatoreController.findAll();
+			listGiocatore = giocatoreService.findAll();
 		} else {
-            LOG.info("attore {}", att.getDescAttore());
-			List<FcFormazione> listFormazione = formazioneController.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(att);
+            log.info("attore {}", att.getDescAttore());
+			List<FcFormazione> listFormazione = formazioneService.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(att);
 			Collection<Integer> notIn = new ArrayList<>();
 			for (FcFormazione f : listFormazione) {
 				if (f.getFcGiocatore() != null) {
@@ -2753,10 +2754,10 @@ public class EmMercatoView extends VerticalLayout
 			if (notIn.isEmpty()) {
 				notIn.add(-1);
 			}
-			listGiocatore = giocatoreController.findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(notIn);
+			listGiocatore = giocatoreService.findByIdGiocatoreNotInOrderByFcRuoloDescQuotazioneDesc(notIn);
 
 		}
-        LOG.info("listGiocatore.sze {}", listGiocatore.size());
+        log.info("listGiocatore.sze {}", listGiocatore.size());
 
 		if (activeFilter) {
 			if (!modelPlayerP.isEmpty()) {
@@ -2791,13 +2792,13 @@ public class EmMercatoView extends VerticalLayout
 			}
 		}
 
-        LOG.info("modelPlayerG {}", modelPlayerG.size());
-        LOG.info("modelPlayerP {}", modelPlayerP.size());
-        LOG.info("modelPlayerD {}", modelPlayerD.size());
-        LOG.info("modelPlayerC {}", modelPlayerC.size());
-        LOG.info("modelPlayerA {}", modelPlayerA.size());
+        log.info("modelPlayerG {}", modelPlayerG.size());
+        log.info("modelPlayerP {}", modelPlayerP.size());
+        log.info("modelPlayerD {}", modelPlayerD.size());
+        log.info("modelPlayerC {}", modelPlayerC.size());
+        log.info("modelPlayerA {}", modelPlayerA.size());
 
-		LOG.info("END setModelGiocatori");
+		log.info("END setModelGiocatori");
 	}
 
 	private Grid<FcGiocatore> getTablePlayer(List<FcGiocatore> items) {
@@ -2886,7 +2887,7 @@ public class EmMercatoView extends VerticalLayout
 							img.setTitle(title);
 							cellLayout.add(img);
 						} catch (SQLException e) {
-							LOG.error(e.getMessage());
+							log.error(e.getMessage());
 						}
 					}
 					// Label lblSquadra = new Label(sq.getNomeSquadra());
@@ -2932,9 +2933,9 @@ public class EmMercatoView extends VerticalLayout
 
 		grid.addItemClickListener(event -> {
 			FcGiocatore bean = event.getItem();
-            LOG.info("click {}", bean.getCognGiocatore());
+            log.info("click {}", bean.getCognGiocatore());
             if (existGiocatore(bean)) {
-                LOG.info("existGiocatore true");
+                log.info("existGiocatore true");
                 return;
             }
             boolean bDel = false;
@@ -3033,7 +3034,7 @@ public class EmMercatoView extends VerticalLayout
             }
 
             if (bDel) {
-                LOG.info("REMOVE ITEM ");
+                log.info("REMOVE ITEM ");
                 if (activeFilter) {
                     String idRuolo = bean.getFcRuolo().getIdRuolo().toUpperCase();
                     switch (idRuolo) {
@@ -3109,13 +3110,13 @@ public class EmMercatoView extends VerticalLayout
 			cellLayout.setSpacing(false);
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			if (f != null && f.getKey() != null) {
-                FcSquadra sq = squadraController.findByNomeSquadra(f.getKey());
+                FcSquadra sq = squadraService.findByNomeSquadra(f.getKey());
 				if (sq.getImg40() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg40().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(f.getKey());

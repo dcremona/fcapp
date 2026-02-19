@@ -52,6 +52,10 @@ public class GiocatoreService{
 		return giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
 	}
 
+	public FcGiocatore findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(
+            String nomeGiocatore, FcSquadra squadra, FcRuolo ruolo) {
+		return giocatoreRepository.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(nomeGiocatore, squadra, ruolo);
+	}
 	
 	public List<FcGiocatore> findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
 			FcRuolo ruolo, FcSquadra squadra) {

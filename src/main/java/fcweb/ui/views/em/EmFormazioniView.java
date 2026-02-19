@@ -59,7 +59,7 @@ public class EmFormazioniView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private Image iconAmm_ = null;
 	private Image iconEsp_ = null;
@@ -75,41 +75,35 @@ public class EmFormazioniView extends VerticalLayout{
 	private Image iconGolVittoria_ = null;
 
 	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
-	private GiornataDettService giornataDettController;
-
-	@Autowired
-	private GiornataDettInfoService giornataDettInfoController;
-
-	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
-
-	@Autowired
 	private ResourceLoader resourceLoader;
 
+	private final GiornataInfoService giornataInfoService;
+	private final GiornataDettService giornataDettService;
+	private final GiornataDettInfoService giornataDettInfoService;
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final AttoreService attoreService;
+	private final AccessoService accessoService;
+	
     private final VerticalLayout mainLayout = new VerticalLayout();
-
-    @Autowired
-	private AttoreService attoreController;
-
 	public List<FcAttore> squadre = new ArrayList<>();
 
-	@Autowired
-	private AccessoService accessoController;
-
-	public EmFormazioniView() {
-		LOG.info("EmFormazioniView()");
+	public EmFormazioniView(GiornataInfoService giornataInfoService,GiornataDettService giornataDettService,GiornataDettInfoService giornataDettInfoService,ClassificaTotalePuntiService classificaTotalePuntiService,AttoreService attoreService,AccessoService accessoService) {
+		log.info("EmFormazioniView()");
+		this.giornataInfoService = giornataInfoService;
+		this.giornataDettService = giornataDettService;
+		this.giornataDettInfoService = giornataDettInfoService;
+		this.classificaTotalePuntiService = classificaTotalePuntiService;
+		this.attoreService = attoreService;
+		this.accessoService = accessoService;
 	}
 
 	@PostConstruct
 	void init() throws Exception {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initImg();
 		initData();
@@ -127,14 +121,14 @@ public class EmFormazioniView extends VerticalLayout{
 
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 
-		squadre = attoreController.findByActive(true);
+		squadre = attoreService.findByActive(true);
 	}
 
 	private void initImg() {
 
-		LOG.info("initImg()");
+		log.info("initImg()");
 
 		iconAmm_ = Utils.buildImage("amm.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "amm.png"));
 		iconEsp_ = Utils.buildImage("esp.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp.png"));
@@ -153,7 +147,7 @@ public class EmFormazioniView extends VerticalLayout{
 
 	private void initLayout() {
 
-		LOG.info("initLayout()");
+		log.info("initLayout()");
 
 		Button stampaPdf = new Button("Risultati pdf");
 		stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
@@ -167,10 +161,10 @@ public class EmFormazioniView extends VerticalLayout{
 			mainLayout.removeAll();
 			stampaPdf.setEnabled(false);
 			if (event.getSource().isEmpty()) {
-				LOG.info("event.getSource().isEmpty()");
+				log.info("event.getSource().isEmpty()");
 			} else {
 				FcGiornataInfo fcGiornataInfo = event.getValue();
-                LOG.info("giornata {}", fcGiornataInfo.getCodiceGiornata());
+                log.info("giornata {}", fcGiornataInfo.getCodiceGiornata());
 				buildTabGiornata(mainLayout, "" + fcGiornataInfo.getCodiceGiornata());
 				stampaPdf.setEnabled(true);
 			}
@@ -191,7 +185,7 @@ public class EmFormazioniView extends VerticalLayout{
 	private void buildTabGiornata(VerticalLayout layout, String giornata) {
 
 		Integer currGG = Integer.valueOf(giornata);
-		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(currGG);
+		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(currGG);
 
 		Accordion accordion = new Accordion();
 		accordion.setSizeFull();
@@ -213,7 +207,7 @@ public class EmFormazioniView extends VerticalLayout{
 				vCasa.add(tableSqCasaPanchina);
 
 			} catch (Exception e) {
-                LOG.info("NO DATA {}", a.getDescAttore());
+                log.info("NO DATA {}", a.getDescAttore());
 			}
 			VerticalLayout layoutTotaliCasa = buildTotaliInfo(campionato, a, giornataInfo);
 			vCasa.add(layoutTotaliCasa);
@@ -229,11 +223,11 @@ public class EmFormazioniView extends VerticalLayout{
 	private HashMap<String, Object> buildData(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
 
-        LOG.info("START buildData {}", attore.getDescAttore());
+        log.info("START buildData {}", attore.getDescAttore());
 
 		HashMap<String, Object> map = new HashMap<>();
 
-		List<FcGiornataDett> all = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> all = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 		List<FcGiornataDett> items = new ArrayList<>();
 
 		int countD = 0;
@@ -267,7 +261,7 @@ public class EmFormazioniView extends VerticalLayout{
 		map.put("itemsPanchina", itemsPanchina);
 		map.put("schema", schema);
 
-        LOG.info("END buildData {}", attore.getDescAttore());
+        log.info("END buildData {}", attore.getDescAttore());
 
 		return map;
 	}
@@ -367,7 +361,7 @@ public class EmFormazioniView extends VerticalLayout{
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				cellLayout.add(lblSquadra);
@@ -612,8 +606,8 @@ public class EmFormazioniView extends VerticalLayout{
 		VerticalLayout layoutMain = new VerticalLayout();
 		layoutMain.setWidth("80%");
 
-		FcGiornataDettInfo info = giornataDettInfoController.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
-		FcClassificaTotPt totPunti = classificaTotalePuntiController.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
+		FcGiornataDettInfo info = giornataDettInfoService.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
+		FcClassificaTotPt totPunti = classificaTotalePuntiService.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 		String totG = "";

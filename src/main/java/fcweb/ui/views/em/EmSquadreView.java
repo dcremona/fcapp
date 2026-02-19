@@ -63,16 +63,7 @@ public class EmSquadreView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private MercatoService mercatoController;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -80,28 +71,36 @@ public class EmSquadreView extends VerticalLayout{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	private final AttoreService attoreService;
+	private final FormazioneService formazioneService;
+	private final MercatoService mercatoService;
+	private final AccessoService accessoService;
+
 	private List<FcAttore> squadre = new ArrayList<>();
 
-	public EmSquadreView() {
-		LOG.info("EmSquadreView()");
+	public EmSquadreView(AttoreService attoreService,
+			FormazioneService formazioneService, MercatoService mercatoService,
+			AccessoService accessoService) {
+		log.info("EmSquadreView()");
+		this.attoreService = attoreService;
+		this.formazioneService = formazioneService;
+		this.mercatoService = mercatoService;
+		this.accessoService = accessoService;
 	}
-
-	@Autowired
-	private AccessoService accessoController;
 
 	@PostConstruct
 	void init() {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadre = attoreController.findByActive(true);
+		squadre = attoreService.findByActive(true);
 	}
 
 	private void initLayout() {
@@ -114,7 +113,7 @@ public class EmSquadreView extends VerticalLayout{
             assert jdbcTemplate.getDataSource() != null;
             conn = jdbcTemplate.getDataSource().getConnection();
 		} catch (SQLException e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		TabSheet tabSheet = new TabSheet();
@@ -125,16 +124,16 @@ public class EmSquadreView extends VerticalLayout{
 			try {
 				layoutBtn.add(buildButtonRosa(conn, campionato, attore));
 			} catch (Exception e) {
-				LOG.error(e.getMessage());
+				log.error(e.getMessage());
 			}
 
 			try {
 				layoutBtn.add(buildButtonVotiRosa(conn, campionato, attore, giornataInfo));
 			} catch (Exception e) {
-				LOG.error(e.getMessage());
+				log.error(e.getMessage());
 			}
 
-			List<FcFormazione> listFormazione = formazioneController.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
+			List<FcFormazione> listFormazione = formazioneService.findByFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(attore);
 			Double somma = 0d;
 			for (FcFormazione f : listFormazione) {
 				if (f.getTotPagato() != null) {
@@ -149,7 +148,7 @@ public class EmSquadreView extends VerticalLayout{
 			FcGiornataInfo end = new FcGiornataInfo();
 			end.setCodiceGiornata(to);
 
-			List<FcMercatoDett> listMercato = mercatoController.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(start, end, attore);
+			List<FcMercatoDett> listMercato = mercatoService.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualAndFcAttoreOrderByFcGiornataInfoDescIdDesc(start, end, attore);
 
 			Grid<FcFormazione> tableFormazione = getTableFormazione(listFormazione, somma.intValue());
 			Grid<FcMercatoDett> tableMercato = getTableMercato(listMercato);
@@ -193,7 +192,7 @@ public class EmSquadreView extends VerticalLayout{
 			return button1Wrapper;
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		return null;
@@ -214,9 +213,9 @@ public class EmSquadreView extends VerticalLayout{
 
 			String start = campionato.getStart().toString();
 			String currentGiornata = "" + giornataInfo.getCodiceGiornata();
-            LOG.info("START {}", start);
-            LOG.info("END {}", currentGiornata);
-            LOG.info("ID_ATTORE {}", idAttore);
+            log.info("START {}", start);
+            log.info("END {}", currentGiornata);
+            log.info("ID_ATTORE {}", idAttore);
 			final Map<String, Object> hm = new HashMap<>();
 			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			hm.put("START", start);
@@ -232,7 +231,7 @@ public class EmSquadreView extends VerticalLayout{
 			return button2Wrapper;
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		return null;
@@ -309,7 +308,7 @@ public class EmSquadreView extends VerticalLayout{
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 
@@ -477,7 +476,7 @@ public class EmSquadreView extends VerticalLayout{
 						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocAcq().getNomeImg(), m.getFcGiocatoreByIdGiocAcq().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 
@@ -517,7 +516,7 @@ public class EmSquadreView extends VerticalLayout{
 						Image img = Utils.getImage(m.getFcGiocatoreByIdGiocVen().getNomeImg(), m.getFcGiocatoreByIdGiocVen().getImgSmall().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 

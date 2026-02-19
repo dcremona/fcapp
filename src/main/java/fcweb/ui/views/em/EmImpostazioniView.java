@@ -81,7 +81,7 @@ public class EmImpostazioniView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private EmailService emailService;
@@ -93,21 +93,6 @@ public class EmImpostazioniView extends VerticalLayout
 	private List<FcGiornataInfo> giornate = null;
 
 	@Autowired
-	private GiornataInfoService giornataInfoController;
-
-	@Autowired
-	private AttoreService attoreController;
-
-	@Autowired
-	private EmJobProcessGiornata emjobProcessGiornata;
-
-	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
-
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
 	private EmJobProcessFileCsv emjobProcessFileCsv;
 
 	@Autowired
@@ -117,8 +102,15 @@ public class EmImpostazioniView extends VerticalLayout
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private GiornataDettService giornataDettController;
+	private EmJobProcessGiornata emjobProcessGiornata;
 
+	private final GiornataInfoService giornataInfoService;
+	private final AttoreService attoreService;
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final FormazioneService formazioneService;
+	private final GiornataDettService giornataDettService;
+	private final AccessoService accessoService;
+	
 	private ComboBox<FcGiornataInfo> comboGiornata;
 
     private Button initDb;
@@ -149,26 +141,38 @@ public class EmImpostazioniView extends VerticalLayout
 	private TextArea messaggio;
 	private Button notifica;
 
-	@Autowired
-	private AccessoService accessoController;
+	public EmImpostazioniView(GiornataInfoService giornataInfoService,
+			AttoreService attoreService,
+			ClassificaTotalePuntiService classificaTotalePuntiService,
+			FormazioneService formazioneService,
+			GiornataDettService giornataDettService,
+			AccessoService accessoService) {
+		log.info("EmImpostazioniView()");
+		this.giornataInfoService = giornataInfoService;
+		this.attoreService = attoreService;
+		this.classificaTotalePuntiService = classificaTotalePuntiService;
+		this.formazioneService = formazioneService;
+		this.giornataDettService = giornataDettService;
+		this.accessoService = accessoService;
+	}
 
 	@PostConstruct
 	void init() {
-		LOG.debug("init");
+		log.debug("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		squadre = attoreController.findByActive(true);
+		squadre = attoreService.findByActive(true);
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		Integer from = campionato.getStart();
 		Integer to = campionato.getEnd();
-		giornate = giornataInfoController.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+		giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
     private void initLayout() {
@@ -368,7 +372,7 @@ public class EmImpostazioniView extends VerticalLayout
 		try {
 			Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-            LOG.info("campionato {}", campionato.getDescCampionato());
+            log.info("campionato {}", campionato.getDescCampionato());
 
 			FcGiornataInfo giornataInfo = null;
 			int giornata = 0;
@@ -376,10 +380,10 @@ public class EmImpostazioniView extends VerticalLayout
 				giornataInfo = comboGiornata.getValue();
 				giornata = giornataInfo.getCodiceGiornata();
 			}
-            LOG.info("giornata {}", giornata);
+            log.info("giornata {}", giornata);
 
 			String basePathData = env.getProperty("PATH_TMP");
-            LOG.info("basePathData {}", basePathData);
+            log.info("basePathData {}", basePathData);
             assert basePathData != null;
             File f = new File(basePathData);
 			if (!f.exists()) {
@@ -389,13 +393,13 @@ public class EmImpostazioniView extends VerticalLayout
 
 			if (event.getSource() == initDb) {
 
-				List<FcAttore> attori = attoreController.findAll();
+				List<FcAttore> attori = attoreService.findAll();
 				for (FcAttore a : attori) {
 					if (a.isActive()) {
 						for (int j = 1; j <= 23; j++) {
-							formazioneController.createFormazione(a, campionato.getIdCampionato(), j);
+							formazioneService.createFormazione(a, campionato.getIdCampionato(), j);
 						}
-						classificaTotalePuntiController.createEm(a, campionato, (double) 0);
+						classificaTotalePuntiService.createEm(a, campionato, (double) 0);
 					}
 				}
 
@@ -407,17 +411,17 @@ public class EmImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == initDbAttore) {
 
 				FcAttore attore = comboAttore.getValue();
-                LOG.info("getDescAttore {}", attore.getDescAttore());
+                log.info("getDescAttore {}", attore.getDescAttore());
 
 				for (int j = 1; j <= 23; j++) {
-					formazioneController.createFormazione(attore, campionato.getIdCampionato(), j);
+					formazioneService.createFormazione(attore, campionato.getIdCampionato(), j);
 				}
-				classificaTotalePuntiController.createEm(attore, campionato, (double) 0);
+				classificaTotalePuntiService.createEm(attore, campionato, (double) 0);
 
 			} else if (event.getSource() == ultimaFormazione) {
 
 				FcAttore attore = comboAttore.getValue();
-                LOG.info("descAttore {}", attore.getDescAttore());
+                log.info("descAttore {}", attore.getDescAttore());
 
 				emjobProcessGiornata.eminserisciUltimaFormazione(attore.getIdAttore(), giornata);
 
@@ -442,7 +446,7 @@ public class EmImpostazioniView extends VerticalLayout
 				String quotazione = "europei-giocatori-quotazioni-excel";
 				// https://www.pianetafanta.it/mondiale-giocatori-quotazioni-excel.asp?giornata=0&Nome=&Squadre=&Ruolo=&Ruolo2=&Quota=&Quota1=
 				String httpUrl = urlFanta + quotazione + ".asp?giornata=" + giornata;
-                LOG.info("httpUrl {}", httpUrl);
+                log.info("httpUrl {}", httpUrl);
 				String fileName = "Q_" + giornata;
 				EmJobProcessFileCsv jobCsv = new EmJobProcessFileCsv();
 				jobCsv.downloadCsv(httpUrl, basePathData, fileName, 2);
@@ -463,8 +467,8 @@ public class EmImpostazioniView extends VerticalLayout
 				@SuppressWarnings("unchecked")
 				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
 
-                LOG.info("listGiocatoriAdd {}", listGiocatoriAdd.size());
-                LOG.info("listGiocatoriDel {}", listGiocatoriDel.size());
+                log.info("listGiocatoriAdd {}", listGiocatoriAdd.size());
+                log.info("listGiocatoriDel {}", listGiocatoriDel.size());
 
 				tableGiocatoreAdd.setItems(listGiocatoriAdd);
 				tableGiocatoreDel.setItems(listGiocatoriDel);
@@ -550,7 +554,7 @@ public class EmImpostazioniView extends VerticalLayout
 				StringBuilder email_destinatario = new StringBuilder();
 
 				if (this.chkSendMail.getValue()) {
-					List<FcAttore> attori = attoreController.findAll();
+					List<FcAttore> attori = attoreService.findAll();
 					for (FcAttore a : attori) {
 						if (a.isNotifiche()) {
 							email_destinatario.append(a.getEmail()).append(";");
@@ -590,7 +594,7 @@ public class EmImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == notifica) {
 
 				StringBuilder email_destinatario = new StringBuilder();
-				List<FcAttore> attori = attoreController.findAll();
+				List<FcAttore> attori = attoreService.findAll();
 				for (FcAttore a : attori) {
 					email_destinatario.append(a.getEmail()).append(";");
 				}
@@ -642,9 +646,9 @@ public class EmImpostazioniView extends VerticalLayout
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 
-		FcGiornataInfo giornataInfo = giornataInfoController.findByCodiceGiornata(giornata);
+		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
 
-		List<FcAttore> squadre = attoreController.findAll();
+		List<FcAttore> squadre = attoreService.findAll();
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("path_img", pathImg);
@@ -652,8 +656,8 @@ public class EmImpostazioniView extends VerticalLayout
 		int conta = 1;
 		for (FcAttore a : squadre) {
 
-			List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(a, giornataInfo);
-			FcClassificaTotPt totPunti = classificaTotalePuntiController.findByFcAttoreAndFcGiornataInfo(a, giornataInfo);
+			List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(a, giornataInfo);
+			FcClassificaTotPt totPunti = classificaTotalePuntiService.findByFcAttoreAndFcGiornataInfo(a, giornataInfo);
 
 			int countD = 0;
 			int countC = 0;
@@ -675,7 +679,7 @@ public class EmImpostazioniView extends VerticalLayout
 			}
 
 			String schema = countD + "-" + countC + "-" + countA;
-			LOG.info(schema);
+			log.info(schema);
 
 			String puntiTotali = "";
 			if (totPunti != null) {
@@ -733,7 +737,7 @@ public class EmImpostazioniView extends VerticalLayout
 	private void sendMailInfoGiornata(FcGiornataInfo ggInfo) throws Exception {
 
 		String subject = "Avvio Giornata - " + ggInfo.getDescGiornataFc();
-        LOG.info("subject {}", subject);
+        log.info("subject {}", subject);
 		String formazioneHtml = "";
 		formazioneHtml += "<html><head><title>FC</title></head>\n";
 		formazioneHtml += "<body>\n";
@@ -746,15 +750,15 @@ public class EmImpostazioniView extends VerticalLayout
 		formazioneHtml += "<p>Ciao Davide</p>\n";
 		formazioneHtml += "</body>\n";
 		formazioneHtml += "<html>";
-        LOG.info("formazioneHtml {}", formazioneHtml);
+        log.info("formazioneHtml {}", formazioneHtml);
 		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
 		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
 
 		StringBuilder email_destinatario = new StringBuilder();
 		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
-        LOG.info("ACTIVE_MAIL {}", ACTIVE_MAIL);
+        log.info("ACTIVE_MAIL {}", ACTIVE_MAIL);
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findAll();
+			List<FcAttore> attori = attoreService.findAll();
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario.append(a.getEmail()).append(";");
@@ -769,7 +773,7 @@ public class EmImpostazioniView extends VerticalLayout
 			to = Utils.tornaArrayString(email_destinatario.toString(), ";");
 		}
 
-        LOG.info(formazioneHtml);
+        log.info(formazioneHtml);
 
 		try {
 			String from = env.getProperty("spring.mail.secondary.username");
@@ -834,7 +838,7 @@ public class EmImpostazioniView extends VerticalLayout
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());

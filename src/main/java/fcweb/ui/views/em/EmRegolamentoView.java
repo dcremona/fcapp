@@ -45,24 +45,26 @@ public class EmRegolamentoView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private RegolamentoService regolamentoController;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private final AccessoService accessoService;
+	private final RegolamentoService regolamentoService;
+
+
 	private String html = "";
 	private FcRegolamento regolamento = null;
 
 	private VaadinCKEditor decoupledEditor = null;
 	private Button salvaDb;
 
-	public EmRegolamentoView() {
-		LOG.info("EmRegolamentoView()");
+	public EmRegolamentoView(AccessoService accessoService,
+			RegolamentoService regolamentoService) {
+		log.info("EmRegolamentoView()");
+		this.accessoService = accessoService;
+		this.regolamentoService = regolamentoService;
 	}
 
 	@PostConstruct
@@ -71,13 +73,13 @@ public class EmRegolamentoView extends VerticalLayout
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 		initData();
 		initLayout();
 	}
 
 	private void initData() {
-		List<FcRegolamento> l = regolamentoController.findAll();
+		List<FcRegolamento> l = regolamentoService.findAll();
 		try {
 
 			BufferedReader br;
@@ -105,10 +107,10 @@ public class EmRegolamentoView extends VerticalLayout
                     html += line;
                 }
             }
-			LOG.debug(html);
+			log.debug(html);
 
         } catch (Exception ex2) {
-            LOG.error("ex2 {}", ex2.getMessage());
+            log.error("ex2 {}", ex2.getMessage());
 		}
 	}
 
@@ -146,7 +148,7 @@ public class EmRegolamentoView extends VerticalLayout
 			this.add(previewHtml);
 
 		} catch (Exception ex2) {
-            LOG.error("ex2 {}", ex2.getMessage());
+            log.error("ex2 {}", ex2.getMessage());
 		}
 
 	}
@@ -155,17 +157,17 @@ public class EmRegolamentoView extends VerticalLayout
 	public void onComponentEvent(ClickEvent<Button> event) {
 		try {
 			if (event.getSource() == salvaDb) {
-				LOG.info("SALVA");
+				log.info("SALVA");
 
 				String valueHtml = decoupledEditor.getValue();
-				LOG.info(valueHtml);
+				log.info(valueHtml);
 				if (regolamento == null) {
 					regolamento = new FcRegolamento();
 				}
 				regolamento.setData(LocalDateTime.now());
 				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
 
-				regolamentoController.insertUpdateRegolamento(regolamento);
+				regolamentoService.insertUpdateRegolamento(regolamento);
 
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			}

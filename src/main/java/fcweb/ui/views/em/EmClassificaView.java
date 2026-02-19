@@ -60,10 +60,10 @@ public class EmClassificaView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiController;
+	private Environment env;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -71,22 +71,25 @@ public class EmClassificaView extends VerticalLayout{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private Environment env;
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final AccessoService accessoService;
 
 	private List<ClassificaBean> items = null;
 	private FcGiornataInfo giornataInfo = null;
 
+	public EmClassificaView(ClassificaTotalePuntiService classificaTotalePuntiService,AccessoService accessoService) {
+		log.info("EmClassificaView()");
+		this.classificaTotalePuntiService = classificaTotalePuntiService;
+		this.accessoService = accessoService;
+	}
+
     @PostConstruct
 	void init() throws Exception {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initData();
 		initLayout();
@@ -97,12 +100,12 @@ public class EmClassificaView extends VerticalLayout{
         VaadinSession.getCurrent().getAttribute("PROPERTIES");
         giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
 
-		items = classificaTotalePuntiController.getModelClassifica(giornataInfo.getIdGiornataFc());
+		items = classificaTotalePuntiService.getModelClassifica(giornataInfo.getIdGiornataFc());
 	}
 
 	private void initLayout() {
 
-		LOG.info("initLayout");
+		log.info("initLayout");
 
 		HorizontalLayout layoutGrid = new HorizontalLayout();
 		layoutGrid.setMargin(false);
@@ -115,19 +118,19 @@ public class EmClassificaView extends VerticalLayout{
 			grid = buildTableClassifica(items, giornataInfo);
 			layoutGrid.add(grid);
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		try {
 			this.add(buildButtonPdf());
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 		this.add(layoutGrid);
 		try {
 			this.add(buildGrafico(items));
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 
@@ -186,7 +189,7 @@ public class EmClassificaView extends VerticalLayout{
 			horLayout.add(button1Wrapper);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		return horLayout;

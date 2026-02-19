@@ -18,12 +18,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcCampionato;
@@ -35,14 +31,14 @@ import fcweb.backend.data.entity.FcPagelleId;
 import fcweb.backend.data.entity.FcRuolo;
 import fcweb.backend.data.entity.FcSquadra;
 import fcweb.backend.data.entity.FcStatistiche;
-import fcweb.backend.service.AttoreRepository;
+import fcweb.backend.service.AttoreService;
 import fcweb.backend.service.EmailService;
-import fcweb.backend.service.GiocatoreRepository;
-import fcweb.backend.service.GiornataDettRepository;
-import fcweb.backend.service.GiornataInfoRepository;
-import fcweb.backend.service.PagelleRepository;
-import fcweb.backend.service.SquadraRepository;
-import fcweb.backend.service.StatisticheRepository;
+import fcweb.backend.service.GiocatoreService;
+import fcweb.backend.service.GiornataDettService;
+import fcweb.backend.service.GiornataInfoService;
+import fcweb.backend.service.PagelleService;
+import fcweb.backend.service.SquadraService;
+import fcweb.backend.service.StatisticheService;
 import fcweb.utils.Costants;
 import fcweb.utils.Utils;
 
@@ -58,49 +54,45 @@ public class EmJobProcessGiornata{
 	private EmailService emailService;
 
 	@Autowired
-	private GiornataDettRepository giornataDettRepository;
+	private GiornataDettService giornataDettService;
 
 	@Autowired
-	private AttoreRepository attoreRepository;
+	private AttoreService attoreService;
 
 	@Autowired
-	private PagelleRepository pagelleRepository;
+	private PagelleService pagelleService;
 
 	@Autowired
-	private GiornataInfoRepository giornataInfoRepository;
+	private GiornataInfoService giornataInfoService;
 
 	@Autowired
-	private GiocatoreRepository giocatoreRepository;
+	private GiocatoreService giocatoreService;
 
 	@Autowired
-	private StatisticheRepository statisticheRepository;
+	private StatisticheService statisticheService;
 
 	@Autowired
-	private SquadraRepository squadraRepository;
+	private SquadraService squadraService;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@RequestMapping(value = "/eminitPagelle", method = RequestMethod.POST)
-	@ResponseBody
 	public void eminitPagelle(Integer giornata) {
 		LOG.info("START eminitPagelle");
-		FcGiornataInfo giornataInfo = giornataInfoRepository.findByCodiceGiornata(giornata);
+		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
 		LOG.debug("" + giornataInfo.getCodiceGiornata());
-		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreRepository.findAll();
+		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreService.findAll();
 		for (FcGiocatore giocatore : giocatores) {
 			FcPagelle pagelle = new FcPagelle();
 			FcPagelleId pagellePK = new FcPagelleId();
 			pagellePK.setIdGiornata(giornataInfo.getCodiceGiornata());
 			pagellePK.setIdGiocatore(giocatore.getIdGiocatore());
 			pagelle.setId(pagellePK);
-			pagelleRepository.save(pagelle);
+			pagelleService.save(pagelle);
 		}
 		LOG.info("END eminitPagelle");
 	}
 
-	@RequestMapping(value = "/emaggiornamentoPFGiornataOLD", method = RequestMethod.POST)
-	@ResponseBody
 	public void emaggiornamentoPFGiornataOLD(String fileName) {
 
 		LOG.info("START emaggiornamentoPFGiornataOLD");
@@ -120,7 +112,7 @@ public class EmJobProcessGiornata{
                 CSVRecord record = csvRecords.get(i);
 
                 FcGiocatore giocatore = null;
-                List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(record.get(2));
+                List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(record.get(2));
                 if (listGiocatore != null && listGiocatore.size() == 1) {
                     giocatore = listGiocatore.get(0);
                 }
@@ -187,8 +179,6 @@ public class EmJobProcessGiornata{
         return risG.longValue();
     }
 
-    @RequestMapping(value = "/emaggiornamentoPFGiornata", method = RequestMethod.POST)
-	@ResponseBody
 	public void emaggiornamentoPFGiornata(Properties p, String fileName,
 			String idGiornata) {
 
@@ -315,9 +305,9 @@ public class EmJobProcessGiornata{
 
                     FcGiocatore giocatore = null;
                     if (StringUtils.isNotEmpty(idGiocatore)) {
-                        giocatore = this.giocatoreRepository.findByIdGiocatore(Integer.parseInt(idGiocatore));
+                        giocatore = this.giocatoreService.findByIdGiocatore(Integer.parseInt(idGiocatore));
                         if (giocatore == null) {
-                            List<FcGiocatore> listGiocatore = this.giocatoreRepository.findByCognGiocatoreContaining(cognGiocatore);
+                            List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(cognGiocatore);
                             if (listGiocatore != null && listGiocatore.size() == 1) {
                                 giocatore = listGiocatore.get(0);
                             }
@@ -531,8 +521,6 @@ public class EmJobProcessGiornata{
         return _ris.longValue();
     }
 
-    @RequestMapping(value = "/emaggiornamentoPFGiornataNoExcel", method = RequestMethod.POST)
-	@ResponseBody
 	public void emaggiornamentoPFGiornataNoExcel(Properties p, String fileName,
 			String idGiornata) {
 
@@ -628,13 +616,13 @@ public class EmJobProcessGiornata{
 
                     FcRuolo fcRuolo = new FcRuolo();
                     fcRuolo.setIdRuolo(ruolo);
-                    FcSquadra fcSquadra = squadraRepository.findByNomeSquadra(squadra);
+                    FcSquadra fcSquadra = squadraService.findByNomeSquadra(squadra);
                     if (squadra == null) {
                         LOG.info("SCARTO " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + null);
                         continue;
                     }
                     // LOG.info("FIND " + cognGiocatore+ " squadra " +squadra);
-                    giocatore = this.giocatoreRepository.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, fcSquadra, fcRuolo);
+                    giocatore = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, fcSquadra, fcRuolo);
 
                     if (giocatore != null) {
 
@@ -837,8 +825,6 @@ public class EmJobProcessGiornata{
         }
 	}
 
-	@RequestMapping(value = "/emalgoritmo", method = RequestMethod.POST)
-	@ResponseBody
 	public void emalgoritmo(Integer giornata, FcCampionato campionato) {
 
 		LOG.info("START emalgoritmo");
@@ -857,11 +843,11 @@ public class EmJobProcessGiornata{
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
 
-		List<FcAttore> l = attoreRepository.findAll();
+		List<FcAttore> l = attoreService.findAll();
 
 		for (FcAttore attore : l) {
 			LOG.info("attore " + attore.getDescAttore());
-			List<FcGiornataDett> lGiocatori = giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+			List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
 			ArrayList<FcGiornataDett> titolari = new ArrayList<>();
 			ArrayList<FcGiornataDett> riserve = new ArrayList<>();
@@ -1060,8 +1046,6 @@ public class EmJobProcessGiornata{
 
 	}
 
-	@RequestMapping(value = "/ricalcolaTotPunti", method = RequestMethod.POST)
-	@ResponseBody
 	public void ricalcolaTotPunti(Integer giornata, FcCampionato campionato) {
 
 		LOG.info("START ricalcolaTotPunti");
@@ -1071,7 +1055,7 @@ public class EmJobProcessGiornata{
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
 
-		List<FcAttore> l = attoreRepository.findAll();
+		List<FcAttore> l = attoreService.findAll();
 		for (FcAttore attore : l) {
 			String sql = " select sum(voto) from fc_giornata_dett";
 			sql += " where id_attore=" + attore.getIdAttore();
@@ -1149,15 +1133,11 @@ public class EmJobProcessGiornata{
 
 	}
 
-	private Sort sortBy() {
-		return Sort.by(Sort.Direction.ASC, "fcGiocatore");
-	}
-
 	public void emstatistiche() {
 
 		LOG.info("START emstatistiche");
 
-		List<FcPagelle> lPagelle = (List<FcPagelle>) pagelleRepository.findAll(sortBy());
+		List<FcPagelle> lPagelle = (List<FcPagelle>) pagelleService.findAll();
 
 		int giocate = 0;
 
@@ -1199,7 +1179,7 @@ public class EmJobProcessGiornata{
 				}
 			} else {
 
-				FcGiocatore appoFcGiocatore = this.giocatoreRepository.findByIdGiocatore(appoIdGiocatore);
+				FcGiocatore appoFcGiocatore = this.giocatoreService.findByIdGiocatore(appoIdGiocatore);
 
 				FcStatistiche statistiche = new FcStatistiche();
 				statistiche.setIdGiocatore(appoFcGiocatore.getIdGiocatore());
@@ -1229,7 +1209,7 @@ public class EmJobProcessGiornata{
 				statistiche.setFcGiocatore(appoFcGiocatore);
 				statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
-                statisticheRepository.save(statistiche);
+                statisticheService.save(statistiche);
 
 				appoIdGiocatore = idGiocatore;
 
@@ -1250,7 +1230,7 @@ public class EmJobProcessGiornata{
 			}
 		}
 
-		FcGiocatore appoFcGiocatore = this.giocatoreRepository.findByIdGiocatore(appoIdGiocatore);
+		FcGiocatore appoFcGiocatore = this.giocatoreService.findByIdGiocatore(appoIdGiocatore);
 
 		FcStatistiche statistiche = new FcStatistiche();
 		statistiche.setIdGiocatore(appoFcGiocatore.getIdGiocatore());
@@ -1280,7 +1260,7 @@ public class EmJobProcessGiornata{
 		statistiche.setFcGiocatore(appoFcGiocatore);
 		statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
-		statisticheRepository.save(statistiche);
+		statisticheService.save(statistiche);
 
 		LOG.info("END emstatistiche");
 
@@ -1302,8 +1282,6 @@ public class EmJobProcessGiornata{
 
 	}
 
-    @RequestMapping(value = "/eminserisciUltimaFormazione", method = RequestMethod.POST)
-	@ResponseBody
 	public void eminserisciUltimaFormazione(int idAttore, int giornata) {
 		LOG.info("START inserisciUltimaFormazione");
 		int prev_gg = giornata - 1;
@@ -1324,17 +1302,15 @@ public class EmJobProcessGiornata{
 		LOG.info("END inserisciUltimaFormazione");
 	}
 
-	@RequestMapping(value = "/eminitDb", method = RequestMethod.POST)
-	@ResponseBody
 	public void eminitDb(Integer codiceGiornata) {
 		LOG.info("START eminitDb");
 
-		FcGiornataInfo giornataInfo = giornataInfoRepository.findByCodiceGiornata(codiceGiornata);
-		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreRepository.findAll();
+		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(codiceGiornata);
+		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreService.findAll();
 
 		for (FcGiocatore giocatore : giocatores) {
             FcStatistiche statistiche = getFcStatistiche(giocatore);
-            statisticheRepository.save(statistiche);
+            statisticheService.save(statistiche);
 		}
 
 		for (FcGiocatore giocatore : giocatores) {
@@ -1344,7 +1320,7 @@ public class EmJobProcessGiornata{
 			pagellePK.setIdGiornata(giornataInfo.getCodiceGiornata());
 			pagellePK.setIdGiocatore(giocatore.getIdGiocatore());
 			pagelle.setId(pagellePK);
-			pagelleRepository.save(pagelle);
+			pagelleService.save(pagelle);
 		}
 
 		LOG.info("END eminitDb");
@@ -1419,13 +1395,13 @@ public class EmJobProcessGiornata{
 
 				FcRuolo ruolo = new FcRuolo();
 				ruolo.setIdRuolo(idRuolo);
-				FcSquadra squadra = squadraRepository.findByNomeSquadra(nomeSquadra);
+				FcSquadra squadra = squadraService.findByNomeSquadra(nomeSquadra);
 				if (squadra == null) {
 					LOG.info("SCARTO " + cognGiocatore + " " + idRuolo + " " + nomeSquadra + " " + quotazioneAttuale);
 					continue;
 				}
 
-                giocatore = this.giocatoreRepository.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, squadra, ruolo);
+                giocatore = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, squadra, ruolo);
 				if (giocatore == null) {
 					// lastIdGiocatore++;
 					giocatore = new FcGiocatore();
@@ -1455,11 +1431,11 @@ public class EmJobProcessGiornata{
                 for (FcGiocatore giocatore : giocatores) {
 
 					// LOG.info("SAVE GIOCATORE ");
-					giocatoreRepository.save(giocatore);
+					giocatoreService.save(giocatore);
 
                     FcStatistiche statistiche = getFcStatistiche(giocatore);
 
-                    statisticheRepository.save(statistiche);
+                    statisticheService.save(statistiche);
 
 				}
 
@@ -1481,7 +1457,7 @@ public class EmJobProcessGiornata{
 				// LOG.info("idGiocatore " + idGiocatore + " cognGiocatore " +
 				// cognGiocatore);
 				// FcGiocatore giocatore =
-				// giocatoreRepository.findByIdGiocatore(idGiocatore);
+				// giocatoreService.findByIdGiocatore(idGiocatore);
 				// listGiocatoriDel.add(giocatore);
 				// }
 				// return null;

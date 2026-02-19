@@ -71,16 +71,26 @@ public class EmTeamInsertView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Environment env;
 
 	@Autowired
-	private EmailService emailService;
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private ResourceLoader resourceLoader;
+
+	private final EmailService emailService;
+	private final AttoreService attoreService;
+	private final FormazioneService formazioneService;
+	private final GiornataDettService giornataDettService;
+	private final CalendarioCompetizioneService calendarioCompetizioneService;
+	private final AccessoService accessoService;
+	private final SquadraService squadraService;
+
+    private AbsoluteLayout absLayout;
 
 	private static final String width = "100px";
 	private static final String height = "120px";
@@ -168,36 +178,29 @@ public class EmTeamInsertView extends VerticalLayout
 	private final List<FcGiocatore> modelPlayer22 = new ArrayList<>();
 	private final List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
-	@Autowired
-	private AttoreService attoreController;
 
-	@Autowired
-	private FormazioneService formazioneController;
-
-	@Autowired
-	private GiornataDettService giornataDettController;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	@Autowired
-	private CalendarioCompetizioneService calendarioTimController;
-
-    private AbsoluteLayout absLayout;
-
-	@Autowired
-	private AccessoService accessoController;
-
-	@Autowired
-	private SquadraService squadraController;
+	public EmTeamInsertView(EmailService emailService,
+			AttoreService attoreService, FormazioneService formazioneService,
+			GiornataDettService giornataDettService,
+			CalendarioCompetizioneService calendarioCompetizioneService,
+			AccessoService accessoService, SquadraService squadraService) {
+		log.info("EmTeamInsertView()");
+		this.emailService = emailService;
+		this.attoreService = attoreService;
+		this.formazioneService = formazioneService;
+		this.giornataDettService = giornataDettService;
+		this.calendarioCompetizioneService = calendarioCompetizioneService;
+		this.accessoService = accessoService;
+		this.squadraService = squadraService;
+	}
 
 	@PostConstruct
 	void init() throws Exception {
-		LOG.info("init");
+		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
 		}
-		accessoController.insertAccesso(this.getClass().getName());
+		accessoService.insertAccesso(this.getClass().getName());
 
 		initData();
 
@@ -239,7 +242,7 @@ public class EmTeamInsertView extends VerticalLayout
 		comboModulo.setPlaceholder("Modulo");
 		comboModulo.addValueChangeListener(evt -> {
 
-            LOG.info(" addValueChangeListener {}", evt.getValue());
+            log.info(" addValueChangeListener {}", evt.getValue());
 			removeAllElementsList();
 
 			if (evt.getValue() != null) {
@@ -400,7 +403,7 @@ public class EmTeamInsertView extends VerticalLayout
 		tablePlayer22 = getTableGiocatore(modelPlayer22);
 		tablePlayer23 = getTableGiocatore(modelPlayer23);
 
-		List<FcCalendarioCompetizione> listPartite = calendarioTimController.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
+		List<FcCalendarioCompetizione> listPartite = calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
         Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
 
 		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "panchina.jpg"));
@@ -438,7 +441,7 @@ public class EmTeamInsertView extends VerticalLayout
 		try {
 			loadFcGiornataDett(attore, giornataInfo);
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		if (millisDiff == 0) {
@@ -486,7 +489,7 @@ public class EmTeamInsertView extends VerticalLayout
 	}
 
 	private void refreshAndSortGridFormazione() {
-		LOG.info("refreshAndSortGridFormazione");
+		log.info("refreshAndSortGridFormazione");
 		modelFormazione.sort((p1,
 				p2) -> p2.getFcRuolo().getIdRuolo().compareToIgnoreCase(p1.getFcRuolo().getIdRuolo()));
 		tableFormazione.getDataProvider().refreshAll();
@@ -494,7 +497,7 @@ public class EmTeamInsertView extends VerticalLayout
 
 	private void removeAllElementsList() {
 
-		LOG.info("removeAllElementsList");
+		log.info("removeAllElementsList");
 		if (!modelPlayer1.isEmpty()) {
 			FcGiocatore bean = modelPlayer1.get(0);
 			modelFormazione.add(bean);
@@ -664,7 +667,7 @@ public class EmTeamInsertView extends VerticalLayout
 	private ArrayList<FcGiocatore> getModelFormazione(FcAttore attore,
 			FcCampionato campionato) {
 
-		List<FcFormazione> listFormazione = formazioneController.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
+		List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
 
 		ArrayList<FcGiocatore> beans = new ArrayList<>();
 		for (FcFormazione f : listFormazione) {
@@ -741,7 +744,7 @@ public class EmTeamInsertView extends VerticalLayout
 							cellLayout.add(img);
 							cellLayout.setAlignSelf(Alignment.START, img);
 						} catch (SQLException e) {
-							LOG.error(e.getMessage());
+							log.error(e.getMessage());
 						}
 					}
                     Span lblInfoNomeSquadra = new Span();
@@ -755,7 +758,7 @@ public class EmTeamInsertView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
 
-                    LOG.info("giocatore {}", g.getCognGiocatore());
+                    log.info("giocatore {}", g.getCognGiocatore());
 					modelFormazione.add(g);
 					refreshAndSortGridFormazione();
 
@@ -919,7 +922,7 @@ public class EmTeamInsertView extends VerticalLayout
 							img.setTitle(title);
 							cellLayout.add(img);
 						} catch (SQLException e) {
-							LOG.error(e.getMessage());
+							log.error(e.getMessage());
 						}
 					}
 					Span lblSquadra = new Span();
@@ -987,10 +990,10 @@ public class EmTeamInsertView extends VerticalLayout
 				return;
 			}
 			FcGiocatore bean = event.getItem();
-            LOG.info("click {}", bean.getCognGiocatore());
+            log.info("click {}", bean.getCognGiocatore());
 
             if (existGiocatore(bean)) {
-                LOG.info("existGiocatore true");
+                log.info("existGiocatore true");
                 return;
             }
 
@@ -1561,9 +1564,9 @@ public class EmTeamInsertView extends VerticalLayout
 	private void loadFcGiornataDett(FcAttore attore,
 			FcGiornataInfo giornataInfo) {
 
-		LOG.info("loadFcGiornatadett");
+		log.info("loadFcGiornatadett");
 
-		List<FcGiornataDett> lGiocatori = giornataDettController.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 
 		if (lGiocatori.isEmpty()) {
 			this.comboModulo.setValue(null);
@@ -1713,13 +1716,13 @@ public class EmTeamInsertView extends VerticalLayout
 
 					sendNewMail(giornataInfo.getDescGiornataFc());
 
-					LOG.info("send_mail OK");
+					log.info("send_mail OK");
 
 					try {
 						insert_dett_info(giornataInfo.getCodiceGiornata(), dataOra);
-						LOG.info("insert_dett_info OK");
+						log.info("insert_dett_info OK");
 					} catch (Exception exd) {
-						LOG.error(exd.getMessage());
+						log.error(exd.getMessage());
 						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exd.getMessage());
 					}
 
@@ -1944,7 +1947,7 @@ public class EmTeamInsertView extends VerticalLayout
 				try {
 					listImg.put(cidNomeSq, sq.getImg().getBinaryStream());
 				} catch (SQLException e) {
-					LOG.error(e.getMessage());
+					log.error(e.getMessage());
 				}
 			}
 
@@ -1986,7 +1989,7 @@ public class EmTeamInsertView extends VerticalLayout
 		StringBuilder email_destinatario = new StringBuilder();
 		String ACTIVE_MAIL = p.getProperty("ACTIVE_MAIL");
 		if ("true".equals(ACTIVE_MAIL)) {
-			List<FcAttore> attori = attoreController.findByActive(true);
+			List<FcAttore> attori = attoreService.findByActive(true);
 			for (FcAttore a : attori) {
 				if (a.isNotifiche()) {
 					email_destinatario.append(a.getEmail()).append(";");
@@ -2005,12 +2008,12 @@ public class EmTeamInsertView extends VerticalLayout
 			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail2(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 			try {
 				String from = env.getProperty("spring.mail.primary.username");
 				emailService.sendMail2(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
 			} catch (Exception e2) {
-				LOG.error(e2.getMessage());
+				log.error(e2.getMessage());
 				throw e2;
 			}
 		}
@@ -2087,13 +2090,13 @@ public class EmTeamInsertView extends VerticalLayout
 			cellLayout.setAlignItems(Alignment.STRETCH);
 			// cellLayout.setSizeFull();
 			if (s != null && s.getSquadraCasa() != null) {
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraCasa());
+				FcSquadra sq = squadraService.findByIdSquadra(s.getIdSquadraCasa());
 				if (sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
@@ -2118,13 +2121,13 @@ public class EmTeamInsertView extends VerticalLayout
 
 			if (s != null && s.getSquadraCasa() != null) {
 				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
-				FcSquadra sq = squadraController.findByIdSquadra(s.getIdSquadraFuori());
+				FcSquadra sq = squadraService.findByIdSquadra(s.getIdSquadraFuori());
 				if (sq.getImg() != null) {
 					try {
 						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
 						cellLayout.add(img);
 					} catch (SQLException e) {
-						LOG.error(e.getMessage());
+						log.error(e.getMessage());
 					}
 				}
 				cellLayout.add(lblSquadra);
