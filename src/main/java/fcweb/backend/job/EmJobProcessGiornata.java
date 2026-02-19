@@ -81,7 +81,7 @@ public class EmJobProcessGiornata{
 		LOG.info("START eminitPagelle");
 		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
 		LOG.debug("" + giornataInfo.getCodiceGiornata());
-		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreService.findAll();
+		List<FcGiocatore> giocatores = giocatoreService.findAll();
 		for (FcGiocatore giocatore : giocatores) {
 			FcPagelle pagelle = new FcPagelle();
 			FcPagelleId pagellePK = new FcPagelleId();
@@ -1137,7 +1137,7 @@ public class EmJobProcessGiornata{
 
 		LOG.info("START emstatistiche");
 
-		List<FcPagelle> lPagelle = (List<FcPagelle>) pagelleService.findAll();
+		List<FcPagelle> lPagelle = pagelleService.findAll();
 
 		int giocate = 0;
 
@@ -1306,7 +1306,7 @@ public class EmJobProcessGiornata{
 		LOG.info("START eminitDb");
 
 		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(codiceGiornata);
-		List<FcGiocatore> giocatores = (List<FcGiocatore>) giocatoreService.findAll();
+		List<FcGiocatore> giocatores = giocatoreService.findAll();
 
 		for (FcGiocatore giocatore : giocatores) {
             FcStatistiche statistiche = getFcStatistiche(giocatore);
