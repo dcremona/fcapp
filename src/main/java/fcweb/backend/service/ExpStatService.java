@@ -28,7 +28,7 @@ public class ExpStatService{
 		return Sort.by(Sort.Direction.ASC, "id");
 	}
 
-	public FcExpStat updateExpStat(FcExpStat expStat) {
+	public FcExpStat save(FcExpStat expStat) {
 		FcExpStat fcExpStat = null;
 		try {
 			fcExpStat = expStatRepository.save(expStat);
@@ -38,7 +38,7 @@ public class ExpStatService{
 		return fcExpStat;
 	}
 
-	public void deleteExpStat(FcExpStat expStat) {
+	public void delete(FcExpStat expStat) {
         try {
 			expStatRepository.delete(expStat);
         } catch (Exception ex) {

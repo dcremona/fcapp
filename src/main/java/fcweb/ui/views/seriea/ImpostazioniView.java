@@ -549,7 +549,7 @@ public class ImpostazioniView extends VerticalLayout
 				FcProperties proprieta = new FcProperties();
 				proprieta.setKey(key);
 				proprieta.setValue(value ? "1" : "0");
-				proprietaService.updateProprieta(proprieta);
+				proprietaService.save(proprieta);
 				p.setProperty(key, value ? "1" : "0");
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			} catch (Exception e) {
@@ -802,7 +802,7 @@ public class ImpostazioniView extends VerticalLayout
                 log.info("getDataAnticipo2 {}", giornataInfo.getDataAnticipo2());
                 log.info("getDataGiornata {}", giornataInfo.getDataGiornata());
                 log.info("getDataPosticipo {}", giornataInfo.getDataPosticipo());
-				giornataInfoService.updateGiornataInfo(giornataInfo);
+				giornataInfoService.save(giornataInfo);
 			} else if (event.getSource() == resetDate) {
 				da1.setValue(null);
 				da2.setValue(null);

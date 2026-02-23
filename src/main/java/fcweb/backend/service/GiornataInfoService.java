@@ -32,15 +32,6 @@ public class GiornataInfoService{
 		return (List<FcGiornataInfo>) giornataInfoRepository.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
 	}
 
-	public FcGiornataInfo updateGiornataInfo(FcGiornataInfo giornataInfo) {
-		FcGiornataInfo fcGiornataInfo = null;
-		try {
-			fcGiornataInfo = giornataInfoRepository.save(giornataInfo);
-		} catch (Exception ignored) {
-		}
-		return fcGiornataInfo;
-	}
-
 	public FcGiornataInfo save(FcGiornataInfo c) {
 		FcGiornataInfo fcGiornataInfo = null;
 		try {
@@ -51,7 +42,7 @@ public class GiornataInfoService{
 		return fcGiornataInfo;
 	}
 
-	public void deleteGiornataInfo(FcGiornataInfo giornataInfo) {
+	public void delete(FcGiornataInfo giornataInfo) {
         try {
 			giornataInfoRepository.delete(giornataInfo);
         } catch (Exception ex) {

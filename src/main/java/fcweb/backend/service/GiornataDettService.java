@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import fcweb.backend.data.entity.FcAttore;
 import fcweb.backend.data.entity.FcGiornataDett;
-import fcweb.backend.data.entity.FcGiornataDettId;
 import fcweb.backend.data.entity.FcGiornataInfo;
 
 @Service
@@ -31,24 +30,7 @@ public class GiornataDettService{
 		return giornataDettRepository.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 	}
 
-	public FcGiornataDett insertGiornataDett(FcGiornataDett c) {
-		FcGiornataDett fcGiornataDett;
-		try {
-
-			FcGiornataDettId id = new FcGiornataDettId();
-			id.setIdGiornata(c.getFcGiornataInfo().getCodiceGiornata());
-			id.setIdAttore(c.getFcAttore().getIdAttore());
-			id.setIdGiocatore(c.getFcGiocatore().getIdGiocatore());
-			c.setId(id);
-			fcGiornataDett = giornataDettRepository.save(c);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-			return null;
-		}
-		return fcGiornataDett;
-	}
-
-	public FcGiornataDett updateGiornataDett(FcGiornataDett c) {
+	public FcGiornataDett save(FcGiornataDett c) {
 		FcGiornataDett fcGiornataDett = null;
 		try {
 			fcGiornataDett = giornataDettRepository.save(c);
@@ -58,7 +40,7 @@ public class GiornataDettService{
 		return fcGiornataDett;
 	}
 
-	public void deleteGiornataDett(FcGiornataDett c) {
+	public void delete(FcGiornataDett c) {
         try {
 			giornataDettRepository.delete(c);
         } catch (Exception ex) {

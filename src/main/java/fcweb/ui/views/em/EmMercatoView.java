@@ -1537,7 +1537,7 @@ public class EmMercatoView extends VerticalLayout
 				}
 				mercatoDettInfo.setFlagInvio("S");
 				mercatoDettInfo.setDataInvio(new Date());
-				mercatoInfoService.insertMercatoDettInfo(mercatoDettInfo);
+				mercatoInfoService.save(mercatoDettInfo);
 
 				log.info("insert MercatoDettInfo OK");
 
@@ -2069,7 +2069,7 @@ public class EmMercatoView extends VerticalLayout
 			mercato.setFcGiocatoreByIdGiocVen(g);
 			mercato.setFcGiornataInfo(giornataInfo);
 			mercato.setNota("+" + g.getQuotazione());
-			mercatoService.insertMercatoDett(mercato);
+			mercatoService.save(mercato);
 
 			log.info("insertMercatoDett CESSIONI ok");
 		}
@@ -2083,7 +2083,7 @@ public class EmMercatoView extends VerticalLayout
 			mercato.setFcGiocatoreByIdGiocAcq(g);
 			mercato.setFcGiornataInfo(giornataInfo);
 			mercato.setNota("-" + g.getQuotazione());
-			mercatoService.insertMercatoDett(mercato);
+			mercatoService.save(mercato);
 
 			log.info("insertMercatoDett ACQUISTI ok");
 		}

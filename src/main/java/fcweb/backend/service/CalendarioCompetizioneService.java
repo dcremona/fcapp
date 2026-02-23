@@ -58,24 +58,6 @@ public class CalendarioCompetizioneService{
 		return calendarioCompetizioneRepository.findByIdGiornataAndDataLessThanEqual(idGiornata, data);
 	}
 
-	public FcCalendarioCompetizione updateCalendarioTim(
-			FcCalendarioCompetizione calendarioTim) {
-		FcCalendarioCompetizione fcCalendarioTim = null;
-		try {
-			fcCalendarioTim = calendarioCompetizioneRepository.save(calendarioTim);
-		} catch (Exception ignored) {
-		}
-		return fcCalendarioTim;
-	}
-
-	public void deleteCalendarioTim(FcCalendarioCompetizione calendarioTim) {
-        try {
-        	calendarioCompetizioneRepository.delete(calendarioTim);
-        } catch (Exception ignored) {
-
-		}
-	}
-	
 	public FcCalendarioCompetizione save(FcCalendarioCompetizione c) {
 		FcCalendarioCompetizione fcCalendarioCompetizione = null;
 		try {
@@ -85,7 +67,15 @@ public class CalendarioCompetizioneService{
 		}
 		return fcCalendarioCompetizione;
 	}
-	
+
+	public void delete(FcCalendarioCompetizione calendarioTim) {
+        try {
+        	calendarioCompetizioneRepository.delete(calendarioTim);
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
+		}
+	}
+
 	public void deleteAll() {
 		calendarioCompetizioneRepository.deleteAll();	
 	}

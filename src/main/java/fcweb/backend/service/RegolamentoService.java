@@ -28,7 +28,7 @@ public class RegolamentoService{
 		return Sort.by(Sort.Direction.DESC, "id");
 	}
 
-	public void insertUpdateRegolamento(FcRegolamento r) {
+	public void save(FcRegolamento r) {
 
         try {
             regolamentoRepository.save(r);

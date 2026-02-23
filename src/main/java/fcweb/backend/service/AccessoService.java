@@ -56,7 +56,7 @@ public class AccessoService{
 		return fcAccesso;
 	}
 
-	public FcAccesso updateAccesso(FcAccesso accesso) {
+	public FcAccesso save(FcAccesso accesso) {
 		FcAccesso fcAccesso = null;
 		try {
 			fcAccesso = accessoRepository.save(accesso);
@@ -66,7 +66,7 @@ public class AccessoService{
 		return fcAccesso;
 	}
 
-	public void deleteAccesso(FcAccesso accesso) {
+	public void delete(FcAccesso accesso) {
         try {
 			accessoRepository.delete(accesso);
         } catch (Exception ex) {

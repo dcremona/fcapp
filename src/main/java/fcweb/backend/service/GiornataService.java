@@ -38,7 +38,7 @@ public class GiornataService{
 		return giornataRepository.findByFcGiornataInfoGreaterThanEqualAndFcGiornataInfoLessThanEqualOrderByFcGiornataInfo(start, end);
 	}
 	
-	public FcGiornata updateGiornata(FcGiornata giornata) {
+	public FcGiornata save(FcGiornata giornata) {
 		FcGiornata fcGiornata = null;
 		try {
 			fcGiornata = giornataRepository.save(giornata);
@@ -48,7 +48,7 @@ public class GiornataService{
 		return fcGiornata;
 	}
 
-	public void deleteGiornata(FcGiornata giornata) {
+	public void delete(FcGiornata giornata) {
         try {
 			giornataRepository.delete(giornata);
         } catch (Exception ex) {

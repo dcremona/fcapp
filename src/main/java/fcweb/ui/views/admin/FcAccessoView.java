@@ -111,9 +111,9 @@ public class FcAccessoView extends VerticalLayout
 		crud.setUpdateOperationVisible(true);
 
 		crud.setFindAllOperation(accessoService::findAll);
-		crud.setAddOperation(accessoService::updateAccesso);
-		crud.setUpdateOperation(accessoService::updateAccesso);
-		crud.setDeleteOperation(accessoService::deleteAccesso);
+		crud.setAddOperation(accessoService::save);
+		crud.setUpdateOperation(accessoService::save);
+		crud.setDeleteOperation(accessoService::delete);
 
 		add(crud);
 	}

@@ -36,7 +36,7 @@ public class SquadraService{
 		return Sort.by(Sort.Direction.ASC, "idSquadra");
 	}
 
-	public FcSquadra updateSquadra(FcSquadra c) {
+	public FcSquadra save(FcSquadra c) {
 		FcSquadra squadra = null;
 		try {
 			squadra = squadraRepository.save(c);
@@ -46,11 +46,11 @@ public class SquadraService{
 		return squadra;
 	}
 
-	public void deleteSquadra(FcSquadra c) {
+	public void delete(FcSquadra c) {
         try {
 			squadraRepository.delete(c);
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

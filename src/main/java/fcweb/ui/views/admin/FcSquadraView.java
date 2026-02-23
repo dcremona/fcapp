@@ -149,9 +149,9 @@ public class FcSquadraView extends VerticalLayout
 		crud.setUpdateOperationVisible(true);
 
 		crud.setFindAllOperation(squadraService::findAll);
-		crud.setAddOperation(squadraService::updateSquadra);
-		crud.setUpdateOperation(squadraService::updateSquadra);
-		crud.setDeleteOperation(squadraService::deleteSquadra);
+		crud.setAddOperation(squadraService::save);
+		crud.setUpdateOperation(squadraService::save);
+		crud.setDeleteOperation(squadraService::delete);
 
 		add(initDb);
 		add(crud);
@@ -183,7 +183,7 @@ public class FcSquadraView extends VerticalLayout
 						byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
 						s.setImg40(BlobProxy.generateProxy(targetArray2));
 					}
-					squadraService.updateSquadra(s);
+					squadraService.save(s);
 				}
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			}

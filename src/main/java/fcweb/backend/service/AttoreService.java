@@ -27,14 +27,6 @@ public class AttoreService{
 		return attoreRepository.findById(id);
 	}
 
-	public FcAttore update(FcAttore entity) {
-		return attoreRepository.save(entity);
-	}
-
-	public void delete(Long id) {
-		attoreRepository.deleteById(id);
-	}
-
 	public Page<FcAttore> list(Pageable pageable) {
 		return attoreRepository.findAll(pageable);
 	}
@@ -66,4 +58,8 @@ public class AttoreService{
 		return fcAttore;
 	}
 
+	public void delete(Long id) {
+		attoreRepository.deleteById(id);
+	}
+	
 }

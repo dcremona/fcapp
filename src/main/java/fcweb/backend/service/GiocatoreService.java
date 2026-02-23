@@ -96,17 +96,7 @@ public class GiocatoreService{
 		return giocatore;
 	}
 
-	public FcGiocatore updateGiocatore(FcGiocatore c) {
-		FcGiocatore giocatore = null;
-		try {
-			giocatore = giocatoreRepository.save(c);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
-		return giocatore;
-	}
-
-	public void deleteGiocatore(FcGiocatore c) {
+	public void delete(FcGiocatore c) {
         try {
 			giocatoreRepository.delete(c);
         } catch (Exception ex) {

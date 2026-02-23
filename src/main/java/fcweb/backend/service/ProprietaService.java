@@ -27,7 +27,7 @@ public class ProprietaService{
 		return proprietaRepository.findByKey(key);
 	}
 
-	public FcProperties updateProprieta(FcProperties proprieta) {
+	public FcProperties save(FcProperties proprieta) {
 		FcProperties fcProperties = null;
 		try {
 			fcProperties = proprietaRepository.save(proprieta);
@@ -37,7 +37,7 @@ public class ProprietaService{
 		return fcProperties;
 	}
 
-	public void deleteProprieta(FcProperties proprieta) {
+	public void delete(FcProperties proprieta) {
         try {
 			proprietaRepository.delete(proprieta);
         } catch (Exception ex) {

@@ -153,7 +153,7 @@ public class FcUserView extends VerticalLayout{
 		crud.setUpdateOperationVisible(true);
 
 		// logic configuration
-		crud.setOperations(attoreService::findAll, attoreService::update, user -> {
+		crud.setOperations(attoreService::findAll, attoreService::save, user -> {
 			// String password = user.getHashedPassword();
 			int strength = 10; // work factor of bcrypt
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength,new SecureRandom());
@@ -173,7 +173,7 @@ public class FcUserView extends VerticalLayout{
 			if (user.getId().equals(10L)) {
 				throw new CrudOperationException("Simulated error.");
 			}
-			return attoreService.update(user);
+			return attoreService.save(user);
 		}, user -> attoreService.delete(user.getId()));
 
 		add(crud);

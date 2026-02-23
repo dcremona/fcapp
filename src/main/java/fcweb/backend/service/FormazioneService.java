@@ -108,11 +108,12 @@ public class FormazioneService{
 			formazionePK.setOrdinamento(ordinamento);
 			formazione.setId(formazionePK);
 			formazioneRepository.save(formazione);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 
-	public FcFormazione updateFormazione(FcFormazione c) {
+	public FcFormazione save(FcFormazione c) {
 		FcFormazione giocatore = null;
 		try {
 			giocatore = formazioneRepository.save(c);
@@ -122,7 +123,7 @@ public class FormazioneService{
 		return giocatore;
 	}
 
-	public void deleteFormazione(FcFormazione c) {
+	public void delete(FcFormazione c) {
         try {
 			formazioneRepository.delete(c);
         } catch (Exception ex) {

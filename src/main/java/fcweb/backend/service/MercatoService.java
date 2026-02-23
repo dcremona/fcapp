@@ -36,7 +36,7 @@ public class MercatoService{
 		return mercatoRepository.findByFcAttoreOrderByFcGiornataInfoDescDataCambioDesc(attore);
 	}
 
-	public FcMercatoDett insertMercatoDett(FcMercatoDett c) {
+	public FcMercatoDett save(FcMercatoDett c) {
 		FcMercatoDett fcMercatoDett = null;
 		try {
 			fcMercatoDett = mercatoRepository.save(c);
@@ -46,7 +46,7 @@ public class MercatoService{
 		return fcMercatoDett;
 	}
 
-	public void deleteMercatoDett(FcMercatoDett c) {
+	public void delete(FcMercatoDett c) {
         try {
 			mercatoRepository.delete(c);
         } catch (Exception ex) {

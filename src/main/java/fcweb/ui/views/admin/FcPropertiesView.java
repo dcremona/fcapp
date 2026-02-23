@@ -81,9 +81,9 @@ public class FcPropertiesView extends VerticalLayout{
 		crud.setUpdateOperationVisible(true);
 
 		crud.setFindAllOperation(proprietaService::findAll);
-		crud.setAddOperation(proprietaService::updateProprieta);
-		crud.setUpdateOperation(proprietaService::updateProprieta);
-		crud.setDeleteOperation(proprietaService::deleteProprieta);
+		crud.setAddOperation(proprietaService::save);
+		crud.setUpdateOperation(proprietaService::save);
+		crud.setDeleteOperation(proprietaService::delete);
 
 		add(crud);
 	}

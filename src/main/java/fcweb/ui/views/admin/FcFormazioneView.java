@@ -103,9 +103,9 @@ public class FcFormazioneView extends VerticalLayout{
 		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 
 		crud.setFindAllOperation(() -> formazioneService.findByFcCampionato(campionato));
-		crud.setAddOperation(formazioneService::updateFormazione);
-		crud.setUpdateOperation(formazioneService::updateFormazione);
-		crud.setDeleteOperation(formazioneService::deleteFormazione);
+		crud.setAddOperation(formazioneService::save);
+		crud.setUpdateOperation(formazioneService::save);
+		crud.setDeleteOperation(formazioneService::delete);
 
 		add(crud);
 

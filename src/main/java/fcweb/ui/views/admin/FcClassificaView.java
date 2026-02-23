@@ -120,9 +120,9 @@ public class FcClassificaView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
 		crud.setFindAllOperation(() -> classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionatoFilter.getValue()));
-		crud.setAddOperation(classificaService::updateClassifica);
-		crud.setUpdateOperation(classificaService::updateClassifica);
-		crud.setDeleteOperation(classificaService::deleteClassifica);
+		crud.setAddOperation(classificaService::save);
+		crud.setUpdateOperation(classificaService::save);
+		crud.setDeleteOperation(classificaService::delete);
 
 		add(crud);
 	}

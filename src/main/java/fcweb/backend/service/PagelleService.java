@@ -73,20 +73,11 @@ public class PagelleService{
 		return fcPagelle;
 	}
 
-	public FcPagelle updatePagelle(FcPagelle c) {
-		FcPagelle fcPagelle = null;
-		try {
-			fcPagelle = pagelleRepository.save(c);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
-		return fcPagelle;
-	}
-
-	public void deletePagelle(FcPagelle c) {
+	public void delete(FcPagelle c) {
         try {
 			pagelleRepository.delete(c);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
 		}
 	}
 

@@ -146,9 +146,9 @@ public class FcGiornataDettView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
 		crud.setFindAllOperation(() -> giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attoreFilter.getValue(), giornataInfoFilter.getValue()));
-		crud.setAddOperation(giornataDettService::insertGiornataDett);
-		crud.setUpdateOperation(giornataDettService::updateGiornataDett);
-		crud.setDeleteOperation(giornataDettService::deleteGiornataDett);
+		crud.setAddOperation(giornataDettService::save);
+		crud.setUpdateOperation(giornataDettService::save);
+		crud.setDeleteOperation(giornataDettService::delete);
 
 		add(crud);
 

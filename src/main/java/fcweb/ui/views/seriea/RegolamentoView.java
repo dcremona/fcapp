@@ -162,7 +162,7 @@ public class RegolamentoView extends VerticalLayout
 				regolamento.setData(LocalDateTime.now());
 				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
 
-				regolamentoService.insertUpdateRegolamento(regolamento);
+				regolamentoService.save(regolamento);
 
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			}

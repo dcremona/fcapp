@@ -34,7 +34,7 @@ public class MercatoInfoService{
 		return mercatoInfoRepository.findByFcAttoreOrderByFcGiornataInfoAsc(fcAttore);
 	}
 
-	public void insertMercatoDettInfo(
+	public void save(
 			FcMercatoDettInfo mercatoInfo) {
         try {
             mercatoInfoRepository.save(mercatoInfo);

@@ -89,9 +89,9 @@ public class FcCampionatoView extends VerticalLayout{
 		crud.setUpdateOperationVisible(true);
 
 		crud.setFindAllOperation(campionatoService::findAll);
-		crud.setAddOperation(campionatoService::updateCampionato);
-		crud.setUpdateOperation(campionatoService::updateCampionato);
-		crud.setDeleteOperation(campionatoService::deleteCampionato);
+		crud.setAddOperation(campionatoService::save);
+		crud.setUpdateOperation(campionatoService::save);
+		crud.setDeleteOperation(campionatoService::delete);
 
 		add(crud);
 	}

@@ -31,7 +31,7 @@ public class CampionatoService{
 		return campionatoRepository.findByActive(active);
 	}
 
-	public FcCampionato updateCampionato(FcCampionato c) {
+	public FcCampionato save(FcCampionato c) {
 		FcCampionato fcCampionato = null;
 		try {
 			fcCampionato = campionatoRepository.save(c);
@@ -41,7 +41,7 @@ public class CampionatoService{
 		return fcCampionato;
 	}
 
-	public void deleteCampionato(FcCampionato c) {
+	public void delete(FcCampionato c) {
         try {
 			campionatoRepository.delete(c);
         } catch (Exception ex) {

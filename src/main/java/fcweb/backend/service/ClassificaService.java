@@ -66,7 +66,7 @@ public class ClassificaService{
 		return "classifica succesfully created with id = " + id;
 	}
 
-	public FcClassifica updateClassifica(FcClassifica classifica) {
+	public FcClassifica save(FcClassifica classifica) {
 		FcClassifica fcClassifica = null;
 		try {
 			fcClassifica = classificaRepository.save(classifica);
@@ -76,7 +76,7 @@ public class ClassificaService{
 		return fcClassifica;
 	}
 
-	public void deleteClassifica(FcClassifica classifica) {
+	public void delete(FcClassifica classifica) {
         try {
 			classificaRepository.delete(classifica);
         } catch (Exception ex) {

@@ -145,7 +145,7 @@ public class FcGiocatoreView extends VerticalLayout{
 							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
 
 							log.info("SAVE GIOCATORE ");
-							giocatoreService.updateGiocatore(g);
+							giocatoreService.save(g);
 
 							CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 						} catch (Exception e) {
@@ -211,9 +211,9 @@ public class FcGiocatoreView extends VerticalLayout{
 		crud.getCrudLayout().addFilterComponent(clearFilters);
 
 		crud.setFindAllOperation(() -> giocatoreService.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(ruoloFilter.getValue(), squadraFilter.getValue()));
-		crud.setAddOperation(giocatoreService::updateGiocatore);
-		crud.setUpdateOperation(giocatoreService::updateGiocatore);
-		crud.setDeleteOperation(giocatoreService::deleteGiocatore);
+		crud.setAddOperation(giocatoreService::save);
+		crud.setUpdateOperation(giocatoreService::save);
+		crud.setDeleteOperation(giocatoreService::delete);
 
 		add(crud);
 
