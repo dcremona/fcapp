@@ -19,13 +19,17 @@ import jakarta.persistence.Table;
 @Table(name = "fc_ruolo")
 public class FcRuolo implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "id_ruolo", unique = true, nullable = false)
 	private String idRuolo;
+
+	@Column(name = "desc_ruolo", nullable = false)
 	private String descRuolo;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcRuolo")
 	private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
 
 	public FcRuolo() {
@@ -43,9 +47,6 @@ public class FcRuolo implements java.io.Serializable{
 		this.fcGiocatores = fcGiocatores;
 	}
 
-	@Id
-
-	@Column(name = "id_ruolo", unique = true, nullable = false)
 	public String getIdRuolo() {
 		return this.idRuolo;
 	}
@@ -54,7 +55,6 @@ public class FcRuolo implements java.io.Serializable{
 		this.idRuolo = idRuolo;
 	}
 
-	@Column(name = "desc_ruolo", nullable = false)
 	public String getDescRuolo() {
 		return this.descRuolo;
 	}
@@ -63,7 +63,6 @@ public class FcRuolo implements java.io.Serializable{
 		this.descRuolo = descRuolo;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcRuolo")
 	public Set<FcGiocatore> getFcGiocatores() {
 		return this.fcGiocatores;
 	}

@@ -12,13 +12,16 @@ import java.io.Serial;
 @Embeddable
 public class FcFormazioneId implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Column(name = "id_attore", nullable = false)
 	private int idAttore;
+
+	@Column(name = "id_campionato", nullable = false)
 	private int idCampionato;
+
+	@Column(name = "ordinamento", nullable = false)
 	private int ordinamento;
 
 	public FcFormazioneId() {
@@ -30,7 +33,6 @@ public class FcFormazioneId implements java.io.Serializable{
 		this.ordinamento = ordinamento;
 	}
 
-	@Column(name = "id_attore", nullable = false)
 	public int getIdAttore() {
 		return this.idAttore;
 	}
@@ -39,7 +41,6 @@ public class FcFormazioneId implements java.io.Serializable{
 		this.idAttore = idAttore;
 	}
 
-	@Column(name = "id_campionato", nullable = false)
 	public int getIdCampionato() {
 		return this.idCampionato;
 	}
@@ -48,7 +49,6 @@ public class FcFormazioneId implements java.io.Serializable{
 		this.idCampionato = idCampionato;
 	}
 
-	@Column(name = "ordinamento", nullable = false)
 	public int getOrdinamento() {
 		return this.ordinamento;
 	}

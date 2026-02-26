@@ -20,22 +20,47 @@ import java.io.Serial;
 @Table(name = "fc_classifica_tot_pt")
 public class FcClassificaTotPt implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcClassificaTotPtId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttore;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
 	private FcCampionato fcCampionato;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+
+	@Column(name = "score", nullable = false, columnDefinition = "int default 0")
 	private int score;
+
+	@Column(name = "score_grand_prix", nullable = false, columnDefinition = "int default 0")
 	private int scoreGrandPrix;
+
+	@Column(name = "score_old", nullable = false, columnDefinition = "int default 0")
 	private int scoreOld;
+
+	@Column(name = "tot_pt", precision = 22, scale = 0)
 	private Double totPt;
+
+	@Column(name = "tot_pt_old", precision = 22, scale = 0)
 	private Double totPtOld;
+
+	@Column(name = "tot_pt_rosa", precision = 22, scale = 0)
 	private Double totPtRosa;
+
+	@Column(name = "goal", nullable = false, columnDefinition = "int default 0")
 	private int goal;
+
+	@Column(name = "ptTvsT", nullable = false, columnDefinition = "int default 0")
 	private int ptTvsT;
 
 	public FcClassificaTotPt() {
@@ -69,9 +94,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.totPtRosa = totPtRosa;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcClassificaTotPtId getId() {
 		return this.id;
 	}
@@ -80,8 +102,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttore() {
 		return this.fcAttore;
 	}
@@ -90,8 +110,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.fcAttore = fcAttore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
 	public FcCampionato getFcCampionato() {
 		return this.fcCampionato;
 	}
@@ -100,8 +118,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.fcCampionato = fcCampionato;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -110,7 +126,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@Column(name = "score", nullable = false, columnDefinition = "int default 0")
 	public int getScore() {
 		return this.score;
 	}
@@ -119,7 +134,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.score = score;
 	}
 
-	@Column(name = "score_grand_prix", nullable = false, columnDefinition = "int default 0")
 	public int getScoreGrandPrix() {
 		return this.scoreGrandPrix;
 	}
@@ -128,7 +142,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.scoreGrandPrix = scoreGrandPrix;
 	}
 
-	@Column(name = "score_old", nullable = false, columnDefinition = "int default 0")
 	public int getScoreOld() {
 		return this.scoreOld;
 	}
@@ -137,7 +150,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.scoreOld = scoreOld;
 	}
 
-	@Column(name = "tot_pt", precision = 22, scale = 0)
 	public Double getTotPt() {
 		return this.totPt;
 	}
@@ -146,7 +158,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.totPt = totPt;
 	}
 
-	@Column(name = "tot_pt_old", precision = 22, scale = 0)
 	public Double getTotPtOld() {
 		return this.totPtOld;
 	}
@@ -155,7 +166,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.totPtOld = totPtOld;
 	}
 
-	@Column(name = "tot_pt_rosa", precision = 22, scale = 0)
 	public Double getTotPtRosa() {
 		return this.totPtRosa;
 	}
@@ -164,7 +174,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.totPtRosa = totPtRosa;
 	}
 
-	@Column(name = "goal", nullable = false, columnDefinition = "int default 0")
 	public int getGoal() {
 		return this.goal;
 	}
@@ -173,7 +182,6 @@ public class FcClassificaTotPt implements java.io.Serializable{
 		this.goal = goal;
 	}
 
-	@Column(name = "ptTvsT", nullable = false, columnDefinition = "int default 0")
 	public int getPtTvsT() {
 		return ptTvsT;
 	}

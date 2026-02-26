@@ -15,9 +15,6 @@ import jakarta.persistence.Table;
 @Table(name = "fc_calendario_tim")
 public class FcCalendarioCompetizione implements Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
 

@@ -20,23 +20,33 @@ import java.io.Serial;
 @Table(name = "fc_giornata_giocatore")
 public class FcGiornataGiocatore implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idGiocatore", column = @Column(name = "id_giocatore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcGiornataGiocatoreId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giocatore", nullable = false, insertable = false, updatable = false)
 	private FcGiocatore fcGiocatore;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+
+	@Column(name = "infortunato")
 	private boolean infortunato;
+	
+	@Column(name = "squalificato")
 	private boolean squalificato;
+
+	@Column(name = "note", nullable = true)
 	private String note;
 
 	public FcGiornataGiocatore() {
 	}
 
-	@EmbeddedId
-	@AttributeOverrides({ @AttributeOverride(name = "idGiocatore", column = @Column(name = "id_giocatore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcGiornataGiocatoreId getId() {
 		return this.id;
 	}
@@ -45,8 +55,6 @@ public class FcGiornataGiocatore implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giocatore", nullable = false, insertable = false, updatable = false)
 	public FcGiocatore getFcGiocatore() {
 		return this.fcGiocatore;
 	}
@@ -55,8 +63,6 @@ public class FcGiornataGiocatore implements java.io.Serializable{
 		this.fcGiocatore = fcGiocatore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -65,7 +71,6 @@ public class FcGiornataGiocatore implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@Column(name = "infortunato")
 	public boolean isInfortunato() {
 		return this.infortunato;
 	}
@@ -74,7 +79,6 @@ public class FcGiornataGiocatore implements java.io.Serializable{
 		this.infortunato = infortunato;
 	}
 
-	@Column(name = "squalificato")
 	public boolean isSqualificato() {
 		return this.squalificato;
 	}
@@ -83,7 +87,6 @@ public class FcGiornataGiocatore implements java.io.Serializable{
 		this.squalificato = squalificato;
 	}
 
-	@Column(name = "note", nullable = true)
 	public String getNote() {
 		return this.note;
 	}

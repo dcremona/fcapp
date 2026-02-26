@@ -20,28 +20,64 @@ import java.io.Serial;
 @Table(name = "fc_classifica")
 public class FcClassifica implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)) })
 	private FcClassificaId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttore;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
 	private FcCampionato fcCampionato;
+
+	@Column(name = "dr", nullable = false)
 	private int dr;
+
+	@Column(name = "fm_mercato", nullable = false)
 	private int fmMercato;
+
+	@Column(name = "gf", nullable = false)
 	private int gf;
+
+	@Column(name = "gs", nullable = false)
 	private int gs;
+
+	@Column(name = "id_posiz", nullable = false)
 	private int idPosiz;
+
+	@Column(name = "id_posiz_final", nullable = false)
 	private int idPosizFinal;
+
+	@Column(name = "vinte", nullable = false)
 	private int vinte;
+
+	@Column(name = "pari", nullable = false)
 	private int pari;
+	
+	@Column(name = "perse", nullable = false)
 	private int perse;
+
+	@Column(name = "punti", nullable = false)
 	private int punti;
+
+	@Column(name = "tot_fm", nullable = false)
 	private int totFm;
+
+	@Column(name = "tot_punti", precision = 22, scale = 0)
 	private Double totPunti;
+
+	@Column(name = "tot_punti_old", precision = 22, scale = 0)
 	private Double totPuntiOld;
+
+	@Column(name = "tot_punti_rosa", precision = 22, scale = 0)
 	private Double totPuntiRosa;
+
+	@Column(name = "tot_punti_TvsT", nullable = false, columnDefinition = "int default 0")
 	private int totPuntiTvsT;
 
 	public FcClassifica() {
@@ -91,9 +127,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.vinte = vinte;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)) })
 	public FcClassificaId getId() {
 		return this.id;
 	}
@@ -102,8 +135,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttore() {
 		return this.fcAttore;
 	}
@@ -112,8 +143,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.fcAttore = fcAttore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
 	public FcCampionato getFcCampionato() {
 		return this.fcCampionato;
 	}
@@ -122,7 +151,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.fcCampionato = fcCampionato;
 	}
 
-	@Column(name = "dr", nullable = false)
 	public int getDr() {
 		return this.dr;
 	}
@@ -131,7 +159,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.dr = dr;
 	}
 
-	@Column(name = "fm_mercato", nullable = false)
 	public int getFmMercato() {
 		return this.fmMercato;
 	}
@@ -140,7 +167,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.fmMercato = fmMercato;
 	}
 
-	@Column(name = "gf", nullable = false)
 	public int getGf() {
 		return this.gf;
 	}
@@ -149,7 +175,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.gf = gf;
 	}
 
-	@Column(name = "gs", nullable = false)
 	public int getGs() {
 		return this.gs;
 	}
@@ -158,7 +183,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.gs = gs;
 	}
 
-	@Column(name = "id_posiz", nullable = false)
 	public int getIdPosiz() {
 		return this.idPosiz;
 	}
@@ -167,7 +191,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.idPosiz = idPosiz;
 	}
 
-	@Column(name = "id_posiz_final", nullable = false)
 	public int getIdPosizFinal() {
 		return this.idPosizFinal;
 	}
@@ -176,7 +199,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.idPosizFinal = idPosizFinal;
 	}
 
-	@Column(name = "pari", nullable = false)
 	public int getPari() {
 		return this.pari;
 	}
@@ -185,7 +207,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.pari = pari;
 	}
 
-	@Column(name = "perse", nullable = false)
 	public int getPerse() {
 		return this.perse;
 	}
@@ -194,7 +215,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.perse = perse;
 	}
 
-	@Column(name = "punti", nullable = false)
 	public int getPunti() {
 		return this.punti;
 	}
@@ -203,7 +223,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.punti = punti;
 	}
 
-	@Column(name = "tot_fm", nullable = false)
 	public int getTotFm() {
 		return this.totFm;
 	}
@@ -212,7 +231,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.totFm = totFm;
 	}
 
-	@Column(name = "tot_punti", precision = 22, scale = 0)
 	public Double getTotPunti() {
 		return this.totPunti;
 	}
@@ -221,7 +239,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.totPunti = totPunti;
 	}
 
-	@Column(name = "tot_punti_old", precision = 22, scale = 0)
 	public Double getTotPuntiOld() {
 		return this.totPuntiOld;
 	}
@@ -230,7 +247,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.totPuntiOld = totPuntiOld;
 	}
 
-	@Column(name = "tot_punti_rosa", precision = 22, scale = 0)
 	public Double getTotPuntiRosa() {
 		return this.totPuntiRosa;
 	}
@@ -239,7 +255,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.totPuntiRosa = totPuntiRosa;
 	}
 
-	@Column(name = "vinte", nullable = false)
 	public int getVinte() {
 		return this.vinte;
 	}
@@ -248,7 +263,6 @@ public class FcClassifica implements java.io.Serializable{
 		this.vinte = vinte;
 	}
 
-	@Column(name = "tot_punti_TvsT", nullable = false, columnDefinition = "int default 0")
 	public int getTotPuntiTvsT() {
 		return totPuntiTvsT;
 	}

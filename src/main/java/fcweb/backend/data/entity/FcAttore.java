@@ -20,29 +20,39 @@ public class FcAttore extends AbstractEntity{
 
 	private String username;
 	private String name;
+	
 	@JsonIgnore
 	private String hashedPassword;
+	
 	@Enumerated(EnumType.STRING)
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<Role> roles;
+	
 	@Lob
 	@Column(length = 1000000)
 	private byte[] profilePicture;
 
 	@Column(name = "id_attore", nullable = false)
 	private int idAttore;
+	
 	@Column(name = "desc_attore", nullable = false)
 	private String descAttore;
+	
 	@Column(name = "email", nullable = false)
 	private String email;
+	
 	@Column(name = "cognome", nullable = false)
 	private String cognome;
+	
 	@Column(name = "nome", nullable = false)
 	private String nome;
+	
 	@Column(name = "cellulare", nullable = false)
 	private String cellulare;
+	
 	@Column(name = "notifiche", nullable = false)
 	private boolean notifiche;
+	
 	@Column(name = "active", nullable = false)
 	private boolean active;
 

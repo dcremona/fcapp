@@ -16,9 +16,6 @@ import jakarta.persistence.Table;
 @Table(name = "fc_regolamento")
 public class FcRegolamento implements Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
 

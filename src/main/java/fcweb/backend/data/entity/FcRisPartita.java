@@ -15,12 +15,14 @@ import java.io.Serial;
 @Table(name = "fc_ris_partita")
 public class FcRisPartita implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "id_ris_partita", unique = true, nullable = false)
 	private int idRisPartita;
+
+	@Column(name = "desc_ris_partita", nullable = false)
 	private String descRisPartita;
 
 	public FcRisPartita() {
@@ -31,9 +33,6 @@ public class FcRisPartita implements java.io.Serializable{
 		this.descRisPartita = descRisPartita;
 	}
 
-	@Id
-
-	@Column(name = "id_ris_partita", unique = true, nullable = false)
 	public int getIdRisPartita() {
 		return this.idRisPartita;
 	}
@@ -42,7 +41,6 @@ public class FcRisPartita implements java.io.Serializable{
 		this.idRisPartita = idRisPartita;
 	}
 
-	@Column(name = "desc_ris_partita", nullable = false)
 	public String getDescRisPartita() {
 		return this.descRisPartita;
 	}

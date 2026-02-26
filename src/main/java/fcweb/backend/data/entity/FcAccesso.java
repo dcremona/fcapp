@@ -17,9 +17,6 @@ import jakarta.persistence.Table;
 @Table(name = "fc_accesso")
 public class FcAccesso implements Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +27,7 @@ public class FcAccesso implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "id_attore", referencedColumnName = "id")
-	private FcAttore fcAttore; // immutable
+	private FcAttore fcAttore; 
 
 	@Column(name = "data", nullable = false)
 	private LocalDateTime data;
@@ -40,7 +37,7 @@ public class FcAccesso implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "id_campionato", referencedColumnName = "id_campionato")
-	private FcCampionato fcCampionato; // immutable
+	private FcCampionato fcCampionato; 
 
 	public FcCampionato getFcCampionato() {
 		return fcCampionato;

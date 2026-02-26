@@ -19,13 +19,17 @@ import jakarta.persistence.Table;
 @Table(name = "fc_stato_giocatore")
 public class FcStatoGiocatore implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name = "id_stato_giocatore", unique = true, nullable = false)
 	private String idStatoGiocatore;
+
+	@Column(name = "desc_stato_giocatore", nullable = false)
 	private String descStatoGiocatore;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcStatoGiocatore")
 	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
 
 	public FcStatoGiocatore() {
@@ -44,9 +48,6 @@ public class FcStatoGiocatore implements java.io.Serializable{
 		this.fcGiornataDetts = fcGiornataDetts;
 	}
 
-	@Id
-
-	@Column(name = "id_stato_giocatore", unique = true, nullable = false)
 	public String getIdStatoGiocatore() {
 		return this.idStatoGiocatore;
 	}
@@ -55,7 +56,6 @@ public class FcStatoGiocatore implements java.io.Serializable{
 		this.idStatoGiocatore = idStatoGiocatore;
 	}
 
-	@Column(name = "desc_stato_giocatore", nullable = false)
 	public String getDescStatoGiocatore() {
 		return this.descStatoGiocatore;
 	}
@@ -64,7 +64,6 @@ public class FcStatoGiocatore implements java.io.Serializable{
 		this.descStatoGiocatore = descStatoGiocatore;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcStatoGiocatore")
 	public Set<FcGiornataDett> getFcGiornataDetts() {
 		return this.fcGiornataDetts;
 	}

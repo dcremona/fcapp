@@ -19,13 +19,17 @@ import jakarta.persistence.Table;
 @Table(name = "fc_tipo_giornata")
 public class FcTipoGiornata implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name = "id_tipo_giornata", unique = true, nullable = false)
 	private int idTipoGiornata;
+
+	@Column(name = "desc_tipo_giornata", nullable = false)
 	private String descTipoGiornata;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcTipoGiornata")
 	private Set<FcGiornata> fcGiornatas = new HashSet<>(0);
 
 	public FcTipoGiornata() {
@@ -43,9 +47,6 @@ public class FcTipoGiornata implements java.io.Serializable{
 		this.fcGiornatas = fcGiornatas;
 	}
 
-	@Id
-
-	@Column(name = "id_tipo_giornata", unique = true, nullable = false)
 	public int getIdTipoGiornata() {
 		return this.idTipoGiornata;
 	}
@@ -54,7 +55,6 @@ public class FcTipoGiornata implements java.io.Serializable{
 		this.idTipoGiornata = idTipoGiornata;
 	}
 
-	@Column(name = "desc_tipo_giornata", nullable = false)
 	public String getDescTipoGiornata() {
 		return this.descTipoGiornata;
 	}
@@ -63,7 +63,6 @@ public class FcTipoGiornata implements java.io.Serializable{
 		this.descTipoGiornata = descTipoGiornata;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcTipoGiornata")
 	public Set<FcGiornata> getFcGiornatas() {
 		return this.fcGiornatas;
 	}

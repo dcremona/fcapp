@@ -12,13 +12,16 @@ import java.io.Serial;
 @Embeddable
 public class FcClassificaTotPtId implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Column(name = "id_attore", nullable = false)
 	private int idAttore;
+
+	@Column(name = "id_campionato", nullable = false)
 	private int idCampionato;
+
+	@Column(name = "id_giornata", nullable = false)
 	private int idGiornata;
 
 	public FcClassificaTotPtId() {
@@ -30,7 +33,6 @@ public class FcClassificaTotPtId implements java.io.Serializable{
 		this.idGiornata = idGiornata;
 	}
 
-	@Column(name = "id_attore", nullable = false)
 	public int getIdAttore() {
 		return this.idAttore;
 	}
@@ -39,7 +41,6 @@ public class FcClassificaTotPtId implements java.io.Serializable{
 		this.idAttore = idAttore;
 	}
 
-	@Column(name = "id_campionato", nullable = false)
 	public int getIdCampionato() {
 		return this.idCampionato;
 	}
@@ -48,7 +49,6 @@ public class FcClassificaTotPtId implements java.io.Serializable{
 		this.idCampionato = idCampionato;
 	}
 
-	@Column(name = "id_giornata", nullable = false)
 	public int getIdGiornata() {
 		return this.idGiornata;
 	}

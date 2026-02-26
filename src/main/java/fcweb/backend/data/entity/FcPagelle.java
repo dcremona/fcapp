@@ -23,29 +23,64 @@ import jakarta.persistence.Table;
 @Table(name = "fc_pagelle")
 public class FcPagelle implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idGiocatore", column = @Column(name = "id_giocatore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcPagelleId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giocatore", nullable = false, insertable = false, updatable = false)
 	private FcGiocatore fcGiocatore;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+
+	@Column(name = "ammonizione", nullable = false)
 	private int ammonizione;
+
+	@Column(name = "assist", nullable = false)
 	private int assist;
+
+	@Column(name = "autorete", nullable = false)
 	private int autorete;
+
+	@Column(name = "cs", precision = 22, scale = 0)
 	private Double cs;
+
+	@Column(name = "espulsione", nullable = false)
 	private int espulsione;
+
+	@Column(name = "g", precision = 22, scale = 0)
 	private Double g;
+
+	@Column(name = "goal_realizzato", nullable = false)
 	private int goalRealizzato;
+
+	@Column(name = "goal_subito", nullable = false)
 	private int goalSubito;
+
+	@Column(name = "rigore_fallito", nullable = false)
 	private int rigoreFallito;
+	
+	@Column(name = "rigore_parato", nullable = false)
 	private int rigoreParato;
+	
+	@Column(name = "rigore_segnato", nullable = false)
 	private int rigoreSegnato;
+
+	@Column(name = "ts", precision = 22, scale = 0)
 	private Double ts;
+
+	@Column(name = "voto_giocatore", nullable = false)
 	private int votoGiocatore;
+
+	@Column(name = "gdv", nullable = false)
 	private int gdv;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcPagelle")
 	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
 
 	public FcPagelle() {
@@ -96,9 +131,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.fcGiornataDetts = fcGiornataDetts;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idGiocatore", column = @Column(name = "id_giocatore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcPagelleId getId() {
 		return this.id;
 	}
@@ -107,8 +139,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giocatore", nullable = false, insertable = false, updatable = false)
 	public FcGiocatore getFcGiocatore() {
 		return this.fcGiocatore;
 	}
@@ -117,8 +147,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.fcGiocatore = fcGiocatore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -127,7 +155,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@Column(name = "ammonizione", nullable = false)
 	public int getAmmonizione() {
 		return this.ammonizione;
 	}
@@ -135,8 +162,6 @@ public class FcPagelle implements java.io.Serializable{
 	public void setAmmonizione(int ammonizione) {
 		this.ammonizione = ammonizione;
 	}
-
-	@Column(name = "assist", nullable = false)
 	public int getAssist() {
 		return this.assist;
 	}
@@ -145,7 +170,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.assist = assist;
 	}
 
-	@Column(name = "autorete", nullable = false)
 	public int getAutorete() {
 		return this.autorete;
 	}
@@ -154,7 +178,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.autorete = autorete;
 	}
 
-	@Column(name = "cs", precision = 22, scale = 0)
 	public Double getCs() {
 		return this.cs;
 	}
@@ -163,7 +186,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.cs = cs;
 	}
 
-	@Column(name = "espulsione", nullable = false)
 	public int getEspulsione() {
 		return this.espulsione;
 	}
@@ -172,7 +194,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.espulsione = espulsione;
 	}
 
-	@Column(name = "g", precision = 22, scale = 0)
 	public Double getG() {
 		return this.g;
 	}
@@ -181,7 +202,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.g = g;
 	}
 
-	@Column(name = "goal_realizzato", nullable = false)
 	public int getGoalRealizzato() {
 		return this.goalRealizzato;
 	}
@@ -190,7 +210,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.goalRealizzato = goalRealizzato;
 	}
 
-	@Column(name = "goal_subito", nullable = false)
 	public int getGoalSubito() {
 		return this.goalSubito;
 	}
@@ -199,7 +218,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.goalSubito = goalSubito;
 	}
 
-	@Column(name = "rigore_fallito", nullable = false)
 	public int getRigoreFallito() {
 		return this.rigoreFallito;
 	}
@@ -208,7 +226,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.rigoreFallito = rigoreFallito;
 	}
 
-	@Column(name = "rigore_parato", nullable = false)
 	public int getRigoreParato() {
 		return this.rigoreParato;
 	}
@@ -217,7 +234,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.rigoreParato = rigoreParato;
 	}
 
-	@Column(name = "rigore_segnato", nullable = false)
 	public int getRigoreSegnato() {
 		return this.rigoreSegnato;
 	}
@@ -226,7 +242,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.rigoreSegnato = rigoreSegnato;
 	}
 
-	@Column(name = "ts", precision = 22, scale = 0)
 	public Double getTs() {
 		return this.ts;
 	}
@@ -235,7 +250,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.ts = ts;
 	}
 
-	@Column(name = "voto_giocatore", nullable = false)
 	public int getVotoGiocatore() {
 		return this.votoGiocatore;
 	}
@@ -244,7 +258,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.votoGiocatore = votoGiocatore;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcPagelle")
 	public Set<FcGiornataDett> getFcGiornataDetts() {
 		return this.fcGiornataDetts;
 	}
@@ -253,7 +266,6 @@ public class FcPagelle implements java.io.Serializable{
 		this.fcGiornataDetts = fcGiornataDetts;
 	}
 
-	@Column(name = "gdv", nullable = false)
 	public int getGdv() {
 		return gdv;
 	}

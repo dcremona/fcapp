@@ -12,12 +12,13 @@ import java.io.Serial;
 @Embeddable
 public class FcClassificaId implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@Column(name = "id_attore", nullable = false)
 	private int idAttore;
+
+	@Column(name = "id_campionato", nullable = false)
 	private int idCampionato;
 
 	public FcClassificaId() {
@@ -28,7 +29,6 @@ public class FcClassificaId implements java.io.Serializable{
 		this.idCampionato = idCampionato;
 	}
 
-	@Column(name = "id_attore", nullable = false)
 	public int getIdAttore() {
 		return this.idAttore;
 	}
@@ -37,7 +37,6 @@ public class FcClassificaId implements java.io.Serializable{
 		this.idAttore = idAttore;
 	}
 
-	@Column(name = "id_campionato", nullable = false)
 	public int getIdCampionato() {
 		return this.idCampionato;
 	}

@@ -20,25 +20,53 @@ import jakarta.persistence.Table;
 @Table(name = "fc_giornata_info")
 public class FcGiornataInfo implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "codice_giornata", unique = true, nullable = false)
 	private int codiceGiornata;
+
+	@Column(name = "data_anticipo1")
 	private LocalDateTime dataAnticipo1;
+	
+	@Column(name = "data_anticipo2")	
 	private LocalDateTime dataAnticipo2;
+	
+	@Column(name = "data_giornata")
 	private LocalDateTime dataGiornata;
+	
+	@Column(name = "data_posticipo")
 	private LocalDateTime dataPosticipo;
+
+	@Column(name = "desc_giornata", nullable = false)
 	private String descGiornata;
+
+	@Column(name = "desc_giornata_fc", nullable = false)
 	private String descGiornataFc;
+
+	@Column(name = "id_giornata_fc", nullable = false)
 	private int idGiornataFc;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcGiornataRis> fcGiornataRises = new HashSet<>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcPagelle> fcPagelles = new HashSet<>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcGiornataDettInfo> fcGiornataDettInfos = new HashSet<>(0);
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcGiornata> fcGiornatas = new HashSet<>(0);
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<>(0);
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	private Set<FcMercatoDett> fcMercatoDetts = new HashSet<>(0);
 
 	public FcGiornataInfo() {
@@ -79,9 +107,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcMercatoDetts = fcMercatoDetts;
 	}
 
-	@Id
-
-	@Column(name = "codice_giornata", unique = true, nullable = false)
 	public int getCodiceGiornata() {
 		return this.codiceGiornata;
 	}
@@ -90,7 +115,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.codiceGiornata = codiceGiornata;
 	}
 
-	@Column(name = "data_anticipo1")
 	public LocalDateTime getDataAnticipo1() {
 		return this.dataAnticipo1;
 	}
@@ -99,7 +123,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.dataAnticipo1 = dataAnticipo1;
 	}
 
-	@Column(name = "data_anticipo2")
 	public LocalDateTime getDataAnticipo2() {
 		return this.dataAnticipo2;
 	}
@@ -108,7 +131,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.dataAnticipo2 = dataAnticipo2;
 	}
 
-	@Column(name = "data_giornata")
 	public LocalDateTime getDataGiornata() {
 		return this.dataGiornata;
 	}
@@ -117,7 +139,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.dataGiornata = dataGiornata;
 	}
 
-	@Column(name = "data_posticipo")
 	public LocalDateTime getDataPosticipo() {
 		return this.dataPosticipo;
 	}
@@ -126,7 +147,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.dataPosticipo = dataPosticipo;
 	}
 
-	@Column(name = "desc_giornata", nullable = false)
 	public String getDescGiornata() {
 		return this.descGiornata;
 	}
@@ -135,7 +155,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.descGiornata = descGiornata;
 	}
 
-	@Column(name = "desc_giornata_fc", nullable = false)
 	public String getDescGiornataFc() {
 		return this.descGiornataFc;
 	}
@@ -144,7 +163,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.descGiornataFc = descGiornataFc;
 	}
 
-	@Column(name = "id_giornata_fc", nullable = false)
 	public int getIdGiornataFc() {
 		return this.idGiornataFc;
 	}
@@ -153,7 +171,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.idGiornataFc = idGiornataFc;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcGiornataRis> getFcGiornataRises() {
 		return this.fcGiornataRises;
 	}
@@ -162,7 +179,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcGiornataRises = fcGiornataRises;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcGiornataDett> getFcGiornataDetts() {
 		return this.fcGiornataDetts;
 	}
@@ -171,7 +187,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcGiornataDetts = fcGiornataDetts;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcPagelle> getFcPagelles() {
 		return this.fcPagelles;
 	}
@@ -180,7 +195,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcPagelles = fcPagelles;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcGiornataDettInfo> getFcGiornataDettInfos() {
 		return this.fcGiornataDettInfos;
 	}
@@ -190,7 +204,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcGiornataDettInfos = fcGiornataDettInfos;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcGiornata> getFcGiornatas() {
 		return this.fcGiornatas;
 	}
@@ -199,7 +212,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcGiornatas = fcGiornatas;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcClassificaTotPt> getFcClassificaTotPts() {
 		return this.fcClassificaTotPts;
 	}
@@ -209,7 +221,6 @@ public class FcGiornataInfo implements java.io.Serializable{
 		this.fcClassificaTotPts = fcClassificaTotPts;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiornataInfo")
 	public Set<FcMercatoDett> getFcMercatoDetts() {
 		return this.fcMercatoDetts;
 	}

@@ -21,15 +21,9 @@ import jakarta.persistence.Table;
 @Table(name = "fc_mercato_dett")
 public class FcMercatoDett implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	// @Id
-	// @GeneratedValue(strategy = IDENTITY)
-	// @Column(name = "id", unique = true, nullable = false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")

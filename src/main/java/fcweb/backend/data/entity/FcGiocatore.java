@@ -24,27 +24,61 @@ import jakarta.persistence.Table;
 @Table(name = "fc_giocatore")
 public class FcGiocatore implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name = "id_giocatore", unique = true, nullable = false)
 	private int idGiocatore;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_ruolo")
 	private FcRuolo fcRuolo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_squadra")
 	private FcSquadra fcSquadra;
+
+	@Column(name = "cogn_giocatore", nullable = false)
 	private String cognGiocatore;
+
+	@Column(name = "flag_attivo")
 	private boolean flagAttivo;
+
+	@Column(name = "nome_giocatore")
 	private String nomeGiocatore;
+
+	@Column(name = "nome_img")
 	private String nomeImg;
+
+	@Column(name = "quotazione")
 	private Integer quotazione;
+
+	@Column(name = "img")
 	private Blob img;
+
+	@Column(name = "img_small")
 	private Blob imgSmall;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	private Set<FcPagelle> fcPagelles = new HashSet<>(0);
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	private Set<FcFormazione> fcFormaziones = new HashSet<>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	private Set<FcGiornataDett> fcGiornataDetts = new HashSet<>(0);
+	
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	private FcStatistiche fcStatistiche;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatoreByIdGiocVen")
 	private Set<FcMercatoDett> fcMercatoDettsForIdGiocVen = new HashSet<>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatoreByIdGiocAcq")
 	private Set<FcMercatoDett> fcMercatoDettsForIdGiocAcq = new HashSet<>(0);
+
+	@Column(name = "percentuale")
 	private Integer percentuale;
 
 	public FcGiocatore() {
@@ -78,9 +112,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcMercatoDettsForIdGiocAcq = fcMercatoDettsForIdGiocAcq;
 	}
 
-	@Id
-
-	@Column(name = "id_giocatore", unique = true, nullable = false)
 	public int getIdGiocatore() {
 		return this.idGiocatore;
 	}
@@ -89,8 +120,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.idGiocatore = idGiocatore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_ruolo")
 	public FcRuolo getFcRuolo() {
 		return this.fcRuolo;
 	}
@@ -99,8 +128,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcRuolo = fcRuolo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_squadra")
 	public FcSquadra getFcSquadra() {
 		return this.fcSquadra;
 	}
@@ -109,7 +136,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcSquadra = fcSquadra;
 	}
 
-	@Column(name = "cogn_giocatore", nullable = false)
 	public String getCognGiocatore() {
 		return this.cognGiocatore;
 	}
@@ -118,7 +144,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.cognGiocatore = cognGiocatore;
 	}
 
-	@Column(name = "flag_attivo")
 	public boolean isFlagAttivo() {
 		return this.flagAttivo;
 	}
@@ -127,7 +152,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.flagAttivo = flagAttivo;
 	}
 
-	@Column(name = "nome_giocatore")
 	public String getNomeGiocatore() {
 		return this.nomeGiocatore;
 	}
@@ -136,7 +160,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.nomeGiocatore = nomeGiocatore;
 	}
 
-	@Column(name = "nome_img")
 	public String getNomeImg() {
 		return this.nomeImg;
 	}
@@ -145,7 +168,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.nomeImg = nomeImg;
 	}
 
-	@Column(name = "quotazione")
 	public Integer getQuotazione() {
 		return this.quotazione;
 	}
@@ -154,7 +176,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.quotazione = quotazione;
 	}
 
-	@Column(name = "img")
 	public Blob getImg() {
 		return this.img;
 	}
@@ -163,7 +184,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.img = img;
 	}
 
-	@Column(name = "img_small")
 	public Blob getImgSmall() {
 		return this.imgSmall;
 	}
@@ -172,7 +192,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.imgSmall = imgSmall;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	public Set<FcPagelle> getFcPagelles() {
 		return this.fcPagelles;
 	}
@@ -181,7 +200,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcPagelles = fcPagelles;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	public Set<FcFormazione> getFcFormaziones() {
 		return this.fcFormaziones;
 	}
@@ -190,7 +208,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcFormaziones = fcFormaziones;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	public Set<FcGiornataDett> getFcGiornataDetts() {
 		return this.fcGiornataDetts;
 	}
@@ -199,7 +216,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcGiornataDetts = fcGiornataDetts;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fcGiocatore")
 	public FcStatistiche getFcStatistiche() {
 		return this.fcStatistiche;
 	}
@@ -208,7 +224,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcStatistiche = fcStatistiche;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatoreByIdGiocVen")
 	public Set<FcMercatoDett> getFcMercatoDettsForIdGiocVen() {
 		return this.fcMercatoDettsForIdGiocVen;
 	}
@@ -218,7 +233,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.fcMercatoDettsForIdGiocVen = fcMercatoDettsForIdGiocVen;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcGiocatoreByIdGiocAcq")
 	public Set<FcMercatoDett> getFcMercatoDettsForIdGiocAcq() {
 		return this.fcMercatoDettsForIdGiocAcq;
 	}
@@ -239,7 +253,6 @@ public class FcGiocatore implements java.io.Serializable{
 		this.data = data;
 	}
 
-	@Column(name = "percentuale")
 	public Integer getPercentuale() {
 		return percentuale;
 	}

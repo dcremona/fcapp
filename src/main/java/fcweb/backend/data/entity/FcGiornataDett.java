@@ -21,19 +21,40 @@ import java.io.Serial;
 @Table(name = "fc_giornata_dett")
 public class FcGiornataDett implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idGiocatore", column = @Column(name = "id_giocatore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcGiornataDettId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttore;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giocatore", nullable = false, insertable = false, updatable = false)
 	private FcGiocatore fcGiocatore;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "id_giocatore", referencedColumnName = "id_giocatore", nullable = false, insertable = false, updatable = false), @JoinColumn(name = "id_giornata", referencedColumnName = "id_giornata", nullable = false, insertable = false, updatable = false) })
 	private FcPagelle fcPagelle;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_stato_giocatore")
 	private FcStatoGiocatore fcStatoGiocatore;
+
+	@Column(name = "flag_attivo")
 	private String flagAttivo;
+	
+	@Column(name = "ordinamento", nullable = false)
 	private int ordinamento;
+
+	@Column(name = "voto", precision = 22, scale = 0)
 	private Double voto;
 
 	public FcGiornataDett() {
@@ -65,9 +86,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.voto = voto;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idGiocatore", column = @Column(name = "id_giocatore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcGiornataDettId getId() {
 		return this.id;
 	}
@@ -76,8 +94,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttore() {
 		return this.fcAttore;
 	}
@@ -86,8 +102,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.fcAttore = fcAttore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giocatore", nullable = false, insertable = false, updatable = false)
 	public FcGiocatore getFcGiocatore() {
 		return this.fcGiocatore;
 	}
@@ -96,8 +110,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.fcGiocatore = fcGiocatore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -106,8 +118,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ @JoinColumn(name = "id_giocatore", referencedColumnName = "id_giocatore", nullable = false, insertable = false, updatable = false), @JoinColumn(name = "id_giornata", referencedColumnName = "id_giornata", nullable = false, insertable = false, updatable = false) })
 	public FcPagelle getFcPagelle() {
 		return this.fcPagelle;
 	}
@@ -116,8 +126,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.fcPagelle = fcPagelle;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_stato_giocatore")
 	public FcStatoGiocatore getFcStatoGiocatore() {
 		return this.fcStatoGiocatore;
 	}
@@ -126,7 +134,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.fcStatoGiocatore = fcStatoGiocatore;
 	}
 
-	@Column(name = "flag_attivo")
 	public String getFlagAttivo() {
 		return this.flagAttivo;
 	}
@@ -135,7 +142,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.flagAttivo = flagAttivo;
 	}
 
-	@Column(name = "ordinamento", nullable = false)
 	public int getOrdinamento() {
 		return this.ordinamento;
 	}
@@ -144,7 +150,6 @@ public class FcGiornataDett implements java.io.Serializable{
 		this.ordinamento = ordinamento;
 	}
 
-	@Column(name = "voto", precision = 22, scale = 0)
 	public Double getVoto() {
 		return this.voto;
 	}

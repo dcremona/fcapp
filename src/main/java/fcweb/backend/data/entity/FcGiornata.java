@@ -20,19 +20,39 @@ import java.io.Serial;
 @Table(name = "fc_giornata")
 public class FcGiornata implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttoreCasa", column = @Column(name = "id_attore_casa", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcGiornataId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore_fuori")
 	private FcAttore fcAttoreByIdAttoreFuori;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore_casa", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttoreByIdAttoreCasa;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_tipo_giornata", nullable = false)
 	private FcTipoGiornata fcTipoGiornata;
+
+	@Column(name = "gol_casa")
 	private Integer golCasa;
+
+	@Column(name = "gol_fuori")
 	private Integer golFuori;
+
+	@Column(name = "tot_casa", precision = 22, scale = 0)
 	private Double totCasa;
+
+	@Column(name = "tot_fuori", precision = 22, scale = 0)
 	private Double totFuori;
 
 	public FcGiornata() {
@@ -61,9 +81,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.totFuori = totFuori;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttoreCasa", column = @Column(name = "id_attore_casa", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcGiornataId getId() {
 		return this.id;
 	}
@@ -72,8 +89,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore_fuori")
 	public FcAttore getFcAttoreByIdAttoreFuori() {
 		return this.fcAttoreByIdAttoreFuori;
 	}
@@ -82,8 +97,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.fcAttoreByIdAttoreFuori = fcAttoreByIdAttoreFuori;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore_casa", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttoreByIdAttoreCasa() {
 		return this.fcAttoreByIdAttoreCasa;
 	}
@@ -92,8 +105,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.fcAttoreByIdAttoreCasa = fcAttoreByIdAttoreCasa;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -102,8 +113,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_tipo_giornata", nullable = false)
 	public FcTipoGiornata getFcTipoGiornata() {
 		return this.fcTipoGiornata;
 	}
@@ -112,7 +121,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.fcTipoGiornata = fcTipoGiornata;
 	}
 
-	@Column(name = "gol_casa")
 	public Integer getGolCasa() {
 		return this.golCasa;
 	}
@@ -121,7 +129,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.golCasa = golCasa;
 	}
 
-	@Column(name = "gol_fuori")
 	public Integer getGolFuori() {
 		return this.golFuori;
 	}
@@ -130,7 +137,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.golFuori = golFuori;
 	}
 
-	@Column(name = "tot_casa", precision = 22, scale = 0)
 	public Double getTotCasa() {
 		return this.totCasa;
 	}
@@ -139,7 +145,6 @@ public class FcGiornata implements java.io.Serializable{
 		this.totCasa = totCasa;
 	}
 
-	@Column(name = "tot_fuori", precision = 22, scale = 0)
 	public Double getTotFuori() {
 		return this.totFuori;
 	}

@@ -20,16 +20,26 @@ import jakarta.persistence.Table;
 @Table(name = "fc_squadra")
 public class FcSquadra implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "id_squadra", unique = true, nullable = false)
 	private int idSquadra;
+
+	@Column(name = "nome_squadra", nullable = false)
 	private String nomeSquadra;
+	
+	@Column(name = "nome_img")
 	private String nomeImg;
+
+	@Column(name = "img")
 	private Blob img;
+
+	@Column(name = "img40")
 	private Blob img40;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcSquadra")
 	private Set<FcGiocatore> fcGiocatores = new HashSet<>(0);
 
 	public FcSquadra() {
@@ -47,9 +57,6 @@ public class FcSquadra implements java.io.Serializable{
 		this.fcGiocatores = fcGiocatores;
 	}
 
-	@Id
-
-	@Column(name = "id_squadra", unique = true, nullable = false)
 	public int getIdSquadra() {
 		return this.idSquadra;
 	}
@@ -58,7 +65,6 @@ public class FcSquadra implements java.io.Serializable{
 		this.idSquadra = idSquadra;
 	}
 
-	@Column(name = "nome_squadra", nullable = false)
 	public String getNomeSquadra() {
 		return this.nomeSquadra;
 	}
@@ -67,7 +73,6 @@ public class FcSquadra implements java.io.Serializable{
 		this.nomeSquadra = nomeSquadra;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcSquadra")
 	public Set<FcGiocatore> getFcGiocatores() {
 		return this.fcGiocatores;
 	}
@@ -76,7 +81,6 @@ public class FcSquadra implements java.io.Serializable{
 		this.fcGiocatores = fcGiocatores;
 	}
 
-	@Column(name = "nome_img")
 	public String getNomeImg() {
 		return this.nomeImg;
 	}
@@ -85,7 +89,6 @@ public class FcSquadra implements java.io.Serializable{
 		this.nomeImg = nomeImg;
 	}
 
-	@Column(name = "img")
 	public Blob getImg() {
 		return this.img;
 	}
@@ -94,7 +97,6 @@ public class FcSquadra implements java.io.Serializable{
 		this.img = img;
 	}
 
-	@Column(name = "img40")
 	public Blob getImg40() {
 		return this.img40;
 	}

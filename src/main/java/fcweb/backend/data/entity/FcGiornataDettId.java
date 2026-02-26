@@ -12,13 +12,16 @@ import java.io.Serial;
 @Embeddable
 public class FcGiornataDettId implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Column(name = "id_attore", nullable = false)
 	private int idAttore;
+
+	@Column(name = "id_giocatore", nullable = false)
 	private int idGiocatore;
+
+	@Column(name = "id_giornata", nullable = false)
 	private int idGiornata;
 
 	public FcGiornataDettId() {
@@ -30,7 +33,6 @@ public class FcGiornataDettId implements java.io.Serializable{
 		this.idGiornata = idGiornata;
 	}
 
-	@Column(name = "id_attore", nullable = false)
 	public int getIdAttore() {
 		return this.idAttore;
 	}
@@ -39,7 +41,6 @@ public class FcGiornataDettId implements java.io.Serializable{
 		this.idAttore = idAttore;
 	}
 
-	@Column(name = "id_giocatore", nullable = false)
 	public int getIdGiocatore() {
 		return this.idGiocatore;
 	}
@@ -48,7 +49,6 @@ public class FcGiornataDettId implements java.io.Serializable{
 		this.idGiocatore = idGiocatore;
 	}
 
-	@Column(name = "id_giornata", nullable = false)
 	public int getIdGiornata() {
 		return this.idGiornata;
 	}

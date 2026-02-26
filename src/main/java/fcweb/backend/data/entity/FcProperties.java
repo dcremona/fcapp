@@ -15,12 +15,14 @@ import java.io.Serial;
 @Table(name = "fc_properties")
 public class FcProperties implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "key_", unique = true, nullable = false)
 	private String key;
+
+	@Column(name = "value_", nullable = false)
 	private String value;
 
 	public FcProperties() {
@@ -31,9 +33,6 @@ public class FcProperties implements java.io.Serializable{
 		this.value = value;
 	}
 
-	@Id
-
-	@Column(name = "key_", unique = true, nullable = false)
 	public String getKey() {
 		return this.key;
 	}
@@ -42,7 +41,6 @@ public class FcProperties implements java.io.Serializable{
 		this.key = key;
 	}
 
-	@Column(name = "value_", nullable = false)
 	public String getValue() {
 		return this.value;
 	}

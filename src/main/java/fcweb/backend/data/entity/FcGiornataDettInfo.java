@@ -23,15 +23,26 @@ import jakarta.persistence.TemporalType;
 @Table(name = "fc_giornata_dett_info")
 public class FcGiornataDettInfo implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcGiornataDettInfoId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttore;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_invio", nullable = false, length = 19)
 	private Date dataInvio;
+
+	@Column(name = "flag_invio", nullable = false)
 	private boolean flagInvio;
 
 	public FcGiornataDettInfo() {
@@ -46,9 +57,6 @@ public class FcGiornataDettInfo implements java.io.Serializable{
 		this.flagInvio = flagInvio;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcGiornataDettInfoId getId() {
 		return this.id;
 	}
@@ -57,8 +65,6 @@ public class FcGiornataDettInfo implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttore() {
 		return this.fcAttore;
 	}
@@ -67,8 +73,6 @@ public class FcGiornataDettInfo implements java.io.Serializable{
 		this.fcAttore = fcAttore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -77,8 +81,6 @@ public class FcGiornataDettInfo implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_invio", nullable = false, length = 19)
 	public Date getDataInvio() {
 		return this.dataInvio;
 	}
@@ -87,7 +89,6 @@ public class FcGiornataDettInfo implements java.io.Serializable{
 		this.dataInvio = dataInvio;
 	}
 
-	@Column(name = "flag_invio", nullable = false)
 	public boolean getFlagInvio() {
 		return this.flagInvio;
 	}

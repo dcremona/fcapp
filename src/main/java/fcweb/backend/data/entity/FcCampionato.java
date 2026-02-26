@@ -22,21 +22,36 @@ import jakarta.persistence.TemporalType;
 @Table(name = "fc_campionato")
 public class FcCampionato implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "id_campionato", unique = true, nullable = false)
 	private int idCampionato;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_fine", length = 10)
 	private Date dataFine;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "data_inizio", length = 10)
 	private Date dataInizio;
+	
+	@Column(name = "desc_campionato", nullable = false)
 	private String descCampionato;
+
 	private String type;
 	private Integer start;
 	private Integer end;
 	private boolean active;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
 	private Set<FcClassifica> fcClassificas = new HashSet<>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
 	private Set<FcClassificaTotPt> fcClassificaTotPts = new HashSet<>(0);
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
 	private Set<FcFormazione> fcFormaziones = new HashSet<>(0);
 
 	public FcCampionato() {
@@ -47,9 +62,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.descCampionato = descCampionato;
 	}
 
-	@Id
-
-	@Column(name = "id_campionato", unique = true, nullable = false)
 	public int getIdCampionato() {
 		return this.idCampionato;
 	}
@@ -58,8 +70,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.idCampionato = idCampionato;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "data_fine", length = 10)
 	public Date getDataFine() {
 		return this.dataFine;
 	}
@@ -68,8 +78,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.dataFine = dataFine;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "data_inizio", length = 10)
 	public Date getDataInizio() {
 		return this.dataInizio;
 	}
@@ -78,7 +86,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.dataInizio = dataInizio;
 	}
 
-	@Column(name = "desc_campionato", nullable = false)
 	public String getDescCampionato() {
 		return this.descCampionato;
 	}
@@ -87,7 +94,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.descCampionato = descCampionato;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
 	public Set<FcClassifica> getFcClassificas() {
 		return this.fcClassificas;
 	}
@@ -96,7 +102,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.fcClassificas = fcClassificas;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
 	public Set<FcClassificaTotPt> getFcClassificaTotPts() {
 		return this.fcClassificaTotPts;
 	}
@@ -106,7 +111,6 @@ public class FcCampionato implements java.io.Serializable{
 		this.fcClassificaTotPts = fcClassificaTotPts;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fcCampionato")
 	public Set<FcFormazione> getFcFormaziones() {
 		return this.fcFormaziones;
 	}

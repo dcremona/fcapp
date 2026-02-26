@@ -20,22 +20,46 @@ import java.io.Serial;
 @Table(name = "fc_giornata_ris")
 public class FcGiornataRis implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	private FcGiornataRisId id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttore;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	private FcGiornataInfo fcGiornataInfo;
+
+	@Column(name = "fm")
 	private Integer fm;
+
+	@Column(name = "gf")
 	private Integer gf;
+
+	@Column(name = "gs")
 	private Integer gs;
+
+	@Column(name = "id_ris_partita", nullable = false)
 	private int idRisPartita;
+
+	@Column(name = "nulla")
 	private Integer nulla;
+
+	@Column(name = "persa")
 	private Integer persa;
+
+	@Column(name = "punti")
 	private Integer punti;
+
+	@Column(name = "vinta")
 	private Integer vinta;
+
+	@Column(name = "casafuori")
 	private Integer casafuori;
 
 	public FcGiornataRis() {
@@ -66,9 +90,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.vinta = vinta;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idGiornata", column = @Column(name = "id_giornata", nullable = false)) })
 	public FcGiornataRisId getId() {
 		return this.id;
 	}
@@ -77,8 +98,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttore() {
 		return this.fcAttore;
 	}
@@ -87,8 +106,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.fcAttore = fcAttore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giornata", nullable = false, insertable = false, updatable = false)
 	public FcGiornataInfo getFcGiornataInfo() {
 		return this.fcGiornataInfo;
 	}
@@ -97,7 +114,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.fcGiornataInfo = fcGiornataInfo;
 	}
 
-	@Column(name = "fm")
 	public Integer getFm() {
 		return this.fm;
 	}
@@ -106,7 +122,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.fm = fm;
 	}
 
-	@Column(name = "gf")
 	public Integer getGf() {
 		return this.gf;
 	}
@@ -115,7 +130,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.gf = gf;
 	}
 
-	@Column(name = "gs")
 	public Integer getGs() {
 		return this.gs;
 	}
@@ -124,7 +138,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.gs = gs;
 	}
 
-	@Column(name = "id_ris_partita", nullable = false)
 	public int getIdRisPartita() {
 		return this.idRisPartita;
 	}
@@ -133,7 +146,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.idRisPartita = idRisPartita;
 	}
 
-	@Column(name = "nulla")
 	public Integer getNulla() {
 		return this.nulla;
 	}
@@ -142,7 +154,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.nulla = nulla;
 	}
 
-	@Column(name = "persa")
 	public Integer getPersa() {
 		return this.persa;
 	}
@@ -151,7 +162,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.persa = persa;
 	}
 
-	@Column(name = "punti")
 	public Integer getPunti() {
 		return this.punti;
 	}
@@ -160,7 +170,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.punti = punti;
 	}
 
-	@Column(name = "vinta")
 	public Integer getVinta() {
 		return this.vinta;
 	}
@@ -169,7 +178,6 @@ public class FcGiornataRis implements java.io.Serializable{
 		this.vinta = vinta;
 	}
 
-	@Column(name = "casafuori")
 	public Integer getCasaFuori() {
 		return this.casafuori;
 	}

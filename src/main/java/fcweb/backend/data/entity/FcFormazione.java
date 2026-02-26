@@ -20,15 +20,26 @@ import java.io.Serial;
 @Table(name = "fc_formazione")
 public class FcFormazione implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)), @AttributeOverride(name = "ordinamento", column = @Column(name = "ordinamento", nullable = false)) })
 	private FcFormazioneId id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	private FcAttore fcAttore;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
 	private FcCampionato fcCampionato;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_giocatore")
 	private FcGiocatore fcGiocatore;
+
+	@Column(name = "tot_pagato")
 	private Integer totPagato;
 
 	public FcFormazione() {
@@ -51,9 +62,6 @@ public class FcFormazione implements java.io.Serializable{
 		this.totPagato = totPagato;
 	}
 
-	@EmbeddedId
-
-	@AttributeOverrides({ @AttributeOverride(name = "idAttore", column = @Column(name = "id_attore", nullable = false)), @AttributeOverride(name = "idCampionato", column = @Column(name = "id_campionato", nullable = false)), @AttributeOverride(name = "ordinamento", column = @Column(name = "ordinamento", nullable = false)) })
 	public FcFormazioneId getId() {
 		return this.id;
 	}
@@ -62,8 +70,6 @@ public class FcFormazione implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_attore", nullable = false, insertable = false, updatable = false)
 	public FcAttore getFcAttore() {
 		return this.fcAttore;
 	}
@@ -72,8 +78,6 @@ public class FcFormazione implements java.io.Serializable{
 		this.fcAttore = fcAttore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_campionato", nullable = false, insertable = false, updatable = false)
 	public FcCampionato getFcCampionato() {
 		return this.fcCampionato;
 	}
@@ -82,8 +86,6 @@ public class FcFormazione implements java.io.Serializable{
 		this.fcCampionato = fcCampionato;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_giocatore")
 	public FcGiocatore getFcGiocatore() {
 		return this.fcGiocatore;
 	}
@@ -92,7 +94,6 @@ public class FcFormazione implements java.io.Serializable{
 		this.fcGiocatore = fcGiocatore;
 	}
 
-	@Column(name = "tot_pagato")
 	public Integer getTotPagato() {
 		return this.totPagato;
 	}

@@ -21,27 +21,63 @@ import java.io.Serial;
 @Table(name = "fc_statistiche")
 public class FcStatistiche implements java.io.Serializable{
 
-	/**
-	 *
-	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	// @GeneratedValue(generator = "generator")
+	@SuppressWarnings("deprecation")
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "fcGiocatore"))
+	@Id
+	@Column(name = "id_giocatore", unique = true, nullable = false)
 	private int idGiocatore;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumn
 	private FcGiocatore fcGiocatore;
+
+	@Column(name = "ammonizione", nullable = false)
 	private int ammonizione;
+
+	@Column(name = "assist", nullable = false)
 	private int assist;
+
+	@Column(name = "cogn_giocatore", nullable = false)
 	private String cognGiocatore;
+
+	@Column(name = "espulsione", nullable = false)
 	private int espulsione;
+
+	@Column(name = "fanta_media", precision = 22, scale = 0)
 	private Double fantaMedia;
+
+	@Column(name = "giocate", nullable = false)
 	private int giocate;
+
+	@Column(name = "goal_fatto", nullable = false)
 	private int goalFatto;
+
+	@Column(name = "goal_subito", nullable = false)
 	private int goalSubito;
+
+	@Column(name = "id_ruolo", nullable = false)
 	private String idRuolo;
+
+	@Column(name = "media_voto", precision = 22, scale = 0)
 	private Double mediaVoto;
+	
+	@Column(name = "nome_squadra", nullable = false)
 	private String nomeSquadra;
+
+	@Column(name = "proprietario")
 	private String proprietario;
+
+	@Column(name = "rigore_sbagliato", nullable = false)
 	private int rigoreSbagliato;
+
+	@Column(name = "rigore_segnato", nullable = false)
 	private int rigoreSegnato;
+
+	@Column(name = "flag_attivo", columnDefinition = "boolean default true")
 	private boolean flagAttivo;
 
 	public FcStatistiche() {
@@ -87,11 +123,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.rigoreSegnato = rigoreSegnato;
 	}
 
-	// @GeneratedValue(generator = "generator")
-	@SuppressWarnings("deprecation")
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "fcGiocatore"))
-	@Id
-	@Column(name = "id_giocatore", unique = true, nullable = false)
 	public int getIdGiocatore() {
 		return this.idGiocatore;
 	}
@@ -100,8 +131,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.idGiocatore = idGiocatore;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumn
 	public FcGiocatore getFcGiocatore() {
 		return this.fcGiocatore;
 	}
@@ -110,7 +139,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.fcGiocatore = fcGiocatore;
 	}
 
-	@Column(name = "ammonizione", nullable = false)
 	public int getAmmonizione() {
 		return this.ammonizione;
 	}
@@ -119,7 +147,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.ammonizione = ammonizione;
 	}
 
-	@Column(name = "assist", nullable = false)
 	public int getAssist() {
 		return this.assist;
 	}
@@ -128,7 +155,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.assist = assist;
 	}
 
-	@Column(name = "cogn_giocatore", nullable = false)
 	public String getCognGiocatore() {
 		return this.cognGiocatore;
 	}
@@ -137,7 +163,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.cognGiocatore = cognGiocatore;
 	}
 
-	@Column(name = "espulsione", nullable = false)
 	public int getEspulsione() {
 		return this.espulsione;
 	}
@@ -146,7 +171,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.espulsione = espulsione;
 	}
 
-	@Column(name = "fanta_media", precision = 22, scale = 0)
 	public Double getFantaMedia() {
 		return this.fantaMedia;
 	}
@@ -155,7 +179,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.fantaMedia = fantaMedia;
 	}
 
-	@Column(name = "giocate", nullable = false)
 	public int getGiocate() {
 		return this.giocate;
 	}
@@ -164,7 +187,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.giocate = giocate;
 	}
 
-	@Column(name = "goal_fatto", nullable = false)
 	public int getGoalFatto() {
 		return this.goalFatto;
 	}
@@ -173,7 +195,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.goalFatto = goalFatto;
 	}
 
-	@Column(name = "goal_subito", nullable = false)
 	public int getGoalSubito() {
 		return this.goalSubito;
 	}
@@ -182,7 +203,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.goalSubito = goalSubito;
 	}
 
-	@Column(name = "id_ruolo", nullable = false)
 	public String getIdRuolo() {
 		return this.idRuolo;
 	}
@@ -191,7 +211,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.idRuolo = idRuolo;
 	}
 
-	@Column(name = "media_voto", precision = 22, scale = 0)
 	public Double getMediaVoto() {
 		return this.mediaVoto;
 	}
@@ -200,7 +219,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.mediaVoto = mediaVoto;
 	}
 
-	@Column(name = "nome_squadra", nullable = false)
 	public String getNomeSquadra() {
 		return this.nomeSquadra;
 	}
@@ -209,7 +227,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.nomeSquadra = nomeSquadra;
 	}
 
-	@Column(name = "proprietario")
 	public String getProprietario() {
 		return this.proprietario;
 	}
@@ -218,7 +235,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.proprietario = proprietario;
 	}
 
-	@Column(name = "rigore_sbagliato", nullable = false)
 	public int getRigoreSbagliato() {
 		return this.rigoreSbagliato;
 	}
@@ -227,7 +243,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.rigoreSbagliato = rigoreSbagliato;
 	}
 
-	@Column(name = "rigore_segnato", nullable = false)
 	public int getRigoreSegnato() {
 		return this.rigoreSegnato;
 	}
@@ -236,7 +251,6 @@ public class FcStatistiche implements java.io.Serializable{
 		this.rigoreSegnato = rigoreSegnato;
 	}
 
-	@Column(name = "flag_attivo", columnDefinition = "boolean default true")
 	public boolean isFlagAttivo() {
 		return this.flagAttivo;
 	}
