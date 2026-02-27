@@ -1,0 +1,2802 @@
+package fcapp.ui.views.seriea;
+
+import java.io.InputStream;
+import java.io.Serial;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.vaadin.ronny.AbsoluteLayout;
+
+import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
+import com.vaadin.componentfactory.ToggleButton;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.popover.Popover;
+import com.vaadin.flow.component.popover.PopoverPosition;
+import com.vaadin.flow.component.popover.PopoverVariant;
+import com.vaadin.flow.component.progressbar.ProgressBar;
+import com.vaadin.flow.component.progressbar.ProgressBarVariant;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import fcapp.backend.data.entity.FcAttore;
+import fcapp.backend.data.entity.FcCalendarioCompetizione;
+import fcapp.backend.data.entity.FcCampionato;
+import fcapp.backend.data.entity.FcFormazione;
+import fcapp.backend.data.entity.FcGiocatore;
+import fcapp.backend.data.entity.FcGiornataDett;
+import fcapp.backend.data.entity.FcGiornataGiocatore;
+import fcapp.backend.data.entity.FcGiornataInfo;
+import fcapp.backend.data.entity.FcSquadra;
+import fcapp.backend.data.entity.FcStatistiche;
+import fcapp.backend.service.AccessoService;
+import fcapp.backend.service.AttoreService;
+import fcapp.backend.service.CalendarioCompetizioneService;
+import fcapp.backend.service.EmailService;
+import fcapp.backend.service.FormazioneService;
+import fcapp.backend.service.GiornataDettService;
+import fcapp.backend.service.GiornataGiocatoreService;
+import fcapp.backend.service.SquadraService;
+import fcapp.ui.views.MainLayout;
+import fcapp.utils.ContentIdGenerator;
+import fcapp.utils.Costants;
+import fcapp.utils.CustomMessageDialog;
+import fcapp.utils.Utils;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.RolesAllowed;
+
+@PageTitle("Schiera Formazione")
+@Route(value = "insert", layout = MainLayout.class)
+@RolesAllowed("USER")
+public class TeamInsertView extends VerticalLayout
+		implements ComponentEventListener<ClickEvent<Button>>{
+
+	@Serial
+    private static final long serialVersionUID = 1L;
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private Environment env;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private ResourceLoader resourceLoader;
+
+	private final FormazioneService formazioneService;
+	private final GiornataDettService giornataDettService;
+	private final CalendarioCompetizioneService calendarioCompetizioneService;
+	private final AccessoService accessoService;
+	private final SquadraService squadraService;
+	private final GiornataGiocatoreService giornataGiocatoreService;
+	private final AttoreService attoreService;
+	private final EmailService emailService;
+
+	private static final String WIDTH = "100px";
+	private static final String HEIGHT = "130px";
+
+	private static final int PX_P = 210;
+	private static final int PX_D = 360;
+	private static final int PX_C = 510;
+	private static final int PX_A = 660;
+
+	private static final int PX_350 = 350;
+	private static final int PX_400 = 400;
+	private static final int PX_450 = 450;
+	private static final int PX_500 = 500;
+	private static final int PX_550 = 550;
+	private static final int PX_600 = 600;
+	private static final int PX_650 = 650;
+	private static final int PX_700 = 700;
+	private static final int PX_750 = 750;
+	private static final int PX_900 = 860;
+	private static final int PX_960 = 960;
+	private static final int PX_1080 = 1080;
+
+	private FcAttore attore = null;
+	private FcGiornataInfo giornataInfo = null;
+	private FcCampionato campionato = null;
+	private String nextDate = null;
+	private long millisDiff = 0;
+	private String idAttore = "";
+	private String descAttore = "";
+	private Properties p = null;
+
+	// COMPONENT
+	private Button save;
+	private ToggleButton checkMail;
+	private ComboBox<String> comboModulo;
+	private List<FcCalendarioCompetizione> listPartiteGiocate = new ArrayList<>();
+	private List<FcCalendarioCompetizione> listPartite = new ArrayList<>();
+
+	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<>();
+
+	private AbsoluteLayout absLayout;
+
+	private Grid<FcGiocatore> tableFormazione;
+	private Grid<FcGiocatore> tablePlayer1;
+	private Grid<FcGiocatore> tablePlayer2;
+	private Grid<FcGiocatore> tablePlayer3;
+	private Grid<FcGiocatore> tablePlayer4;
+	private Grid<FcGiocatore> tablePlayer5;
+	private Grid<FcGiocatore> tablePlayer6;
+	private Grid<FcGiocatore> tablePlayer7;
+	private Grid<FcGiocatore> tablePlayer8;
+	private Grid<FcGiocatore> tablePlayer9;
+	private Grid<FcGiocatore> tablePlayer10;
+	private Grid<FcGiocatore> tablePlayer11;
+	private Grid<FcGiocatore> tablePlayer12;
+	private Grid<FcGiocatore> tablePlayer13;
+	private Grid<FcGiocatore> tablePlayer14;
+	private Grid<FcGiocatore> tablePlayer15;
+	private Grid<FcGiocatore> tablePlayer16;
+	private Grid<FcGiocatore> tablePlayer17;
+	private Grid<FcGiocatore> tablePlayer18;
+
+	// DATA
+	private List<FcGiocatore> modelFormazione = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer1 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer2 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer3 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer4 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer5 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer6 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer7 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer8 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer9 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer10 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer11 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer12 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer13 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer14 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer15 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer16 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer17 = new ArrayList<>();
+	private final List<FcGiocatore> modelPlayer18 = new ArrayList<>();
+
+	public TeamInsertView(FormazioneService formazioneService,
+			GiornataDettService giornataDettService,
+			CalendarioCompetizioneService calendarioCompetizioneService,
+			AccessoService accessoService,
+			SquadraService squadraService,
+			GiornataGiocatoreService giornataGiocatoreService,
+			AttoreService attoreService,
+			EmailService emailService) {
+		log.info("TeamInsertView()");
+		this.formazioneService = formazioneService;
+		this.giornataDettService = giornataDettService;
+		this.calendarioCompetizioneService = calendarioCompetizioneService;
+		this.accessoService = accessoService;
+		this.squadraService = squadraService;
+		this.giornataGiocatoreService = giornataGiocatoreService;
+		this.attoreService = attoreService;
+		this.emailService = emailService;
+	}
+
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoService.insertAccesso(this.getClass().getName());
+
+		initData();
+
+		initLayout();
+	}
+
+	private void initData() {
+
+		p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
+		attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+		giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+		campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+		nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
+		millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
+
+		idAttore = "" + attore.getIdAttore();
+		descAttore = attore.getDescAttore();
+
+		modelFormazione = getModelFormazione();
+
+		LocalDateTime now = LocalDateTime.now();
+		listPartiteGiocate = calendarioCompetizioneService.findByIdGiornataAndDataLessThanEqual(giornataInfo.getCodiceGiornata(), now);
+		listPartite = calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
+
+		listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
+	}
+
+	private void initLayout() {
+
+		absLayout = new AbsoluteLayout(1500,1200);
+		absLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		absLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
+
+		save = new Button("Salva");
+		save.setIcon(VaadinIcon.DATABASE.create());
+		save.addClickListener(this);
+
+		checkMail = new ToggleButton();
+		checkMail.setLabel("Email");
+		checkMail.setValue(true);
+
+		comboModulo = new ComboBox<>();
+		comboModulo.setItems(Costants.SCHEMI);
+		comboModulo.getElement().setAttribute("theme", "small");
+		comboModulo.setClearButtonVisible(true);
+		comboModulo.setPlaceholder("Modulo");
+		comboModulo.addValueChangeListener(evt -> {
+
+			removeAllElementsList();
+
+			if (evt.getValue() != null) {
+
+				String modulo = evt.getValue();
+
+				absLayout.add(tablePlayer1, PX_550, PX_P);
+
+				absLayout.add(tablePlayer12, PX_900, PX_P);
+
+				absLayout.add(tablePlayer13, PX_900, PX_D);
+				absLayout.add(tablePlayer14, PX_960, PX_D);
+
+				absLayout.add(tablePlayer15, PX_900, PX_C);
+				absLayout.add(tablePlayer16, PX_960, PX_C);
+
+				absLayout.add(tablePlayer17, PX_900, PX_A);
+				absLayout.add(tablePlayer18, PX_960, PX_A);
+
+				// 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
+				if (Costants.SCHEMA_541.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_350, PX_D);
+					absLayout.add(tablePlayer3, PX_450, PX_D);
+					absLayout.add(tablePlayer4, PX_550, PX_D);
+					absLayout.add(tablePlayer5, PX_650, PX_D);
+					absLayout.add(tablePlayer6, PX_750, PX_D);
+
+					absLayout.add(tablePlayer7, PX_400, PX_C);
+					absLayout.add(tablePlayer8, PX_500, PX_C);
+					absLayout.add(tablePlayer9, PX_600, PX_C);
+					absLayout.add(tablePlayer10, PX_700, PX_C);
+
+					absLayout.add(tablePlayer11, PX_550, PX_A);
+
+				} else if (Costants.SCHEMA_532.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_350, PX_D);
+					absLayout.add(tablePlayer3, PX_450, PX_D);
+					absLayout.add(tablePlayer4, PX_550, PX_D);
+					absLayout.add(tablePlayer5, PX_650, PX_D);
+					absLayout.add(tablePlayer6, PX_750, PX_D);
+
+					absLayout.add(tablePlayer7, PX_450, PX_C);
+					absLayout.add(tablePlayer8, PX_550, PX_C);
+					absLayout.add(tablePlayer9, PX_650, PX_C);
+
+					absLayout.add(tablePlayer10, PX_500, PX_A);
+					absLayout.add(tablePlayer11, PX_600, PX_A);
+
+				} else if (Costants.SCHEMA_451.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_400, PX_D);
+					absLayout.add(tablePlayer3, PX_500, PX_D);
+					absLayout.add(tablePlayer4, PX_600, PX_D);
+					absLayout.add(tablePlayer5, PX_700, PX_D);
+
+					absLayout.add(tablePlayer6, PX_350, PX_C);
+					absLayout.add(tablePlayer7, PX_450, PX_C);
+					absLayout.add(tablePlayer8, PX_550, PX_C);
+					absLayout.add(tablePlayer9, PX_650, PX_C);
+					absLayout.add(tablePlayer10, PX_750, PX_C);
+
+					absLayout.add(tablePlayer11, PX_550, PX_A);
+
+				} else if (Costants.SCHEMA_442.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_400, PX_D);
+					absLayout.add(tablePlayer3, PX_500, PX_D);
+					absLayout.add(tablePlayer4, PX_600, PX_D);
+					absLayout.add(tablePlayer5, PX_700, PX_D);
+
+					absLayout.add(tablePlayer6, PX_400, PX_C);
+					absLayout.add(tablePlayer7, PX_500, PX_C);
+					absLayout.add(tablePlayer8, PX_600, PX_C);
+					absLayout.add(tablePlayer9, PX_700, PX_C);
+
+					absLayout.add(tablePlayer10, PX_500, PX_A);
+					absLayout.add(tablePlayer11, PX_600, PX_A);
+
+				} else if (Costants.SCHEMA_433.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_400, PX_D);
+					absLayout.add(tablePlayer3, PX_500, PX_D);
+					absLayout.add(tablePlayer4, PX_600, PX_D);
+					absLayout.add(tablePlayer5, PX_700, PX_D);
+
+					absLayout.add(tablePlayer6, PX_450, PX_C);
+					absLayout.add(tablePlayer7, PX_550, PX_C);
+					absLayout.add(tablePlayer8, PX_650, PX_C);
+
+					absLayout.add(tablePlayer9, PX_450, PX_A);
+					absLayout.add(tablePlayer10, PX_550, PX_A);
+					absLayout.add(tablePlayer11, PX_650, PX_A);
+
+				} else if (Costants.SCHEMA_352.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_450, PX_D);
+					absLayout.add(tablePlayer3, PX_550, PX_D);
+					absLayout.add(tablePlayer4, PX_650, PX_D);
+
+					absLayout.add(tablePlayer5, PX_350, PX_C);
+					absLayout.add(tablePlayer6, PX_450, PX_C);
+					absLayout.add(tablePlayer7, PX_550, PX_C);
+					absLayout.add(tablePlayer8, PX_650, PX_C);
+					absLayout.add(tablePlayer9, PX_750, PX_C);
+
+					absLayout.add(tablePlayer10, PX_500, PX_A);
+					absLayout.add(tablePlayer11, PX_600, PX_A);
+
+				} else if (Costants.SCHEMA_343.equals(modulo)) {
+
+					absLayout.add(tablePlayer2, PX_450, PX_D);
+					absLayout.add(tablePlayer3, PX_550, PX_D);
+					absLayout.add(tablePlayer4, PX_650, PX_D);
+
+					absLayout.add(tablePlayer5, PX_400, PX_C);
+					absLayout.add(tablePlayer6, PX_500, PX_C);
+					absLayout.add(tablePlayer7, PX_600, PX_C);
+					absLayout.add(tablePlayer8, PX_700, PX_C);
+
+					absLayout.add(tablePlayer9, PX_450, PX_A);
+					absLayout.add(tablePlayer10, PX_550, PX_A);
+					absLayout.add(tablePlayer11, PX_650, PX_A);
+				}
+
+				String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+				if ("true".equals(activeCheckFormazione)) {
+					try {
+						impostaGiocatoriConVoto(modulo);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+					}
+				}
+			}
+		});
+
+		tableFormazione = getTableFormazione(modelFormazione);
+
+		tablePlayer1 = getTableGiocatore(modelPlayer1);
+		tablePlayer2 = getTableGiocatore(modelPlayer2);
+		tablePlayer3 = getTableGiocatore(modelPlayer3);
+		tablePlayer4 = getTableGiocatore(modelPlayer4);
+		tablePlayer5 = getTableGiocatore(modelPlayer5);
+		tablePlayer6 = getTableGiocatore(modelPlayer6);
+		tablePlayer7 = getTableGiocatore(modelPlayer7);
+		tablePlayer8 = getTableGiocatore(modelPlayer8);
+		tablePlayer9 = getTableGiocatore(modelPlayer9);
+		tablePlayer10 = getTableGiocatore(modelPlayer10);
+		tablePlayer11 = getTableGiocatore(modelPlayer11);
+		tablePlayer12 = getTableGiocatore(modelPlayer12);
+		tablePlayer13 = getTableGiocatore(modelPlayer13);
+		tablePlayer14 = getTableGiocatore(modelPlayer14);
+		tablePlayer15 = getTableGiocatore(modelPlayer15);
+		tablePlayer16 = getTableGiocatore(modelPlayer16);
+		tablePlayer17 = getTableGiocatore(modelPlayer17);
+		tablePlayer18 = getTableGiocatore(modelPlayer18);
+
+		Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
+
+		final VerticalLayout layoutAvviso = new VerticalLayout();
+		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
+		layoutAvviso.setWidth("500px");
+
+		HorizontalLayout cssLayout = new HorizontalLayout();
+		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornata(giornataInfo));
+		cssLayout.add(lblInfo);
+		layoutAvviso.add(cssLayout);
+
+		HorizontalLayout cssLayout2 = new HorizontalLayout();
+		Span lblInfo2 = new Span("Consegna Formazione entro: " + nextDate);
+		cssLayout2.add(lblInfo2);
+		layoutAvviso.add(cssLayout2);
+
+		Image panchina = Utils.buildImage("panchina.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "panchina.jpg"));
+		Image campo = Utils.buildImage("campo.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "campo.jpg"));
+
+		absLayout.add(save, 20, 5);
+		absLayout.add(checkMail, 115, 10);
+		absLayout.add(layoutAvviso, PX_350, 5);
+		absLayout.add(panchina, PX_900, 5);
+		absLayout.add(tablePartite, PX_1080, 5);
+		absLayout.add(comboModulo, 20, 50);
+		absLayout.add(tableFormazione, 10, 150);
+		absLayout.add(campo, PX_350, 150);
+
+		add(absLayout);
+
+		try {
+			loadFcGiornataDett();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+
+		if (millisDiff == 0) {
+			showMessageStopInsert();
+		} else {
+			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
+			timer.setHours(true);
+			timer.setMinutes(true);
+			timer.setFractions(false);
+			timer.start();
+			timer.isRunning();
+			timer.addTimerEndEvent(ev -> showMessageStopInsert());
+			layoutAvviso.add(timer);
+		}
+	}
+
+	private void showMessageStopInsert() {
+		String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+		if ("true".equals(activeCheckFormazione)) {
+			log.info("showMessageStopInsert");
+			setEnabled(false);
+			CustomMessageDialog.showMessageInfo("Impossibile inserire la formazione, tempo scaduto!");
+		}
+	}
+
+    private void setPopover(Component cellLayout, FcGiocatore g) {
+
+		// log.info("setPopover " + g);
+		Popover popover = new Popover();
+		popover.addThemeVariants(PopoverVariant.ARROW);
+		popover.setPosition(PopoverPosition.TOP);
+		popover.setOpenOnClick(false);
+		popover.setOpenOnHover(true);
+		popover.setOpenOnFocus(true);
+
+		final VerticalLayout contentInfo = new VerticalLayout();
+		contentInfo.setMargin(false);
+		contentInfo.setPadding(false);
+		contentInfo.setSpacing(false);
+		
+		String ruolo = g.getFcRuolo().getIdRuolo();
+		if (Costants.P.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_P);
+		} else if (Costants.D.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_D);
+		} else if (Costants.C.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_C);
+		} else if (Costants.A.equals(ruolo)) {
+			contentInfo.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_A);
+		}
+
+		if (g.getFcRuolo() != null) {
+			HorizontalLayout info1 = new HorizontalLayout();
+			info1.setMargin(false);
+			info1.setPadding(false);
+			info1.setSpacing(false);
+
+			Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+			info1.add(img);
+
+			if (g.getCognGiocatore() != null) {
+				Span lblGiocatore = new Span();
+				lblGiocatore.setText(g.getCognGiocatore());
+				info1.add(lblGiocatore);
+			}
+			contentInfo.add(info1);
+		}
+
+		if (g.getFcSquadra() != null) {
+			HorizontalLayout info2 = new HorizontalLayout();
+			info2.setMargin(false);
+			info2.setPadding(false);
+			info2.setSpacing(false);
+
+			if (g.getImgSmall() != null) {
+				try {
+					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
+					info2.add(img);
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}
+			}
+			contentInfo.add(info2);
+		}
+
+		if (g.getFcSquadra() != null) {
+			HorizontalLayout info3 = new HorizontalLayout();
+			info3.setMargin(false);
+			info3.setPadding(false);
+			info3.setSpacing(false);
+
+			FcSquadra sq = g.getFcSquadra();
+			if (sq.getImg() != null) {
+				try {
+					Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+					info3.add(img);
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}
+			}
+			Span lblSquadra = new Span();
+			lblSquadra.setText(sq.getNomeSquadra());
+			info3.add(lblSquadra);
+
+			contentInfo.add(info3);
+		}
+
+		FcGiornataGiocatore gg = isGiocatoreOut(g);
+		if (gg != null) {
+			contentInfo.add(getImageGiocatoreOut(gg));
+		}
+
+		FcStatistiche s = g.getFcStatistiche();
+
+		Span lblGiocate = new Span();
+		lblGiocate.setText("Giocate: " + s.getGiocate());
+		contentInfo.add(lblGiocate);
+
+		if (s.getMediaVoto() != 0) {
+
+			HorizontalLayout infoMv = new HorizontalLayout();
+			infoMv.setMargin(false);
+			infoMv.setPadding(false);
+			infoMv.setSpacing(false);
+
+			String imgThink = "2.png";
+			if (s.getMediaVoto() > Costants.RANGE_MAX_MV) {
+				imgThink = "1.png";
+			} else if (s.getMediaVoto() < Costants.RANGE_MIN_MV) {
+				imgThink = "3.png";
+			}
+			Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+			infoMv.add(imgMv);
+
+			NumberFormat formatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
+			String mv = formatter.format(s.getMediaVoto() / Costants.DIVISORE_100);
+
+			Span lblMv = new Span();
+			lblMv.setText("MV: " + mv);
+			infoMv.add(lblMv);
+
+			contentInfo.add(infoMv);
+		}
+
+		if (s.getFantaMedia() != 0) {
+
+			HorizontalLayout infoFv = new HorizontalLayout();
+			infoFv.setMargin(false);
+			infoFv.setPadding(false);
+			infoFv.setSpacing(false);
+
+			String imgThink = "2.png";
+			if (s.getFantaMedia() > Costants.RANGE_MAX_MV) {
+				imgThink = "1.png";
+			} else if (s.getFantaMedia() < Costants.RANGE_MIN_MV) {
+				imgThink = "3.png";
+			}
+			Image imgFv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+			infoFv.add(imgFv);
+
+			NumberFormat formatter = new DecimalFormat(Costants.NUMBER_DECIMAL);
+			String fv = formatter.format(s.getFantaMedia() / Costants.DIVISORE_100);
+
+			Span lblFv = new Span();
+			lblFv.setText("FV: " + fv);
+			infoFv.add(lblFv);
+
+			contentInfo.add(infoFv);
+		}
+
+		Span lblGoal = new Span();
+		lblGoal.setText("Goal: " + s.getGoalFatto());
+		contentInfo.add(lblGoal);
+
+		Span lblAssist = new Span();
+		lblAssist.setText("Assist: " + s.getAssist());
+		contentInfo.add(lblAssist);
+
+		Span lblAmmonizioni = new Span();
+		lblAmmonizioni.setText("Ammonizioni: " + s.getAmmonizione());
+		contentInfo.add(lblAmmonizioni);
+
+		Span lblEspulsioni = new Span();
+		lblEspulsioni.setText("Espulsioni: " + s.getEspulsione());
+		contentInfo.add(lblEspulsioni);
+
+		if (Costants.P.equalsIgnoreCase(g.getFcRuolo().getIdRuolo())) {
+			Span lblGoalSubiti = new Span();
+			lblGoalSubiti.setText("Goal Subiti: " + s.getGoalSubito());
+			contentInfo.add(lblGoalSubiti);
+		}
+
+		Span lblProbabile = new Span();
+		lblProbabile.setText("Probabile: " + (StringUtils.isNotEmpty(g.getNomeGiocatore()) ? g.getNomeGiocatore() : "N.D."));
+		contentInfo.add(lblProbabile);
+
+		int percentuale = g.getPercentuale() == null ? 0 : g.getPercentuale();
+		Span lblPercentuale = new Span();
+		lblPercentuale.setText("Percentuale: "+percentuale + "%");
+
+		if (percentuale > 60) {
+			lblPercentuale.addClassNames(LumoUtility.TextColor.SUCCESS);
+		} else if (percentuale > 39) {
+			lblPercentuale.addClassNames(LumoUtility.TextColor.ERROR);
+		} else {
+			lblPercentuale.addClassNames(LumoUtility.TextColor.TERTIARY);
+		}
+		contentInfo.add(lblPercentuale);
+
+		popover.add(contentInfo);
+		popover.setAriaLabelledBy("cvv-heading");
+		popover.setTarget(cellLayout);
+
+	}
+
+	private void refreshAndSortGridFormazione() {
+		modelFormazione.sort((p1,
+				p2) -> p2.getFcRuolo().getIdRuolo().compareToIgnoreCase(p1.getFcRuolo().getIdRuolo()));
+		tableFormazione.getDataProvider().refreshAll();
+	}
+
+	private void removeAllElementsList() {
+
+		if (!modelPlayer1.isEmpty()) {
+			FcGiocatore bean = modelPlayer1.get(0);
+			modelFormazione.add(bean);
+			modelPlayer1.clear();
+			tablePlayer1.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer2.isEmpty()) {
+			FcGiocatore bean = modelPlayer2.get(0);
+			modelFormazione.add(bean);
+			modelPlayer2.clear();
+			tablePlayer2.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer3.isEmpty()) {
+			FcGiocatore bean = modelPlayer3.get(0);
+			modelFormazione.add(bean);
+			modelPlayer3.clear();
+			tablePlayer3.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer4.isEmpty()) {
+			FcGiocatore bean = modelPlayer4.get(0);
+			modelFormazione.add(bean);
+			modelPlayer4.clear();
+			tablePlayer4.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer5.isEmpty()) {
+			FcGiocatore bean = modelPlayer5.get(0);
+			modelFormazione.add(bean);
+			modelPlayer5.clear();
+			tablePlayer5.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer6.isEmpty()) {
+			FcGiocatore bean = modelPlayer6.get(0);
+			modelFormazione.add(bean);
+			modelPlayer6.clear();
+			tablePlayer6.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer7.isEmpty()) {
+			FcGiocatore bean = modelPlayer7.get(0);
+			modelFormazione.add(bean);
+			modelPlayer7.clear();
+			tablePlayer7.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer8.isEmpty()) {
+			FcGiocatore bean = modelPlayer8.get(0);
+			modelFormazione.add(bean);
+			modelPlayer8.clear();
+			tablePlayer8.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer9.isEmpty()) {
+			FcGiocatore bean = modelPlayer9.get(0);
+			modelFormazione.add(bean);
+			modelPlayer9.clear();
+			tablePlayer9.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer10.isEmpty()) {
+			FcGiocatore bean = modelPlayer10.get(0);
+			modelFormazione.add(bean);
+			modelPlayer10.clear();
+			tablePlayer10.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer11.isEmpty()) {
+			FcGiocatore bean = modelPlayer11.get(0);
+			modelFormazione.add(bean);
+			modelPlayer11.clear();
+			tablePlayer11.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer12.isEmpty()) {
+			FcGiocatore bean = modelPlayer12.get(0);
+			modelFormazione.add(bean);
+			modelPlayer12.clear();
+			tablePlayer12.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer13.isEmpty()) {
+			FcGiocatore bean = modelPlayer13.get(0);
+			modelFormazione.add(bean);
+			modelPlayer13.clear();
+			tablePlayer13.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer14.isEmpty()) {
+			FcGiocatore bean = modelPlayer14.get(0);
+			modelFormazione.add(bean);
+			modelPlayer14.clear();
+			tablePlayer14.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer15.isEmpty()) {
+			FcGiocatore bean = modelPlayer15.get(0);
+			modelFormazione.add(bean);
+			modelPlayer15.clear();
+			tablePlayer15.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer16.isEmpty()) {
+			FcGiocatore bean = modelPlayer16.get(0);
+			modelFormazione.add(bean);
+			modelPlayer16.clear();
+			tablePlayer16.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer17.isEmpty()) {
+			FcGiocatore bean = modelPlayer17.get(0);
+			modelFormazione.add(bean);
+			modelPlayer17.clear();
+			tablePlayer17.getDataProvider().refreshAll();
+		}
+		if (!modelPlayer18.isEmpty()) {
+			FcGiocatore bean = modelPlayer18.get(0);
+			modelFormazione.add(bean);
+			modelPlayer18.clear();
+			tablePlayer18.getDataProvider().refreshAll();
+		}
+
+		refreshAndSortGridFormazione();
+
+		absLayout.remove(tablePlayer1);
+		absLayout.remove(tablePlayer2);
+		absLayout.remove(tablePlayer3);
+		absLayout.remove(tablePlayer4);
+		absLayout.remove(tablePlayer5);
+		absLayout.remove(tablePlayer6);
+		absLayout.remove(tablePlayer7);
+		absLayout.remove(tablePlayer8);
+		absLayout.remove(tablePlayer9);
+		absLayout.remove(tablePlayer10);
+		absLayout.remove(tablePlayer11);
+		absLayout.remove(tablePlayer12);
+		absLayout.remove(tablePlayer13);
+		absLayout.remove(tablePlayer14);
+		absLayout.remove(tablePlayer15);
+		absLayout.remove(tablePlayer16);
+		absLayout.remove(tablePlayer17);
+		absLayout.remove(tablePlayer18);
+	}
+
+	private ArrayList<FcGiocatore> getModelFormazione() {
+
+		List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByFcGiocatoreFcRuoloDescTotPagatoDesc(campionato, attore, false);
+
+		ArrayList<FcGiocatore> beans = new ArrayList<>();
+		for (FcFormazione f : listFormazione) {
+			if (f.getFcGiocatore() != null) {
+				beans.add(f.getFcGiocatore());
+			}
+		}
+
+		return beans;
+	}
+
+	private Grid<FcGiocatore> getTableGiocatore(List<FcGiocatore> items) {
+
+		Grid<FcGiocatore> grid = new Grid<>();
+		grid.setItems(items);
+		grid.setSelectionMode(Grid.SelectionMode.NONE);
+		grid.getStyle().set("--_lumo-grid-border-width", "0px");
+		//grid.setAllRowsVisible(true);
+		grid.setSizeUndefined();
+		grid.setWidth(WIDTH);
+		grid.setHeight(HEIGHT);
+
+		Column<FcGiocatore> giocatoreColumn = grid.addColumn(new ComponentRenderer<>(p -> {
+
+			VerticalLayout cellLayout = new VerticalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setSizeUndefined();
+
+            if (p != null) {
+
+				String ruolo = p.getFcRuolo().getIdRuolo();
+				if (Costants.P.equals(ruolo)) {
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_P);
+				} else if (Costants.D.equals(ruolo)) {
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_D);
+				} else if (Costants.C.equals(ruolo)) {
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_C);
+				} else if (Costants.A.equals(ruolo)) {
+					cellLayout.getElement().getStyle().set(Costants.BORDER, Costants.BORDER_COLOR_3_A);
+				}
+
+				FcGiornataGiocatore giocatoreOut = isGiocatoreOut(p);
+				if (giocatoreOut != null) {
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+				}
+
+				HorizontalLayout cellLayoutImg = new HorizontalLayout();
+				cellLayoutImg.setMargin(false);
+				cellLayoutImg.setPadding(false);
+				cellLayoutImg.setSpacing(false);
+				cellLayoutImg.setSizeUndefined();
+
+				Image imgR = Utils.buildImage(p.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + p.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+				cellLayoutImg.add(imgR);
+
+				FcSquadra sq = p.getFcSquadra();
+				if (sq != null && sq.getImg() != null) {
+					try {
+						Image imgSq = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+						cellLayoutImg.add(imgSq);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+					}
+				}
+
+				FcStatistiche s = p.getFcStatistiche();
+				String imgThink = "2.png";
+				if (s != null && s.getMediaVoto() != 0) {
+					if (s.getMediaVoto() > Costants.RANGE_MAX_MV) {
+						imgThink = "1.png";
+					} else if (s.getMediaVoto() < Costants.RANGE_MIN_MV) {
+						imgThink = "3.png";
+					}
+				}
+
+				Image imgMv = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+				cellLayoutImg.add(imgMv);
+
+				if (giocatoreOut != null) {
+					cellLayoutImg.add(getImageGiocatoreOut(giocatoreOut));
+				}
+
+				cellLayout.add(cellLayoutImg);
+
+				try {
+					Image img = Utils.getImage(p.getNomeImg(), p.getImg().getBinaryStream());
+					cellLayout.add(img);
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}
+				Span lblGiocatore = new Span(p.getCognGiocatore());
+				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "9px");
+				cellLayout.add(lblGiocatore);
+
+				Element element = cellLayout.getElement(); // DOM element
+				element.addEventListener("click", e -> {
+
+                    if (isGiocatorePartitaGiocata(p)) {
+						CustomMessageDialog.showMessageError("Impossibile muovere il giocatore!");
+						return;
+					}
+
+					modelFormazione.add(p);
+					refreshAndSortGridFormazione();
+
+					if (grid == tablePlayer1) {
+						modelPlayer1.remove(p);
+						tablePlayer1.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer2) {
+						modelPlayer2.remove(p);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer3) {
+						modelPlayer3.remove(p);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer4) {
+						modelPlayer4.remove(p);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer5) {
+						modelPlayer5.remove(p);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer6) {
+						modelPlayer6.remove(p);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer7) {
+						modelPlayer7.remove(p);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer8) {
+						modelPlayer8.remove(p);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer9) {
+						modelPlayer9.remove(p);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer10) {
+						modelPlayer10.remove(p);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer11) {
+						modelPlayer11.remove(p);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer12) {
+						modelPlayer12.remove(p);
+						tablePlayer12.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer13) {
+						modelPlayer13.remove(p);
+						tablePlayer13.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer14) {
+						modelPlayer14.remove(p);
+						tablePlayer14.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer15) {
+						modelPlayer15.remove(p);
+						tablePlayer15.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer16) {
+						modelPlayer16.remove(p);
+						tablePlayer16.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer17) {
+						modelPlayer17.remove(p);
+						tablePlayer17.getDataProvider().refreshAll();
+					} else if (grid == tablePlayer18) {
+						modelPlayer18.remove(p);
+						tablePlayer18.getDataProvider().refreshAll();
+					}
+				});
+
+				if (millisDiff != 0) {
+					setPopover(cellLayout, p);
+				}
+			}
+			return cellLayout;
+
+		}));
+		giocatoreColumn.setSortable(false);
+		giocatoreColumn.setResizable(false);
+
+		return grid;
+
+	}
+
+	private Grid<FcGiocatore> getTableFormazione(List<FcGiocatore> items) {
+
+		Grid<FcGiocatore> grid = new Grid<>();
+		grid.setItems(items);
+		grid.setSelectionMode(Grid.SelectionMode.NONE);
+		grid.setAllRowsVisible(true);
+		grid.setWidth(Costants.WIDTH_330);
+
+		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setAlignItems(Alignment.STRETCH);
+			if (g != null) {
+				if (g.getFcRuolo() != null) {
+					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
+					cellLayout.add(img);
+				}
+				if (g.getCognGiocatore() != null) {
+					Span lblGiocatore = new Span();
+					lblGiocatore.setText(g.getCognGiocatore());
+					cellLayout.add(lblGiocatore);
+				}
+				FcGiornataGiocatore giocatoreOut = isGiocatoreOut(g);
+				if (giocatoreOut != null) {
+					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
+					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
+					cellLayout.add(getImageGiocatoreOut(giocatoreOut));
+				}
+
+				if (millisDiff != 0) {
+					setPopover(cellLayout, g);
+				}
+			}
+			return cellLayout;
+		}));
+		cognGiocatoreColumn.setSortable(false);
+		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
+		cognGiocatoreColumn.setWidth("180px");
+
+		Column<FcGiocatore> infoPercColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setAlignItems(Alignment.STRETCH);
+			if (g != null) {
+				int percentuale = g.getPercentuale() == null ? 0 : g.getPercentuale();
+				double value = Double.parseDouble(Integer.toString(percentuale)) / Double.parseDouble("100");
+				ProgressBar progressBarPercentuale = new ProgressBar();
+				progressBarPercentuale.setValue(value);
+
+				Span lblPercentuale = new Span();
+				lblPercentuale.setText(percentuale + "%");
+
+				if (percentuale > 60) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.SUCCESS);
+				} else if (percentuale > 39) {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.ERROR);
+				} else {
+					progressBarPercentuale.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
+					lblPercentuale.addClassNames(LumoUtility.TextColor.TERTIARY);
+				}
+
+				cellLayout.add(progressBarPercentuale);
+				cellLayout.add(lblPercentuale);
+
+				if (millisDiff != 0) {
+					setPopover(cellLayout, g);
+				}
+			}
+			return cellLayout;
+		}));
+		infoPercColumn.setSortable(false);
+		infoPercColumn.setHeader("");
+		infoPercColumn.setWidth("145px");
+
+        grid.addItemClickListener(event -> {
+
+			String valModulo = comboModulo.getValue();
+			if (valModulo == null) {
+				log.info("valModulo null");
+				return;
+			}
+
+			FcGiocatore bean = event.getItem();
+
+			if (bean != null) {
+
+				if (isGiocatorePartitaGiocata(bean)) {
+					CustomMessageDialog.showMessageError("Impossibile muovere il giocatore!");
+					return;
+				}
+
+				if (existGiocatore(bean)) {
+					log.info("existGiocatore true");
+					return;
+				}
+
+				boolean bDel = false;
+                switch (bean.getFcRuolo().getIdRuolo()) {
+                    case Costants.P -> {
+                        if (modelPlayer1.isEmpty()) {
+                            modelPlayer1.add(bean);
+                            tablePlayer1.getDataProvider().refreshAll();
+                            bDel = true;
+                        } else {
+                            if (modelPlayer12.isEmpty()) {
+                                modelPlayer12.add(bean);
+                                tablePlayer12.getDataProvider().refreshAll();
+                                bDel = true;
+                            }
+                        }
+                    }
+                    case Costants.D -> {
+
+                        switch (valModulo) {
+                            case Costants.SCHEMA_541, Costants.SCHEMA_532 -> {
+
+                                if (modelPlayer2.isEmpty()) {
+                                    modelPlayer2.add(bean);
+                                    tablePlayer2.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer3.isEmpty()) {
+                                    modelPlayer3.add(bean);
+                                    tablePlayer3.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer4.isEmpty()) {
+                                    modelPlayer4.add(bean);
+                                    tablePlayer4.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer5.isEmpty()) {
+                                    modelPlayer5.add(bean);
+                                    tablePlayer5.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer6.isEmpty()) {
+                                    modelPlayer6.add(bean);
+                                    tablePlayer6.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer13.isEmpty()) {
+                                        modelPlayer13.add(bean);
+                                        tablePlayer13.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer14.isEmpty()) {
+                                        modelPlayer14.add(bean);
+                                        tablePlayer14.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_451, Costants.SCHEMA_442, Costants.SCHEMA_433 -> {
+
+                                if (modelPlayer2.isEmpty()) {
+                                    modelPlayer2.add(bean);
+                                    tablePlayer2.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer3.isEmpty()) {
+                                    modelPlayer3.add(bean);
+                                    tablePlayer3.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer4.isEmpty()) {
+                                    modelPlayer4.add(bean);
+                                    tablePlayer4.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer5.isEmpty()) {
+                                    modelPlayer5.add(bean);
+                                    tablePlayer5.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer13.isEmpty()) {
+                                        modelPlayer13.add(bean);
+                                        tablePlayer13.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer14.isEmpty()) {
+                                        modelPlayer14.add(bean);
+                                        tablePlayer14.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_352, Costants.SCHEMA_343 -> {
+
+                                if (modelPlayer2.isEmpty()) {
+                                    modelPlayer2.add(bean);
+                                    tablePlayer2.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer3.isEmpty()) {
+                                    modelPlayer3.add(bean);
+                                    tablePlayer3.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer4.isEmpty()) {
+                                    modelPlayer4.add(bean);
+                                    tablePlayer4.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer13.isEmpty()) {
+                                        modelPlayer13.add(bean);
+                                        tablePlayer13.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer14.isEmpty()) {
+                                        modelPlayer14.add(bean);
+                                        tablePlayer14.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case Costants.C -> {
+
+                        switch (valModulo) {
+                            case Costants.SCHEMA_451 -> {
+
+                                if (modelPlayer6.isEmpty()) {
+                                    modelPlayer6.add(bean);
+                                    tablePlayer6.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer9.isEmpty()) {
+                                    modelPlayer9.add(bean);
+                                    tablePlayer9.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer10.isEmpty()) {
+                                    modelPlayer10.add(bean);
+                                    tablePlayer10.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_352 -> {
+
+                                if (modelPlayer5.isEmpty()) {
+                                    modelPlayer5.add(bean);
+                                    tablePlayer5.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer6.isEmpty()) {
+                                    modelPlayer6.add(bean);
+                                    tablePlayer6.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer9.isEmpty()) {
+                                    modelPlayer9.add(bean);
+                                    tablePlayer9.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_541 -> {
+
+                                if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer9.isEmpty()) {
+                                    modelPlayer9.add(bean);
+                                    tablePlayer9.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer10.isEmpty()) {
+                                    modelPlayer10.add(bean);
+                                    tablePlayer10.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_442 -> {
+
+                                if (modelPlayer6.isEmpty()) {
+                                    modelPlayer6.add(bean);
+                                    tablePlayer6.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer9.isEmpty()) {
+                                    modelPlayer9.add(bean);
+                                    tablePlayer9.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_343 -> {
+
+                                if (modelPlayer5.isEmpty()) {
+                                    modelPlayer5.add(bean);
+                                    tablePlayer5.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer6.isEmpty()) {
+                                    modelPlayer6.add(bean);
+                                    tablePlayer6.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_532 -> {
+
+                                if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer9.isEmpty()) {
+                                    modelPlayer9.add(bean);
+                                    tablePlayer9.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_433 -> {
+                                if (modelPlayer6.isEmpty()) {
+                                    modelPlayer6.add(bean);
+                                    tablePlayer6.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer7.isEmpty()) {
+                                    modelPlayer7.add(bean);
+                                    tablePlayer7.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer8.isEmpty()) {
+                                    modelPlayer8.add(bean);
+                                    tablePlayer8.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer15.isEmpty()) {
+                                        modelPlayer15.add(bean);
+                                        tablePlayer15.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer16.isEmpty()) {
+                                        modelPlayer16.add(bean);
+                                        tablePlayer16.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case Costants.A -> {
+
+                        switch (valModulo) {
+                            case Costants.SCHEMA_451, Costants.SCHEMA_541 -> {
+
+                                if (modelPlayer11.isEmpty()) {
+                                    modelPlayer11.add(bean);
+                                    tablePlayer11.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer17.isEmpty()) {
+                                        modelPlayer17.add(bean);
+                                        tablePlayer17.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer18.isEmpty()) {
+                                        modelPlayer18.add(bean);
+                                        tablePlayer18.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_352, Costants.SCHEMA_442, Costants.SCHEMA_532 -> {
+
+                                if (modelPlayer10.isEmpty()) {
+                                    modelPlayer10.add(bean);
+                                    tablePlayer10.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer11.isEmpty()) {
+                                    modelPlayer11.add(bean);
+                                    tablePlayer11.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer17.isEmpty()) {
+                                        modelPlayer17.add(bean);
+                                        tablePlayer17.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer18.isEmpty()) {
+                                        modelPlayer18.add(bean);
+                                        tablePlayer18.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                            case Costants.SCHEMA_343, Costants.SCHEMA_433 -> {
+
+                                if (modelPlayer9.isEmpty()) {
+                                    modelPlayer9.add(bean);
+                                    tablePlayer9.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer10.isEmpty()) {
+                                    modelPlayer10.add(bean);
+                                    tablePlayer10.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else if (modelPlayer11.isEmpty()) {
+                                    modelPlayer11.add(bean);
+                                    tablePlayer11.getDataProvider().refreshAll();
+                                    bDel = true;
+                                } else {
+                                    if (modelPlayer17.isEmpty()) {
+                                        modelPlayer17.add(bean);
+                                        tablePlayer17.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    } else if (modelPlayer18.isEmpty()) {
+                                        modelPlayer18.add(bean);
+                                        tablePlayer18.getDataProvider().refreshAll();
+                                        bDel = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+				if (bDel) {
+					modelFormazione.remove(bean);
+					refreshAndSortGridFormazione();
+				}
+			}
+		});
+
+		return grid;
+	}
+
+	private boolean existGiocatore(FcGiocatore g) {
+
+		if (!modelPlayer1.isEmpty() && modelPlayer1.contains(g)) {
+			return true;
+		} else if (!modelPlayer2.isEmpty() && modelPlayer2.contains(g)) {
+			return true;
+		} else if (!modelPlayer3.isEmpty() && modelPlayer3.contains(g)) {
+			return true;
+		} else if (!modelPlayer4.isEmpty() && modelPlayer4.contains(g)) {
+			return true;
+		} else if (!modelPlayer5.isEmpty() && modelPlayer5.contains(g)) {
+			return true;
+		} else if (!modelPlayer6.isEmpty() && modelPlayer6.contains(g)) {
+			return true;
+		} else if (!modelPlayer7.isEmpty() && modelPlayer7.contains(g)) {
+			return true;
+		} else if (!modelPlayer8.isEmpty() && modelPlayer8.contains(g)) {
+			return true;
+		} else if (!modelPlayer9.isEmpty() && modelPlayer9.contains(g)) {
+			return true;
+		} else if (!modelPlayer10.isEmpty() && modelPlayer10.contains(g)) {
+			return true;
+		} else if (!modelPlayer11.isEmpty() && modelPlayer11.contains(g)) {
+			return true;
+		} else if (!modelPlayer12.isEmpty() && modelPlayer12.contains(g)) {
+			return true;
+		} else if (!modelPlayer13.isEmpty() && modelPlayer13.contains(g)) {
+			return true;
+		} else if (!modelPlayer14.isEmpty() && modelPlayer14.contains(g)) {
+			return true;
+		} else if (!modelPlayer15.isEmpty() && modelPlayer15.contains(g)) {
+			return true;
+		} else if (!modelPlayer16.isEmpty() && modelPlayer16.contains(g)) {
+			return true;
+		} else if (!modelPlayer17.isEmpty() && modelPlayer17.contains(g)) {
+			return true;
+		} else return !modelPlayer18.isEmpty() && modelPlayer18.contains(g);
+    }
+
+	private void loadFcGiornataDett() {
+
+		log.info("START loadFcGiornatadett");
+
+		List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+
+		if (lGiocatori.isEmpty()) {
+			comboModulo.setValue(null);
+			removeAllElementsList();
+			return;
+		}
+
+		int countD = 0;
+		int countC = 0;
+		int countA = 0;
+
+		for (FcGiornataDett gd : lGiocatori) {
+
+			if (gd.getOrdinamento() < 12) {
+                switch (gd.getFcGiocatore().getFcRuolo().getIdRuolo()) {
+                    case Costants.D -> countD++;
+                    case Costants.C -> countC++;
+                    case Costants.A -> countA++;
+                }
+			}
+		}
+
+		String schema = countD + "-" + countC + "-" + countA;
+
+		comboModulo.setValue(schema);
+
+		modelFormazione.clear();
+		refreshAndSortGridFormazione();
+
+		for (FcGiornataDett gd : lGiocatori) {
+
+			FcGiocatore bean = gd.getFcGiocatore();
+			if (gd.getOrdinamento() == 1) {
+				modelPlayer1.clear();
+				modelPlayer1.add(bean);
+				tablePlayer1.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 2) {
+				modelPlayer2.clear();
+				modelPlayer2.add(bean);
+				tablePlayer2.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 3) {
+				modelPlayer3.clear();
+				modelPlayer3.add(bean);
+				tablePlayer3.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 4) {
+				modelPlayer4.clear();
+				modelPlayer4.add(bean);
+				tablePlayer4.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 5) {
+				modelPlayer5.clear();
+				modelPlayer5.add(bean);
+				tablePlayer5.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 6) {
+				modelPlayer6.clear();
+				modelPlayer6.add(bean);
+				tablePlayer6.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 7) {
+				modelPlayer7.clear();
+				modelPlayer7.add(bean);
+				tablePlayer7.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 8) {
+				modelPlayer8.clear();
+				modelPlayer8.add(bean);
+				tablePlayer8.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 9) {
+				modelPlayer9.clear();
+				modelPlayer9.add(bean);
+				tablePlayer9.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 10) {
+				modelPlayer10.clear();
+				modelPlayer10.add(bean);
+				tablePlayer10.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 11) {
+				modelPlayer11.clear();
+				modelPlayer11.add(bean);
+				tablePlayer11.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 12) {
+				modelPlayer12.clear();
+				modelPlayer12.add(bean);
+				tablePlayer12.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 13) {
+				modelPlayer13.clear();
+				modelPlayer13.add(bean);
+				tablePlayer13.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 14) {
+				modelPlayer14.clear();
+				modelPlayer14.add(bean);
+				tablePlayer14.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 15) {
+				modelPlayer15.clear();
+				modelPlayer15.add(bean);
+				tablePlayer15.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 16) {
+				modelPlayer16.clear();
+				modelPlayer16.add(bean);
+				tablePlayer16.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 17) {
+				modelPlayer17.clear();
+				modelPlayer17.add(bean);
+				tablePlayer17.getDataProvider().refreshAll();
+			} else if (gd.getOrdinamento() == 18) {
+				modelPlayer18.clear();
+				modelPlayer18.add(bean);
+				tablePlayer18.getDataProvider().refreshAll();
+			} else {
+				modelFormazione.add(bean);
+				refreshAndSortGridFormazione();
+			}
+		}
+		
+		log.info("END loadFcGiornatadett");
+	}
+
+	@Override
+	public void onComponentEvent(ClickEvent<Button> event) {
+
+		if (check()) {
+
+			int giornataSerieA = giornataInfo.getCodiceGiornata();
+			String descGiornata = giornataInfo.getDescGiornataFc();
+
+			try {
+				insert(giornataSerieA);
+			} catch (Exception exi) {
+				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exi.getMessage());
+				return;
+			}
+
+			if (checkMail.getValue()) {
+				try {
+					String dataOra = getSysdate();
+
+					sendNewMail(descGiornata);
+
+					log.info("send_mail OK");
+
+					try {
+						insertDettInfo(giornataSerieA, dataOra);
+						log.info("insert_dett_info OK");
+					} catch (Exception exd) {
+						log.error(exd.getMessage());
+						CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exd.getMessage());
+					}
+
+					CustomMessageDialog.showMessageInfo("Formazione inserita, email inviata con successo!");
+
+				} catch (Exception exception) {
+					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, exception.getMessage());
+				}
+
+			} else {
+				CustomMessageDialog.showMessageInfo("Formazione salvata con successo! Per rendere effettiva la formazione, inviare email.");
+			}
+		}
+	}
+
+	private String getSysdate() {
+
+		String sql = "select sysdate() from dual";
+		return jdbcTemplate.query(sql, rs -> {
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+            return null;
+        });
+	}
+
+	private boolean check() {
+
+		if (modelPlayer1.isEmpty() || modelPlayer2.isEmpty() || modelPlayer3.isEmpty() || modelPlayer4.isEmpty() || modelPlayer5.isEmpty() || modelPlayer6.isEmpty() || modelPlayer7.isEmpty() || modelPlayer8.isEmpty() || modelPlayer9.isEmpty() || modelPlayer10.isEmpty() || modelPlayer11.isEmpty() || modelPlayer12.isEmpty() || modelPlayer13.isEmpty() || modelPlayer14.isEmpty() || modelPlayer15.isEmpty() || modelPlayer16.isEmpty() || modelPlayer17.isEmpty() || modelPlayer18.isEmpty()) {
+			CustomMessageDialog.showMessageError(CustomMessageDialog.MSG_ERROR_INSERT_GIOCATORI);
+			return false;
+		}
+		return true;
+	}
+
+	private void insert(int giornata) {
+
+		String query;
+		try {
+			query = " DELETE FROM fc_giornata_dett WHERE ID_GIORNATA=" + giornata + " AND ID_ATTORE=" + idAttore;
+			jdbcTemplate.update(query);
+
+			String idGiornata = "" + giornata;
+			String idGiocatore;
+			String idStatoGiocatore;
+			String ordinamento;
+			int ord = 1;
+			for (int i = 0; i < 18; i++) {
+
+				ordinamento = "" + ord;
+				ord++;
+				if (i == 0) {
+					FcGiocatore bean = modelPlayer1.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 1) {
+					FcGiocatore bean = modelPlayer2.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 2) {
+					FcGiocatore bean = modelPlayer3.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 3) {
+					FcGiocatore bean = modelPlayer4.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 4) {
+					FcGiocatore bean = modelPlayer5.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 5) {
+					FcGiocatore bean = modelPlayer6.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 6) {
+					FcGiocatore bean = modelPlayer7.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 7) {
+					FcGiocatore bean = modelPlayer8.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 8) {
+					FcGiocatore bean = modelPlayer9.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 9) {
+					FcGiocatore bean = modelPlayer10.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 10) {
+					FcGiocatore bean = modelPlayer11.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "T";
+				} else if (i == 11) {
+					FcGiocatore bean = modelPlayer12.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				} else if (i == 12) {
+					FcGiocatore bean = modelPlayer13.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				} else if (i == 13) {
+					FcGiocatore bean = modelPlayer14.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				} else if (i == 14) {
+					FcGiocatore bean = modelPlayer15.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				} else if (i == 15) {
+					FcGiocatore bean = modelPlayer16.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				} else if (i == 16) {
+					FcGiocatore bean = modelPlayer17.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				} else {
+					FcGiocatore bean = modelPlayer18.get(0);
+					idGiocatore = "" + bean.getIdGiocatore();
+					idStatoGiocatore = "R";
+				}
+
+				query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES (" + idGiornata + ",";
+				query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ordinamento + ",0)";
+				jdbcTemplate.update(query);
+			}
+
+			for (FcGiocatore bean : modelFormazione) {
+				ordinamento = "" + ord;
+				ord++;
+				idGiocatore = "" + bean.getIdGiocatore();
+				idStatoGiocatore = "N";
+
+				query = " INSERT INTO fc_giornata_dett (ID_GIORNATA,ID_ATTORE, ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,VOTO) VALUES (" + idGiornata + ",";
+				query += idAttore + "," + idGiocatore + ",'" + idStatoGiocatore + "'," + ordinamento + ",0)";
+
+				jdbcTemplate.update(query);
+			}
+
+		} catch (Exception e) {
+			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+		}
+	}
+
+	private void insertDettInfo(int giornata, String dataOra) {
+
+		String query;
+		try {
+			query = " DELETE FROM fc_giornata_dett_info WHERE ID_GIORNATA=" + giornata + " AND ID_ATTORE=" + idAttore;
+			jdbcTemplate.update(query);
+
+			query = " INSERT INTO fc_giornata_dett_info (ID_GIORNATA,ID_ATTORE, FLAG_INVIO,DATA_INVIO) VALUES (" + giornata + ",";
+			query += idAttore + ",1, '" + dataOra + "')";
+
+			jdbcTemplate.update(query);
+
+		} catch (Exception e) {
+			CustomMessageDialog.showMessageError("insert_dett_info " + e.getMessage());
+		}
+	}
+
+	private void sendNewMail(String descGiornata) throws Exception {
+
+		String subject = "Formazione " + descAttore + " - " + descGiornata;
+
+		String modulo = comboModulo.getValue();
+
+		StringBuilder formazioneHtml = new StringBuilder();
+		formazioneHtml.append("<html><head><title>FC</title></head>\n");
+		formazioneHtml.append("<body>\n");
+		formazioneHtml.append("<p>");
+		formazioneHtml.append(descGiornata);
+		formazioneHtml.append("</p>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<p>");
+		formazioneHtml.append(modulo);
+		formazioneHtml.append("</p>\n");
+		formazioneHtml.append("<br>\n");
+
+		formazioneHtml.append("<table>");
+
+		String nomeGiocatore;
+		String ruolo;
+		String stato;
+		String ordinamento;
+		String squadra;
+		int ord = 1;
+		Map<String, InputStream> listImg = new HashMap<>();
+		for (int i = 0; i < 18; i++) {
+
+			ordinamento = "" + ord;
+			FcGiocatore bean = getFcGiocatore(i);
+
+			nomeGiocatore = bean.getCognGiocatore();
+			ruolo = bean.getFcRuolo().getDescRuolo();
+			squadra = bean.getFcSquadra().getNomeSquadra();
+
+			String cidNomeSq = ContentIdGenerator.getContentId();
+			FcSquadra sq = bean.getFcSquadra();
+			if (sq.getImg() != null) {
+				try {
+					listImg.put(cidNomeSq, sq.getImg().getBinaryStream());
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			String cidNomeImg = ContentIdGenerator.getContentId();
+			InputStream inputStream;
+			try {
+				inputStream = bean.getImg().getBinaryStream();
+				listImg.put(cidNomeImg, inputStream);
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
+
+			if (i < 11) {
+				stato = "Titolare";
+			} else {
+				stato = "Riserva";
+			}
+			String color = "BGCOLOR=\"" + Costants.BG_N + "\"";
+			if (Integer.parseInt(ordinamento) >= 1 && Integer.parseInt(ordinamento) <= 11) {
+				color = "BGCOLOR=\"" + Costants.BG_T + "\"";
+			} else if (Integer.parseInt(ordinamento) >= 12 && Integer.parseInt(ordinamento) <= 18) {
+				color = "BGCOLOR=\"" + Costants.BG_R + "\"";
+			}
+
+			formazioneHtml.append("<tr ");
+			formazioneHtml.append(color);
+			formazioneHtml.append(">");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ordinamento);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:");
+			formazioneHtml.append(cidNomeImg);
+			formazioneHtml.append("\" />");
+			formazioneHtml.append(nomeGiocatore);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ruolo);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:");
+			formazioneHtml.append(cidNomeSq);
+			formazioneHtml.append("\" />");
+			formazioneHtml.append(squadra);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(stato);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("</tr>");
+
+			ord++;
+		}
+
+		for (FcGiocatore bean : modelFormazione) {
+			ordinamento = "" + ord;
+			nomeGiocatore = bean.getCognGiocatore();
+			ruolo = bean.getFcRuolo().getDescRuolo();
+			squadra = bean.getFcSquadra().getNomeSquadra();
+			stato = "Non Convocato";
+
+			String cidNomeSq = ContentIdGenerator.getContentId();
+			FcSquadra sq = bean.getFcSquadra();
+			if (sq.getImg() != null) {
+				try {
+					listImg.put(cidNomeSq, sq.getImg().getBinaryStream());
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			String cidNomeImg = ContentIdGenerator.getContentId();
+			InputStream inputStream;
+			try {
+				inputStream = bean.getImg().getBinaryStream();
+				listImg.put(cidNomeImg, inputStream);
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
+
+			String color = "BGCOLOR=\"" + Costants.BG_N + "\"";
+			if (Integer.parseInt(ordinamento) >= 1 && Integer.parseInt(ordinamento) <= 11) {
+				color = "BGCOLOR=\"" + Costants.BG_T + "\"";
+			} else if (Integer.parseInt(ordinamento) >= 12 && Integer.parseInt(ordinamento) <= 18) {
+				color = "BGCOLOR=\"" + Costants.BG_R + "\"";
+			}
+
+			formazioneHtml.append("<tr ");
+			formazioneHtml.append(color);
+			formazioneHtml.append(">");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ordinamento);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:");
+			formazioneHtml.append(cidNomeImg);
+			formazioneHtml.append("\" />");
+			formazioneHtml.append(nomeGiocatore);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(ruolo);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td><img src=\"cid:");
+			formazioneHtml.append(cidNomeSq);
+			formazioneHtml.append("\" />");
+			formazioneHtml.append(squadra);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("<td>");
+			formazioneHtml.append(stato);
+			formazioneHtml.append("</td>");
+			formazioneHtml.append("</tr>");
+
+			ord++;
+		}
+
+		formazioneHtml.append("</table>\n");
+
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<br>\n");
+		formazioneHtml.append("<p>Ciao ");
+		formazioneHtml.append(descAttore);
+		formazioneHtml.append("</p>\n");
+		formazioneHtml.append("</body>\n");
+		formazioneHtml.append("<html>");
+
+		StringBuilder emailDestinatario = new StringBuilder();
+		String activeMail = p.getProperty("ACTIVE_MAIL");
+		if ("true".equals(activeMail)) {
+			List<FcAttore> attori = attoreService.findByActive(true);
+			for (FcAttore a : attori) {
+				if (a.isNotifiche()) {
+					emailDestinatario.append(a.getEmail());
+					emailDestinatario.append(";");
+				}
+			}
+		} else {
+			emailDestinatario.append(p.getProperty("to"));
+		}
+
+		String[] to = null;
+		if (StringUtils.isNotEmpty(emailDestinatario.toString())) {
+			to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
+		}
+
+        try {
+			String from = env.getProperty("spring.mail.secondary.username");
+			emailService.sendMail2(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			try {
+				String from = env.getProperty("spring.mail.primary.username");
+				emailService.sendMail2(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", listImg);
+			} catch (Exception e2) {
+				log.error(e2.getMessage());
+				throw e2;
+			}
+		}
+	}
+
+	private FcGiocatore getFcGiocatore(int i) {
+		FcGiocatore bean;
+
+		if (i == 0) {
+			bean = modelPlayer1.get(0);
+		} else if (i == 1) {
+			bean = modelPlayer2.get(0);
+		} else if (i == 2) {
+			bean = modelPlayer3.get(0);
+		} else if (i == 3) {
+			bean = modelPlayer4.get(0);
+		} else if (i == 4) {
+			bean = modelPlayer5.get(0);
+		} else if (i == 5) {
+			bean = modelPlayer6.get(0);
+		} else if (i == 6) {
+			bean = modelPlayer7.get(0);
+		} else if (i == 7) {
+			bean = modelPlayer8.get(0);
+		} else if (i == 8) {
+			bean = modelPlayer9.get(0);
+		} else if (i == 9) {
+			bean = modelPlayer10.get(0);
+		} else if (i == 10) {
+			bean = modelPlayer11.get(0);
+		} else if (i == 11) {
+			bean = modelPlayer12.get(0);
+		} else if (i == 12) {
+			bean = modelPlayer13.get(0);
+		} else if (i == 13) {
+			bean = modelPlayer14.get(0);
+		} else if (i == 14) {
+			bean = modelPlayer15.get(0);
+		} else if (i == 15) {
+			bean = modelPlayer16.get(0);
+		} else if (i == 16) {
+			bean = modelPlayer17.get(0);
+		} else {
+			bean = modelPlayer18.get(0);
+		}
+		return bean;
+	}
+
+	private Grid<FcCalendarioCompetizione> getTablePartite(
+			List<FcCalendarioCompetizione> listPartite) {
+
+		Grid<FcCalendarioCompetizione> grid = new Grid<>();
+		grid.setItems(listPartite);
+		grid.setSelectionMode(Grid.SelectionMode.NONE);
+		grid.setAllRowsVisible(true);
+		grid.setWidth("350px");
+
+		Column<FcCalendarioCompetizione> nomeSquadraCasaColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setAlignItems(Alignment.STRETCH);
+
+			if (s != null && s.getSquadraCasa() != null) {
+				FcSquadra sq = squadraService.findByIdSquadra(s.getIdSquadraCasa());
+				if (sq.getImg() != null) {
+					try {
+						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+						cellLayout.add(img);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+					}
+				}
+				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
+				cellLayout.add(lblSquadra);
+			}
+
+			return cellLayout;
+
+		}));
+		nomeSquadraCasaColumn.setSortable(false);
+		nomeSquadraCasaColumn.setAutoWidth(true);
+
+		Column<FcCalendarioCompetizione> nomeSquadraFuoriColumn = grid.addColumn(new ComponentRenderer<>(s -> {
+
+			HorizontalLayout cellLayout = new HorizontalLayout();
+			cellLayout.setMargin(false);
+			cellLayout.setPadding(false);
+			cellLayout.setSpacing(false);
+			cellLayout.setAlignItems(Alignment.STRETCH);
+
+			if (s != null && s.getSquadraCasa() != null) {
+				FcSquadra sq = squadraService.findByNomeSquadra(s.getSquadraFuori());
+				if (sq != null && sq.getImg() != null) {
+					try {
+						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+						cellLayout.add(img);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+					}
+				}
+				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
+				cellLayout.add(lblSquadra);
+			}
+
+			return cellLayout;
+
+		}));
+		nomeSquadraFuoriColumn.setSortable(false);
+		nomeSquadraFuoriColumn.setAutoWidth(true);
+
+		Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+		dataColumn.setSortable(false);
+		dataColumn.setAutoWidth(true);
+		dataColumn.setFlexGrow(2);
+
+		return grid;
+	}
+
+	private boolean isGiocatorePartitaGiocata(FcGiocatore giocatore) {
+		String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
+		if ("true".equals(activeCheckFormazione)) {
+			String squadra = giocatore.getFcSquadra().getNomeSquadra();
+			for (FcCalendarioCompetizione partita : listPartiteGiocate) {
+				String sqCasa = partita.getSquadraCasa();
+				String sqFuori = partita.getSquadraFuori();
+				if (squadra.equals(sqCasa) || squadra.equals(sqFuori)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void impostaGiocatoriConVoto(String modulo) {
+
+		if (listPartiteGiocate != null && !listPartiteGiocate.isEmpty()) {
+
+			save.setEnabled(true);
+			checkMail.setEnabled(true);
+
+			List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+
+			modelFormazione.clear();
+			refreshAndSortGridFormazione();
+
+			List<FcGiocatore> lGiocatoriD = new ArrayList<>();
+			List<FcGiocatore> lGiocatoriC = new ArrayList<>();
+			List<FcGiocatore> lGiocatoriA = new ArrayList<>();
+
+			for (FcGiornataDett gd : lGiocatori) {
+
+				FcGiocatore bean = gd.getFcGiocatore();
+				if (gd.getOrdinamento() > 18 || !isGiocatorePartitaGiocata(bean)) {
+					modelFormazione.add(bean);
+					refreshAndSortGridFormazione();
+					continue;
+				}
+
+				if (gd.getOrdinamento() == 1) {
+					modelPlayer1.clear();
+					modelPlayer1.add(bean);
+					tablePlayer1.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 2) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 3) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 4) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 5) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 6) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 7) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 8) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 9) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 10) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 11) {
+                    switch (bean.getFcRuolo().getIdRuolo()) {
+                        case Costants.D -> lGiocatoriD.add(bean);
+                        case Costants.C -> lGiocatoriC.add(bean);
+                        case Costants.A -> lGiocatoriA.add(bean);
+                    }
+				} else if (gd.getOrdinamento() == 12) {
+					modelPlayer12.clear();
+					modelPlayer12.add(bean);
+					tablePlayer12.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 13) {
+					modelPlayer13.clear();
+					modelPlayer13.add(bean);
+					tablePlayer13.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 14) {
+					modelPlayer14.clear();
+					modelPlayer14.add(bean);
+					tablePlayer14.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 15) {
+					modelPlayer15.clear();
+					modelPlayer15.add(bean);
+					tablePlayer15.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 16) {
+					modelPlayer16.clear();
+					modelPlayer16.add(bean);
+					tablePlayer16.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 17) {
+					modelPlayer17.clear();
+					modelPlayer17.add(bean);
+					tablePlayer17.getDataProvider().refreshAll();
+				} else if (gd.getOrdinamento() == 18) {
+					modelPlayer18.clear();
+					modelPlayer18.add(bean);
+					tablePlayer18.getDataProvider().refreshAll();
+				}
+			}
+
+			// 5-4-1 5-3-2 4-5-1 4-4-2 4-3-3 3-5-2 3-4-3
+			if (Costants.SCHEMA_541.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else if (countD == 4) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else if (countD == 5) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else if (countC == 4) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+
+			} else if (Costants.SCHEMA_532.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else if (countD == 4) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else if (countD == 5) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else if (countA == 2) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+
+			} else if (Costants.SCHEMA_451.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else if (countD == 4) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else if (countC == 4) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else if (countC == 5) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+
+			} else if (Costants.SCHEMA_442.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else if (countD == 4) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else if (countC == 4) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else if (countA == 2) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+
+			} else if (Costants.SCHEMA_433.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else if (countD == 4) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else if (countA == 2) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else if (countA == 3) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+
+			} else if (Costants.SCHEMA_352.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 4) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else if (countC == 5) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else if (countA == 2) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+
+			} else if (Costants.SCHEMA_343.equals(modulo)) {
+
+				int countD = 1;
+				for (FcGiocatore g : lGiocatoriD) {
+					if (countD == 1) {
+						modelPlayer2.clear();
+						modelPlayer2.add(g);
+						tablePlayer2.getDataProvider().refreshAll();
+					} else if (countD == 2) {
+						modelPlayer3.clear();
+						modelPlayer3.add(g);
+						tablePlayer3.getDataProvider().refreshAll();
+					} else if (countD == 3) {
+						modelPlayer4.clear();
+						modelPlayer4.add(g);
+						tablePlayer4.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countD++;
+				}
+
+				int countC = 1;
+				for (FcGiocatore g : lGiocatoriC) {
+					if (countC == 1) {
+						modelPlayer5.clear();
+						modelPlayer5.add(g);
+						tablePlayer5.getDataProvider().refreshAll();
+					} else if (countC == 2) {
+						modelPlayer6.clear();
+						modelPlayer6.add(g);
+						tablePlayer6.getDataProvider().refreshAll();
+					} else if (countC == 3) {
+						modelPlayer7.clear();
+						modelPlayer7.add(g);
+						tablePlayer7.getDataProvider().refreshAll();
+					} else if (countC == 4) {
+						modelPlayer8.clear();
+						modelPlayer8.add(g);
+						tablePlayer8.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countC++;
+				}
+
+				int countA = 1;
+				for (FcGiocatore g : lGiocatoriA) {
+					if (countA == 1) {
+						modelPlayer9.clear();
+						modelPlayer9.add(g);
+						tablePlayer9.getDataProvider().refreshAll();
+					} else if (countA == 2) {
+						modelPlayer10.clear();
+						modelPlayer10.add(g);
+						tablePlayer10.getDataProvider().refreshAll();
+					} else if (countA == 3) {
+						modelPlayer11.clear();
+						modelPlayer11.add(g);
+						tablePlayer11.getDataProvider().refreshAll();
+					} else {
+						showMessageErrorChangeModulo(g);
+					}
+					countA++;
+				}
+			}
+		}
+	}
+
+	private void showMessageErrorChangeModulo(FcGiocatore g) {
+		save.setEnabled(false);
+		checkMail.setEnabled(false);
+		modelFormazione.add(g);
+		refreshAndSortGridFormazione();
+		CustomMessageDialog.showMessageError("Cambio modulo incorretto! Impossibile muovere il giocatore " + g.getCognGiocatore());
+	}
+
+	private FcGiornataGiocatore isGiocatoreOut(FcGiocatore giocatore) {
+		for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
+			if (gg.getFcGiocatore().getIdGiocatore() == giocatore.getIdGiocatore()) {
+				return gg;
+			}
+		}
+		return null;
+	}
+
+	private Image getImageGiocatoreOut(FcGiornataGiocatore gg) {
+		Image img = null;
+		if (gg != null) {
+			if (gg.isInfortunato()) {
+				if (gg.getNote().contains("INCERTO")) {
+					img = Utils.buildImage("help.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/" + "help.png"));
+					img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
+				} else {
+					img = Utils.buildImage("ospedale_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png"));
+					img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
+				}
+
+			} else if (gg.isSqualificato()) {
+				img = Utils.buildImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png"));
+				img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
+			}
+		}
+		return img;
+	}
+
+}

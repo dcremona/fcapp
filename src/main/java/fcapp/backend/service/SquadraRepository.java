@@ -1,0 +1,19 @@
+package fcapp.backend.service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.CrudRepository;
+
+import fcapp.backend.data.entity.FcSquadra;
+
+public interface SquadraRepository extends CrudRepository<FcSquadra, Long>{
+
+	Page<FcSquadra> findAll(Pageable pageable);
+
+	Iterable<FcSquadra> findAll(Sort sort);
+
+	FcSquadra findByNomeSquadra(String nomeSquadra);
+
+	FcSquadra findByIdSquadra(int idSquadra);
+}

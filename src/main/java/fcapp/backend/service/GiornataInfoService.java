@@ -1,0 +1,53 @@
+package fcapp.backend.service;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import fcapp.backend.data.entity.FcGiornataInfo;
+
+@Service
+public class GiornataInfoService{
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private final GiornataInfoRepository giornataInfoRepository;
+
+	public GiornataInfoService(GiornataInfoRepository giornataInfoRepository) {
+		this.giornataInfoRepository = giornataInfoRepository;
+	}
+
+	public List<FcGiornataInfo> findAll() {
+		return (List<FcGiornataInfo>) giornataInfoRepository.findAll();
+	}
+
+	public FcGiornataInfo findByCodiceGiornata(Integer gg) {
+		return giornataInfoRepository.findByCodiceGiornata(gg);
+	}
+
+	public List<FcGiornataInfo> findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(
+			Integer from, Integer to) {
+		return (List<FcGiornataInfo>) giornataInfoRepository.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+	}
+
+	public FcGiornataInfo save(FcGiornataInfo c) {
+		FcGiornataInfo fcGiornataInfo = null;
+		try {
+			fcGiornataInfo = giornataInfoRepository.save(c);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		return fcGiornataInfo;
+	}
+
+	public void delete(FcGiornataInfo giornataInfo) {
+        try {
+			giornataInfoRepository.delete(giornataInfo);
+        } catch (Exception ex) {
+        	log.error(ex.getMessage());
+		}
+	}
+
+}

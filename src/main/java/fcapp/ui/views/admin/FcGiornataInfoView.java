@@ -1,0 +1,125 @@
+package fcapp.ui.views.admin;
+
+import java.io.Serial;
+import java.time.format.DateTimeFormatter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.vaadin.crudui.crud.CrudOperation;
+import org.vaadin.crudui.crud.impl.GridCrud;
+import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
+import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
+
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+
+import fcapp.backend.data.entity.FcGiornataInfo;
+import fcapp.backend.service.AccessoService;
+import fcapp.backend.service.GiornataInfoService;
+import fcapp.ui.views.MainLayout;
+import fcapp.utils.Costants;
+import fcapp.utils.Utils;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.RolesAllowed;
+
+@PageTitle("GiornataInfo")
+@Route(value = "giornataInfo", layout = MainLayout.class)
+@RolesAllowed("ADMIN")
+public class FcGiornataInfoView extends VerticalLayout{
+
+	@Serial
+    private static final long serialVersionUID = 1L;
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	public Environment env;
+
+	private final GiornataInfoService giornataInfoService;
+	private final AccessoService accessoService;
+
+	public FcGiornataInfoView(GiornataInfoService giornataInfoService,AccessoService accessoService) {
+		log.info("FcGiornataInfoView()");
+		this.giornataInfoService = giornataInfoService;
+		this.accessoService = accessoService;
+	}
+
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoService.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
+
+	private void initLayout() {
+
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
+
+		GridCrud<FcGiornataInfo> crud = new GridCrud<>(FcGiornataInfo.class,new HorizontalSplitCrudLayout());
+
+		DefaultCrudFormFactory<FcGiornataInfo> formFactory = new DefaultCrudFormFactory<>(FcGiornataInfo.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
+
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "codiceGiornata", "dataAnticipo1", "dataAnticipo2", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "codiceGiornata", "dataAnticipo1", "dataAnticipo2", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "dataAnticipo1", "dataAnticipo2", "dataGiornata", "dataPosticipo", "descGiornata", "descGiornataFc", "idGiornataFc");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "codiceGiornata", "descGiornata");
+
+		crud.getGrid().removeAllColumns();
+
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getCodiceGiornata()));
+
+		Column<FcGiornataInfo> dataAnticipoColumn1 = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo1,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+		dataAnticipoColumn1.setSortable(false);
+		dataAnticipoColumn1.setAutoWidth(true);
+
+		Column<FcGiornataInfo> dataAnticipoColumn2 = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataAnticipo2,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+		dataAnticipoColumn2.setSortable(false);
+		dataAnticipoColumn2.setAutoWidth(true);
+
+		Column<FcGiornataInfo> dataGiornataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataGiornata,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+		dataGiornataColumn.setSortable(false);
+		dataGiornataColumn.setAutoWidth(true);
+
+		Column<FcGiornataInfo> dataPosticipoColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcGiornataInfo::getDataPosticipo,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+		dataPosticipoColumn.setSortable(false);
+		dataPosticipoColumn.setAutoWidth(true);
+
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getDescGiornata()));
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getDescGiornataFc()));
+		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiornataFc()));
+
+		crud.getCrudFormFactory().setFieldProvider("dataAnticipo1", a -> new DateTimePicker());
+
+		crud.getCrudFormFactory().setFieldProvider("dataAnticipo2", a -> new DateTimePicker());
+
+		crud.getCrudFormFactory().setFieldProvider("dataGiornata", a -> new DateTimePicker());
+
+		crud.getCrudFormFactory().setFieldProvider("dataPosticipo", a -> new DateTimePicker());
+
+		crud.setRowCountCaption("%d GiornataInfo(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(true);
+
+		crud.setFindAllOperation(giornataInfoService::findAll);
+		crud.setAddOperation(giornataInfoService::save);
+		crud.setUpdateOperation(giornataInfoService::save);
+		crud.setDeleteOperation(giornataInfoService::delete);
+
+		add(crud);
+	}
+
+}

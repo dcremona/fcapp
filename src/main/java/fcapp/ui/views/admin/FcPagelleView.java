@@ -1,0 +1,161 @@
+package fcapp.ui.views.admin;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.vaadin.crudui.crud.CrudOperation;
+import org.vaadin.crudui.crud.impl.GridCrud;
+import org.vaadin.crudui.form.impl.field.provider.ComboBoxProvider;
+import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
+import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
+
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+
+import fcapp.backend.data.entity.FcCampionato;
+import fcapp.backend.data.entity.FcGiocatore;
+import fcapp.backend.data.entity.FcGiornataInfo;
+import fcapp.backend.data.entity.FcPagelle;
+import fcapp.backend.service.AccessoService;
+import fcapp.backend.service.GiocatoreService;
+import fcapp.backend.service.GiornataInfoService;
+import fcapp.backend.service.PagelleService;
+import fcapp.ui.views.MainLayout;
+import fcapp.utils.Costants;
+import fcapp.utils.Utils;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.RolesAllowed;
+
+import java.io.Serial;
+
+@PageTitle("Pagelle")
+@Route(value = "pagelle", layout = MainLayout.class)
+@RolesAllowed("ADMIN")
+public class FcPagelleView extends VerticalLayout{
+
+	@Serial
+    private static final long serialVersionUID = 1L;
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	public Environment env;
+
+	private final GiornataInfoService giornataInfoService;
+	private final GiocatoreService giocatoreService;
+	private final PagelleService pagelleService;
+	private final AccessoService accessoService;
+
+	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
+	private final ComboBox<FcGiocatore> giocatoreFilter = new ComboBox<>();
+
+	public FcPagelleView(GiornataInfoService giornataInfoService,GiocatoreService giocatoreService,PagelleService pagelleService,AccessoService accessoService) {
+		log.info("FcPagelleView()");
+		this.giornataInfoService = giornataInfoService;
+		this.giocatoreService = giocatoreService;
+		this.pagelleService = pagelleService;
+		this.accessoService = accessoService;
+	}
+
+	@PostConstruct
+	void init() {
+		log.info("init");
+		if (!Utils.isValidVaadinSession()) {
+			return;
+		}
+		accessoService.insertAccesso(this.getClass().getName());
+		initLayout();
+	}
+
+	private void initLayout() {
+
+		this.setMargin(true);
+		this.setSpacing(true);
+		this.setSizeFull();
+
+		GridCrud<FcPagelle> crud = new GridCrud<>(FcPagelle.class,new HorizontalSplitCrudLayout());
+		DefaultCrudFormFactory<FcPagelle> formFactory = new DefaultCrudFormFactory<>(FcPagelle.class);
+		crud.setCrudFormFactory(formFactory);
+		formFactory.setUseBeanValidation(false);
+
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "fcGiornataInfo", "fcGiocatore", "ammonizione", "assist", "autorete", "cs", "espulsione", "g", "goalRealizzato", "goalSubito", "rigoreFallito", "rigoreParato", "rigoreSegnato", "ts", "votoGiocatore", "gdv");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "fcGiornataInfo", "fcGiocatore", "ammonizione", "assist", "autorete", "cs", "espulsione", "g", "goalRealizzato", "goalSubito", "rigoreFallito", "rigoreParato", "rigoreSegnato", "ts", "votoGiocatore", "gdv");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "fcGiornataInfo", "fcGiocatore", "ammonizione", "assist", "autorete", "cs", "espulsione", "g", "goalRealizzato", "goalSubito", "rigoreFallito", "rigoreParato", "rigoreSegnato", "ts", "votoGiocatore", "gdv");
+		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "fcGiornataInfo", "fcGiocatore", "ammonizione", "assist", "autorete", "cs", "espulsione", "g", "goalRealizzato", "goalSubito", "rigoreFallito", "rigoreParato", "rigoreSegnato", "ts", "votoGiocatore", "gdv");
+
+		crud.getGrid().removeAllColumns();
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getVotoGiocatore() : "")).setHeader("Voto");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getG() : "")).setHeader("G");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getTs() : "")).setHeader("Ts");
+		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getCs() : "")).setHeader("Ts");
+
+		crud.getGrid().setColumnReorderingAllowed(true);
+
+		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoService.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
+		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreService.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+
+		crud.setRowCountCaption("%d Pagelle(s) found");
+		crud.setClickRowToUpdate(true);
+		crud.setUpdateOperationVisible(true);
+
+		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+		giornataInfoFilter.setPlaceholder("Giornata");
+		giornataInfoFilter.setItems(giornataInfoService.findAll());
+		if ("1".equals(campionato.getType())) {
+			giornataInfoFilter.setItemLabelGenerator(Utils::buildInfoGiornata);
+		} else {
+			giornataInfoFilter.setItemLabelGenerator(g -> Utils.buildInfoGiornataEm(g, campionato));
+		}
+		giornataInfoFilter.addValueChangeListener(e -> crud.refreshGrid());
+		crud.getCrudLayout().addFilterComponent(giornataInfoFilter);
+		giornataInfoFilter.setClearButtonVisible(true);
+
+		giocatoreFilter.setPlaceholder(Costants.GIOCATORE);
+		giocatoreFilter.setItems(giocatoreService.findAll());
+		giocatoreFilter.setItemLabelGenerator(FcGiocatore::getCognGiocatore);
+		giocatoreFilter.setRenderer(new ComponentRenderer<>(g -> {
+			VerticalLayout container = new VerticalLayout();
+
+			Span c1 = new Span(g.getCognGiocatore());
+			container.add(c1);
+
+			Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+			c2.getStyle().set("fontSize", "smaller");
+			container.add(c2);
+
+			Span c3 = new Span("Q " + g.getQuotazione());
+			c2.getStyle().set("fontSize", "smaller");
+			container.add(c3);
+
+			return container;
+		}));
+		giocatoreFilter.addValueChangeListener(e -> crud.refreshGrid());
+		crud.getCrudLayout().addFilterComponent(giocatoreFilter);
+		giocatoreFilter.setClearButtonVisible(true);
+
+		Button clearFilters = new Button("clear");
+		clearFilters.addClickListener(event -> {
+			giornataInfoFilter.clear();
+			giocatoreFilter.clear();
+		});
+		crud.getCrudLayout().addFilterComponent(clearFilters);
+
+		crud.setFindAllOperation(() -> pagelleService.findByCustonm(giornataInfoFilter.getValue(), giocatoreFilter.getValue()));
+		crud.setAddOperation(pagelleService::save);
+		crud.setUpdateOperation(pagelleService::save);
+		crud.setDeleteOperation(pagelleService::delete);
+
+		add(crud);
+	}
+
+}
