@@ -20,36 +20,99 @@ public class FcExpFreePl implements java.io.Serializable{
 	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name = "id", unique = true, nullable = false)
 	private int id;
+
+	@Column(name = "q1")
 	private String q1;
+	
+	@Column(name = "q10")
 	private String q10;
+	
+	@Column(name = "q2")
 	private String q2;
+	
+	@Column(name = "q3")
 	private String q3;
+	
+	@Column(name = "q4")
 	private String q4;
+	
+	@Column(name = "q5")
 	private String q5;
+	
+	@Column(name = "q6")
 	private String q6;
+	
+	@Column(name = "q7")
 	private String q7;
+	
+	@Column(name = "q8")
 	private String q8;
+	
+	@Column(name = "q9")
 	private String q9;
+
+	@Column(name = "r1")
 	private String r1;
+	
+	@Column(name = "r10")
 	private String r10;
+
+	@Column(name = "r2")
 	private String r2;
+	
+	@Column(name = "r3")
 	private String r3;
+	
+	@Column(name = "r4")
 	private String r4;
+	
+	@Column(name = "r5")
 	private String r5;
+	
+	@Column(name = "r6")
 	private String r6;
+	
+	@Column(name = "r7")
 	private String r7;
+	
+	@Column(name = "r8")
 	private String r8;
+	
+	@Column(name = "r9")
 	private String r9;
+
+	@Column(name = "s1")
 	private String s1;
+	
+	@Column(name = "s10")
 	private String s10;
+	
+	@Column(name = "s2")
 	private String s2;
+	
+	@Column(name = "s3")
 	private String s3;
+	
+	@Column(name = "s4")
 	private String s4;
+	
+	@Column(name = "s5")
 	private String s5;
+	
+	@Column(name = "s6")
 	private String s6;
+	
+	@Column(name = "s7")
 	private String s7;
+	
+	@Column(name = "s8")
 	private String s8;
+	
+	@Column(name = "s9")
 	private String s9;
 
 	public FcExpFreePl() {
@@ -98,9 +161,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s9 = s9;
 	}
 
-	@Id
-
-	@Column(name = "id", unique = true, nullable = false)
 	public int getId() {
 		return this.id;
 	}
@@ -109,7 +169,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@Column(name = "q1")
 	public String getQ1() {
 		return this.q1;
 	}
@@ -118,7 +177,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q1 = q1;
 	}
 
-	@Column(name = "q10")
 	public String getQ10() {
 		return this.q10;
 	}
@@ -127,7 +185,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q10 = q10;
 	}
 
-	@Column(name = "q2")
 	public String getQ2() {
 		return this.q2;
 	}
@@ -136,7 +193,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q2 = q2;
 	}
 
-	@Column(name = "q3")
 	public String getQ3() {
 		return this.q3;
 	}
@@ -145,7 +201,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q3 = q3;
 	}
 
-	@Column(name = "q4")
 	public String getQ4() {
 		return this.q4;
 	}
@@ -154,7 +209,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q4 = q4;
 	}
 
-	@Column(name = "q5")
 	public String getQ5() {
 		return this.q5;
 	}
@@ -163,7 +217,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q5 = q5;
 	}
 
-	@Column(name = "q6")
 	public String getQ6() {
 		return this.q6;
 	}
@@ -172,7 +225,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q6 = q6;
 	}
 
-	@Column(name = "q7")
 	public String getQ7() {
 		return this.q7;
 	}
@@ -181,7 +233,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q7 = q7;
 	}
 
-	@Column(name = "q8")
 	public String getQ8() {
 		return this.q8;
 	}
@@ -190,7 +241,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q8 = q8;
 	}
 
-	@Column(name = "q9")
 	public String getQ9() {
 		return this.q9;
 	}
@@ -199,7 +249,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.q9 = q9;
 	}
 
-	@Column(name = "r1")
 	public String getR1() {
 		return this.r1;
 	}
@@ -208,7 +257,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r1 = r1;
 	}
 
-	@Column(name = "r10")
 	public String getR10() {
 		return this.r10;
 	}
@@ -217,7 +265,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r10 = r10;
 	}
 
-	@Column(name = "r2")
 	public String getR2() {
 		return this.r2;
 	}
@@ -226,7 +273,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r2 = r2;
 	}
 
-	@Column(name = "r3")
 	public String getR3() {
 		return this.r3;
 	}
@@ -235,7 +281,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r3 = r3;
 	}
 
-	@Column(name = "r4")
 	public String getR4() {
 		return this.r4;
 	}
@@ -244,7 +289,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r4 = r4;
 	}
 
-	@Column(name = "r5")
 	public String getR5() {
 		return this.r5;
 	}
@@ -253,7 +297,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r5 = r5;
 	}
 
-	@Column(name = "r6")
 	public String getR6() {
 		return this.r6;
 	}
@@ -262,7 +305,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r6 = r6;
 	}
 
-	@Column(name = "r7")
 	public String getR7() {
 		return this.r7;
 	}
@@ -271,7 +313,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r7 = r7;
 	}
 
-	@Column(name = "r8")
 	public String getR8() {
 		return this.r8;
 	}
@@ -280,7 +321,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r8 = r8;
 	}
 
-	@Column(name = "r9")
 	public String getR9() {
 		return this.r9;
 	}
@@ -289,7 +329,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.r9 = r9;
 	}
 
-	@Column(name = "s1")
 	public String getS1() {
 		return this.s1;
 	}
@@ -298,7 +337,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s1 = s1;
 	}
 
-	@Column(name = "s10")
 	public String getS10() {
 		return this.s10;
 	}
@@ -307,7 +345,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s10 = s10;
 	}
 
-	@Column(name = "s2")
 	public String getS2() {
 		return this.s2;
 	}
@@ -316,7 +353,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s2 = s2;
 	}
 
-	@Column(name = "s3")
 	public String getS3() {
 		return this.s3;
 	}
@@ -325,7 +361,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s3 = s3;
 	}
 
-	@Column(name = "s4")
 	public String getS4() {
 		return this.s4;
 	}
@@ -334,7 +369,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s4 = s4;
 	}
 
-	@Column(name = "s5")
 	public String getS5() {
 		return this.s5;
 	}
@@ -343,7 +377,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s5 = s5;
 	}
 
-	@Column(name = "s6")
 	public String getS6() {
 		return this.s6;
 	}
@@ -352,7 +385,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s6 = s6;
 	}
 
-	@Column(name = "s7")
 	public String getS7() {
 		return this.s7;
 	}
@@ -361,7 +393,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s7 = s7;
 	}
 
-	@Column(name = "s8")
 	public String getS8() {
 		return this.s8;
 	}
@@ -370,7 +401,6 @@ public class FcExpFreePl implements java.io.Serializable{
 		this.s8 = s8;
 	}
 
-	@Column(name = "s9")
 	public String getS9() {
 		return this.s9;
 	}

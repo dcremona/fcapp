@@ -20,19 +20,48 @@ public class FcExpStat implements java.io.Serializable{
 	 */
 	@Serial
     private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name = "id", unique = true, nullable = false)
 	private int id;
+
+	@Column(name = "anno")
 	private String anno;
+	
+	@Column(name = "campionato")
 	private String campionato;
+	
+	@Column(name = "p2")
 	private String p2;
+	
+	@Column(name = "p3")
 	private String p3;
+	
+	@Column(name = "p4")
 	private String p4;
+	
+	@Column(name = "p5")
 	private String p5;
+	
+	@Column(name = "p6")
 	private String p6;
+	
+	@Column(name = "p7")
 	private String p7;
+	
+	@Column(name = "p8")
 	private String p8;
+
+	@Column(name = "scudetto")
 	private String scudetto;
+
+	@Column(name = "win_clas_pt")
 	private String winClasPt;
+
+	@Column(name = "win_clas_reg")
 	private String winClasReg;
+
+	@Column(name = "win_clas_TvsT")
 	private String winClasTvsT;
 
 	public FcExpStat() {
@@ -62,9 +91,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.winClasTvsT = winClasTvsT;
 	}
 
-	@Id
-
-	@Column(name = "id", unique = true, nullable = false)
 	public int getId() {
 		return this.id;
 	}
@@ -73,7 +99,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.id = id;
 	}
 
-	@Column(name = "anno")
 	public String getAnno() {
 		return this.anno;
 	}
@@ -82,7 +107,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.anno = anno;
 	}
 
-	@Column(name = "campionato")
 	public String getCampionato() {
 		return this.campionato;
 	}
@@ -91,7 +115,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.campionato = campionato;
 	}
 
-	@Column(name = "p2")
 	public String getP2() {
 		return this.p2;
 	}
@@ -100,7 +123,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p2 = p2;
 	}
 
-	@Column(name = "p3")
 	public String getP3() {
 		return this.p3;
 	}
@@ -109,7 +131,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p3 = p3;
 	}
 
-	@Column(name = "p4")
 	public String getP4() {
 		return this.p4;
 	}
@@ -118,7 +139,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p4 = p4;
 	}
 
-	@Column(name = "p5")
 	public String getP5() {
 		return this.p5;
 	}
@@ -127,7 +147,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p5 = p5;
 	}
 
-	@Column(name = "p6")
 	public String getP6() {
 		return this.p6;
 	}
@@ -136,7 +155,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p6 = p6;
 	}
 
-	@Column(name = "p7")
 	public String getP7() {
 		return this.p7;
 	}
@@ -145,7 +163,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p7 = p7;
 	}
 
-	@Column(name = "p8")
 	public String getP8() {
 		return this.p8;
 	}
@@ -154,7 +171,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.p8 = p8;
 	}
 
-	@Column(name = "scudetto")
 	public String getScudetto() {
 		return this.scudetto;
 	}
@@ -163,7 +179,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.scudetto = scudetto;
 	}
 
-	@Column(name = "win_clas_pt")
 	public String getWinClasPt() {
 		return this.winClasPt;
 	}
@@ -172,7 +187,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.winClasPt = winClasPt;
 	}
 
-	@Column(name = "win_clas_reg")
 	public String getWinClasReg() {
 		return this.winClasReg;
 	}
@@ -181,7 +195,6 @@ public class FcExpStat implements java.io.Serializable{
 		this.winClasReg = winClasReg;
 	}
 
-	@Column(name = "win_clas_TvsT")
 	public String getWinClasTvsT() {
 		return this.winClasTvsT;
 	}
