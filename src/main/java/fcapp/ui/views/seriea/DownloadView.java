@@ -3,7 +3,6 @@ package fcapp.ui.views.seriea;
 import java.io.File;
 import java.io.Serial;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -75,8 +74,6 @@ public class DownloadView extends VerticalLayout
 	private final AttoreService attoreService;
 	private final AccessoService accessoService;
 
-	public List<FcAttore> squadre = new ArrayList<>();
-
 	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
 	private final Grid<FcExpRosea> gridRosea = new Grid<>();
 	private Button salvaRoseA = null;
@@ -99,12 +96,7 @@ public class DownloadView extends VerticalLayout
 			return;
 		}
 		accessoService.insertAccesso(this.getClass().getName());
-		initData();
 		initLayout();
-	}
-
-	private void initData() {
-		squadre = attoreService.findByActive(true);
 	}
 
 	private void initLayout() {

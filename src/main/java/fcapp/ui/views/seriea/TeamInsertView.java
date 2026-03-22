@@ -1670,7 +1670,7 @@ public class TeamInsertView extends VerticalLayout
 				return;
 			}
 
-			if (checkMail.getValue()) {
+			if (Boolean.TRUE.equals(checkMail.getValue())) {
 				try {
 					String dataOra = getSysdate();
 

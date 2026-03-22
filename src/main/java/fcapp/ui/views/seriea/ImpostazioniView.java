@@ -548,9 +548,9 @@ public class ImpostazioniView extends VerticalLayout
 				Boolean value = event.getValue();
 				FcProperties proprieta = new FcProperties();
 				proprieta.setKey(key);
-				proprieta.setValue(value ? "1" : "0");
+				proprieta.setValue(Boolean.TRUE.equals(value) ? "1" : "0");
 				proprietaService.save(proprieta);
-				p.setProperty(key, value ? "1" : "0");
+				p.setProperty(key, Boolean.TRUE.equals(value) ? "1" : "0");
 				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 			} catch (Exception e) {
 				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
@@ -734,7 +734,7 @@ public class ImpostazioniView extends VerticalLayout
 				String urlFanta = (String) p.get("URL_FANTA");
 
 				String votiExcel = "Voti-Ufficiosi-Excel";
-				if (chkUfficiali.getValue()) {
+				if (Boolean.TRUE.equals(chkUfficiali.getValue())) {
 					votiExcel = "Voti-Ufficiali-Excel";
 				}
 
@@ -761,7 +761,7 @@ public class ImpostazioniView extends VerticalLayout
 			} else if (event.getSource() == calcola) {
 
 				int forzaVotoGiocatore = -1;
-				if (chkForzaVotoGiocatore.getValue()) {
+				if (Boolean.TRUE.equals(chkForzaVotoGiocatore.getValue())) {
 					forzaVotoGiocatore = 0;
 				}
 				jobProcessGiornata.algoritmo(codiceGiornata, campionato, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
@@ -781,7 +781,7 @@ public class ImpostazioniView extends VerticalLayout
 
 				String pathImg = "images/";
 				p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
-				if (chkUfficiali.getValue()) {
+				if (Boolean.TRUE.equals(chkUfficiali.getValue())) {
 					p.setProperty("INFO_RESULT", "UFFICIALI");
 				} else {
 					p.setProperty("INFO_RESULT", "UFFICIOSI");
@@ -961,8 +961,6 @@ public class ImpostazioniView extends VerticalLayout
 		if (StringUtils.isNotEmpty(emailDestinatario.toString())) {
 			to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
 		}
-
-        // log.info(formazioneHtml);
 		try {
 			String from = env.getProperty("spring.mail.secondary.username");
 			emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);

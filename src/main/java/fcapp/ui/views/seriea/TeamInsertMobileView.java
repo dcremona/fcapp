@@ -211,7 +211,7 @@ public class TeamInsertMobileView extends VerticalLayout
 	}
 
 	@PostConstruct
-	void init() throws Exception {
+	void init() {
 		log.info("init");
 		if (!Utils.isValidVaadinSession()) {
 			return;
@@ -1609,7 +1609,7 @@ public class TeamInsertMobileView extends VerticalLayout
 					return;
 				}
 
-				if (checkMail.getValue()) {
+				if (Boolean.TRUE.equals(checkMail.getValue())) {
 					try {
 						String dataOra = getSysdate();
 

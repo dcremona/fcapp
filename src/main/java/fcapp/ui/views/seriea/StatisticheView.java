@@ -614,35 +614,35 @@ public class StatisticheView extends VerticalLayout
 
 		dataProvider.clearFilters();
 
-		if (toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
+		if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equals(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))))) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P));
-		} else if (!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D));
-		} else if (!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue())))))) && Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (!toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(!toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D));
-		} else if (toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(!toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (!toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(toggleA.getValue()))) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (!toggleP.getValue() && toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && !toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(!toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (toggleP.getValue() && toggleD.getValue() && !toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (toggleP.getValue() && !toggleD.getValue() && toggleC.getValue() && toggleA.getValue()) {
+		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
 		} else {
 			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase("-"));
@@ -656,7 +656,7 @@ public class StatisticheView extends VerticalLayout
 			dataProvider.addFilter(s -> s.getFcGiocatore().getQuotazione() <= txtQuotazione.getValue().intValue());
 		}
 
-		if (freePlayers.getValue()) {
+		if (Boolean.TRUE.equals(Boolean.TRUE.equals(freePlayers.getValue()))) {
 			dataProvider.addFilter(s -> StringUtils.isEmpty(s.getProprietario()));
 		}
 

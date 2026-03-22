@@ -2,10 +2,12 @@ package fcapp.utils;
 
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 
-public class CustomMessageDialog{
+public class CustomMessageDialog {
+	private CustomMessageDialog() {
+		/* This utility class should not be instantiated */
+	}
 
 	public static final String LABEL_CHIUDI = "Chiudi";
-	//public static final String LABEL_ANNULLA = "Annulla";
 	public static final String LABEL_SALVA = "Salva";
 
 	public static final String MSG_OK = "Operazione eseguita con successo!";

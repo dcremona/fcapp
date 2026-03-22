@@ -1,6 +1,9 @@
 package fcapp.utils;
 
-public class Costants{
+public class Costants {
+	private Costants() {
+		/* This utility class should not be instantiated */
+	}
 
 	public static final String HTTP_URL_IMG_OLD = "https://content.fantacalcio.it/web/campioncini/small/";
 	public static final String HTTP_URL_IMG = "https://content.fantacalcio.it/web/campioncini/20/small/";
@@ -150,7 +153,8 @@ public class Costants{
 	public static final String SCHEMA_433 = "4-3-3";
 	public static final String SCHEMA_352 = "3-5-2";
 	public static final String SCHEMA_343 = "3-4-3";
-	public static final String[] SCHEMI = new String[] { SCHEMA_541, SCHEMA_532, SCHEMA_451, SCHEMA_442, SCHEMA_433, SCHEMA_352, SCHEMA_343 };
+	public static final String[] SCHEMI = new String[] { SCHEMA_541, SCHEMA_532, SCHEMA_451, SCHEMA_442, SCHEMA_433,
+			SCHEMA_352, SCHEMA_343 };
 
 	public static final String NUMBER_DECIMAL = "#0.00";
 }
