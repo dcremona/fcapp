@@ -4,53 +4,58 @@
 
 package fcapp.utils;
 
-public class MyToolkit{
+public class MyToolkit {
+	private MyToolkit() {
+		/* This utility class should not be instantiated */
+	}
 
 	// Metodo utilizzato per ordinare un array di campi del buffer
 	// considerando solo il campo passato
-	public static void sortBuffer(String[] a, Object[] ValoreBuffer) {
-		int L,R;
+	public static void sortBuffer(String[] a, Object[] valoreBuffer) {
+		int l;
+		int r;
 		Object x;
 
-		L = ((a.length) / 2) + 1;
-		R = a.length - 1;
+		l = ((a.length) / 2) + 1;
+		r = a.length - 1;
 
-		while (L > 0) {
-			siftBuffer(--L, R, a, ValoreBuffer);
+		while (l > 0) {
+			siftBuffer(--l, r, a, valoreBuffer);
 		}
 
-		while (R > 0) {
+		while (r > 0) {
 			x = a[0];
-			a[0] = a[R];
-			a[R] = (String) x;
-			x = ValoreBuffer[0];
-			ValoreBuffer[0] = ValoreBuffer[R];
-			ValoreBuffer[R] = x;
-			siftBuffer(L, --R, a, ValoreBuffer);
+			a[0] = a[r];
+			a[r] = (String) x;
+			x = valoreBuffer[0];
+			valoreBuffer[0] = valoreBuffer[r];
+			valoreBuffer[r] = x;
+			siftBuffer(l, --r, a, valoreBuffer);
 		}
 
 	}
 
-	private static void siftBuffer(int L, int R, String[] a, Object[] rstDati) {
-		int i,j;
+	private static void siftBuffer(int l, int r, String[] a, Object[] rstDati) {
+		int i;
+		int j;
 		String x;
 		Object x2;
 
-		i = L;
-		j = 2 * L;
-		x = a[L];
-		x2 = rstDati[L];
+		i = l;
+		j = 2 * l;
+		x = a[l];
+		x2 = rstDati[l];
 
-		if ((j < R) && (a[j].compareTo(a[j + 1]) < 0)) {
+		if ((j < r) && (a[j].compareTo(a[j + 1]) < 0)) {
 			j++;
 		}
 
-		while ((j <= R) && (x.compareTo(a[j]) < 0)) {
+		while ((j <= r) && (x.compareTo(a[j]) < 0)) {
 			a[i] = a[j];
 			rstDati[i] = rstDati[j];
 			i = j;
 			j *= 2;
-			if ((j < R) && (a[j].compareTo(a[j + 1]) < 0)) {
+			if ((j < r) && (a[j].compareTo(a[j + 1]) < 0)) {
 				j++;
 			}
 		}
@@ -60,49 +65,51 @@ public class MyToolkit{
 
 	}
 
-	public static void sortBufferN(long[] a, Object[] ValoreBuffer) {
-		int L,R;
+	public static void sortBufferN(long[] a, Object[] valoreBuffer) {
+		int l;
+		int r;
 		Object x2;
 		long x;
 
-		L = ((a.length) / 2) + 1;
-		R = a.length - 1;
+		l = ((a.length) / 2) + 1;
+		r = a.length - 1;
 
-		while (L > 0) {
-			siftBufferN(--L, R, a, ValoreBuffer);
+		while (l > 0) {
+			siftBufferN(--l, r, a, valoreBuffer);
 		}
 
-		while (R > 0) {
+		while (r > 0) {
 			x = a[0];
-			a[0] = a[R];
-			a[R] = x;
-			x2 = ValoreBuffer[0];
-			ValoreBuffer[0] = ValoreBuffer[R];
-			ValoreBuffer[R] = x2;
-			siftBufferN(L, --R, a, ValoreBuffer);
+			a[0] = a[r];
+			a[r] = x;
+			x2 = valoreBuffer[0];
+			valoreBuffer[0] = valoreBuffer[r];
+			valoreBuffer[r] = x2;
+			siftBufferN(l, --r, a, valoreBuffer);
 		}
 
 	}
 
-	private static void siftBufferN(int L, int R, long[] a, Object[] rstDati) {
-		int i,j;
+	private static void siftBufferN(int l, int r, long[] a, Object[] rstDati) {
+		int i;
+		int j;
 		long x;
 		Object x2;
-		i = L;
-		j = 2 * L;
-		x = a[L];
-		x2 = rstDati[L];
+		i = l;
+		j = 2 * l;
+		x = a[l];
+		x2 = rstDati[l];
 
-		if ((j < R) && (a[j] < a[j + 1])) {
+		if ((j < r) && (a[j] < a[j + 1])) {
 			j++;
 		}
 
-		while ((j <= R) && (x < a[j])) {
+		while ((j <= r) && (x < a[j])) {
 			a[i] = a[j];
 			rstDati[i] = rstDati[j];
 			i = j;
 			j *= 2;
-			if ((j < R) && (a[j] < a[j + 1])) {
+			if ((j < r) && (a[j] < a[j + 1])) {
 				j++;
 			}
 		}
@@ -125,7 +132,7 @@ public class MyToolkit{
 
 		StringBuilder sRiempimento = new StringBuilder(lng);
 
-        sRiempimento.append(String.valueOf(f).repeat(lng));
+		sRiempimento.append(String.valueOf(f).repeat(lng));
 
 		if (pos == 0) {
 			return sRiempimento + s;
@@ -133,27 +140,6 @@ public class MyToolkit{
 			return s + sRiempimento;
 		}
 	}
-
-	/*
-	 * public static String addDecimalPoint(String sText) { int iLen =
-	 * sText.length(); String sApp = new String(); String sApp2 = new String();
-	 * String sDec = ""; int iNdx = 0; if ((iNdx = sText.indexOf(',')) != -1) {
-	 * sDec = sText.substring(iNdx); sText = sText.substring(0, iNdx); iLen =
-	 * sText.length(); } int iCont = 0;
-	 *
-	 * for (int i = iLen; i > 0; i--) { char k = sText.charAt(i - 1);
-	 *
-	 * if (k != ',') { iCont++;
-	 *
-	 * if (iCont > 3) { sApp += "." + sApp.valueOf(k); iCont = 1; } else sApp +=
-	 * sApp.valueOf(k); } }
-	 *
-	 * iLen = sApp.length();
-	 *
-	 * for (int y = iLen; y > 0; y--) sApp2 += sApp.charAt(y - 1);
-	 *
-	 * return sApp2 + sDec; }
-	 */
 
 	public static boolean isValidDate(int giorno, int mese, int anno) {
 		boolean dataValida = false;
@@ -167,7 +153,7 @@ public class MyToolkit{
 				if (giorno <= nGiorniMese[mese - 1] && giorno > 0) {
 					dataValida = true;
 				} else {
-                    dataValida = mese == 2 && annoBisestile && giorno == 29;
+					dataValida = mese == 2 && annoBisestile && giorno == 29;
 				}
 			}
 		}

@@ -3,10 +3,14 @@ package fcapp.backend.job;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,7 +29,7 @@ import org.springframework.stereotype.Controller;
 import fcapp.utils.Costants;
 
 @Controller
-public class JobProcessFileCsv{
+public class JobProcessFileCsv {
 
 	private static final Logger log = LoggerFactory.getLogger(JobProcessFileCsv.class);
 
@@ -34,8 +38,7 @@ public class JobProcessFileCsv{
 	private static final String EXT_HTML = ".html";
 	private static final String EXT_CSV = ".csv";
 
-	public void downloadCsv(String httpUrl, String pathCsv, String fileName,
-			int headCount) throws Exception {
+	public void downloadCsv(String httpUrl, String pathCsv, String fileName, int headCount) throws Exception {
 
 		log.info("downloadCsv START");
 
@@ -49,8 +52,8 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-        assert input != null;
-        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
+		assert input != null;
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
@@ -81,31 +84,27 @@ public class JobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
-			// DELETE
-			File f = new File(pathCsv + fileName + EXT_CSV);
-			if (f.exists()) {
-				f.delete();
-			}
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 
-			outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+//			File f = new File(pathCsv + fileName + EXT_CSV);
+//			if (f.exists()) {
+//				f.delete();
+//			}
+
+			Path path = Paths.get(pathCsv + fileName + EXT_CSV);
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
+//			cleanUp(path);
+
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
 		}
 
 		log.info("downloadCsv END");
 	}
 
-	public void downloadCsvSqualificatiInfortunati(String httpUrl,
-			String pathCsv, String fileName) throws Exception {
+	public void downloadCsvSqualificatiInfortunati(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvSqualificatiInfortunati START");
 
@@ -119,8 +118,8 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-        assert input != null;
-        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
+		assert input != null;
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 		// Load ArrayList with table row strings
@@ -161,31 +160,26 @@ public class JobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 			// DELETE
-			File f = new File(pathCsv + fileName + EXT_CSV);
-			if (f.exists()) {
-				f.delete();
-			}
-
-			outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+//			File f = new File(pathCsv + fileName + EXT_CSV);
+//			if (f.exists()) {
+//				f.delete();
+//			}
+			Path path = Paths.get(pathCsv + fileName + EXT_CSV);
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
+//			cleanUp(path);
+
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
 		}
 
 		log.info("downloadCsvSqualificatiInfortunati END");
 	}
 
-	public void downloadCsvProbabili(String httpUrl, String pathCsv,
-			String fileName) throws Exception {
+	public void downloadCsvProbabili(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvProbabili START");
 
@@ -199,8 +193,8 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-        assert input != null;
-        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
+		assert input != null;
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 		// select all <tr> or Table Row Elements
 		Elements tableRows = doc.select("table");
 		// Load ArrayList with table row strings
@@ -210,7 +204,8 @@ public class JobProcessFileCsv{
 				Elements thRows = trRow.select("th");
 				for (Element tdRow : thRows) {
 					String rowData = tdRow.text();
-					if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && (Costants.TITOLARI.equals(rowData) || Costants.PANCHINA.equals(rowData))) {
+					if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1
+							&& (Costants.TITOLARI.equals(rowData) || Costants.PANCHINA.equals(rowData))) {
 						data.append(rowData);
 						data.append(";");
 						data.append(rowData);
@@ -231,31 +226,26 @@ public class JobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 			// DELETE
-			File f = new File(pathCsv + fileName + EXT_CSV);
-			if (f.exists()) {
-				f.delete();
-			}
-
-			outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+//			File f = new File(pathCsv + fileName + EXT_CSV);
+//			if (f.exists()) {
+//				f.delete();
+//			}
+			Path path = Paths.get(pathCsv + fileName + EXT_CSV);
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
+//			cleanUp(path);
+
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
 		}
 
 		log.info("downloadCsvProbabili END");
 	}
 
-	public void downloadCsvProbabiliFantaGazzetta(String httpUrl,
-			String pathCsv, String fileName) throws Exception {
+	public void downloadCsvProbabiliFantaGazzetta(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvProbabiliFantaGazzetta START");
 
@@ -269,18 +259,19 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-        assert input != null;
-        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
+		assert input != null;
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		Elements ulRows = doc.select("li");
 
 		for (Element liRow : ulRows) {
 			Element parent = liRow.parent();
-            assert parent != null;
-            String classNameParent = parent.className();
+			assert parent != null;
+			String classNameParent = parent.className();
 			String rowData = liRow.text();
 			String className = liRow.className();
-			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && "player-item pill".equals(className)) {
+			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1
+					&& "player-item pill".equals(className)) {
 				String lastCharacter = rowData.substring(rowData.length() - 1);
 				if ("%".equals(lastCharacter)) {
 					Elements children = liRow.children();
@@ -306,7 +297,7 @@ public class JobProcessFileCsv{
 								}
 							}
 
-                            data.append(nomeImg);
+							data.append(nomeImg);
 							data.append(";");
 							if ("player-list starters".equals(classNameParent)) {
 								data.append(Costants.TITOLARE);
@@ -325,31 +316,27 @@ public class JobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 			// DELETE
-			File f = new File(pathCsv + fileName + EXT_CSV);
-			if (f.exists()) {
-				f.delete();
-			}
-
-			outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+//			File f = new File(pathCsv + fileName + EXT_CSV);
+//			if (f.exists()) {
+//				f.delete();
+//			}
+			Path path = Paths.get(pathCsv + fileName + EXT_CSV);
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
+//			cleanUp(path);
+
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
 		}
 
 		log.info("downloadCsvProbabiliFantaGazzetta END");
 	}
 
-	public void downloadCsvSqualificatiInfortunatiFantaGazzetta(String httpUrl,
-			String pathCsv, String fileName) throws Exception {
+	public void downloadCsvSqualificatiInfortunatiFantaGazzetta(String httpUrl, String pathCsv, String fileName)
+			throws Exception {
 
 		log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta START");
 
@@ -363,21 +350,22 @@ public class JobProcessFileCsv{
 
 		StringBuilder data = new StringBuilder();
 
-        assert input != null;
-        Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
+		assert input != null;
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		Elements ulRows = doc.select("ul");
 
 		for (Element ulRow : ulRows) {
 			String rowData = ulRow.text();
 			String className = ulRow.className();
-            assert ulRow.parent() != null;
-            Element parent =  ulRow.parent().parent();
-			//String rowDataparent = parent.text();
-            assert parent != null;
-            String classNameparent = parent.className();
+			assert ulRow.parent() != null;
+			Element parent = ulRow.parent().parent();
+			// String rowDataparent = parent.text();
+			assert parent != null;
+			String classNameparent = parent.className();
 
-			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && ("injured-list".equals(className) || "suspendeds-list".equals(className))) {
+			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1
+					&& ("injured-list".equals(className) || "suspendeds-list".equals(className))) {
 				Elements children = ulRow.children();
 				String href;
 
@@ -409,10 +397,10 @@ public class JobProcessFileCsv{
 								infoSqualificatoInfortunato = Costants.SQUALIFICATO;
 								note = Costants.SQUALIFICATO;
 							} else {
-                                log.info(" nomeImg={} percentuale=0 href {}", nomeImg, href);
+								log.info(" nomeImg={} percentuale=0 href {}", nomeImg, href);
 								continue;
 							}
-							
+
 							data.append(nomeImg);
 							data.append(";");
 							data.append(infoSqualificatoInfortunato);
@@ -430,49 +418,41 @@ public class JobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 			// DELETE
-			File f = new File(pathCsv + fileName + EXT_CSV);
-			if (f.exists()) {
-				f.delete();
-			}
+//			File f = new File(pathCsv + fileName + EXT_CSV);
+//			if (f.exists()) {
+//				f.delete();
+//			}
 
-			outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV);
+			Path path = Paths.get(pathCsv + fileName + EXT_CSV);
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
+//			cleanUp(path);
+
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
 		}
 
 		log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta END");
 	}
 
-	private void fileDownload(String fAddress, String localFileName,
-			String destinationDir) throws Exception {
+	private void fileDownload(String fAddress, String localFileName, String destinationDir) throws Exception {
 
 		// Create a new trust manager that trust all certificates
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager(){
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 			@Override
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
 			}
 
 			@Override
-			public void checkClientTrusted(
-					java.security.cert.X509Certificate[] certs,
-					String authType) {
+			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
 			}
 
 			@Override
-			public void checkServerTrusted(
-					java.security.cert.X509Certificate[] certs,
-					String authType) {
+			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
 			}
 		} };
 
@@ -484,16 +464,14 @@ public class JobProcessFileCsv{
 		} catch (Exception ignored) {
 		}
 
-		OutputStream outStream = null;
 		URLConnection uCon;
 		InputStream is = null;
 
-		try {
+		try (OutputStream outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName))) {
 			byte[] buf;
 			int byteRead;
 			int byteWritten = 0;
 			URL url = new URL(fAddress);
-			outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName));
 
 			uCon = url.openConnection();
 			is = uCon.getInputStream();
@@ -502,7 +480,7 @@ public class JobProcessFileCsv{
 				outStream.write(buf, 0, byteRead);
 				byteWritten += byteRead;
 			}
-            log.info("File name: {} bytes: {}", localFileName, byteWritten);
+			log.info("File name: {} bytes: {}", localFileName, byteWritten);
 			log.info("Downloaded Successfully.");
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -510,10 +488,13 @@ public class JobProcessFileCsv{
 			if (is != null) {
 				is.close();
 			}
-			if (outStream != null) {
-				outStream.close();
-			}
 		}
 	}
+
+//	public void cleanUp(Path path) throws IOException {
+//		log.info("START cleanUp... ");
+//		Files.delete(path);
+//		log.info("END cleanUp  Successfully.");
+//	}
 
 }

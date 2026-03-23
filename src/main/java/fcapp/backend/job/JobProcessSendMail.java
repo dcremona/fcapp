@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import fcapp.backend.data.RisultatoBean;
 import fcapp.backend.data.entity.FcAttore;
@@ -49,7 +50,7 @@ import fcapp.utils.JasperReportUtils;
 import fcapp.utils.Utils;
 
 @Controller
-public class JobProcessSendMail{
+public class JobProcessSendMail {
 
 	private static final Logger log = LoggerFactory.getLogger(JobProcessSendMail.class);
 
@@ -86,13 +87,12 @@ public class JobProcessSendMail{
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public byte[] getJasperRisultati(FcCampionato campionato,
-									 FcGiornataInfo giornataInfo, String pathImg) {
+	public byte[] getJasperRisultati(FcCampionato campionato, FcGiornataInfo giornataInfo, String pathImg) {
 		byte[] b = null;
 		try {
 			Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
 			Collection<RisultatoBean> collection = new ArrayList<>();
-			collection.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
+			collection.add(new RisultatoBean("P", "S1", 6.0, 6.0, 6.0, 6.0));
 			Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
 			InputStream inputStream = resource.getInputStream();
 			b = JasperReportUtils.getReportByteCollectionDataSource(inputStream, params, collection);
@@ -102,16 +102,14 @@ public class JobProcessSendMail{
 		return b;
 	}
 
-	@ResponseBody
-	public void writePdfAndSendMail(FcCampionato campionato,
-			FcGiornataInfo giornataInfo, Properties p, String pathImg,
+	public void writePdfAndSendMail(FcCampionato campionato, FcGiornataInfo giornataInfo, Properties p, String pathImg,
 			String pathOutputPdf) throws SQLException, IOException {
 
 		log.info("writePdfAndSendMail START");
 
 		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
 		Collection<RisultatoBean> l = new ArrayList<>();
-		l.add(new RisultatoBean("P","S1", 6.0, 6.0, 6.0, 6.0));
+		l.add(new RisultatoBean("P", "S1", 6.0, 6.0, 6.0, 6.0));
 		String testFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
 
 		Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
@@ -123,66 +121,65 @@ public class JobProcessSendMail{
 			log.error(e.getMessage());
 		}
 
-		Connection conn = null;
-		FileOutputStream outputStream2 = null;
-		try {
+		String testFileName2 = pathOutputPdf + "Classifica.pdf";
+		try (FileOutputStream outputStream2 = new FileOutputStream(testFileName2)) {
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
 			parameters.put("DIVISORE", "" + Costants.DIVISORE_100);
-			String testFileName2 = pathOutputPdf + "Classifica.pdf";
+
 			Resource resource2 = resourceLoader.getResource("classpath:reports/classifica.jasper");
 			InputStream inputStream2 = resource2.getInputStream();
 
-			outputStream2 = new FileOutputStream(testFileName2);
-            assert jdbcTemplate.getDataSource() != null;
-            conn = jdbcTemplate.getDataSource().getConnection();
-			JasperReportUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
+			DataSource datasource = jdbcTemplate.getDataSource();
+			if (datasource != null) {
 
-			StringBuilder emailDestinatario = new StringBuilder();
-			String activeMail = p.getProperty("ACTIVE_MAIL");
-			if ("true".equals(activeMail)) {
-				List<FcAttore> attori = attoreService.findByActive(true);
-				for (FcAttore a : attori) {
-					if (a.isNotifiche()) {
-						emailDestinatario.append(a.getEmail());
-						emailDestinatario.append(";");
+				try (Connection conn = datasource.getConnection()) {
+
+					JasperReportUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
+
+					StringBuilder emailDestinatario = new StringBuilder();
+					String activeMail = p.getProperty("ACTIVE_MAIL");
+					if ("true".equals(activeMail)) {
+						List<FcAttore> attori = attoreService.findByActive(true);
+						for (FcAttore a : attori) {
+							if (a.isNotifiche()) {
+								emailDestinatario.append(a.getEmail());
+								emailDestinatario.append(";");
+							}
+						}
+					} else {
+						emailDestinatario.append(p.getProperty("to"));
 					}
+
+					String[] to = null;
+					if (StringUtils.isNotEmpty(emailDestinatario.toString())) {
+						to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
+					}
+
+					String[] att = new String[] { testFileName1, testFileName2 };
+					String subject = "Risultati " + p.getProperty("INFO_RESULT") + " "
+							+ giornataInfo.getDescGiornataFc();
+					String message = getBody();
+
+					try {
+						String from = env.getProperty("spring.mail.secondary.username");
+						emailService.sendMail(false, from, to, null, null, subject, message, "text/html", att);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+						try {
+							String from = env.getProperty("spring.mail.primary.username");
+							emailService.sendMail(true, from, to, null, null, subject, message, "text/html", att);
+						} catch (Exception e2) {
+							log.error(e2.getMessage());
+						}
+					}
+
+				} catch (Exception e) {
+					log.error(e.getMessage());
 				}
-			} else {
-				emailDestinatario.append(p.getProperty("to"));
 			}
-
-			String[] to = null;
-			if (StringUtils.isNotEmpty(emailDestinatario.toString())) {
-				to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
-			}
-
-            String[] att = new String[] { testFileName1, testFileName2 };
-			String subject = "Risultati " + p.getProperty("INFO_RESULT") + " " + giornataInfo.getDescGiornataFc();
-			String message = getBody();
-
-			try {
-				String from = env.getProperty("spring.mail.secondary.username");
-				emailService.sendMail(false, from, to, null, null, subject, message, "text/html", att);
-			} catch (Exception e) {
-				log.error(e.getMessage());
-				try {
-					String from = env.getProperty("spring.mail.primary.username");
-					emailService.sendMail(true, from, to, null, null, subject, message, "text/html", att);
-				} catch (Exception e2) {
-					log.error(e2.getMessage());
-				}
-			}
-
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} finally {
-			if (conn != null) {
-				conn.close();
-			}
-			if (outputStream2 != null) {
-				outputStream2.close();
-			}
 		}
 		log.info("writePdfAndSendMail END");
 	}
@@ -202,8 +199,7 @@ public class JobProcessSendMail{
 		return msgHtml;
 	}
 
-	private Map<String, Object> getMap(int giornata, String pathImg,
-			FcCampionato campionato) {
+	private Map<String, Object> getMap(int giornata, String pathImg, FcCampionato campionato) {
 
 		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
 
@@ -219,7 +215,8 @@ public class JobProcessSendMail{
 
 			HashMap<String, Collection<RisultatoBean>> mapCasa;
 			try {
-				mapCasa = buildData(campionato, cal.getFcAttoreByIdAttoreCasa(), cal.getTotCasa(), giornataInfo, pathImg, true);
+				mapCasa = buildData(campionato, cal.getFcAttoreByIdAttoreCasa(), cal.getTotCasa(), giornataInfo,
+						pathImg, true);
 				att++;
 				parameters.put("sq" + att, cal.getFcAttoreByIdAttoreCasa().getDescAttore());
 				parameters.put("data" + att, mapCasa.get("data"));
@@ -230,7 +227,8 @@ public class JobProcessSendMail{
 
 			HashMap<String, Collection<RisultatoBean>> mapFuori;
 			try {
-				mapFuori = buildData(campionato, cal.getFcAttoreByIdAttoreFuori(), cal.getTotFuori(), giornataInfo, pathImg, false);
+				mapFuori = buildData(campionato, cal.getFcAttoreByIdAttoreFuori(), cal.getTotFuori(), giornataInfo,
+						pathImg, false);
 				att++;
 				parameters.put("sq" + att, cal.getFcAttoreByIdAttoreFuori().getDescAttore());
 				parameters.put("data" + att, mapFuori.get("data"));
@@ -248,15 +246,15 @@ public class JobProcessSendMail{
 
 	}
 
-	private HashMap<String, Collection<RisultatoBean>> buildData(
-			FcCampionato campionato, FcAttore attore, Double totGiornata,
-			FcGiornataInfo giornataInfo, String pathImg, boolean fc) {
+	private HashMap<String, Collection<RisultatoBean>> buildData(FcCampionato campionato, FcAttore attore,
+			Double totGiornata, FcGiornataInfo giornataInfo, String pathImg, boolean fc) {
 
 		NumberFormat formatter = new DecimalFormat("#0.00");
 
 		final Collection<RisultatoBean> data = new ArrayList<>();
 
-		List<FcGiornataDett> lGiocatori = giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
+		List<FcGiornataDett> lGiocatori = giornataDettService
+				.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
 		int countD = 0;
 		int countC = 0;
 		int countA = 0;
@@ -270,16 +268,17 @@ public class JobProcessSendMail{
 			if (giocatore != null) {
 				FcPagelle pagelle = gd.getFcPagelle();
 				if ("S".equals(gd.getFlagAttivo())) {
-                    switch (giocatore.getFcRuolo().getIdRuolo()) {
-                        case "D" -> countD++;
-                        case "C" -> countC++;
-                        case "A" -> countA++;
-                    }
+					switch (giocatore.getFcRuolo().getIdRuolo()) {
+					case "D" -> countD++;
+					case "C" -> countC++;
+					case "A" -> countA++;
+					}
 				}
 
 				bean.setR(giocatore.getFcRuolo().getIdRuolo());
 
-				if ("S".equals(gd.getFlagAttivo()) && (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
+				if ("S".equals(gd.getFlagAttivo())
+						&& (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
 					String descGiocatore = "-0,5 " + giocatore.getCognGiocatore();
 					if (descGiocatore.length() > 13) {
 						descGiocatore = descGiocatore.substring(0, 13);
@@ -352,7 +351,8 @@ public class JobProcessSendMail{
 				newData.add(r);
 			}
 
-			if ("S".equals(rb.getFlag_attivo()) && (rb.getOrdinamento() == 14 || rb.getOrdinamento() == 16 || rb.getOrdinamento() == 18)) {
+			if ("S".equals(rb.getFlag_attivo())
+					&& (rb.getOrdinamento() == 14 || rb.getOrdinamento() == 16 || rb.getOrdinamento() == 18)) {
 				malus += 0.5;
 			}
 
@@ -438,7 +438,8 @@ public class JobProcessSendMail{
 		b.setValue(totaleGiornata);
 		dataInfo.add(b);
 
-		FcClassificaTotPt totPunti = classificaTotalePuntiService.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
+		FcClassificaTotPt totPunti = classificaTotalePuntiService
+				.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
 		String puntiTotali = "";
 		if (totPunti != null) {
 			puntiTotali = formatter.format(totPunti.getTotPtRosa() / Double.parseDouble("" + Costants.DIVISORE_100));
@@ -472,13 +473,13 @@ public class JobProcessSendMail{
 
 	private String getModificatoreDifesa(String value) {
 
-        return switch (value) {
-case "5-4-1" -> "2";
-case "5-3-2", "4-5-1" -> "1";
-            case "4-3-3" -> "-1";
-case "3-4-3" -> "-2";
-default -> "0";
-};
+		return switch (value) {
+		case "5-4-1" -> "2";
+		case "5-3-2", "4-5-1" -> "1";
+		case "4-3-3" -> "-1";
+		case "3-4-3" -> "-2";
+		default -> "0";
+		};
 	}
 
 }

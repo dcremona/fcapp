@@ -45,12 +45,16 @@ import fcapp.backend.data.entity.FcGiocatore;
 import fcapp.backend.data.entity.FcGiornataInfo;
 import fcapp.backend.data.entity.FcPagelle;
 
-public class Utils{
+public class Utils {
+	private Utils() {
+		/* This utility class should not be instantiated */
+	}
 
 	private static final Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static boolean isValidVaadinSession() {
-		if (VaadinSession.getCurrent().getAttribute("CAMPIONATO") == null || VaadinSession.getCurrent().getAttribute("ATTORE") == null) {
+		if (VaadinSession.getCurrent().getAttribute("CAMPIONATO") == null
+				|| VaadinSession.getCurrent().getAttribute("ATTORE") == null) {
 			log.info("isValidVaadinSession = false ");
 			return false;
 		}
@@ -58,19 +62,19 @@ public class Utils{
 		return true;
 	}
 
-	public static String replaceString(String sText, String Old, String New) {
+	public static String replaceString(String sText, String old, String nuovo) {
 		String x1;
 		String x2;
 
-		int lunOld = Old.length();
+		int lunOld = old.length();
 
-		int p = sText.indexOf(Old);
+		int p = sText.indexOf(old);
 
 		while (p != -1) {
 			x1 = sText.substring(0, p);
 			x2 = sText.substring(p + lunOld);
-			sText = x1 + New + x2;
-			p = sText.indexOf(Old, (x1 + New).length());
+			sText = x1 + nuovo + x2;
+			p = sText.indexOf(old, (x1 + nuovo).length());
 		}
 
 		return sText;
@@ -92,14 +96,13 @@ public class Utils{
 		return item;
 	}
 
-	public static String formatLocalDateTime(LocalDateTime d,
-			String newFormat) {
+	public static String formatLocalDateTime(LocalDateTime d, String newFormat) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(newFormat);
 		return d.format(formatter);
 	}
 
 	public static String[] tornaArrayString(String sArray, String div) {
-		StringTokenizer st = new StringTokenizer(sArray,div);
+		StringTokenizer st = new StringTokenizer(sArray, div);
 		String[] vet = new String[st.countTokens()];
 		int conta = 0;
 		while (st.hasMoreTokens()) {
@@ -109,16 +112,14 @@ public class Utils{
 		return vet;
 	}
 
-	public static boolean downloadFile(String fAddress, String filePath)
-			throws Exception {
+	public static boolean downloadFile(String fAddress, String filePath) throws Exception {
 
 		int size = 1024;
 
-		OutputStream outStream = null;
 		URLConnection uCon;
 
 		InputStream is = null;
-		try {
+		try (OutputStream outStream = new BufferedOutputStream(new FileOutputStream(filePath))) {
 			URL url;
 			byte[] buf;
 			int byteRead;
@@ -127,7 +128,7 @@ public class Utils{
 			uCon = url.openConnection();
 			is = uCon.getInputStream();
 			buf = new byte[size];
-			outStream = new BufferedOutputStream(new FileOutputStream(filePath));
+
 			while ((byteRead = is.read(buf)) != -1) {
 				outStream.write(buf, 0, byteRead);
 			}
@@ -141,42 +142,29 @@ public class Utils{
 			if (is != null) {
 				is.close();
 			}
-			if (outStream != null) {
-				outStream.close();
-			}
 		}
 	}
 
-	public static boolean buildFileSmall(String filePathInput,
-			String filePathOutput) throws Exception {
+	public static boolean buildFileSmall(String filePathInput, String filePathOutput) throws Exception {
 
-		InputStream is = null;
-		try {
-			File initialFile = new File(filePathInput);
-			is = new FileInputStream(initialFile);
-
+		try (InputStream is = new FileInputStream(new File(filePathInput))) {
 			resizeImage(is, filePathOutput);
 			return true;
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return false;
-		} finally {
-			if (is != null) {
-				is.close();
-			}
 		}
 	}
 
-	private static void resizeImage(InputStream uploadedInputStream,
-									String fileName) {
+	private static void resizeImage(InputStream uploadedInputStream, String fileName) {
 
 		try {
 			BufferedImage image = ImageIO.read(uploadedInputStream);
 			java.awt.Image originalImage = image.getScaledInstance(40, 60, java.awt.Image.SCALE_DEFAULT);
 
 			int type = ((image.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : image.getType());
-			BufferedImage resizedImage = new BufferedImage(40, 60,type);
+			BufferedImage resizedImage = new BufferedImage(40, 60, type);
 
 			Graphics2D g2d = resizedImage.createGraphics();
 			g2d.drawImage(originalImage, 0, 0, 40, 60, null);
@@ -186,7 +174,7 @@ public class Utils{
 			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            ImageIO.write(resizedImage, "png", new File(fileName));
+			ImageIO.write(resizedImage, "png", new File(fileName));
 
 		} catch (IOException e) {
 			log.error(e.getMessage());
@@ -211,7 +199,8 @@ public class Utils{
 	public static String buildInfoGiornataRight(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+			return " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata()
+					+ "° Serie A) ";
 		}
 		return "ND";
 	}
@@ -219,7 +208,8 @@ public class Utils{
 	public static String buildInfoGiornata(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
+					+ giornataInfo.getCodiceGiornata() + "° Serie A) ";
 		}
 		return "ND";
 	}
@@ -235,16 +225,17 @@ public class Utils{
 	public static String buildInfoGiornataHtml(FcGiornataInfo giornataInfo) {
 
 		if (giornataInfo != null) {
-			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - " + giornataInfo.getCodiceGiornata() + " Serie A) ";
+			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - "
+					+ giornataInfo.getCodiceGiornata() + " Serie A) ";
 		}
 		return "ND";
 	}
 
-	public static String buildInfoGiornataEm(FcGiornataInfo giornataInfo,
-			FcCampionato campionato) {
+	public static String buildInfoGiornataEm(FcGiornataInfo giornataInfo, FcCampionato campionato) {
 
 		if (giornataInfo != null) {
-			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
+			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
+					+ giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
 		}
 		return "ND";
 	}
@@ -308,16 +299,16 @@ public class Utils{
 		if (assist != 0) {
 			votoGiocatore = votoGiocatore + (assist * Costants.DIV_1_0);
 		}
-		if (idRuolo.equals("P") && goalSubito == 0 && espulso == 0 && votoGiocatore != 0) {
-			if (g != 0 && cs != 0 && ts != 0) {
-				votoGiocatore = votoGiocatore + Costants.DIVISORE_100;
-			}
+		if (idRuolo.equals("P") && goalSubito == 0 && espulso == 0 && votoGiocatore != 0 && g != 0 && cs != 0
+				&& ts != 0) {
+			votoGiocatore = votoGiocatore + Costants.DIVISORE_100;
 		}
-        log.debug("bRoundVoto          -----> {}", bRoundVoto);
-        log.debug("VOTO_GIOCATORE      -----> {}", votoGiocatore);
+
+		log.debug("bRoundVoto          -----> {}", bRoundVoto);
+		log.debug("VOTO_GIOCATORE      -----> {}", votoGiocatore);
 		if (bRoundVoto) {
 			int roundVotoGiocatore = Utils.arrotonda(votoGiocatore);
-            log.debug("roundVotoGiocatore      -----> {}", roundVotoGiocatore);
+			log.debug("roundVotoGiocatore      -----> {}", roundVotoGiocatore);
 			return roundVotoGiocatore;
 		} else {
 			return votoGiocatore;
@@ -338,7 +329,7 @@ public class Utils{
 	}
 
 	public static BigDecimal roundBigDecimal(final BigDecimal input) {
-		return input.round(new MathContext(input.toBigInteger().toString().length(),RoundingMode.HALF_UP));
+		return input.round(new MathContext(input.toBigInteger().toString().length(), RoundingMode.HALF_UP));
 	}
 
 	public static String getNextDate(FcGiornataInfo giornataInfo) {
@@ -356,14 +347,14 @@ public class Utils{
 			log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
 			if (dataAnticipo != null) {
 				currentDate = dataAnticipo;
-                log.info("dataGiornata.getDayOfWeek() : {}", dataGiornata.getDayOfWeek());
+				log.info("dataGiornata.getDayOfWeek() : {}", dataGiornata.getDayOfWeek());
 				if (now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
 					currentDate = dataGiornata;
 				}
 			}
 
 			if (dataPosticipo != null) {
-                log.info("dataPosticipo.getDayOfWeek() : {}", dataPosticipo.getDayOfWeek());
+				log.info("dataPosticipo.getDayOfWeek() : {}", dataPosticipo.getDayOfWeek());
 				if (now.getDayOfWeek() == dataPosticipo.getDayOfWeek()) {
 					currentDate = dataGiornata;
 				}
@@ -396,14 +387,13 @@ public class Utils{
 		return dataAnticipo;
 	}
 
-	public static long getMillisDiff(String nextDate, String fusoOrario)
-			throws Exception {
+	public static long getMillisDiff(String nextDate, String fusoOrario) throws Exception {
 
 		Calendar c = Calendar.getInstance();
 		DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String strDate1 = fmt.format(c.getTime());
+		String strDate1 = fmt.format(c.getTime());
 
-        fmt.setLenient(false);
+		fmt.setLenient(false);
 		Date d1 = fmt.parse(strDate1);
 		Date d2 = fmt.parse(nextDate);
 
@@ -414,10 +404,10 @@ public class Utils{
 		int hours = (int) (millisDiff / 3600000 % 24);
 		int days = (int) (millisDiff / 86400000);
 
-        log.info("{} days, ", days);
-        log.info("{} hours, ", hours);
-        log.info("{} minutes, ", minutes);
-        log.info("{} seconds", seconds);
+		log.info("{} days, ", days);
+		log.info("{} hours, ", hours);
+		log.info("{} minutes, ", minutes);
+		log.info("{} seconds", seconds);
 
 		long diffFuso = Long.parseLong(fusoOrario) * 3600000;
 		millisDiff = millisDiff - diffFuso;
@@ -430,12 +420,12 @@ public class Utils{
 	}
 
 	public static Image getImage(String nomeImg, InputStream inputStream) {
-		StreamResource resource = new StreamResource(nomeImg,() -> inputStream);
-		return new Image(resource,"");
+		StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
+		return new Image(resource, "");
 	}
 
-    public static Image buildImage(String nomeImg, Resource r) {
-		StreamResource resource = new StreamResource(nomeImg,() -> {
+	public static Image buildImage(String nomeImg, Resource r) {
+		StreamResource resource = new StreamResource(nomeImg, () -> {
 			InputStream inputStream = null;
 			try {
 				inputStream = r.getInputStream();
@@ -445,12 +435,12 @@ public class Utils{
 			return inputStream;
 		});
 
-		return new Image(resource,"");
+		return new Image(resource, "");
 	}
 
-	public static StreamResource getStreamResource(String fiileName,
-			Connection conn, Map<String, Object> hm, InputStream inputStream) {
-		return new StreamResource(fiileName,() -> {
+	public static StreamResource getStreamResource(String fiileName, Connection conn, Map<String, Object> hm,
+			InputStream inputStream) {
+		return new StreamResource(fiileName, () -> {
 			try {
 				return JasperReportUtils.runReportToPdf(inputStream, hm, conn);
 			} catch (Exception ex2) {
@@ -460,8 +450,9 @@ public class Utils{
 		});
 	}
 
-	public static StreamResource getStreamResource(String fiileName,ArrayList<FormazioneJasper> coll, Map<String, Object> hm, InputStream inputStream) {
-		return new StreamResource(fiileName,() -> {
+	public static StreamResource getStreamResource(String fiileName, List<FormazioneJasper> coll,
+			Map<String, Object> hm, InputStream inputStream) {
+		return new StreamResource(fiileName, () -> {
 			try {
 				return JasperReportUtils.runReportToPdf(inputStream, hm, coll);
 			} catch (Exception ex2) {
@@ -471,13 +462,12 @@ public class Utils{
 		});
 	}
 
-	public static StreamResource getStreamResource(String inputStreamName,
-			byte[] bytes) {
+	public static StreamResource getStreamResource(String inputStreamName, byte[] bytes) {
 
-		return new StreamResource(inputStreamName,() -> new ByteArrayInputStream(bytes));
+		return new StreamResource(inputStreamName, () -> new ByteArrayInputStream(bytes));
 
 	}
-	
+
 	public static String getInfoPlayer(FcGiocatore bean) {
 		String info = bean.getCognGiocatore() + "\n";
 		info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
@@ -497,9 +487,9 @@ public class Utils{
 				info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
 			}
 		}
-		info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.") + "\n";
+		info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.")
+				+ "\n";
 		return info;
 	}
-
 
 }
