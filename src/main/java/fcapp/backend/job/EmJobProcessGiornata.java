@@ -96,733 +96,743 @@ public class EmJobProcessGiornata{
 	public void emaggiornamentoPFGiornataOLD(String fileName) {
 
 		LOG.info("START emaggiornamentoPFGiornataOLD");
-        @SuppressWarnings("deprecation")
+		@SuppressWarnings("deprecation")
 		CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
 
-        try (FileReader fileReader = new FileReader(fileName); CSVParser csvFileParser = new CSVParser(fileReader, csvFileFormat)) {
+		try (FileReader fileReader = new FileReader(fileName); CSVParser csvFileParser = new CSVParser(fileReader,csvFileFormat)) {
 
-            // initialize FileReader object
+			// initialize FileReader object
 
-            // initialize CSVParser object
+			// initialize CSVParser object
 
-            // Get a list of CSV file records
-            List<CSVRecord> csvRecords = csvFileParser.getRecords();
+			// Get a list of CSV file records
+			List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-            for (int i = 1; i < csvRecords.size(); i++) {
-                CSVRecord record = csvRecords.get(i);
+			for (int i = 1; i < csvRecords.size(); i++) {
+				CSVRecord record = csvRecords.get(i);
 
-                FcGiocatore giocatore = null;
-                List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(record.get(2));
-                if (listGiocatore != null && listGiocatore.size() == 1) {
-                    giocatore = listGiocatore.get(0);
-                }
+				FcGiocatore giocatore = null;
+				List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(record.get(2));
+				if (listGiocatore != null && listGiocatore.size() == 1) {
+					giocatore = listGiocatore.get(0);
+				}
 
-                if (giocatore != null) {
+				if (giocatore != null) {
 
-                    long votoG = getVotoG(record, giocatore);
+					long votoG = getVotoG(record, giocatore);
 
-                    String goal_realizzato = StringUtils.isEmpty(record.get(5)) ? "0" : record.get(5);
-                    String goal_subito = StringUtils.isEmpty(record.get(6)) ? "0" : record.get(6);
-                    String rigore_segnato = StringUtils.isEmpty(record.get(9)) ? "0" : record.get(9);
-                    String rigore_fallito = StringUtils.isEmpty(record.get(10)) ? "0" : record.get(10);
-                    String rigore_parato = StringUtils.isEmpty(record.get(11)) ? "0" : record.get(11);
-                    String autorete = StringUtils.isEmpty(record.get(12)) ? "0" : record.get(12);
-                    String assist = StringUtils.isEmpty(record.get(13)) ? "0" : record.get(13);
+					String goalRealizzato = StringUtils.isEmpty(record.get(5)) ? "0" : record.get(5);
+					String goalSubito = StringUtils.isEmpty(record.get(6)) ? "0" : record.get(6);
+					String rigoreSegnato = StringUtils.isEmpty(record.get(9)) ? "0" : record.get(9);
+					String rigoreFallito = StringUtils.isEmpty(record.get(10)) ? "0" : record.get(10);
+					String rigoreParato = StringUtils.isEmpty(record.get(11)) ? "0" : record.get(11);
+					String autorete = StringUtils.isEmpty(record.get(12)) ? "0" : record.get(12);
+					String assist = StringUtils.isEmpty(record.get(13)) ? "0" : record.get(13);
 
-                    String update = "update fc_pagelle set voto_giocatore=" + votoG;
-                    update += ",goal_realizzato=" + goal_realizzato;
-                    update += ",goal_subito=" + goal_subito;
-                    update += ",ammonizione=" + record.get(7);
-                    update += ",espulsione=" + record.get(8);
-                    update += ",rigore_segnato=" + rigore_segnato;
-                    update += ",rigore_fallito=" + rigore_fallito;
-                    update += ",rigore_parato=" + rigore_parato;
-                    update += ",autorete=" + autorete;
-                    update += ",assist=" + assist;
-                    update += ",gdv=" + record.get(14);
-                    update += ",gdp=" + record.get(15);
-                    update += " where id_giocatore=" + giocatore.getIdGiocatore();
-                    update += " and id_giornata=" + record.get(0);
-                    // LOG.info(update);
-                    jdbcTemplate.update(update);
+					String update = "update fc_pagelle set voto_giocatore=" + votoG;
+					update += ",goal_realizzato=" + goalRealizzato;
+					update += ",goal_subito=" + goalSubito;
+					update += ",ammonizione=" + record.get(7);
+					update += ",espulsione=" + record.get(8);
+					update += ",rigore_segnato=" + rigoreSegnato;
+					update += ",rigore_fallito=" + rigoreFallito;
+					update += ",rigore_parato=" + rigoreParato;
+					update += ",autorete=" + autorete;
+					update += ",assist=" + assist;
+					update += ",gdv=" + record.get(14);
+					update += ",gdp=" + record.get(15);
+					update += " where id_giocatore=" + giocatore.getIdGiocatore();
+					update += " and id_giornata=" + record.get(0);
+					// LOG.info(update);
+					jdbcTemplate.update(update);
 
-                } else {
-                    LOG.info(record.get(2) + " " + record.get(1));
-                }
-            }
+				} else {
+					LOG.info(record.get(2) + " " + record.get(1));
+				}
+			}
 
-            LOG.info("END emaggiornamentoPFGiornata");
+			LOG.info("END emaggiornamentoPFGiornata");
 
-        } catch (Exception e) {
-            LOG.error("Error in CsvFileReader !!!");
-        }
+		} catch (Exception e) {
+			LOG.error("Error in CsvFileReader !!!");
+		}
 	}
 
-    private long getVotoG(CSVRecord record, FcGiocatore giocatore) {
-        String G = record.get(4);
-        // PORTIERE SV
-        boolean b1 = G.isEmpty() || G.equals("s.v.") || G.equals("s,v,");
-        if ("P".equals(giocatore.getFcRuolo().getIdRuolo())) {
-            if (b1) {
-                G = "6";
-            }
-            // LOG.info("PORTIERE s.v.: "+COGN_GIOCATORE);
-        } else {
-            if (b1) {
-                G = "0";
-            }
-        }
+	private long getVotoG(CSVRecord r, FcGiocatore giocatore) {
+		String g = r.get(4);
+		// PORTIERE SV
+		boolean b1 = g.isEmpty() || g.equals("s.v.") || g.equals("s,v,");
+		if ("P".equals(giocatore.getFcRuolo().getIdRuolo())) {
+			if (b1) {
+				g = "6";
+			}
+			// LOG.info("PORTIERE s.v.: "+COGN_GIOCATORE);
+		} else {
+			if (b1) {
+				g = "0";
+			}
+		}
 
-        BigDecimal bgG = new BigDecimal(G);
-        BigDecimal mG = new BigDecimal("10");
-        BigDecimal risG = bgG.multiply(mG);
-        return risG.longValue();
-    }
+		BigDecimal bgG = new BigDecimal(g);
+		BigDecimal mG = new BigDecimal("10");
+		BigDecimal risG = bgG.multiply(mG);
+		return risG.longValue();
+	}
 
 	public void emaggiornamentoPFGiornata(Properties p, String fileName,
 			String idGiornata) {
 
 		LOG.info("START emaggiornamentoPFGiornata");
 
-        // Create the CSVFormat object with the header mapping
-        @SuppressWarnings("deprecation")
+		// Create the CSVFormat object with the header mapping
+		@SuppressWarnings("deprecation")
 		CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
 
-        try (FileReader fileReader = new FileReader(fileName); CSVParser csvFileParser = new CSVParser(fileReader, csvFileFormat)) {
-            try {
+		try (FileReader fileReader = new FileReader(fileName); CSVParser csvFileParser = new CSVParser(fileReader,csvFileFormat)) {
+			try {
 
-                // initialize FileReader object
+				// initialize FileReader object
 
-                // initialize CSVParser object
+				// initialize CSVParser object
 
-                // Get a list of CSV file records
-                List<CSVRecord> csvRecords = csvFileParser.getRecords();
+				// Get a list of CSV file records
+				List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-                // String infoVoti = "";
-                StringBuilder infoNewGiocatore = new StringBuilder();
+				// String infoVoti = "";
+				StringBuilder infoNewGiocatore = new StringBuilder();
 
-                StringBuilder formazioneHtml = new StringBuilder();
-                formazioneHtml.append("<html><head><title>FC</title></head>\n");
-                formazioneHtml.append("<body>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
+				StringBuilder formazioneHtml = new StringBuilder();
+				formazioneHtml.append("<html><head><title>FC</title></head>\n");
+				formazioneHtml.append("<body>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
 
-                formazioneHtml.append("<table>");
+				formazioneHtml.append("<table>");
 
-                formazioneHtml.append("<tr>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append(Costants.GIOCATORE);
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("count_sv ");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("New_Voto ");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("G");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("CS");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("TS");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("Minuti Giocati");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("</tr>");
+				formazioneHtml.append("<tr>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append(Costants.GIOCATORE);
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("count_sv ");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("New_Voto ");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("G");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("CS");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("TS");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("Minuti Giocati");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("</tr>");
 
-                for (int i = 1; i < csvRecords.size(); i++) {
-                    CSVRecord record = csvRecords.get(i);
-                    // LOG.info("" + record.size());
+				for (int i = 1; i < csvRecords.size(); i++) {
+					CSVRecord record = csvRecords.get(i);
+					// LOG.info("" + record.size());
 
-                    int c = 0;
-                    String idGiocatore = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    try {
-                        Integer.parseInt(idGiocatore);
-                    } catch (Exception e) {
-                        continue;
-                    }
+					int c = 0;
+					String idGiocatore = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					try {
+						Integer.parseInt(idGiocatore);
+					} catch (Exception e) {
+						continue;
+					}
 
-                    c++;
-                    String cognGiocatore = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
-                    c++;
-                    String ruolo = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
-                    c++;
-                    // String Ruolo2 = record.get(3);
-                    c++;
-                    String squadra = record.get(c);
-                    c++;
-                    String minGiocati = record.get(c);
-                    c++;
-                    String G = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String goal_realizzato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String goal_subito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String autorete = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String assist = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String CS = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    // String GF= record.get(11);
-                    c++;
-                    // String GS= record.get(12);
-                    c++;
-                    // String Aut= record.get(13);
-                    c++;
-                    // String Ass= record.get(14);
-                    c++;
-                    String TS = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    // String GF= record.get(16);
-                    c++;
-                    // String GS= record.get(17);
-                    c++;
-                    StringUtils.isEmpty(record.get(18));
-                    c++;
-                    c++;
-                    // String M2 = record.get(20);
-                    c++;
-                    //String M3 = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String ammonizione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String espulsione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String Gdv = record.get(c);
-                    c++;
-                    String Gdp = record.get(c);
-                    c++;
-                    String rigore_fallito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGS
-                    c++;
-                    String rigore_parato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGP
-                    c++;
-                    String rigore_segnato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RT
+					c++;
+					String cognGiocatore = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
+					c++;
+					String ruolo = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
+					c++;
+					// String Ruolo2 = record.get(3);
+					c++;
+					String squadra = record.get(c);
+					c++;
+					String minGiocati = record.get(c);
+					c++;
+					String g = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String goalRealizzato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String goalSubito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String autorete = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String assist = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String cs = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					// String GF= record.get(11);
+					c++;
+					// String GS= record.get(12);
+					c++;
+					// String Aut= record.get(13);
+					c++;
+					// String Ass= record.get(14);
+					c++;
+					String ts = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					// String GF= record.get(16);
+					c++;
+					// String GS= record.get(17);
+					c++;
+					StringUtils.isEmpty(record.get(18));
+					c++;
+					c++;
+					// String M2 = record.get(20);
+					c++;
+					// String M3 = StringUtils.isEmpty(record.get(c)) ? "0" :
+					// record.get(c);
+					c++;
+					String ammonizione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String espulsione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String gdv = record.get(c);
+					c++;
+					String gdp = record.get(c);
+					c++;
+					String rigoreFallito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGS
+					c++;
+					String rigoreParato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGP
+					c++;
+					String rigoreSegnato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RT
 
-                    FcGiocatore giocatore = null;
-                    if (StringUtils.isNotEmpty(idGiocatore)) {
-                        giocatore = this.giocatoreService.findByIdGiocatore(Integer.parseInt(idGiocatore));
-                        if (giocatore == null) {
-                            List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(cognGiocatore);
-                            if (listGiocatore != null && listGiocatore.size() == 1) {
-                                giocatore = listGiocatore.get(0);
-                            }
-                        }
-                    }
+					FcGiocatore giocatore = null;
+					if (StringUtils.isNotEmpty(idGiocatore)) {
+						giocatore = this.giocatoreService.findByIdGiocatore(Integer.parseInt(idGiocatore));
+						if (giocatore == null) {
+							List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(cognGiocatore);
+							if (listGiocatore != null && listGiocatore.size() == 1) {
+								giocatore = listGiocatore.get(0);
+							}
+						}
+					}
 
-                    if (giocatore != null) {
+					if (giocatore != null) {
 
-                        int count_sv = 0;
+						int countSv = 0;
 
-                        G = Utils.replaceString(G, ",", ".");
-                        // PORTIERE SV
-                        if (ruolo.equals("P")) {
-                            if (G.isEmpty() || G.equals("s.v.") || G.equals("s,v,")) {
-                                G = "6";
-                                // LOG.debug("PORTIERE s.v.: "+Giocatore);
-                            }
-                        } else {
-                            if (G.isEmpty() || G.equals("s.v.") || G.equals("s,v,")) {
-                                G = "0";
-                                count_sv++;
-                            }
-                        }
-                        BigDecimal bgG = new BigDecimal(G);
-                        BigDecimal mG = new BigDecimal(Costants.DIVISORE_10);
-                        BigDecimal risG = bgG.multiply(mG);
-                        long votoG = risG.longValue();
+						g = Utils.replaceString(g, ",", ".");
+						// PORTIERE SV
+						if (ruolo.equals("P")) {
+							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,")) {
+								g = "6";
+								// LOG.debug("PORTIERE s.v.: "+Giocatore);
+							}
+						} else {
+							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,")) {
+								g = "0";
+								countSv++;
+							}
+						}
+						BigDecimal bgG = new BigDecimal(g);
+						BigDecimal mG = new BigDecimal(Costants.DIVISORE_10);
+						BigDecimal risG = bgG.multiply(mG);
+						long votoG = risG.longValue();
 
-                        CS = Utils.replaceString(CS, ",", ".");
-                        // PORTIERE SV
-                        if (ruolo.equals("P")) {
-                            if (CS.isEmpty() || CS.equals("s.v.") || CS.equals("s,v,")) {
-                                CS = "6";
-                            }
-                        } else {
-                            if (CS.isEmpty() || CS.equals("s.v.") || CS.equals("s,v,")) {
-                                CS = "0";
-                                count_sv++;
-                            }
-                        }
+						cs = Utils.replaceString(cs, ",", ".");
+						// PORTIERE SV
+						if (ruolo.equals("P")) {
+							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,")) {
+								cs = "6";
+							}
+						} else {
+							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,")) {
+								cs = "0";
+								countSv++;
+							}
+						}
 
-                        BigDecimal bgCS = new BigDecimal(CS);
-                        BigDecimal mCS = new BigDecimal(Costants.DIVISORE_10);
-                        BigDecimal risCS = bgCS.multiply(mCS);
-                        long votoCS = risCS.longValue();
+						BigDecimal bgCS = new BigDecimal(cs);
+						BigDecimal mCS = new BigDecimal(Costants.DIVISORE_10);
+						BigDecimal risCS = bgCS.multiply(mCS);
+						long votoCS = risCS.longValue();
 
-                        TS = Utils.replaceString(TS, ",", ".");
-                        // PORTIERE SV
-                        if (ruolo.equals("P")) {
-                            if (TS.isEmpty() || TS.equals("s.v.") || TS.equals("s,v,")) {
-                                TS = "6";
-                            }
-                        } else {
-                            if (TS.isEmpty() || TS.equals("s.v.") || TS.equals("s,v,")) {
-                                TS = "0";
-                                count_sv++;
-                            }
-                        }
+						ts = Utils.replaceString(ts, ",", ".");
+						// PORTIERE SV
+						if (ruolo.equals("P")) {
+							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,")) {
+								ts = "6";
+							}
+						} else {
+							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,")) {
+								ts = "0";
+								countSv++;
+							}
+						}
 
-                        BigDecimal bgTS = new BigDecimal(TS);
-                        BigDecimal mTS = new BigDecimal(Costants.DIVISORE_10);
-                        BigDecimal risTS = bgTS.multiply(mTS);
-                        long votoTS = risTS.longValue();
+						BigDecimal bgTS = new BigDecimal(ts);
+						BigDecimal mTS = new BigDecimal(Costants.DIVISORE_10);
+						BigDecimal risTS = bgTS.multiply(mTS);
+						long votoTS = risTS.longValue();
 
-                        //String VOTO_GIOCATORE = Utils.replaceString(M3, ",", ".");
-                        // PORTIERE SV
-                        //if (VOTO_GIOCATORE.equals("s.v.") || VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
-                        //} else {
-                        //}
+						// String VOTO_GIOCATORE = Utils.replaceString(M3, ",",
+						// ".");
+						// PORTIERE SV
+						// if (VOTO_GIOCATORE.equals("s.v.") ||
+						// VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
+						// } else {
+						// }
 
-                        if (count_sv == 1) {
-                            if ("0".equals(G)) {
-                                if (votoCS <= votoTS) {
-                                    G = CS;
-                                } else {
-                                    G = TS;
-                                }
-                            } else if ("0".equals(CS)) {
-                                if (votoG <= votoTS) {
-                                    CS = G;
-                                } else {
-                                    CS = TS;
-                                }
-                            } else {
-                                if (votoG <= votoCS) {
-                                    TS = G;
-                                } else {
-                                    TS = CS;
-                                }
-                            }
-                        } else if (count_sv == 2) {
-                            // LOG.info("count_sv = " + count_sv + " set all 0 ");
-                            G = "0";
-                            CS = "0";
-                            TS = "0";
-                        }
+						if (countSv == 1) {
+							if ("0".equals(g)) {
+								if (votoCS <= votoTS) {
+									g = cs;
+								} else {
+									g = ts;
+								}
+							} else if ("0".equals(cs)) {
+								if (votoG <= votoTS) {
+									cs = g;
+								} else {
+									cs = ts;
+								}
+							} else {
+								if (votoG <= votoCS) {
+									ts = g;
+								} else {
+									ts = cs;
+								}
+							}
+						} else if (countSv == 2) {
+							// LOG.info("count_sv = " + count_sv + " set all 0
+							// ");
+							g = "0";
+							cs = "0";
+							ts = "0";
+						}
 
-                        long new_voto = getNewVoto(G, CS, TS);
+						long newVoto = getNewVoto(g, cs, ts);
 
-                        if (count_sv == 1 || count_sv == 2) {
+						if (countSv == 1 || countSv == 2) {
 
-                            formazioneHtml.append("<tr>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(giocatore.getCognGiocatore());
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(count_sv);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(new_voto);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(G);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(CS);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(TS);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(minGiocati);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("</tr>");
-                        }
+							formazioneHtml.append("<tr>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(giocatore.getCognGiocatore());
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(countSv);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(newVoto);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(g);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(cs);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(ts);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(minGiocati);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("</tr>");
+						}
 
-                        String update = "update fc_pagelle set voto_giocatore=" + votoG;
-                        update += ",g=" + votoG;
-                        update += ",cs=" + votoCS;
-                        update += ",ts=" + votoTS;
-                        update += ",goal_realizzato=" + goal_realizzato;
-                        update += ",goal_subito=" + goal_subito;
-                        update += ",ammonizione=" + ammonizione;
-                        update += ",espulsione=" + espulsione;
-                        update += ",rigore_segnato=" + rigore_segnato;
-                        update += ",rigore_fallito=" + rigore_fallito;
-                        update += ",rigore_parato=" + rigore_parato;
-                        update += ",autorete=" + autorete;
-                        update += ",assist=" + assist;
-                        update += ",gdv=" + Gdv;
-                        update += ",gdp=" + Gdp;
-                        update += " where id_giocatore=" + idGiocatore;
-                        update += " and id_giornata=" + idGiornata;
+						String update = "update fc_pagelle set voto_giocatore=" + votoG;
+						update += ",g=" + votoG;
+						update += ",cs=" + votoCS;
+						update += ",ts=" + votoTS;
+						update += ",goal_realizzato=" + goalRealizzato;
+						update += ",goal_subito=" + goalSubito;
+						update += ",ammonizione=" + ammonizione;
+						update += ",espulsione=" + espulsione;
+						update += ",rigore_segnato=" + rigoreSegnato;
+						update += ",rigore_fallito=" + rigoreFallito;
+						update += ",rigore_parato=" + rigoreParato;
+						update += ",autorete=" + autorete;
+						update += ",assist=" + assist;
+						update += ",gdv=" + gdv;
+						update += ",gdp=" + gdp;
+						update += " where id_giocatore=" + idGiocatore;
+						update += " and id_giornata=" + idGiornata;
 
-                        jdbcTemplate.update(update);
+						jdbcTemplate.update(update);
 
-                    } else {
-                        LOG.info("*************************");
-                        LOG.info("NOT FOUND " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + squadra);
-                        LOG.info("*************************");
+					} else {
+						LOG.info("*************************");
+						LOG.info("NOT FOUND " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + squadra);
+						LOG.info("*************************");
 
-                        infoNewGiocatore.append("\n<br>" + "NOT FOUND ").append(idGiocatore).append(" ").append(cognGiocatore).append(" ").append(ruolo).append(" ").append(squadra);
-                    }
-                }
+						infoNewGiocatore.append("\n<br>" + "NOT FOUND ").append(idGiocatore).append(" ").append(cognGiocatore).append(" ").append(ruolo).append(" ").append(squadra);
+					}
+				}
 
-                String email_destinatario = p.getProperty("to");
-                String[] to = null;
-                if (email_destinatario != null && !email_destinatario.isEmpty()) {
-                    to = Utils.tornaArrayString(email_destinatario, ";");
-                }
-                String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
+				String emailDestinatario = p.getProperty("to");
+				String[] to = null;
+				if (emailDestinatario != null && !emailDestinatario.isEmpty()) {
+					to = Utils.tornaArrayString(emailDestinatario, ";");
+				}
+				String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
 
-                formazioneHtml.append("</table>\n");
+				formazioneHtml.append("</table>\n");
 
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
 
-                formazioneHtml.append("<p>").append(infoNewGiocatore).append("</p>\n");
+				formazioneHtml.append("<p>").append(infoNewGiocatore).append("</p>\n");
 
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<p>Ciao Davide</p>\n");
-                formazioneHtml.append("</body>\n");
-                formazioneHtml.append("<html>");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<p>Ciao Davide</p>\n");
+				formazioneHtml.append("</body>\n");
+				formazioneHtml.append("<html>");
 
-                try {
-                    String from = env.getProperty("spring.mail.secondary.username");
-                    emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
-                } catch (Exception e) {
-                    LOG.error(e.getMessage());
-                    try {
-                        String from = env.getProperty("spring.mail.primary.username");
-                        emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
-                    } catch (Exception e2) {
-                        LOG.error(e2.getMessage());
-                    }
-                }
+				try {
+					String from = env.getProperty("spring.mail.secondary.username");
+					emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
+				} catch (Exception e) {
+					LOG.error(e.getMessage());
+					try {
+						String from = env.getProperty("spring.mail.primary.username");
+						emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
+					} catch (Exception e2) {
+						LOG.error(e2.getMessage());
+					}
+				}
 
-                LOG.info("END emaggiornamentoPFGiornata");
+				LOG.info("END emaggiornamentoPFGiornata");
 
-            } catch (Exception e) {
-                LOG.error("Error in CsvFileReader !!!" + e.getMessage());
-            }
-        } catch (IOException e) {
-            LOG.error("Error while closing fileReader/csvFileParser !!!");
-        }
+			} catch (Exception e) {
+				LOG.error("Error in CsvFileReader !!!" + e.getMessage());
+			}
+		} catch (IOException e) {
+			LOG.error("Error while closing fileReader/csvFileParser !!!");
+		}
 	}
 
-    private long getNewVoto(String G, String CS, String TS) {
-        String divide = "3";
-        BigDecimal _bgG = new BigDecimal(G);
-        BigDecimal _bgCS = new BigDecimal(CS);
-        BigDecimal _bgTS = new BigDecimal(TS);
-        BigDecimal _tot0 = _bgG.add(_bgCS);
-        BigDecimal _tot1 = _tot0.add(_bgTS);
-        BigDecimal _media = _tot1.divide(new BigDecimal(divide), 2, RoundingMode.HALF_UP);
-        BigDecimal _moltipl = new BigDecimal(Costants.DIVISORE_10);
-        BigDecimal _ris = _media.multiply(_moltipl);
-        return _ris.longValue();
-    }
+	private long getNewVoto(String g, String cs, String ts) {
+		String divide = "3";
+		BigDecimal bgG = new BigDecimal(g);
+		BigDecimal bgCS = new BigDecimal(cs);
+		BigDecimal bgTS = new BigDecimal(ts);
+		BigDecimal tot0 = bgG.add(bgCS);
+		BigDecimal tot1 = tot0.add(bgTS);
+		BigDecimal media = tot1.divide(new BigDecimal(divide), 2, RoundingMode.HALF_UP);
+		BigDecimal moltipl = new BigDecimal(Costants.DIVISORE_10);
+		BigDecimal ris = media.multiply(moltipl);
+		return ris.longValue();
+	}
 
 	public void emaggiornamentoPFGiornataNoExcel(Properties p, String fileName,
 			String idGiornata) {
 
 		LOG.info("START emaggiornamentoPFGiornata");
 
-        @SuppressWarnings("deprecation")
+		@SuppressWarnings("deprecation")
 		CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
 
-        try (FileReader fileReader = new FileReader(fileName); CSVParser csvFileParser = new CSVParser(fileReader, csvFileFormat)) {
-            try {
+		try (FileReader fileReader = new FileReader(fileName); CSVParser csvFileParser = new CSVParser(fileReader,csvFileFormat)) {
+			try {
 
-                // initialize FileReader object
+				// initialize FileReader object
 
-                // initialize CSVParser object
+				// initialize CSVParser object
 
-                // Get a list of CSV file records
-                List<CSVRecord> csvRecords = csvFileParser.getRecords();
+				// Get a list of CSV file records
+				List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-                // String infoVoti = "";
-                StringBuilder infoNewGiocatore = new StringBuilder();
+				// String infoVoti = "";
+				StringBuilder infoNewGiocatore = new StringBuilder();
 
-                StringBuilder formazioneHtml = new StringBuilder();
-                formazioneHtml.append("<html><head><title>FC</title></head>\n");
-                formazioneHtml.append("<body>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
+				StringBuilder formazioneHtml = new StringBuilder();
+				formazioneHtml.append("<html><head><title>FC</title></head>\n");
+				formazioneHtml.append("<body>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
 
-                formazioneHtml.append("<table>");
+				formazioneHtml.append("<table>");
 
-                formazioneHtml.append("<tr>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append(Costants.GIOCATORE);
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("count_sv ");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("New_Voto ");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("G");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("CS");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("TS");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("<td>");
-                formazioneHtml.append("Minuti Giocati");
-                formazioneHtml.append("</td>");
-                formazioneHtml.append("</tr>");
+				formazioneHtml.append("<tr>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append(Costants.GIOCATORE);
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("count_sv ");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("New_Voto ");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("G");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("CS");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("TS");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("<td>");
+				formazioneHtml.append("Minuti Giocati");
+				formazioneHtml.append("</td>");
+				formazioneHtml.append("</tr>");
 
-                for (CSVRecord record : csvRecords) {
-                    String idGiocatore = "";
-                    String minGiocati = "";
+				for (CSVRecord record : csvRecords) {
+					String idGiocatore = "";
+					String minGiocati = "";
 
-                    int c = 0;
-                    String ruolo = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
-                    c++;
-                    String cognGiocatore = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
-                    c++;
-                    String squadra = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
-                    c++;
-                    String G = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String goal_realizzato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String goal_subito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String autorete = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String assist = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String ammonizione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String espulsione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
-                    c++;
-                    String rigore_fallito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGS
-                    c++;
-                    String rigore_parato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGP
-                    c++;
-                    String rigore_segnato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RT
-                    c++;
-                    c++;
-                    String Gdv = record.get(c);
+					int c = 0;
+					String ruolo = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
+					c++;
+					String cognGiocatore = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
+					c++;
+					String squadra = StringUtils.isEmpty(record.get(c)) ? "" : record.get(c);
+					c++;
+					String g = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String goalRealizzato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String goalSubito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String autorete = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String assist = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String ammonizione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String espulsione = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);
+					c++;
+					String rigoreFallito = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGS
+					c++;
+					String rigoreParato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RIGP
+					c++;
+					String rigoreSegnato = StringUtils.isEmpty(record.get(c)) ? "0" : record.get(c);// RT
+					c++;
+					c++;
+					String gdv = record.get(c);
 
-                    String CS = "0";
-                    String TS = "0";
-                    //String M3 = "0";
+					String cs = "0";
+					String ts = "0";
+					// String M3 = "0";
 
-                    FcGiocatore giocatore;
+					FcGiocatore giocatore;
 
-                    FcRuolo fcRuolo = new FcRuolo();
-                    fcRuolo.setIdRuolo(ruolo);
-                    FcSquadra fcSquadra = squadraService.findByNomeSquadra(squadra);
-                    if (squadra == null) {
-                        LOG.info("SCARTO " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + null);
-                        continue;
-                    }
-                    // LOG.info("FIND " + cognGiocatore+ " squadra " +squadra);
-                    giocatore = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, fcSquadra, fcRuolo);
+					FcRuolo fcRuolo = new FcRuolo();
+					fcRuolo.setIdRuolo(ruolo);
+					FcSquadra fcSquadra = squadraService.findByNomeSquadra(squadra);
+					if (squadra == null) {
+						LOG.info("SCARTO " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + null);
+						continue;
+					}
+					// LOG.info("FIND " + cognGiocatore+ " squadra " +squadra);
+					giocatore = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, fcSquadra, fcRuolo);
 
-                    if (giocatore != null) {
+					if (giocatore != null) {
 
-                        idGiocatore = "" + giocatore.getIdGiocatore();
+						idGiocatore = "" + giocatore.getIdGiocatore();
 
-                        int count_sv = 0;
+						int countSv = 0;
 
-                        G = Utils.replaceString(G, ",", ".");
-                        // PORTIERE SV
-                        if (ruolo.equals("P")) {
-                            if (G.isEmpty() || G.equals("s.v.") || G.equals("s,v,")) {
-                                G = "6";
-                                // LOG.debug("PORTIERE s.v.: "+Giocatore);
-                            }
-                        } else {
-                            if (G.isEmpty() || G.equals("s.v.") || G.equals("s,v,")) {
-                                G = "0";
-                                count_sv++;
-                            }
-                        }
-                        BigDecimal bgG = new BigDecimal(G);
-                        BigDecimal mG = new BigDecimal(Costants.DIVISORE_10);
-                        BigDecimal risG = bgG.multiply(mG);
-                        long votoG = risG.longValue();
+						g = Utils.replaceString(g, ",", ".");
+						// PORTIERE SV
+						if (ruolo.equals("P")) {
+							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,")) {
+								g = "6";
+								// LOG.debug("PORTIERE s.v.: "+Giocatore);
+							}
+						} else {
+							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,")) {
+								g = "0";
+								countSv++;
+							}
+						}
+						BigDecimal bgG = new BigDecimal(g);
+						BigDecimal mG = new BigDecimal(Costants.DIVISORE_10);
+						BigDecimal risG = bgG.multiply(mG);
+						long votoG = risG.longValue();
 
-                        CS = Utils.replaceString(CS, ",", ".");
-                        // PORTIERE SV
-                        if (ruolo.equals("P")) {
-                            if (CS.isEmpty() || CS.equals("s.v.") || CS.equals("s,v,")) {
-                                CS = "6";
-                            }
-                        } else {
-                            if (CS.isEmpty() || CS.equals("s.v.") || CS.equals("s,v,")) {
-                                CS = "0";
-                                count_sv++;
-                            }
-                        }
+						cs = Utils.replaceString(cs, ",", ".");
+						// PORTIERE SV
+						if (ruolo.equals("P")) {
+							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,")) {
+								cs = "6";
+							}
+						} else {
+							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,")) {
+								cs = "0";
+								countSv++;
+							}
+						}
 
-                        BigDecimal bgCS = new BigDecimal(CS);
-                        BigDecimal mCS = new BigDecimal(Costants.DIVISORE_10);
-                        BigDecimal risCS = bgCS.multiply(mCS);
-                        long votoCS = risCS.longValue();
+						BigDecimal bgCS = new BigDecimal(cs);
+						BigDecimal mCS = new BigDecimal(Costants.DIVISORE_10);
+						BigDecimal risCS = bgCS.multiply(mCS);
+						long votoCS = risCS.longValue();
 
-                        TS = Utils.replaceString(TS, ",", ".");
-                        // PORTIERE SV
-                        if (ruolo.equals("P")) {
-                            if (TS.isEmpty() || TS.equals("s.v.") || TS.equals("s,v,")) {
-                                TS = "6";
-                            }
-                        } else {
-                            if (TS.isEmpty() || TS.equals("s.v.") || TS.equals("s,v,")) {
-                                TS = "0";
-                                count_sv++;
-                            }
-                        }
+						ts = Utils.replaceString(ts, ",", ".");
+						// PORTIERE SV
+						if (ruolo.equals("P")) {
+							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,")) {
+								ts = "6";
+							}
+						} else {
+							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,")) {
+								ts = "0";
+								countSv++;
+							}
+						}
 
-                        BigDecimal bgTS = new BigDecimal(TS);
-                        BigDecimal mTS = new BigDecimal(Costants.DIVISORE_10);
-                        BigDecimal risTS = bgTS.multiply(mTS);
-                        long votoTS = risTS.longValue();
+						BigDecimal bgTS = new BigDecimal(ts);
+						BigDecimal mTS = new BigDecimal(Costants.DIVISORE_10);
+						BigDecimal risTS = bgTS.multiply(mTS);
+						long votoTS = risTS.longValue();
 
-                        //String VOTO_GIOCATORE = Utils.replaceString(M3, ",", ".");
-                        // PORTIERE SV
-                        //if (VOTO_GIOCATORE.equals("s.v.") || VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
-                        //} else {
-                        //    if (VOTO_GIOCATORE.equals("s,v,")) {
-                        //    }
-                        //}
+						// String VOTO_GIOCATORE = Utils.replaceString(M3, ",",
+						// ".");
+						// PORTIERE SV
+						// if (VOTO_GIOCATORE.equals("s.v.") ||
+						// VOTO_GIOCATORE.equals("s,v,") && ruolo.equals("P")) {
+						// } else {
+						// if (VOTO_GIOCATORE.equals("s,v,")) {
+						// }
+						// }
 
-                        if (count_sv == 1) {
-                            if ("0".equals(G)) {
-                                if (votoCS <= votoTS) {
-                                    G = CS;
-                                } else {
-                                    G = TS;
-                                }
-                                // LOG.info("G = " + G + " CS " + CS + " TS " + TS);
-                            } else if ("0".equals(CS)) {
-                                if (votoG <= votoTS) {
-                                    CS = G;
-                                } else {
-                                    CS = TS;
-                                }
-                                // LOG.info("CS = " + CS + " G " + G + " TS " + TS);
-                            } else {
-                                if (votoG <= votoCS) {
-                                    TS = G;
-                                } else {
-                                    TS = CS;
-                                }
-                                // LOG.info("TS = " + TS + " G " + G + " CS " + CS);
-                            }
-                        } else if (count_sv == 2) {
-                            // LOG.info("count_sv = " + count_sv + " set all 0 ");
-                            G = "0";
-                            CS = "0";
-                            TS = "0";
-                        }
+						if (countSv == 1) {
+							if ("0".equals(g)) {
+								if (votoCS <= votoTS) {
+									g = cs;
+								} else {
+									g = ts;
+								}
+								// LOG.info("G = " + G + " CS " + CS + " TS " +
+								// TS);
+							} else if ("0".equals(cs)) {
+								if (votoG <= votoTS) {
+									cs = g;
+								} else {
+									cs = ts;
+								}
+								// LOG.info("CS = " + CS + " G " + G + " TS " +
+								// TS);
+							} else {
+								if (votoG <= votoCS) {
+									ts = g;
+								} else {
+									ts = cs;
+								}
+								// LOG.info("TS = " + TS + " G " + G + " CS " +
+								// CS);
+							}
+						} else if (countSv == 2) {
+							// LOG.info("count_sv = " + count_sv + " set all 0
+							// ");
+							g = "0";
+							cs = "0";
+							ts = "0";
+						}
 
-                        long new_voto = getNewVoto(G, CS, TS);
+						long newVoto = getNewVoto(g, cs, ts);
 
-                        if (count_sv == 1 || count_sv == 2) {
-                            LOG.info("new_voto - count_sv " + count_sv + " - " + giocatore.getCognGiocatore() + " new_voto " + new_voto + " G = " + G + " CS " + CS + " TS " + TS);
+						if (countSv == 1 || countSv == 2) {
+							LOG.info("new_voto - countSv " + countSv + " - " + giocatore.getCognGiocatore() + " new_voto " + newVoto + " G = " + g + " CS " + cs + " TS " + ts);
 
-                            formazioneHtml.append("<tr>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(giocatore.getCognGiocatore());
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(count_sv);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(new_voto);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(G);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(CS);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(TS);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("<td>");
-                            formazioneHtml.append(minGiocati);
-                            formazioneHtml.append("</td>");
-                            formazioneHtml.append("</tr>");
-                        }
+							formazioneHtml.append("<tr>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(giocatore.getCognGiocatore());
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(countSv);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(newVoto);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(g);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(cs);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(ts);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("<td>");
+							formazioneHtml.append(minGiocati);
+							formazioneHtml.append("</td>");
+							formazioneHtml.append("</tr>");
+						}
 
-                        String update = "update fc_pagelle set voto_giocatore=" + votoG;
-                        update += ",g=" + votoG;
-                        update += ",cs=" + votoCS;
-                        update += ",ts=" + votoTS;
-                        update += ",goal_realizzato=" + goal_realizzato;
-                        update += ",goal_subito=" + goal_subito;
-                        update += ",ammonizione=" + ammonizione;
-                        update += ",espulsione=" + espulsione;
-                        update += ",rigore_segnato=" + rigore_segnato;
-                        update += ",rigore_fallito=" + rigore_fallito;
-                        update += ",rigore_parato=" + rigore_parato;
-                        update += ",autorete=" + autorete;
-                        update += ",assist=" + assist;
-                        update += ",gdv=" + Gdv;
-                        // update += ",gdp=" + Gdp;
-                        update += " where id_giocatore=" + idGiocatore;
-                        update += " and id_giornata=" + idGiornata;
+						String update = "update fc_pagelle set voto_giocatore=" + votoG;
+						update += ",g=" + votoG;
+						update += ",cs=" + votoCS;
+						update += ",ts=" + votoTS;
+						update += ",goal_realizzato=" + goalRealizzato;
+						update += ",goal_subito=" + goalSubito;
+						update += ",ammonizione=" + ammonizione;
+						update += ",espulsione=" + espulsione;
+						update += ",rigore_segnato=" + rigoreSegnato;
+						update += ",rigore_fallito=" + rigoreFallito;
+						update += ",rigore_parato=" + rigoreParato;
+						update += ",autorete=" + autorete;
+						update += ",assist=" + assist;
+						update += ",gdv=" + gdv;
+						// update += ",gdp=" + Gdp;
+						update += " where id_giocatore=" + idGiocatore;
+						update += " and id_giornata=" + idGiornata;
 
-                        jdbcTemplate.update(update);
+						jdbcTemplate.update(update);
 
-                    } else {
-                        LOG.info("*************************");
-                        LOG.info("NOT FOUND " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + squadra);
-                        LOG.info("*************************");
+					} else {
+						LOG.info("*************************");
+						LOG.info("NOT FOUND " + idGiocatore + " " + cognGiocatore + " " + ruolo + " " + squadra);
+						LOG.info("*************************");
 
-                        infoNewGiocatore.append("\n<br>" + "NOT FOUND ").append(idGiocatore).append(" ").append(cognGiocatore).append(" ").append(ruolo).append(" ").append(squadra);
-                    }
-                }
+						infoNewGiocatore.append("\n<br>" + "NOT FOUND ").append(idGiocatore).append(" ").append(cognGiocatore).append(" ").append(ruolo).append(" ").append(squadra);
+					}
+				}
 
-                String email_destinatario = p.getProperty("to");
-                String[] to = null;
-                if (email_destinatario != null && !email_destinatario.isEmpty()) {
-                    to = Utils.tornaArrayString(email_destinatario, ";");
-                }
-                String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
-                formazioneHtml.append("</table>\n");
+				String emailDestinatario = p.getProperty("to");
+				String[] to = null;
+				if (emailDestinatario != null && !emailDestinatario.isEmpty()) {
+					to = Utils.tornaArrayString(emailDestinatario, ";");
+				}
+				String subject = "INFO aggiornamentoPFGiornata GIORNATA " + idGiornata;
+				formazioneHtml.append("</table>\n");
 
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
 
-                formazioneHtml.append("<p>").append(infoNewGiocatore).append("</p>\n");
+				formazioneHtml.append("<p>").append(infoNewGiocatore).append("</p>\n");
 
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<br>\n");
-                formazioneHtml.append("<p>Ciao Davide</p>\n");
-                formazioneHtml.append("</body>\n");
-                formazioneHtml.append("<html>");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<br>\n");
+				formazioneHtml.append("<p>Ciao Davide</p>\n");
+				formazioneHtml.append("</body>\n");
+				formazioneHtml.append("<html>");
 
-                try {
-                    String from = env.getProperty("spring.mail.secondary.username");
-                    emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
-                } catch (Exception e) {
-                    LOG.error(e.getMessage());
-                    try {
-                        String from = env.getProperty("spring.mail.primary.username");
-                        emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
-                    } catch (Exception e2) {
-                        LOG.error(e2.getMessage());
-                    }
-                }
+				try {
+					String from = env.getProperty("spring.mail.secondary.username");
+					emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
+				} catch (Exception e) {
+					LOG.error(e.getMessage());
+					try {
+						String from = env.getProperty("spring.mail.primary.username");
+						emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
+					} catch (Exception e2) {
+						LOG.error(e2.getMessage());
+					}
+				}
 
-                LOG.info("END emaggiornamentoPFGiornata");
+				LOG.info("END emaggiornamentoPFGiornata");
 
-            } catch (Exception e) {
-                LOG.error("Error in CsvFileReader !!!" + e.getMessage());
-            }
-        } catch (IOException e) {
-            LOG.error("Error while closing fileReader/csvFileParser !!!");
-        }
+			} catch (Exception e) {
+				LOG.error("Error in CsvFileReader !!!" + e.getMessage());
+			}
+		} catch (IOException e) {
+			LOG.error("Error while closing fileReader/csvFileParser !!!");
+		}
 	}
 
 	public void emalgoritmo(Integer giornata, FcCampionato campionato) {
@@ -831,14 +841,14 @@ public class EmJobProcessGiornata{
 
 		LOG.info("giornata " + giornata);
 
-		//List<String> schemi = new ArrayList<>();
-		//schemi.add("1-5-4-1");
-		//schemi.add("1-5-3-2");
-		//schemi.add("1-4-5-1");
-		//schemi.add("1-4-4-2");
-		//schemi.add("1-4-3-3");
-		//schemi.add("1-3-5-2");
-		//schemi.add("1-3-4-3");
+		// List<String> schemi = new ArrayList<>();
+		// schemi.add("1-5-4-1");
+		// schemi.add("1-5-3-2");
+		// schemi.add("1-4-5-1");
+		// schemi.add("1-4-4-2");
+		// schemi.add("1-4-3-3");
+		// schemi.add("1-3-5-2");
+		// schemi.add("1-3-4-3");
 
 		FcGiornataInfo giornataInfo = new FcGiornataInfo();
 		giornataInfo.setCodiceGiornata(giornata);
@@ -947,12 +957,12 @@ public class EmJobProcessGiornata{
 					riserve.remove(tit);
 				}
 
-                switch (tit.getFcGiocatore().getFcRuolo().getIdRuolo()) {
-                    case "P" -> countP++;
-                    case "D" -> countD++;
-                    case "C" -> countC++;
-                    case "A" -> countA++;
-                }
+				switch (tit.getFcGiocatore().getFcRuolo().getIdRuolo()) {
+					case "P" -> countP++;
+					case "D" -> countD++;
+					case "C" -> countC++;
+					case "A" -> countA++;
+				}
 				nextSchema = countP + "-" + countD + "-" + countC + "-" + countA;
 			}
 			LOG.debug("NUOVO SCHEMA 1" + attore.getDescAttore() + " " + nextSchema);
@@ -1025,12 +1035,12 @@ public class EmJobProcessGiornata{
 			countA = 0;
 			nextSchema = "";
 			for (FcGiornataDett tit : titolari) {
-                switch (tit.getFcGiocatore().getFcRuolo().getIdRuolo()) {
-                    case "P" -> countP++;
-                    case "D" -> countD++;
-                    case "C" -> countC++;
-                    case "A" -> countA++;
-                }
+				switch (tit.getFcGiocatore().getFcRuolo().getIdRuolo()) {
+					case "P" -> countP++;
+					case "D" -> countD++;
+					case "C" -> countC++;
+					case "A" -> countA++;
+				}
 				nextSchema = countP + "-" + countD + "-" + countC + "-" + countA;
 			}
 			LOG.debug("NUOVO SCHEMA 2" + attore.getDescAttore() + " " + nextSchema);
@@ -1063,20 +1073,20 @@ public class EmJobProcessGiornata{
 			sql += " and id_stato_giocatore='T'";
 			sql += " and flag_attivo='S'";
 			jdbcTemplate.query(sql, rs -> {
-                int totPunti;
-                while (rs.next()) {
-                    totPunti = rs.getInt(1);
-                    LOG.debug(attore.getDescAttore() + " " + totPunti);
+				int totPunti;
+				while (rs.next()) {
+					totPunti = rs.getInt(1);
+					LOG.debug(attore.getDescAttore() + " " + totPunti);
 
-                    String query = "DELETE FROM fc_classifica_tot_pt WHERE ID_CAMPIONATO=" + campionato.getIdCampionato() + " AND ID_ATTORE=" + attore.getIdAttore() + " AND ID_GIORNATA=" + giornata;
-                    jdbcTemplate.update(query);
+					String query = "DELETE FROM fc_classifica_tot_pt WHERE ID_CAMPIONATO=" + campionato.getIdCampionato() + " AND ID_ATTORE=" + attore.getIdAttore() + " AND ID_GIORNATA=" + giornata;
+					jdbcTemplate.update(query);
 
-                    query = "INSERT INTO fc_classifica_tot_pt (ID_CAMPIONATO,ID_ATTORE,ID_GIORNATA,TOT_PT) VALUES (" + campionato.getIdCampionato() + "," + attore.getIdAttore() + "," + giornata + "," + totPunti + ")";
-                    jdbcTemplate.update(query);
+					query = "INSERT INTO fc_classifica_tot_pt (ID_CAMPIONATO,ID_ATTORE,ID_GIORNATA,TOT_PT) VALUES (" + campionato.getIdCampionato() + "," + attore.getIdAttore() + "," + giornata + "," + totPunti + ")";
+					jdbcTemplate.update(query);
 
-                }
-                return "1";
-            });
+				}
+				return "1";
+			});
 
 		}
 		LOG.info("END ricalcolaTotPunti");
@@ -1209,7 +1219,7 @@ public class EmJobProcessGiornata{
 				statistiche.setFcGiocatore(appoFcGiocatore);
 				statistiche.setFlagAttivo(appoFcGiocatore.isFlagAttivo());
 
-                statisticheService.save(statistiche);
+				statisticheService.save(statistiche);
 
 				appoIdGiocatore = idGiocatore;
 
@@ -1284,7 +1294,7 @@ public class EmJobProcessGiornata{
 
 	public void eminserisciUltimaFormazione(int idAttore, int giornata) {
 		LOG.info("START inserisciUltimaFormazione");
-		int prev_gg = giornata - 1;
+		int prevGG = giornata - 1;
 
 		String delete = "delete from fc_giornata_dett_info where id_giornata=" + giornata + " and id_attore=" + idAttore;
 		jdbcTemplate.update(delete);
@@ -1292,11 +1302,11 @@ public class EmJobProcessGiornata{
 		jdbcTemplate.update(delete2);
 
 		String ins = "insert into fc_giornata_dett (ID_GIORNATA, ID_ATTORE, ID_GIOCATORE, ID_STATO_GIOCATORE, ORDINAMENTO, VOTO) ";
-		ins += "SELECT " + giornata + "," + idAttore + ",ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,0 from fc_giornata_dett where id_giornata=" + prev_gg + " and id_attore=" + idAttore;
+		ins += "SELECT " + giornata + "," + idAttore + ",ID_GIOCATORE,ID_STATO_GIOCATORE,ORDINAMENTO,0 from fc_giornata_dett where id_giornata=" + prevGG + " and id_attore=" + idAttore;
 		jdbcTemplate.update(ins);
 
 		String ins2 = "insert into fc_giornata_dett_info (ID_GIORNATA, ID_ATTORE,FLAG_INVIO,DATA_INVIO) ";
-		ins2 += "select " + giornata + "," + idAttore + ",FLAG_INVIO,DATA_INVIO from fc_giornata_dett_info where id_giornata=" + prev_gg + " and id_attore=" + idAttore;
+		ins2 += "select " + giornata + "," + idAttore + ",FLAG_INVIO,DATA_INVIO from fc_giornata_dett_info where id_giornata=" + prevGG + " and id_attore=" + idAttore;
 		jdbcTemplate.update(ins2);
 
 		LOG.info("END inserisciUltimaFormazione");
@@ -1309,8 +1319,8 @@ public class EmJobProcessGiornata{
 		List<FcGiocatore> giocatores = giocatoreService.findAll();
 
 		for (FcGiocatore giocatore : giocatores) {
-            FcStatistiche statistiche = getFcStatistiche(giocatore);
-            statisticheService.save(statistiche);
+			FcStatistiche statistiche = getFcStatistiche(giocatore);
+			statisticheService.save(statistiche);
 		}
 
 		for (FcGiocatore giocatore : giocatores) {
@@ -1327,28 +1337,28 @@ public class EmJobProcessGiornata{
 
 	}
 
-    private @NonNull FcStatistiche getFcStatistiche(FcGiocatore giocatore) {
-        FcStatistiche statistiche = new FcStatistiche();
-        statistiche.setIdGiocatore(giocatore.getIdGiocatore());
-        statistiche.setCognGiocatore(giocatore.getCognGiocatore());
-        statistiche.setIdRuolo(giocatore.getFcRuolo().getIdRuolo());
-        statistiche.setNomeSquadra(giocatore.getFcSquadra().getNomeSquadra());
-        statistiche.setAmmonizione(0);
-        statistiche.setAssist(0);
-        statistiche.setEspulsione(0);
-        statistiche.setFantaMedia(0.0);
-        statistiche.setGiocate(0);
-        statistiche.setGoalFatto(0);
-        statistiche.setGoalSubito(0);
-        statistiche.setMediaVoto(0.0);
-        statistiche.setRigoreSbagliato(0);
-        statistiche.setRigoreSegnato(0);
-        statistiche.setFlagAttivo(giocatore.isFlagAttivo());
-        return statistiche;
-    }
+	private @NonNull FcStatistiche getFcStatistiche(FcGiocatore giocatore) {
+		FcStatistiche statistiche = new FcStatistiche();
+		statistiche.setIdGiocatore(giocatore.getIdGiocatore());
+		statistiche.setCognGiocatore(giocatore.getCognGiocatore());
+		statistiche.setIdRuolo(giocatore.getFcRuolo().getIdRuolo());
+		statistiche.setNomeSquadra(giocatore.getFcSquadra().getNomeSquadra());
+		statistiche.setAmmonizione(0);
+		statistiche.setAssist(0);
+		statistiche.setEspulsione(0);
+		statistiche.setFantaMedia(0.0);
+		statistiche.setGiocate(0);
+		statistiche.setGoalFatto(0);
+		statistiche.setGoalSubito(0);
+		statistiche.setMediaVoto(0.0);
+		statistiche.setRigoreSbagliato(0);
+		statistiche.setRigoreSegnato(0);
+		statistiche.setFlagAttivo(giocatore.isFlagAttivo());
+		return statistiche;
+	}
 
-    public HashMap<Object, Object> initDbGiocatori(String fileName, boolean updateQuotazioni,
-                                                   String percenutale) throws Exception {
+	public HashMap<Object, Object> initDbGiocatori(String fileName,
+			boolean updateQuotazioni, String percenutale) throws Exception {
 
 		LOG.info("START initDbGiocatori");
 
@@ -1356,28 +1366,19 @@ public class EmJobProcessGiornata{
 		ArrayList<FcGiocatore> listGiocatoriAdd = new ArrayList<>();
 		ArrayList<FcGiocatore> listGiocatoriDel = new ArrayList<>();
 
-		FileReader fileReader = null;
-		CSVParser csvFileParser = null;
-
 		// Create the CSVFormat object with the header mapping
 		@SuppressWarnings("deprecation")
 		CSVFormat csvFileFormat = CSVFormat.EXCEL.withDelimiter(';');
 
-		try {
+		try (CSVParser csvFileParser = new CSVParser(new FileReader(fileName),csvFileFormat)) {
 
 			// Create a new list of student to be filled by CSV file data
 			List<FcGiocatore> giocatores = new ArrayList<>();
 
-			// initialize FileReader object
-			fileReader = new FileReader(fileName);
-
-			// initialize CSVParser object
-			csvFileParser = new CSVParser(fileReader,csvFileFormat);
-
 			// Get a list of CSV file records
 			List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-            for (int i = 1; i < csvRecords.size(); i++) {
+			for (int i = 1; i < csvRecords.size(); i++) {
 				CSVRecord record = csvRecords.get(i);
 
 				FcGiocatore giocatore;
@@ -1401,7 +1402,7 @@ public class EmJobProcessGiornata{
 					continue;
 				}
 
-                giocatore = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, squadra, ruolo);
+				giocatore = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore, squadra, ruolo);
 				if (giocatore == null) {
 					// lastIdGiocatore++;
 					giocatore = new FcGiocatore();
@@ -1428,14 +1429,14 @@ public class EmJobProcessGiornata{
 
 			if (!giocatores.isEmpty()) {
 
-                for (FcGiocatore giocatore : giocatores) {
+				for (FcGiocatore giocatore : giocatores) {
 
 					// LOG.info("SAVE GIOCATORE ");
 					giocatoreService.save(giocatore);
 
-                    FcStatistiche statistiche = getFcStatistiche(giocatore);
+					FcStatistiche statistiche = getFcStatistiche(giocatore);
 
-                    statisticheService.save(statistiche);
+					statisticheService.save(statistiche);
 
 				}
 
@@ -1486,7 +1487,7 @@ public class EmJobProcessGiornata{
 				// flag_attivo=0 and id_giocatore not in (select distinct
 				// id_giocatore from fc_giornata_dett where id_giocatore is not
 				// null) ";
-            }
+			}
 
 			LOG.info("END initDbGiocatori");
 
@@ -1498,39 +1499,31 @@ public class EmJobProcessGiornata{
 		} catch (Exception e) {
 			LOG.error("Error in initDbGiocatori !!!");
 			throw e;
-		} finally {
-			if (fileReader != null) {
-				fileReader.close();
-			}
-			if (csvFileParser != null) {
-				csvFileParser.close();
-			}
 		}
 	}
 
-    private int calcolaQuotazione(String quotazione,
-                                  String percentuale) {
+	private int calcolaQuotazione(String quotazione, String percentuale) {
 
 		String q = Utils.replaceString(quotazione, ",", ".");
 		BigDecimal bgQ = new BigDecimal(q);
 		// bgQ.setScale(BigDecimal.ROUND_HALF_UP);
 
-		long new_quot;
-        double newQuotazione = getNewQuotazione(percentuale, bgQ);
-        // LOG.debug(" newQuotazione " + newQuotazione);
-		new_quot = Math.round(newQuotazione);
-		if (new_quot < 1) {
-			new_quot = 1;
+		long newQuot;
+		double newQuotazione = getNewQuotazione(percentuale, bgQ);
+		// LOG.debug(" newQuotazione " + newQuotazione);
+		newQuot = Math.round(newQuotazione);
+		if (newQuot < 1) {
+			newQuot = 1;
 		}
-		LOG.debug(" new_quot " + new_quot);
+		LOG.debug(" new_quot " + newQuot);
 
-		return (int) new_quot;
+		return (int) newQuot;
 	}
 
-    private double getNewQuotazione(String percentuale, BigDecimal bgQ) {
-        double appo;
-        appo = (Double.parseDouble(bgQ.toString()) * Double.parseDouble(percentuale)) / Costants.DIVISORE_100;
-        return Double.parseDouble(bgQ.toString()) - appo;
-    }
+	private double getNewQuotazione(String percentuale, BigDecimal bgQ) {
+		double appo;
+		appo = (Double.parseDouble(bgQ.toString()) * Double.parseDouble(percentuale)) / Costants.DIVISORE_100;
+		return Double.parseDouble(bgQ.toString()) - appo;
+	}
 
 }

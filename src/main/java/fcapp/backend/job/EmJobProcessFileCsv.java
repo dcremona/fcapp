@@ -16,31 +16,34 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class EmJobProcessFileCsv{
 
-	private final static Log LOG = LogFactory.getLog(EmJobProcessFileCsv.class);
+	private static final Logger log = LoggerFactory.getLogger(EmJobProcessFileCsv.class);
 
-	final static int size = 1024;
+	private static final int SIZE = 1024;
 
-	public void downloadCsv(String http_url, String path_csv, String fileName,
+	private static final String EXT_HTML = ".html";
+	private static final String EXT_CSV = ".csv";
+
+	public void downloadCsv(String httpUrl, String pathCsv, String fileName,
 			int headCount) throws Exception {
 		try {
-			fileDownload(http_url, fileName + ".html", path_csv);
+			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
 		} catch (Exception ex) {
-			LOG.error(ex.getMessage());
+			log.error(ex.getMessage());
 		}
 
-		File input = new File(path_csv + fileName + ".html");
+		File input = new File(pathCsv + fileName + EXT_HTML);
 		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		Elements tableRows = doc.select("table");
@@ -72,38 +75,27 @@ public class EmJobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 
-			// DELETE
-			File f = new File(path_csv + fileName + ".csv");
-			if (f.exists()) {
-				f.delete();
-			}
-			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
 
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
+			log.error(e.getMessage());
 		}
 	}
 
-	public void downloadCsvNoExcel(String http_url, String path_csv,
+	public void downloadCsvNoExcel(String httpUrl, String pathCsv,
 
 			String fileName, int headCount) throws Exception {
 		try {
-			LOG.debug(http_url);
-			fileDownload(http_url, fileName + ".html", path_csv);
+			log.debug(httpUrl);
+			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
 		} catch (Exception ex) {
-			LOG.error(ex.getMessage());
+			log.error(ex.getMessage());
 		}
 
-		File input = new File(path_csv + fileName + ".html");
+		File input = new File(pathCsv + fileName + EXT_HTML);
 		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
 
 		// select all <tr> or Table Row Elements
@@ -129,8 +121,8 @@ public class EmJobProcessFileCsv{
 					int c = 0;
 					StringBuilder rowValue = new StringBuilder();
 					for (Element tdRow : tdRows) {
-                        tdRow.text();
-                        String rowData = tdRow.text();
+						tdRow.text();
+						String rowData = tdRow.text();
 						// LOG.debug(rowData);
 						// R;SQ_GIOCATORE;VM;GF;GS;AU;AS;VR;GF;GS;AU;AS;VT;GF;GS;AU;AS;SB;PA;TR;SU;VM;VR;VT;M2;M3;
 						if (c == 0) {
@@ -254,7 +246,7 @@ public class EmJobProcessFileCsv{
 						String squadra = map.get("SQ_GIOCATORE");
 						mapSQ.put("SQUADRA", squadra);
 
-                    } else {
+					} else {
 						// R;SQ_GIOCATORE;VM;GF;GS;AU;AS;VR;GF;GS;AU;AS;VT;GF;GS;AU;AS;SB;PA;TR;SU;VM;VR;VT;M2;M3;
 
 						String ruolo = map.get("R");
@@ -283,29 +275,16 @@ public class EmJobProcessFileCsv{
 			}
 		}
 
-		FileOutputStream outputStream = null;
-		try {
-
-			// DELETE
-			File f = new File(path_csv + fileName + ".csv");
-			if (f.exists()) {
-				f.delete();
-			}
-			outputStream = new FileOutputStream(path_csv + fileName + ".csv");
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
 			byte[] strToBytes = data.toString().getBytes();
 			outputStream.write(strToBytes);
-
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
-		} finally {
-			if (outputStream != null) {
-				outputStream.close();
-			}
+			log.error(e.getMessage());
 		}
 
 	}
 
-	public void fileDownload(String fAddress, String localFileName,
+	private void fileDownload(String fAddress, String localFileName,
 			String destinationDir) throws Exception {
 
 		// Create a new trust manager that trust all certificates
@@ -336,35 +315,37 @@ public class EmJobProcessFileCsv{
 		} catch (Exception ignored) {
 		}
 
-		OutputStream outStream = null;
 		URLConnection uCon;
 		InputStream is = null;
-		try {
-			URL Url;
-			byte[] buf;
-			int ByteRead,ByteWritten = 0;
-			Url = new URL(fAddress);
-			outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName));
 
-			uCon = Url.openConnection();
+		try (OutputStream outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName))) {
+			byte[] buf;
+			int byteRead;
+			int byteWritten = 0;
+			URL url = new URL(fAddress);
+
+			uCon = url.openConnection();
 			is = uCon.getInputStream();
-			buf = new byte[size];
-			while ((ByteRead = is.read(buf)) != -1) {
-				outStream.write(buf, 0, ByteRead);
-				ByteWritten += ByteRead;
+			buf = new byte[SIZE];
+			while ((byteRead = is.read(buf)) != -1) {
+				outStream.write(buf, 0, byteRead);
+				byteWritten += byteRead;
 			}
-			LOG.info("Downloaded Successfully.");
-			LOG.debug("File name:\"" + localFileName + "\"\nNo ofbytes :" + ByteWritten);
+			log.info("File name: {} bytes: {}", localFileName, byteWritten);
+			log.info("Downloaded Successfully.");
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		} finally {
 			if (is != null) {
 				is.close();
 			}
-			if (outStream != null) {
-				outStream.close();
-			}
 		}
 	}
+
+	// public void cleanUp(Path path) throws IOException {
+	// log.info("START cleanUp... ");
+	// Files.delete(path);
+	// log.info("END cleanUp Successfully.");
+	// }
 
 }
