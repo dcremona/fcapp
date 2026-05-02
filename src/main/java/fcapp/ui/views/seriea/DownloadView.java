@@ -71,7 +71,6 @@ public class DownloadView extends VerticalLayout
 
 	private final ExpRoseAService expRoseAService;
 	private final ExpFreePlService expFreePlService;
-	private final AttoreService attoreService;
 	private final AccessoService accessoService;
 
 	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
@@ -81,11 +80,10 @@ public class DownloadView extends VerticalLayout
 	int resX = 0;
 	int resY = 0;
 
-	public DownloadView(ExpRoseAService expRoseAService,ExpFreePlService expFreePlService,AttoreService attoreService,AccessoService accessoService) {
+	public DownloadView(ExpRoseAService expRoseAService,ExpFreePlService expFreePlService,AccessoService accessoService) {
 		log.info("DownloadView()");
 		this.expRoseAService = expRoseAService;
 		this.expFreePlService = expFreePlService;
-		this.attoreService = attoreService;
 		this.accessoService = accessoService;
 	}
 
