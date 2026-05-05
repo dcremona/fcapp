@@ -43,7 +43,6 @@ import fcapp.backend.data.entity.FcExpFreePl;
 import fcapp.backend.data.entity.FcExpRosea;
 import fcapp.backend.job.JobProcessGiornata;
 import fcapp.backend.service.AccessoService;
-import fcapp.backend.service.AttoreService;
 import fcapp.backend.service.ExpFreePlService;
 import fcapp.backend.service.ExpRoseAService;
 import fcapp.ui.views.MainLayout;

@@ -689,11 +689,11 @@ public class JobProcessGiornata {
 						g = Utils.replaceString(g, ",", ".");
 						// PORTIERE SV
 						if (ruolo.equals("P")) {
-							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,")) {
+							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,") || g.equals("0")) {
 								g = "6";
 							}
 						} else {
-							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,")) {
+							if (g.isEmpty() || g.equals("s.v.") || g.equals("s,v,") || g.equals("0")) {
 								g = "0";
 								countSv++;
 							}
@@ -706,11 +706,11 @@ public class JobProcessGiornata {
 						cs = Utils.replaceString(cs, ",", ".");
 						// PORTIERE SV
 						if (ruolo.equals("P")) {
-							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,")) {
+							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,") || cs.equals("0")) {
 								cs = "6";
 							}
 						} else {
-							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,")) {
+							if (cs.isEmpty() || cs.equals("s.v.") || cs.equals("s,v,") || cs.equals("0")) {
 								cs = "0";
 								countSv++;
 							}
@@ -724,11 +724,11 @@ public class JobProcessGiornata {
 						ts = Utils.replaceString(ts, ",", ".");
 						// PORTIERE SV
 						if (ruolo.equals("P")) {
-							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,")) {
+							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,") || ts.equals("0")) {
 								ts = "6";
 							}
 						} else {
-							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,")) {
+							if (ts.isEmpty() || ts.equals("s.v.") || ts.equals("s,v,") || ts.equals("0")) {
 								ts = "0";
 								countSv++;
 							}
