@@ -4363,7 +4363,7 @@ public class JobProcessGiornata {
 				String titolarePanchina = r.get(1);
 				String percentuale = r.get(2);
 				String href = r.get(3);
-				FcGiocatore giocatore = this.giocatoreService.findByNomeImg(nomeImg + ".png");
+				FcGiocatore giocatore = this.giocatoreService.findByNomeImg(nomeImg + ".png",true);
 				if (giocatore != null) {
 					giocatore.setNomeGiocatore(titolarePanchina);
 					int perc;
@@ -4414,7 +4414,7 @@ public class JobProcessGiornata {
 				String href = r.get(3);
 				String note = r.get(4);
 
-				FcGiocatore giocatore = this.giocatoreService.findByNomeImg(nomeImg + ".png");
+				FcGiocatore giocatore = this.giocatoreService.findByNomeImg(nomeImg + ".png",true);
 				if (giocatore != null) {
 					FcGiornataGiocatore giornataGiocatore = new FcGiornataGiocatore();
 					FcGiornataGiocatoreId giornataGiocatorePK = new FcGiornataGiocatoreId();

@@ -45,7 +45,7 @@ public interface GiocatoreRepository extends CrudRepository<FcGiocatore, Long>{
 	List<FcGiocatore> findByCognGiocatoreContaining(
             String cognGiocatore);
 
-	FcGiocatore findByNomeImg(String nomeImg);
+	FcGiocatore findByNomeImgAndFlagAttivo(String nomeImg,boolean flagAttivo);
 
 	FcGiocatore findByIdGiocatore(int idGiocatore);
 

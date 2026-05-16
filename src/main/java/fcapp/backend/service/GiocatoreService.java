@@ -72,8 +72,8 @@ public class GiocatoreService{
 		return l;
 	}
 	
-	public FcGiocatore findByNomeImg(String nomeImg) {
-		return giocatoreRepository.findByNomeImg(nomeImg);
+	public FcGiocatore findByNomeImg(String nomeImg,boolean flagAttivo) {
+		return giocatoreRepository.findByNomeImgAndFlagAttivo(nomeImg,flagAttivo);
 	}
 	
 	public FcGiocatore findByIdGiocatore(int idGiocatore) {
