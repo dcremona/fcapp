@@ -9,7 +9,6 @@ import java.util.List;
 import org.hibernate.engine.jdbc.ClobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
@@ -22,6 +21,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.wontlost.ckeditor.Constants.EditorType;
+import com.wontlost.ckeditor.VaadinCKEditor;
+import com.wontlost.ckeditor.VaadinCKEditorBuilder;
 
 import fcapp.backend.data.Role;
 import fcapp.backend.data.entity.FcAttore;
@@ -31,10 +32,6 @@ import fcapp.backend.service.RegolamentoService;
 import fcapp.ui.views.MainLayout;
 import fcapp.utils.CustomMessageDialog;
 import fcapp.utils.Utils;
-
-import com.wontlost.ckeditor.VaadinCKEditor;
-import com.wontlost.ckeditor.VaadinCKEditorBuilder;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -47,21 +44,19 @@ public class RegolamentoView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final AccessoService accessoService;
-	private final RegolamentoService regolamentoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient ResourceLoader resourceLoader;
+	private final transient AccessoService accessoService;
+	private final transient RegolamentoService regolamentoService;
 
 	private String html = "";
 	private FcRegolamento regolamento = null;
 	private VaadinCKEditor decoupledEditor = null;
 	private Button salvaDb;
 
-	public RegolamentoView(AccessoService accessoService,RegolamentoService regolamentoService) {
+	public RegolamentoView(ResourceLoader resourceLoader,AccessoService accessoService,RegolamentoService regolamentoService) {
 		log.info("RegolamentoView()");
+		this.resourceLoader = resourceLoader;
 		this.accessoService = accessoService;
 		this.regolamentoService = regolamentoService;
 	}

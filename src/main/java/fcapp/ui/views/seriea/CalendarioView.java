@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,21 +47,18 @@ public class CalendarioView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final GiornataService giornataService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient GiornataService giornataService;
+	private final transient AccessoService accessoService;
 
 	private List<FcGiornata> model = new ArrayList<>();
 
-	public CalendarioView(GiornataService giornataService,AccessoService accessoService) {
+	public CalendarioView(JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,GiornataService giornataService,AccessoService accessoService) {
 		log.info("CalendarioView()");
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.giornataService = giornataService;
 		this.accessoService = accessoService;
 	}

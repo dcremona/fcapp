@@ -13,7 +13,6 @@ import java.util.Map;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -66,19 +65,16 @@ public class ClassificaView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient ClassificaService classificaService;
+	private final transient AccessoService accessoService;
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final ClassificaService classificaService;
-	private final AccessoService accessoService;
-
-	public ClassificaView(ClassificaService classificaService,AccessoService accessoService) {
+	public ClassificaView(JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,ClassificaService classificaService,AccessoService accessoService) {
 		log.info("ClassificaView()");
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.classificaService = classificaService;
 		this.accessoService = accessoService;
 	}

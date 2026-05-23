@@ -50,12 +50,11 @@ public class HomeView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	private final GiornataService giornataService;
-	private final GiornataInfoService giornataInfoService;
-	private final GiornataRisService giornataRisService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient GiornataService giornataService;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient GiornataRisService giornataRisService;
+	private final transient AccessoService accessoService;
 
 	public HomeView(GiornataService giornataService,GiornataInfoService giornataInfoService,GiornataRisService giornataRisService,AccessoService accessoService) {
 		log.info("HomeView()");

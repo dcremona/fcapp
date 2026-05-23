@@ -14,7 +14,6 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -81,25 +80,18 @@ public class TeamInsertMobileView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final FormazioneService formazioneService;
-	private final GiornataDettService giornataDettService;
-	private final CalendarioCompetizioneService calendarioCompetizioneService;
-	private final AccessoService accessoService;
-	private final SquadraService squadraService;
-	private final GiornataGiocatoreService giornataGiocatoreService;
-	private final AttoreService attoreService;
-	private final EmailService emailService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient FormazioneService formazioneService;
+	private final transient GiornataDettService giornataDettService;
+	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+	private final transient AccessoService accessoService;
+	private final transient SquadraService squadraService;
+	private final transient GiornataGiocatoreService giornataGiocatoreService;
+	private final transient AttoreService attoreService;
+	private final transient EmailService emailService;
 
 	private static final int WINWIDTH = 400;
 	private static final int WINHEIGHT = 800;
@@ -191,7 +183,11 @@ public class TeamInsertMobileView extends VerticalLayout
 	private final List<FcGiocatore> modelPlayer17 = new ArrayList<>();
 	private final List<FcGiocatore> modelPlayer18 = new ArrayList<>();
 
-	public TeamInsertMobileView(FormazioneService formazioneService,
+	public TeamInsertMobileView(
+			Environment env,
+			JdbcTemplate jdbcTemplate,
+			ResourceLoader resourceLoader,
+			FormazioneService formazioneService,
 			GiornataDettService giornataDettService,
 			CalendarioCompetizioneService calendarioCompetizioneService,
 			AccessoService accessoService,
@@ -200,6 +196,9 @@ public class TeamInsertMobileView extends VerticalLayout
 			AttoreService attoreService,
 			EmailService emailService) {
 		log.info("TeamInsertMobileView()");
+		this.env = env;
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.formazioneService = formazioneService;
 		this.giornataDettService = giornataDettService;
 		this.calendarioCompetizioneService = calendarioCompetizioneService;

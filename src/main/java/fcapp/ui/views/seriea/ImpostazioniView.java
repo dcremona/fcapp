@@ -83,34 +83,25 @@ public class ImpostazioniView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient JobProcessFileCsv jobProcessFileCsv;
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient JobProcessSendMail jobProcessSendMail;
+	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient AttoreService attoreService;
+	private final transient SquadraService squadraService;
+	private final transient ClassificaService classificaService;
+	private final transient FormazioneService formazioneService;
+	private final transient ProprietaService proprietaService;
+	private final transient AccessoService accessoService;
+	private final transient EmailService emailService;
 
 	private List<FcAttore> squadre = null;
 	private List<FcSquadra> squadreSerieA = null;
 	private List<FcGiornataInfo> giornate = null;
 
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private JobProcessFileCsv jobProcessFileCsv;
-
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	@Autowired
-	private JobProcessSendMail jobProcessSendMail;
-
-	private final CalendarioCompetizioneService calendarioCompetizioneService;
-	private final GiornataInfoService giornataInfoService;
-	private final AttoreService attoreService;
-	private final SquadraService squadraService;
-	private final ClassificaService classificaService;
-	private final FormazioneService formazioneService;
-	private final ProprietaService proprietaService;
-	private final AccessoService accessoService;
-	private final EmailService emailService;
-	
 	private Button initDb;
 	private Button generaCalendar;
 	private ComboBox<FcGiornataInfo> comboGiornata;
@@ -151,9 +142,14 @@ public class ImpostazioniView extends VerticalLayout
 	private DateTimePicker da2;
 	private DateTimePicker dg;
 	private DateTimePicker dp;
-
-	public ImpostazioniView(CalendarioCompetizioneService calendarioCompetizioneService,
+	
+	public ImpostazioniView(
+			Environment env,
+			JobProcessFileCsv jobProcessFileCsv,
+			JobProcessGiornata jobProcessGiornata,
+			JobProcessSendMail jobProcessSendMail,
 			GiornataInfoService giornataInfoService,
+			CalendarioCompetizioneService calendarioCompetizioneService,
 			AttoreService attoreService,
 			SquadraService squadraService,
 			ClassificaService classificaService,
@@ -162,6 +158,10 @@ public class ImpostazioniView extends VerticalLayout
 			AccessoService accessoService,
 			EmailService emailService) {
 		log.info("ImpostazioniView()");
+		this.env = env;
+		this.jobProcessFileCsv = jobProcessFileCsv;
+		this.jobProcessGiornata = jobProcessGiornata;
+		this.jobProcessSendMail = jobProcessSendMail;
 		this.calendarioCompetizioneService = calendarioCompetizioneService;
 		this.giornataInfoService = giornataInfoService;
 		this.attoreService = attoreService;

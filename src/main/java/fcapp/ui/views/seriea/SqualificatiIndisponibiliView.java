@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
@@ -55,26 +54,22 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-	
-	@Autowired
-	private Environment env;
-
-	private final AccessoService accessoService;
-	private final GiornataGiocatoreService giornataGiocatoreService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient ResourceLoader resourceLoader;
+	private final transient Environment env;
+	private final transient AccessoService accessoService;
+	private final transient GiornataGiocatoreService giornataGiocatoreService;
 
 	private Button salvaDb;
 	private Grid<FcGiornataGiocatore> tableSqualificati;
 	private Grid<FcGiornataGiocatore> tableInfortunati;
 
-	public SqualificatiIndisponibiliView(AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
+	public SqualificatiIndisponibiliView(JobProcessGiornata jobProcessGiornata,ResourceLoader resourceLoader,Environment env,AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
 		log.info("SqualificatiIndisponibiliView()");
+		this.jobProcessGiornata = jobProcessGiornata;
+		this.resourceLoader = resourceLoader;
+		this.env = env;
 		this.accessoService = accessoService;
 		this.giornataGiocatoreService = giornataGiocatoreService;
 	}

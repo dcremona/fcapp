@@ -3,12 +3,16 @@ package fcapp.ui.views.seriea;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.olli.FileDownloadWrapper;
@@ -55,19 +59,17 @@ public class SquadreAllView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final AttoreService attoreService;
-	private final FormazioneService formazioneService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient ResourceLoader resourceLoader;
+	private final transient AttoreService attoreService;
+	private final transient FormazioneService formazioneService;
+	private final transient AccessoService accessoService;
 
 	private List<FcAttore> squadre = new ArrayList<>();
 
-	public SquadreAllView(AttoreService attoreService,FormazioneService formazioneService,AccessoService accessoService) {
+	public SquadreAllView(ResourceLoader resourceLoader,AttoreService attoreService,FormazioneService formazioneService,AccessoService accessoService) {
 		log.info("SquadreAllView()");
+		this.resourceLoader = resourceLoader;
 		this.attoreService = attoreService;
 		this.formazioneService = formazioneService;
 		this.accessoService = accessoService;

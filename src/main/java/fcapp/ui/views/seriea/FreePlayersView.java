@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -66,15 +65,12 @@ public class FreePlayersView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-	
-	private final GiocatoreService giocatoreService;
-	private final FormazioneService formazioneService;
-	private final AccessoService accessoService;
-	private final GiornataGiocatoreService giornataGiocatoreService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient ResourceLoader resourceLoader;
+	private final transient GiocatoreService giocatoreService;
+	private final transient FormazioneService formazioneService;
+	private final transient AccessoService accessoService;
+	private final transient GiornataGiocatoreService giornataGiocatoreService;
 	
     private RadioButtonGroup<String> radioGroup = null;
 	private TabSheet tabs = null;
@@ -85,8 +81,9 @@ public class FreePlayersView extends VerticalLayout
 
 	private List<FcGiornataGiocatore> listSqualificatiInfortunati = new ArrayList<>();
 
-    public FreePlayersView(GiocatoreService giocatoreService,FormazioneService formazioneService,AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
+    public FreePlayersView(ResourceLoader resourceLoader,GiocatoreService giocatoreService,FormazioneService formazioneService,AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
     	log.info("FreePlayersView");
+    	this.resourceLoader = resourceLoader;
     	this.giocatoreService = giocatoreService;
     	this.formazioneService = formazioneService;
     	this.accessoService = accessoService;

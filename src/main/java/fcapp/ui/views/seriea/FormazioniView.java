@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.olli.FileDownloadWrapper;
 
@@ -68,7 +67,16 @@ public class FormazioniView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient ResourceLoader resourceLoader;
+	private final transient JobProcessSendMail jobProcessSendMail;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient GiornataService giornataService;
+	private final transient GiornataDettService giornataDettService;
+	private final transient GiornataDettInfoService giornataDettInfoService;
+	private final ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final transient ClassificaService classificaService;
+	private final transient AccessoService accessoService;
 
 	private Image iconAmm = null;
 	private Image iconEsp = null;
@@ -83,27 +91,15 @@ public class FormazioniView extends VerticalLayout{
 	private Image iconRigoreParato = null;
 	private Image iconBonusPortiere = null;
 
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	@Autowired
-	private JobProcessSendMail jobProcessSendMail;
-
-	private final GiornataInfoService giornataInfoService;
-	private final GiornataService giornataService;
-	private final GiornataDettService giornataDettService;
-	private final GiornataDettInfoService giornataDettInfoService;
-	private final ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final ClassificaService classificaService;
-	private final AccessoService accessoService;
-
 	private final VerticalLayout mainLayout = new VerticalLayout();
 	private ComboBox<FcGiornataInfo> comboGiornata;
 
-	public FormazioniView(GiornataInfoService giornataInfoService,GiornataService giornataService,
+	public FormazioniView(ResourceLoader resourceLoader,JobProcessSendMail jobProcessSendMail,GiornataInfoService giornataInfoService,GiornataService giornataService,
 			GiornataDettService giornataDettService,GiornataDettInfoService giornataDettInfoService,
 			ClassificaTotalePuntiService classificaTotalePuntiService,ClassificaService classificaService,AccessoService accessoService) {
 		log.info("FormazioniView()");
+		this.resourceLoader=resourceLoader;
+		this.jobProcessSendMail=jobProcessSendMail;
 		this.giornataInfoService=giornataInfoService;
 		this.giornataService=giornataService;
 		this.giornataDettService=giornataDettService;

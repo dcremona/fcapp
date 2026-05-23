@@ -10,7 +10,6 @@ import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.vaadin.filesystemdataprovider.FileSelect;
 
@@ -60,17 +59,12 @@ public class DownloadView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	@Autowired
-	private Environment env;
-
-	private final ExpRoseAService expRoseAService;
-	private final ExpFreePlService expFreePlService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient Environment env;
+	private final transient ExpRoseAService expRoseAService;
+	private final transient ExpFreePlService expFreePlService;
+	private final transient AccessoService accessoService;
 
 	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
 	private final Grid<FcExpRosea> gridRosea = new Grid<>();
@@ -79,8 +73,10 @@ public class DownloadView extends VerticalLayout
 	int resX = 0;
 	int resY = 0;
 
-	public DownloadView(ExpRoseAService expRoseAService,ExpFreePlService expFreePlService,AccessoService accessoService) {
+	public DownloadView(JobProcessGiornata jobProcessGiornata,Environment env,ExpRoseAService expRoseAService,ExpFreePlService expFreePlService,AccessoService accessoService) {
 		log.info("DownloadView()");
+		this.jobProcessGiornata = jobProcessGiornata;
+		this.env = env;
 		this.expRoseAService = expRoseAService;
 		this.expFreePlService = expFreePlService;
 		this.accessoService = accessoService;

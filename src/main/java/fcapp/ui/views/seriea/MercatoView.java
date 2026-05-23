@@ -11,7 +11,6 @@ import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -63,19 +62,16 @@ public class MercatoView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient AttoreService attoreService;
+	private final transient GiocatoreService giocatoreService;
+	private final transient FormazioneService formazioneService;
+	private final transient ClassificaService classificaService;
+	private final transient AccessoService accessoService;
+	private final transient SquadraService squadraService;
 
 	private String idCampionato = null;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	private final AttoreService attoreService;
-	private final GiocatoreService giocatoreService;
-	private final FormazioneService formazioneService;
-	private final ClassificaService classificaService;
-	private final AccessoService accessoService;
-	private final SquadraService squadraService;
 
 	private Button randomSaveButton;
 	private Button saveButton;
@@ -93,13 +89,16 @@ public class MercatoView extends VerticalLayout
 	private List<FcClassifica> creditiFm = new ArrayList<>();
 
 
-	public MercatoView(AttoreService attoreService,
+	public MercatoView(
+			JdbcTemplate jdbcTemplate,
+			AttoreService attoreService,
 			GiocatoreService giocatoreService,
 			FormazioneService formazioneService,
 			ClassificaService classificaService,
 			AccessoService accessoService,
 			SquadraService squadraService) {
 		log.info("MercatoView");
+		this.jdbcTemplate = jdbcTemplate;
 		this.attoreService = attoreService;
 		this.giocatoreService = giocatoreService;
 		this.formazioneService = formazioneService;

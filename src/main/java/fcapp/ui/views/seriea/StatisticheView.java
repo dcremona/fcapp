@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -86,22 +85,15 @@ public class StatisticheView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final StatisticheService statisticheService;
-	private final AttoreService attoreService;
-	private final SquadraService squadraService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient ResourceLoader resourceLoader;
+	private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final transient StatisticheService statisticheService;
+	private final transient AttoreService attoreService;
+	private final transient SquadraService squadraService;
+	private final transient AccessoService accessoService;
 
 	private List<FcAttore> squadreA = new ArrayList<>();
 	private List<FcAttore> squadreB = new ArrayList<>();
@@ -126,12 +118,19 @@ public class StatisticheView extends VerticalLayout
 
 	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
-	public StatisticheView(	ClassificaTotalePuntiService classificaTotalePuntiService,
+	public StatisticheView(
+			JdbcTemplate jdbcTemplate,
+			JobProcessGiornata jobProcessGiornata,
+			ResourceLoader resourceLoader,
+			ClassificaTotalePuntiService classificaTotalePuntiService,
 			StatisticheService statisticheService,
 			AttoreService attoreService,
 			SquadraService squadraService,
 			AccessoService accessoService) {
 		log.info("StatisticheView()");
+		this.jdbcTemplate = jdbcTemplate;
+		this.jobProcessGiornata = jobProcessGiornata;
+		this.resourceLoader = resourceLoader;
 		this.classificaTotalePuntiService = classificaTotalePuntiService;
 		this.statisticheService = statisticheService;
 		this.attoreService = attoreService;

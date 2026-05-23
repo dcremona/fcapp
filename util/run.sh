@@ -1,3 +1,6 @@
+java -jar fcapp-v24-productionfc.jar &
+
+
 -- OLD
 #!/bin/sh
 echo "Usage: run.sh ( commands ... )  ./run.sh &>/dev/null &"
@@ -9,14 +12,27 @@ exit
 
 
 -- NEW 
-nohup -/run.sh &
+nohup ./run.sh &
 
 #!/bin/sh
 java -Xmx512m \
 	-Dserver.port="8080" \
 	-Dspring.datasource.url="jdbc:mysql://172.17.0.1:3306/fcdev2021?serverTimezone=GMT" \
-	-Dspring.datasource.username=fcdev2021 \
-	-jar fcweb-project-1.0.0.jar
+	-Dspring.datasource.username=fcapp \
+	-jar fcapp-v24-productionfc.jar
+
+echo "exit"
+
+exit 
+
+
+-- NEW 
+nohup ./run.sh > nohup.txt
+nohup ./run.sh &
+nohup ./run.sh > nohup.txt 2>&1
+
+#!/bin/sh
+java -jar fcapp-v24-productionfc.jar
 
 echo "exit"
 

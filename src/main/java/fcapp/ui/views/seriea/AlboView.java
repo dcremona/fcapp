@@ -40,11 +40,10 @@ public class AlboView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	private final AlboService alboService;
-	private final AttoreService attoreService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient AlboService alboService;
+	private final transient AttoreService attoreService;
+	private final transient AccessoService accessoService;
 
 	public AlboView(AlboService alboService,AttoreService attoreService,AccessoService accessoService) {
 		log.info("AlboView()");
