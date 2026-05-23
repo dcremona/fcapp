@@ -8,7 +8,6 @@ import java.util.List;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 
 import com.flowingcode.vaadin.addons.gridexporter.GridExporter;
@@ -52,23 +51,20 @@ public class EmDownloadView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final ExpRoseAService expRoseAService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient ResourceLoader resourceLoader;
+	private final transient ExpRoseAService expRoseAService;
+	private final transient AccessoService accessoService;
 
 	private final Grid<FcExpRosea> gridRosea = new Grid<>();
 	private Button salvaRoseA = null;
 	private Button salvaStat = null;
 
-	public EmDownloadView(ExpRoseAService expRoseAService,AccessoService accessoService) {
+	public EmDownloadView(JobProcessGiornata jobProcessGiornata,ResourceLoader resourceLoader,ExpRoseAService expRoseAService,AccessoService accessoService) {
 		log.info("EmDownloadView()");
+		this.jobProcessGiornata = jobProcessGiornata;
+		this.resourceLoader = resourceLoader;
 		this.expRoseAService = expRoseAService;
 		this.accessoService = accessoService;
 	}

@@ -1,9 +1,9 @@
 package fcapp.ui.views.admin;
 
+import java.io.Serial;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.field.provider.ComboBoxProvider;
@@ -36,8 +36,6 @@ import fcapp.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-import java.io.Serial;
-
 @PageTitle("GiornataDett")
 @Route(value = "giornataDett", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
@@ -46,17 +44,13 @@ public class FcGiornataDettView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	private final AttoreService attoreService;
-	private final GiornataInfoService giornataInfoService;
-	private final GiocatoreService giocatoreService;
-	private final StatoGiocatoreService statoGiocatoreService;
-	private final GiornataDettService giornataDettService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient AttoreService attoreService;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient GiocatoreService giocatoreService;
+	private final transient StatoGiocatoreService statoGiocatoreService;
+	private final transient GiornataDettService giornataDettService;
+	private final transient AccessoService accessoService;
 
 	private final ComboBox<FcAttore> attoreFilter = new ComboBox<>();
 	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();

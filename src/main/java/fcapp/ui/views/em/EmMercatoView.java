@@ -7,7 +7,15 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
@@ -15,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -84,26 +91,19 @@ public class EmMercatoView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final EmailService emailService;
-	private final GiocatoreService giocatoreService;
-	private final AttoreService attoreService;
-	private final RuoloService ruoloService;
-	private final SquadraService squadraService;
-	private final FormazioneService formazioneService;
-	private final MercatoService mercatoService;
-	private final MercatoInfoService mercatoInfoService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient EmailService emailService;
+	private final transient GiocatoreService giocatoreService;
+	private final transient AttoreService attoreService;
+	private final transient RuoloService ruoloService;
+	private final transient SquadraService squadraService;
+	private final transient FormazioneService formazioneService;
+	private final transient MercatoService mercatoService;
+	private final transient MercatoInfoService mercatoInfoService;
+	private final transient AccessoService accessoService;
 
 	private static final String width = "100px";
 	private static final String height = "120px";
@@ -209,13 +209,17 @@ public class EmMercatoView extends VerticalLayout
 	private final List<FcGiocatore> modelPlayer22 = new ArrayList<>();
 	private final List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
-	public EmMercatoView(EmailService emailService,
+	public EmMercatoView(Environment env,JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,
+			EmailService emailService,
 			GiocatoreService giocatoreService, AttoreService attoreService,
 			RuoloService ruoloService, SquadraService squadraService,
 			FormazioneService formazioneService, MercatoService mercatoService,
 			MercatoInfoService mercatoInfoService,
 			AccessoService accessoService) {
 		log.info("EmMercatoView()");
+		this.env = env;
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.emailService = emailService;
 		this.giocatoreService = giocatoreService;
 		this.attoreService = attoreService;
@@ -2224,23 +2228,23 @@ public class EmMercatoView extends VerticalLayout
 
 		formazioneHtml.append("<table>");
 
-		String ORDINAMENTO;
-		String RUOLO;
-		String NOME_GIOCATORE;
-		String SQUADRA;
-		String Q;
+		String ordinamento;
+		String ruolo;
+		String nomeGiocatore;
+		String squadra;
+		String q;
 
 		int ord = 1;
 		Map<String, InputStream> listImg = new HashMap<>();
 		for (int i = 0; i < NUM_GIOCATORI; i++) {
 
-			ORDINAMENTO = "" + ord;
+			ordinamento = "" + ord;
 			FcGiocatore bean = getFcGiocatore(i);
 
-			RUOLO = bean.getFcRuolo().getDescRuolo();
-			NOME_GIOCATORE = bean.getCognGiocatore();
-			SQUADRA = bean.getFcSquadra().getNomeSquadra();
-			Q = "" + bean.getQuotazione();
+			ruolo = bean.getFcRuolo().getDescRuolo();
+			nomeGiocatore = bean.getCognGiocatore();
+			squadra = bean.getFcSquadra().getNomeSquadra();
+			q = "" + bean.getQuotazione();
 
 			/*
 			 * String color = "BGCOLOR=\"#FF9331\""; if
@@ -2250,15 +2254,15 @@ public class EmMercatoView extends VerticalLayout
 			 * >= 12 && Integer.parseInt(ORDINAMENTO) <= 23) { color =
 			 * "BGCOLOR=\"#FFFF84\""; }
 			 */
-			String ruolo = bean.getFcRuolo().getIdRuolo();
+			String idRuolo = bean.getFcRuolo().getIdRuolo();
 			String color = "BGCOLOR=\"#FF9331\"";
-			if ("P".equals(ruolo)) {
+			if ("P".equals(idRuolo)) {
 				color = "BGCOLOR=" + Costants.COLOR_P;
-			} else if ("D".equals(ruolo)) {
+			} else if ("D".equals(idRuolo)) {
 				color = "BGCOLOR=" + Costants.COLOR_D;
-			} else if ("C".equals(ruolo)) {
+			} else if ("C".equals(idRuolo)) {
 				color = "BGCOLOR=" + Costants.COLOR_C;
-			} else if ("A".equals(ruolo)) {
+			} else if ("A".equals(idRuolo)) {
 				color = "BGCOLOR=" + Costants.COLOR_A;
 			}
 
@@ -2275,23 +2279,23 @@ public class EmMercatoView extends VerticalLayout
 			formazioneHtml.append("<tr ").append(color).append(">");
 
 			formazioneHtml.append("<td>");
-			formazioneHtml.append(ORDINAMENTO);
+			formazioneHtml.append(ordinamento);
 			formazioneHtml.append("</td>");
 
 			formazioneHtml.append("<td>");
-			formazioneHtml.append(RUOLO);
+			formazioneHtml.append(ruolo);
 			formazioneHtml.append("</td>");
 
 			formazioneHtml.append("<td>");
-			formazioneHtml.append(NOME_GIOCATORE);
+			formazioneHtml.append(nomeGiocatore);
 			formazioneHtml.append("</td>");
 
 			formazioneHtml.append("<td><img src=\"cid:").append(cidNomeSq).append("\" />");
-			formazioneHtml.append(SQUADRA);
+			formazioneHtml.append(squadra);
 			formazioneHtml.append("</td>");
 
 			formazioneHtml.append("<td>");
-			formazioneHtml.append(Q);
+			formazioneHtml.append(q);
 			formazioneHtml.append("</td>");
 
 			formazioneHtml.append("</tr>");
@@ -2334,19 +2338,19 @@ public class EmMercatoView extends VerticalLayout
 				// ACQUISTI - CESSIONI
 				for (FcMercatoDett m : modelCambi) {
 
-					String GIOC_ACQ = "";
-					String SQ_ACQ = "";
+					String giocAcq = "";
+					String squadraAcq = "";
 					String cidNomeSqAcq = ContentIdGenerator.getContentId();
-					String SQ_VEN = "";
-					String GIOC_VEN = "";
+					String squadraVen = "";
+					String giocVen = "";
 					String cidNomeSqVen = ContentIdGenerator.getContentId();
 
 					String ID_GIORNATA = "" + m.getFcGiornataInfo().getIdGiornataFc();
 
 					if (m.getFcGiocatoreByIdGiocAcq() != null) {
-						GIOC_ACQ = m.getFcGiocatoreByIdGiocAcq().getCognGiocatore();
+						giocAcq = m.getFcGiocatoreByIdGiocAcq().getCognGiocatore();
 						FcSquadra sqAcq = m.getFcGiocatoreByIdGiocAcq().getFcSquadra();
-						SQ_ACQ = sqAcq.getNomeSquadra();
+						squadraAcq = sqAcq.getNomeSquadra();
 						if (sqAcq.getImg() != null) {
 							try {
 								listImg.put(cidNomeSqAcq, sqAcq.getImg().getBinaryStream());
@@ -2357,9 +2361,9 @@ public class EmMercatoView extends VerticalLayout
 					}
 
 					if (m.getFcGiocatoreByIdGiocVen() != null) {
-						GIOC_VEN = m.getFcGiocatoreByIdGiocVen().getCognGiocatore();
+						giocVen = m.getFcGiocatoreByIdGiocVen().getCognGiocatore();
 						FcSquadra sqVen = m.getFcGiocatoreByIdGiocVen().getFcSquadra();
-						SQ_VEN = sqVen.getNomeSquadra();
+						squadraVen = sqVen.getNomeSquadra();
 						if (sqVen.getImg() != null) {
 							try {
 								listImg.put(cidNomeSqVen, sqVen.getImg().getBinaryStream());
@@ -2369,7 +2373,7 @@ public class EmMercatoView extends VerticalLayout
 						}
 					}
 
-					String DATA_CAMBIO = Utils.formatLocalDateTime(m.getDataCambio(), Costants.DATA_FORMATTED);
+					String dataCambio = Utils.formatLocalDateTime(m.getDataCambio(), Costants.DATA_FORMATTED);
 
 					formazioneHtml.append("<tr ").append(color).append(">");
 
@@ -2378,23 +2382,23 @@ public class EmMercatoView extends VerticalLayout
 					formazioneHtml.append("</td>");
 
 					formazioneHtml.append("<td>");
-					formazioneHtml.append(DATA_CAMBIO);
+					formazioneHtml.append(dataCambio);
 					formazioneHtml.append("</td>");
 
 					formazioneHtml.append("<td>");
-					formazioneHtml.append(GIOC_ACQ);
+					formazioneHtml.append(giocAcq);
 					formazioneHtml.append("</td>");
 
 					formazioneHtml.append("<td><img src=\"cid:").append(cidNomeSqAcq).append("\" />");
-					formazioneHtml.append(SQ_ACQ);
+					formazioneHtml.append(squadraAcq);
 					formazioneHtml.append("</td>");
 
 					formazioneHtml.append("<td>");
-					formazioneHtml.append(GIOC_VEN);
+					formazioneHtml.append(giocVen);
 					formazioneHtml.append("</td>");
 
 					formazioneHtml.append("<td><img src=\"cid:").append(cidNomeSqVen).append("\" />");
-					formazioneHtml.append(SQ_VEN);
+					formazioneHtml.append(squadraVen);
 					formazioneHtml.append("</td>");
 
 					formazioneHtml.append("</tr>");

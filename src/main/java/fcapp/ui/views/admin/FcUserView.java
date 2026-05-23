@@ -5,8 +5,6 @@ import java.security.SecureRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.CrudOperationException;
@@ -41,13 +39,9 @@ public class FcUserView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	private final AttoreService attoreService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient AttoreService attoreService;
+	private final transient AccessoService accessoService;
 
 	public FcUserView(AttoreService attoreService,AccessoService accessoService) {
 		log.info("FcUserView()");

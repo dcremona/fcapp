@@ -5,8 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.field.provider.ComboBoxProvider;
@@ -45,14 +43,10 @@ public class FcAccessoView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	private final AccessoService accessoService;
-	private final AttoreService attoreService;
-	private final CampionatoService campionatoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient AccessoService accessoService;
+	private final transient AttoreService attoreService;
+	private final transient CampionatoService campionatoService;
 
 	public FcAccessoView(AccessoService accessoService,AttoreService attoreService,CampionatoService campionatoService) {
 		log.info("FcAccessoView()");

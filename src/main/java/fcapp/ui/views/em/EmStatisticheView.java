@@ -4,11 +4,14 @@ import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -79,22 +82,15 @@ public class EmStatisticheView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final StatisticheService statisticheService;
-	private final AttoreService attoreService;
-	private final SquadraService squadraService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient ResourceLoader resourceLoader;
+	private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final transient StatisticheService statisticheService;
+	private final transient AttoreService attoreService;
+	private final transient SquadraService squadraService;
+	private final transient AccessoService accessoService;
 
 	public List<FcAttore> squadreA = new ArrayList<>();
 	public List<FcAttore> squadreB = new ArrayList<>();
@@ -116,11 +112,14 @@ public class EmStatisticheView extends VerticalLayout
 
 	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
-	public EmStatisticheView(
+	public EmStatisticheView(JdbcTemplate jdbcTemplate,JobProcessGiornata jobProcessGiornata,ResourceLoader resourceLoader,
 			ClassificaTotalePuntiService classificaTotalePuntiService,
 			StatisticheService statisticheService, AttoreService attoreService,
 			SquadraService squadraService, AccessoService accessoService) {
 		log.info("EmStatisticheView()");
+		this.jdbcTemplate = jdbcTemplate;
+		this.jobProcessGiornata = jobProcessGiornata;
+		this.resourceLoader = resourceLoader;
 		this.classificaTotalePuntiService = classificaTotalePuntiService;
 		this.statisticheService = statisticheService;
 		this.attoreService = attoreService;
@@ -415,18 +414,19 @@ public class EmStatisticheView extends VerticalLayout
 					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
 				}
-				if (s.getNomeSquadra() != null) {
-					FcSquadra sq = squadraService.findByNomeSquadra(s.getNomeSquadra());
-					if (sq.getImg() != null) {
+				String nomeSquadra = s.getNomeSquadra();
+				if (nomeSquadra != null) {
+					FcSquadra sq = squadraService.findByNomeSquadra(nomeSquadra);
+					if (sq != null && sq.getImg() != null) {
 						try {
-							Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
+							Image img = Utils.getImage(nomeSquadra, sq.getImg().getBinaryStream());
 							cellLayout.add(img);
 						} catch (SQLException e) {
 							log.error(e.getMessage());
 						}
 					}
 					Span span = new Span();
-					span.setText(sq.getNomeSquadra());
+					span.setText(nomeSquadra);
 					cellLayout.add(span);
 				}
 			}

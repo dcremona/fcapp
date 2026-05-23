@@ -7,11 +7,15 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -71,24 +75,17 @@ public class EmTeamInsertView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final EmailService emailService;
-	private final AttoreService attoreService;
-	private final FormazioneService formazioneService;
-	private final GiornataDettService giornataDettService;
-	private final CalendarioCompetizioneService calendarioCompetizioneService;
-	private final AccessoService accessoService;
-	private final SquadraService squadraService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient EmailService emailService;
+	private final transient AttoreService attoreService;
+	private final transient FormazioneService formazioneService;
+	private final transient GiornataDettService giornataDettService;
+	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+	private final transient AccessoService accessoService;
+	private final transient SquadraService squadraService;
 
     private AbsoluteLayout absLayout;
 
@@ -178,13 +175,16 @@ public class EmTeamInsertView extends VerticalLayout
 	private final List<FcGiocatore> modelPlayer22 = new ArrayList<>();
 	private final List<FcGiocatore> modelPlayer23 = new ArrayList<>();
 
-
-	public EmTeamInsertView(EmailService emailService,
+	public EmTeamInsertView(Environment env,JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,
+			EmailService emailService,
 			AttoreService attoreService, FormazioneService formazioneService,
 			GiornataDettService giornataDettService,
 			CalendarioCompetizioneService calendarioCompetizioneService,
 			AccessoService accessoService, SquadraService squadraService) {
 		log.info("EmTeamInsertView()");
+		this.env = env;
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.emailService = emailService;
 		this.attoreService = attoreService;
 		this.formazioneService = formazioneService;

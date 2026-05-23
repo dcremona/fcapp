@@ -1,9 +1,9 @@
 package fcapp.ui.views.admin;
 
+import java.io.Serial;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.field.provider.ComboBoxProvider;
@@ -29,8 +29,6 @@ import fcapp.utils.Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
-import java.io.Serial;
-
 @PageTitle("Giornata")
 @Route(value = "giornata", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
@@ -39,16 +37,12 @@ public class FcGiornataView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	private final GiornataService giornataService;
-	private final AttoreService attoreService;
-	private final GiornataInfoService giornataInfoService;
-	private final TipoGiornataService tipoGiornataService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient GiornataService giornataService;
+	private final transient AttoreService attoreService;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient TipoGiornataService tipoGiornataService;
+	private final transient AccessoService accessoService;
 
 	public FcGiornataView(GiornataService giornataService,AttoreService attoreService,GiornataInfoService giornataInfoService,TipoGiornataService tipoGiornataService,AccessoService accessoService) {
 		log.info("FcGiornataView()");

@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 
 import com.vaadin.flow.component.accordion.Accordion;
@@ -59,7 +58,14 @@ public class EmFormazioniView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient ResourceLoader resourceLoader;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient GiornataDettService giornataDettService;
+	private final transient GiornataDettInfoService giornataDettInfoService;
+	private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final transient AttoreService attoreService;
+	private final transient AccessoService accessoService;
 
 	private Image iconAmm_ = null;
 	private Image iconEsp_ = null;
@@ -74,21 +80,12 @@ public class EmFormazioniView extends VerticalLayout{
 	private Image iconRigoreParato_ = null;
 	private Image iconGolVittoria_ = null;
 
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final GiornataInfoService giornataInfoService;
-	private final GiornataDettService giornataDettService;
-	private final GiornataDettInfoService giornataDettInfoService;
-	private final ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final AttoreService attoreService;
-	private final AccessoService accessoService;
-	
     private final VerticalLayout mainLayout = new VerticalLayout();
 	public List<FcAttore> squadre = new ArrayList<>();
 
-	public EmFormazioniView(GiornataInfoService giornataInfoService,GiornataDettService giornataDettService,GiornataDettInfoService giornataDettInfoService,ClassificaTotalePuntiService classificaTotalePuntiService,AttoreService attoreService,AccessoService accessoService) {
+	public EmFormazioniView(ResourceLoader resourceLoader,GiornataInfoService giornataInfoService,GiornataDettService giornataDettService,GiornataDettInfoService giornataDettInfoService,ClassificaTotalePuntiService classificaTotalePuntiService,AttoreService attoreService,AccessoService accessoService) {
 		log.info("EmFormazioniView()");
+		this.resourceLoader = resourceLoader;
 		this.giornataInfoService = giornataInfoService;
 		this.giornataDettService = giornataDettService;
 		this.giornataDettInfoService = giornataDettInfoService;

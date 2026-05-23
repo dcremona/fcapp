@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.Serial;
 import java.sql.SQLException;
 
-import com.vaadin.flow.component.checkbox.Checkbox;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
@@ -17,6 +15,7 @@ import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
@@ -52,21 +51,19 @@ public class FcGiocatoreView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	private final GiocatoreService giocatoreService;
-	private final SquadraService squadraService;
-	private final RuoloService ruoloService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient GiocatoreService giocatoreService;
+	private final transient SquadraService squadraService;
+	private final transient RuoloService ruoloService;
+	private final transient AccessoService accessoService;
 
 	private final ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
 	private final ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
 
-	public FcGiocatoreView(GiocatoreService giocatoreService,SquadraService squadraService,RuoloService ruoloService,AccessoService accessoService) {
+	public FcGiocatoreView(Environment env,GiocatoreService giocatoreService,SquadraService squadraService,RuoloService ruoloService,AccessoService accessoService) {
 		log.info("FcGiocatoreView()");
+		this.env = env;
 		this.giocatoreService = giocatoreService;
 		this.squadraService = squadraService;
 		this.ruoloService = ruoloService;

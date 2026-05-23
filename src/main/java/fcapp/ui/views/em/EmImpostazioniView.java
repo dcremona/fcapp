@@ -18,7 +18,6 @@ import java.util.Properties;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -81,36 +80,23 @@ public class EmImpostazioniView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private EmailService emailService;
-
-	@Autowired
-	private Environment env;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient EmailService emailService;
+	private final transient Environment env;
+	private final transient EmJobProcessFileCsv emjobProcessFileCsv;
+	private final transient ResourceLoader resourceLoader;
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient EmJobProcessGiornata emjobProcessGiornata;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient AttoreService attoreService;
+	private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final transient FormazioneService formazioneService;
+	private final transient GiornataDettService giornataDettService;
+	private final transient AccessoService accessoService;
 
 	private List<FcAttore> squadre = null;
 	private List<FcGiornataInfo> giornate = null;
 
-	@Autowired
-	private EmJobProcessFileCsv emjobProcessFileCsv;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private EmJobProcessGiornata emjobProcessGiornata;
-
-	private final GiornataInfoService giornataInfoService;
-	private final AttoreService attoreService;
-	private final ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final FormazioneService formazioneService;
-	private final GiornataDettService giornataDettService;
-	private final AccessoService accessoService;
-	
 	private ComboBox<FcGiornataInfo> comboGiornata;
 
     private Button initDb;
@@ -141,13 +127,26 @@ public class EmImpostazioniView extends VerticalLayout
 	private TextArea messaggio;
 	private Button notifica;
 
-	public EmImpostazioniView(GiornataInfoService giornataInfoService,
+	public EmImpostazioniView(
+			EmailService emailService,
+			Environment env,
+			EmJobProcessFileCsv emjobProcessFileCsv,
+			ResourceLoader resourceLoader,
+			JdbcTemplate jdbcTemplate,
+			EmJobProcessGiornata emjobProcessGiornata,
+			GiornataInfoService giornataInfoService,
 			AttoreService attoreService,
 			ClassificaTotalePuntiService classificaTotalePuntiService,
 			FormazioneService formazioneService,
 			GiornataDettService giornataDettService,
 			AccessoService accessoService) {
 		log.info("EmImpostazioniView()");
+		this.emailService = emailService;
+		this.env = env;
+		this.emjobProcessFileCsv = emjobProcessFileCsv;
+		this.resourceLoader = resourceLoader;
+		this.jdbcTemplate = jdbcTemplate;
+		this.emjobProcessGiornata = emjobProcessGiornata;
 		this.giornataInfoService = giornataInfoService;
 		this.attoreService = attoreService;
 		this.classificaTotalePuntiService = classificaTotalePuntiService;

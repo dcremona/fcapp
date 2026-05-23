@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
@@ -52,21 +51,18 @@ public class EmHomeView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient ResourceLoader resourceLoader;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+	private final transient AccessoService accessoService;
+	private final transient SquadraService squadraService;
 
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final GiornataInfoService giornataInfoService;
-	private final CalendarioCompetizioneService calendarioCompetizioneService;
-	private final AccessoService accessoService;
-	private final SquadraService squadraService;
-
-	public EmHomeView(GiornataInfoService giornataInfoService,CalendarioCompetizioneService calendarioCompetizioneService,AccessoService accessoService,SquadraService squadraService) {
+	public EmHomeView(Environment env,ResourceLoader resourceLoader,GiornataInfoService giornataInfoService,CalendarioCompetizioneService calendarioCompetizioneService,AccessoService accessoService,SquadraService squadraService) {
 		log.info("EmHomeView()");
+		this.env = env;
+		this.resourceLoader = resourceLoader;
 		this.giornataInfoService = giornataInfoService;
 		this.calendarioCompetizioneService = calendarioCompetizioneService;
 		this.accessoService = accessoService;

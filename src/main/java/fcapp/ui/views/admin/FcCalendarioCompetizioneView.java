@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.impl.GridCrud;
@@ -59,26 +58,23 @@ public class FcCalendarioCompetizioneView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	@Autowired
-	private JobProcessGiornata jobProcessGiornata;
-
-	private final CalendarioCompetizioneService calendarioCompetizioneService;
-	private final GiornataInfoService giornataInfoService;
-	private final AccessoService accessoService;
-	private final SquadraService squadraService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient JobProcessGiornata jobProcessGiornata;
+	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+	private final transient GiornataInfoService giornataInfoService;
+	private final transient AccessoService accessoService;
+	private final transient SquadraService squadraService;
 
 	private Button initDb;
 	private Button updateGiornata;
 
 	private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 
-	public FcCalendarioCompetizioneView(CalendarioCompetizioneService calendarioCompetizioneService,GiornataInfoService giornataInfoService,AccessoService accessoService,SquadraService squadraService) {
+	public FcCalendarioCompetizioneView(Environment env,JobProcessGiornata jobProcessGiornata,CalendarioCompetizioneService calendarioCompetizioneService,GiornataInfoService giornataInfoService,AccessoService accessoService,SquadraService squadraService) {
 		log.info("FcCalendarioCompetizioneView()");
+		this.env = env;
+		this.jobProcessGiornata = jobProcessGiornata;
 		this.calendarioCompetizioneService = calendarioCompetizioneService;
 		this.giornataInfoService = giornataInfoService;
 		this.accessoService = accessoService;

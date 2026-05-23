@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -60,25 +59,21 @@ public class EmClassificaView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Environment env;
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
+	private final transient AccessoService accessoService;
 
 	private List<ClassificaBean> items = null;
 	private FcGiornataInfo giornataInfo = null;
 
-	public EmClassificaView(ClassificaTotalePuntiService classificaTotalePuntiService,AccessoService accessoService) {
+	public EmClassificaView(Environment env,JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,ClassificaTotalePuntiService classificaTotalePuntiService,AccessoService accessoService) {
 		log.info("EmClassificaView()");
+		this.env = env;
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.classificaTotalePuntiService = classificaTotalePuntiService;
 		this.accessoService = accessoService;
 	}

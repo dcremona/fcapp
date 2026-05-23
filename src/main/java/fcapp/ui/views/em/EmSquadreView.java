@@ -5,12 +5,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -63,25 +66,22 @@ public class EmSquadreView extends VerticalLayout{
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final AttoreService attoreService;
-	private final FormazioneService formazioneService;
-	private final MercatoService mercatoService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient JdbcTemplate jdbcTemplate;
+	private final transient ResourceLoader resourceLoader;
+	private final transient AttoreService attoreService;
+	private final transient FormazioneService formazioneService;
+	private final transient MercatoService mercatoService;
+	private final transient AccessoService accessoService;
 
 	private List<FcAttore> squadre = new ArrayList<>();
 
-	public EmSquadreView(AttoreService attoreService,
+	public EmSquadreView(JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,AttoreService attoreService,
 			FormazioneService formazioneService, MercatoService mercatoService,
 			AccessoService accessoService) {
 		log.info("EmSquadreView()");
+		this.jdbcTemplate = jdbcTemplate;
+		this.resourceLoader = resourceLoader;
 		this.attoreService = attoreService;
 		this.formazioneService = formazioneService;
 		this.mercatoService = mercatoService;

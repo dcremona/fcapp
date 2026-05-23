@@ -9,8 +9,6 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.crudui.crud.CrudOperation;
@@ -51,21 +49,16 @@ public class FcSquadraView extends VerticalLayout
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	public Environment env;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private final SquadraService squadraService;
-	private final AccessoService accessoService;
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient ResourceLoader resourceLoader;
+	private final transient SquadraService squadraService;
+	private final transient AccessoService accessoService;
 
 	private Button initDb;
 
-	public FcSquadraView(SquadraService squadraService,AccessoService accessoService) {
+	public FcSquadraView(ResourceLoader resourceLoader,SquadraService squadraService,AccessoService accessoService) {
 		log.info("FcSquadraView()");
+		this.resourceLoader = resourceLoader;
 		this.squadraService = squadraService;
 		this.accessoService = accessoService;
 	}
