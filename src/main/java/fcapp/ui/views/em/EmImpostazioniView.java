@@ -564,7 +564,7 @@ public class EmImpostazioniView extends VerticalLayout
 				}
 
 				String[] to = null;
-				if (!email_destinatario.toString().isEmpty()) {
+				if (!email_destinatario.isEmpty()) {
 					to = Utils.tornaArrayString(email_destinatario.toString(), ";");
 				}
                 String[] att = new String[] { testFileName1, testFileName2 };
@@ -598,7 +598,7 @@ public class EmImpostazioniView extends VerticalLayout
 					email_destinatario.append(a.getEmail()).append(";");
 				}
 				String[] to = null;
-				if (!email_destinatario.toString().isEmpty()) {
+				if (!email_destinatario.isEmpty()) {
 					to = Utils.tornaArrayString(email_destinatario.toString(), ";");
 				}
 
@@ -768,7 +768,7 @@ public class EmImpostazioniView extends VerticalLayout
 		}
 
 		String[] to = null;
-		if (!email_destinatario.toString().isEmpty()) {
+		if (!email_destinatario.isEmpty()) {
 			to = Utils.tornaArrayString(email_destinatario.toString(), ";");
 		}
 

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,19 +160,23 @@ public class FcSquadraView extends VerticalLayout
 				for (FcSquadra s : squadreSerieA) {
 					Resource r;
 					Resource r2;
+					String nomeImg = s.getNomeImg();
+					if (StringUtils.isBlank(nomeImg))  {
+						continue;
+					}
 					if ("1".equals(campionato.getType())) {
-						r = resourceLoader.getResource("classpath:/img/squadre/" + s.getNomeImg());
+						r = resourceLoader.getResource("classpath:img/squadre/" + s.getNomeImg());
 						InputStream inputStream = r.getInputStream();
 						byte[] targetArray = IOUtils.toByteArray(inputStream);
 						s.setImg(BlobProxy.generateProxy(targetArray));
 
 					} else {
-						r = resourceLoader.getResource("classpath:/img/nazioni/w20/" + s.getNomeImg());
+						r = resourceLoader.getResource("classpath:img/nazioni/w20/" + s.getNomeImg());
 						InputStream inputStream = r.getInputStream();
 						byte[] targetArray = IOUtils.toByteArray(inputStream);
 						s.setImg(BlobProxy.generateProxy(targetArray));
 
-						r2 = resourceLoader.getResource("classpath:/img/nazioni/w40/" + s.getNomeImg());
+						r2 = resourceLoader.getResource("classpath:img/nazioni/w40/" + s.getNomeImg());
 						InputStream inputStream2 = r2.getInputStream();
 						byte[] targetArray2 = IOUtils.toByteArray(inputStream2);
 						s.setImg40(BlobProxy.generateProxy(targetArray2));
