@@ -1,6 +1,7 @@
 package fcapp.ui.views.admin;
 
 import java.io.Serial;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,76 +34,164 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Formazione")
 @Route(value = "formazione", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcFormazioneView extends VerticalLayout{
+public class FcFormazioneView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient AttoreService attoreService;
-	private final transient FormazioneService formazioneService;
-	private final transient GiocatoreService giocatoreService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcFormazioneView.class);
 
-	public FcFormazioneView(AttoreService attoreService,FormazioneService formazioneService,GiocatoreService giocatoreService,AccessoService accessoService) {
-		log.info("FcFormazioneView()");
-		this.attoreService = attoreService;
-		this.formazioneService = formazioneService;
-		this.giocatoreService = giocatoreService;
-		this.accessoService = accessoService;
-	}
+    private static final String SESSION_CAMPIONATO = "CAMPIONATO";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_FC_ATTORE = "fcAttore";
+    private static final String FIELD_FC_GIOCATORE = "fcGiocatore";
+    private static final String FIELD_TOT_PAGATO = "totPagato";
 
-	private void initLayout() {
+    private final transient AttoreService attoreService;
+    private final transient FormazioneService formazioneService;
+    private final transient GiocatoreService giocatoreService;
+    private final transient AccessoService accessoService;
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    public FcFormazioneView(
+            AttoreService attoreService,
+            FormazioneService formazioneService,
+            GiocatoreService giocatoreService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcFormazioneView.class.getSimpleName());
+        this.attoreService = attoreService;
+        this.formazioneService = formazioneService;
+        this.giocatoreService = giocatoreService;
+        this.accessoService = accessoService;
+    }
 
-		GridCrud<FcFormazione> crud = new GridCrud<>(FcFormazione.class,new HorizontalSplitCrudLayout());
-		DefaultCrudFormFactory<FcFormazione> formFactory = new DefaultCrudFormFactory<>(FcFormazione.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcFormazioneView.class.getSimpleName());
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcAttore", "fcGiocatore", "totPagato");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcAttore", "fcGiocatore", "totPagato");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcAttore", "fcGiocatore", "totPagato");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcGiocatore");
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		crud.getGrid().setColumns("id", "fcAttore", "fcGiocatore", "totPagato");
-		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getOrdinamento() : "")).setHeader("Id");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiocatore() != null ? f.getFcGiocatore().getCognGiocatore() : "")).setHeader(Costants.GIOCATORE);
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotPagato() != null ? f.getTotPagato().toString() : "")).setHeader("Pagato");
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcGiocatore", new ComboBoxProvider<>(Costants.GIOCATORE,giocatoreService.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
+    private GridCrud<FcFormazione> buildCrud() {
+        GridCrud<FcFormazione> crud =
+                new GridCrud<>(FcFormazione.class, new HorizontalSplitCrudLayout());
 
-		crud.setRowCountCaption("%d Formazione(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(false);
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureOperations(crud);
 
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+        crud.setRowCountCaption("%d Formazione(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(false);
 
-		crud.setFindAllOperation(() -> formazioneService.findByFcCampionato(campionato));
-		crud.setAddOperation(formazioneService::save);
-		crud.setUpdateOperation(formazioneService::save);
-		crud.setDeleteOperation(formazioneService::delete);
+        return crud;
+    }
 
-		add(crud);
+    private void configureFormFactory(GridCrud<FcFormazione> crud) {
+        DefaultCrudFormFactory<FcFormazione> formFactory =
+                new DefaultCrudFormFactory<>(FcFormazione.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-	}
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.READ,
+                FIELD_ID,
+                FIELD_FC_ATTORE,
+                FIELD_FC_GIOCATORE,
+                FIELD_TOT_PAGATO);
 
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.ADD,
+                FIELD_ID,
+                FIELD_FC_ATTORE,
+                FIELD_FC_GIOCATORE,
+                FIELD_TOT_PAGATO);
+
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.UPDATE,
+                FIELD_ID,
+                FIELD_FC_ATTORE,
+                FIELD_FC_GIOCATORE,
+                FIELD_TOT_PAGATO);
+
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.DELETE,
+                FIELD_ID,
+                FIELD_FC_GIOCATORE);
+
+        List<FcAttore> attori = attoreService.findByActive(true);
+        List<FcGiocatore> giocatori = giocatoreService.findAll();
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_FC_ATTORE,
+                new ComboBoxProvider<>(
+                        "Attore",
+                        attori,
+                        new TextRenderer<>(FcAttore::getDescAttore),
+                        FcAttore::getDescAttore));
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_FC_GIOCATORE,
+                new ComboBoxProvider<>(
+                        Costants.GIOCATORE,
+                        giocatori,
+                        new TextRenderer<>(FcGiocatore::getCognGiocatore),
+                        FcGiocatore::getCognGiocatore));
+    }
+
+    private void configureGrid(GridCrud<FcFormazione> crud) {
+        crud.getGrid().removeAllColumns();
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getId() != null
+                                ? String.valueOf(item.getId().getOrdinamento())
+                                : ""))
+                .setHeader("Id");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcAttore() != null
+                                ? item.getFcAttore().getDescAttore()
+                                : ""))
+                .setHeader("Attore");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcGiocatore() != null
+                                ? item.getFcGiocatore().getCognGiocatore()
+                                : ""))
+                .setHeader(Costants.GIOCATORE);
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getTotPagato() != null
+                                ? item.getTotPagato().toString()
+                                : ""))
+                .setHeader("Pagato");
+
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
+
+    private void configureOperations(GridCrud<FcFormazione> crud) {
+        FcCampionato campionato =
+                (FcCampionato) VaadinSession.getCurrent().getAttribute(SESSION_CAMPIONATO);
+
+        crud.setFindAllOperation(() -> formazioneService.findByFcCampionato(campionato));
+        crud.setAddOperation(formazioneService::save);
+        crud.setUpdateOperation(formazioneService::save);
+        crud.setDeleteOperation(formazioneService::delete);
+    }
 }

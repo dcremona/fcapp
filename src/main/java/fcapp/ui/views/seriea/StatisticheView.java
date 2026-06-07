@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -79,596 +80,674 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Statistiche")
 @Route(value = "statistiche", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class StatisticheView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class StatisticheView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient JdbcTemplate jdbcTemplate;
-	private final transient JobProcessGiornata jobProcessGiornata;
-	private final transient ResourceLoader resourceLoader;
-	private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
-	private final transient StatisticheService statisticheService;
-	private final transient AttoreService attoreService;
-	private final transient SquadraService squadraService;
-	private final transient AccessoService accessoService;
+    private static final String GIOCATORI_TUTTI = "Tutti";
+    private static final String GIOCATORI_ATTIVI = "Attivi";
+    private static final String GIOCATORI_NON_ATTIVI = "Non Attivi";
 
-	private List<FcAttore> squadreA = new ArrayList<>();
-	private List<FcAttore> squadreB = new ArrayList<>();
-	private ComboBox<FcAttore> comboAttoreA;
-	private ComboBox<FcAttore> comboAttoreB;
-	private ComboBox<String> comboPunti;
+    private final transient Logger log = LoggerFactory.getLogger(getClass());
+    private final transient JdbcTemplate jdbcTemplate;
+    private final transient JobProcessGiornata jobProcessGiornata;
+    private final transient ResourceLoader resourceLoader;
+    private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
+    private final transient StatisticheService statisticheService;
+    private final transient AttoreService attoreService;
+    private final transient SquadraService squadraService;
+    private final transient AccessoService accessoService;
 
-	private List<FcAttore> proprietari = new ArrayList<>();
-	private List<FcSquadra> squadreSerieA = null;
-	private Button salvaStat = null;
+    private List<FcAttore> squadreA = new ArrayList<>();
+    private List<FcAttore> squadreB = new ArrayList<>();
+    private List<FcAttore> proprietari = new ArrayList<>();
+    private List<FcSquadra> squadreSerieA = new ArrayList<>();
 
-	// FILTER
-	private ToggleButton toggleP = null;
-	private ToggleButton toggleD = null;
-	private ToggleButton toggleC = null;
-	private ToggleButton toggleA = null;
-	private ComboBox<FcSquadra> comboSquadreA;
-	private NumberField txtQuotazione;
-	private ToggleButton freePlayers = null;
-	private ComboBox<FcAttore> comboProprietario;
-	private RadioButtonGroup<String> radioGroup = null;
+    private ComboBox<FcAttore> comboAttoreA;
+    private ComboBox<FcAttore> comboAttoreB;
+    private ComboBox<String> comboPunti;
 
-	private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
+    private Button salvaStat;
 
-	public StatisticheView(
-			JdbcTemplate jdbcTemplate,
-			JobProcessGiornata jobProcessGiornata,
-			ResourceLoader resourceLoader,
-			ClassificaTotalePuntiService classificaTotalePuntiService,
-			StatisticheService statisticheService,
-			AttoreService attoreService,
-			SquadraService squadraService,
-			AccessoService accessoService) {
-		log.info("StatisticheView()");
-		this.jdbcTemplate = jdbcTemplate;
-		this.jobProcessGiornata = jobProcessGiornata;
-		this.resourceLoader = resourceLoader;
-		this.classificaTotalePuntiService = classificaTotalePuntiService;
-		this.statisticheService = statisticheService;
-		this.attoreService = attoreService;
-		this.squadraService = squadraService;
-		this.accessoService = accessoService;
-	}
+    private ToggleButton toggleP;
+    private ToggleButton toggleD;
+    private ToggleButton toggleC;
+    private ToggleButton toggleA;
+    private ComboBox<FcSquadra> comboSquadreA;
+    private NumberField txtQuotazione;
+    private ToggleButton freePlayers;
+    private ComboBox<FcAttore> comboProprietario;
+    private RadioButtonGroup<String> radioGroup;
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initData();
-		initLayout();
-	}
+    private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
-	private void initData() {
-		squadreA = attoreService.findByActive(true);
-		squadreB = squadreA;
-		squadreSerieA = squadraService.findAll();
-		proprietari = squadreA;
-	}
+    public StatisticheView(
+            JdbcTemplate jdbcTemplate,
+            JobProcessGiornata jobProcessGiornata,
+            ResourceLoader resourceLoader,
+            ClassificaTotalePuntiService classificaTotalePuntiService,
+            StatisticheService statisticheService,
+            AttoreService attoreService,
+            SquadraService squadraService,
+            AccessoService accessoService) {
+        log.info("StatisticheView()");
+        this.jdbcTemplate = jdbcTemplate;
+        this.jobProcessGiornata = jobProcessGiornata;
+        this.resourceLoader = resourceLoader;
+        this.classificaTotalePuntiService = classificaTotalePuntiService;
+        this.statisticheService = statisticheService;
+        this.attoreService = attoreService;
+        this.squadraService = squadraService;
+        this.accessoService = accessoService;
+    }
 
-	private void initLayout() {
+    @PostConstruct
+    void init() {
+        log.info("init");
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+        accessoService.insertAccesso(getClass().getName());
+        initData();
+        initLayout();
+    }
 
-		final VerticalLayout layoutStat = new VerticalLayout();
-		setStatisticheA(layoutStat, campionato, att);
+    private void initData() {
+        squadreA = attoreService.findByActive(true);
+        squadreB = new ArrayList<>(squadreA);
+        proprietari = new ArrayList<>(squadreA);
+        squadreSerieA = squadraService.findAll();
+    }
 
-		final VerticalLayout layoutConfronti = new VerticalLayout();
-		setConfronti(layoutConfronti, campionato, att);
+    private void initLayout() {
+        FcCampionato campionato = getCurrentCampionato();
+        FcAttore attore = getCurrentAttore();
 
-		TabSheet tabSheet = new TabSheet();
-		tabSheet.add("Statistiche", layoutStat);
-		tabSheet.add("Confronti", layoutConfronti);
-		tabSheet.setSizeFull();
-		add(tabSheet);
+        VerticalLayout layoutStat = new VerticalLayout();
+        setStatisticheA(layoutStat, campionato, attore);
 
-	}
+        VerticalLayout layoutConfronti = new VerticalLayout();
+        setConfronti(layoutConfronti, campionato, attore);
 
-	private void setConfronti(VerticalLayout layout, FcCampionato campionato,
-			FcAttore att) {
+        TabSheet tabSheet = new TabSheet();
+        tabSheet.add("Statistiche", layoutStat);
+        tabSheet.add("Confronti", layoutConfronti);
+        tabSheet.setSizeFull();
 
-		HorizontalLayout layout1 = new HorizontalLayout();
-		layout1.setSpacing(true);
+        add(tabSheet);
+    }
 
-		comboAttoreA = new ComboBox<>();
-		comboAttoreA.setItems(squadreA);
-		comboAttoreA.setItemLabelGenerator(FcAttore::getDescAttore);
-		comboAttoreA.setValue(att);
-		comboAttoreA.setPlaceholder(Costants.SELEZIONA_ATTORE);
-		comboAttoreA.addValueChangeListener(event -> {
-			verticalLayoutGrafico.removeAll();
-			verticalLayoutGrafico.add(buildGrafico(campionato));
-		});
+    private FcCampionato getCurrentCampionato() {
+        return (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+    }
 
-		comboAttoreB = new ComboBox<>();
-		comboAttoreB.setItems(squadreB);
-		comboAttoreB.setItemLabelGenerator(FcAttore::getDescAttore);
-		comboAttoreB.setValue(att);
-		comboAttoreB.setPlaceholder(Costants.SELEZIONA_ATTORE);
-		comboAttoreB.addValueChangeListener(event -> {
-			verticalLayoutGrafico.removeAll();
-			verticalLayoutGrafico.add(buildGrafico(campionato));
-		});
+    private FcAttore getCurrentAttore() {
+        return (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+    }
 
-		comboPunti = new ComboBox<>();
-		comboPunti.setItems(Costants.PUNTI, Costants.TOTALE_PUNTI, Costants.PT_TVST);
-		comboPunti.setValue(Costants.PUNTI);
-		comboPunti.setPlaceholder(Costants.CLASSIFICA_PER);
-		comboPunti.addValueChangeListener(event -> {
-			verticalLayoutGrafico.removeAll();
-			verticalLayoutGrafico.add(buildGrafico(campionato));
-		});
+    private void setConfronti(VerticalLayout layout, FcCampionato campionato, FcAttore attore) {
+        HorizontalLayout filtersLayout = new HorizontalLayout();
+        filtersLayout.setSpacing(true);
 
-		layout1.add(comboAttoreA);
-		layout1.add(comboAttoreB);
-		layout1.add(comboPunti);
+        comboAttoreA = buildAttoreCombo(attore);
+        comboAttoreB = buildAttoreCombo(attore);
 
-		layout.add(layout1);
+        comboPunti = new ComboBox<>();
+        comboPunti.setItems(Costants.PUNTI, Costants.TOTALE_PUNTI, Costants.PT_TVST);
+        comboPunti.setValue(Costants.PUNTI);
+        comboPunti.setPlaceholder(Costants.CLASSIFICA_PER);
+        comboPunti.addValueChangeListener(event -> refreshGrafico(campionato));
 
-		verticalLayoutGrafico.removeAll();
-		verticalLayoutGrafico.add(buildGrafico(campionato));
-		verticalLayoutGrafico.setSizeFull();
-		layout.add(verticalLayoutGrafico);
+        filtersLayout.add(comboAttoreA, comboAttoreB, comboPunti);
+        layout.add(filtersLayout);
 
-	}
+        verticalLayoutGrafico.setSizeFull();
+        refreshGrafico(campionato);
+        layout.add(verticalLayoutGrafico);
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Component buildGrafico(FcCampionato campionato) {
+    private ComboBox<FcAttore> buildAttoreCombo(FcAttore defaultValue) {
+        ComboBox<FcAttore> combo = new ComboBox<>();
+        combo.setItems(squadreA);
+        combo.setItemLabelGenerator(FcAttore::getDescAttore);
+        combo.setValue(defaultValue);
+        combo.setPlaceholder(Costants.SELEZIONA_ATTORE);
+        combo.addValueChangeListener(event -> refreshGrafico(getCurrentCampionato()));
+        return combo;
+    }
 
-		String idAttoreA = "" + comboAttoreA.getValue().getIdAttore();
-		String descAttoreA = comboAttoreA.getValue().getDescAttore();
-		String idAttoreB = "" + comboAttoreB.getValue().getIdAttore();
-		String descAttoreB = comboAttoreB.getValue().getDescAttore();
-		String sPunti = comboPunti.getValue();
-		List<ClassificaBean> items = classificaTotalePuntiService.getModelGrafico(idAttoreA, idAttoreB, campionato);
+    private void refreshGrafico(FcCampionato campionato) {
+        verticalLayoutGrafico.removeAll();
+        verticalLayoutGrafico.add(buildGrafico(campionato));
+    }
 
-		ArrayList<String> giornate = new ArrayList<>();
-		ArrayList<Double> dataA = new ArrayList<>();
-		ArrayList<Double> dataB = new ArrayList<>();
+    @SuppressWarnings("rawtypes")
+    public Component buildGrafico(FcCampionato campionato) {
+        FcAttore attoreA = comboAttoreA.getValue();
+        FcAttore attoreB = comboAttoreB.getValue();
+        String tipoPunti = comboPunti.getValue();
 
-		for (ClassificaBean c : items) {
-			String squadra = c.getSquadra();
-			String gg = c.getGiornata();
-			double punti = c.getPunti();
-			double totPunti = c.getTotPunti();
-			double ptTvst = c.getPtTvst();
+        if (attoreA == null || attoreB == null || tipoPunti == null) {
+            return new Span("Seleziona i parametri per visualizzare il grafico");
+        }
 
-			giornate.add(gg);
+        List<ClassificaBean> items = classificaTotalePuntiService.getModelGrafico(
+                String.valueOf(attoreA.getIdAttore()),
+                String.valueOf(attoreB.getIdAttore()),
+                campionato);
 
-			if (squadra.equals(descAttoreA)) {
-                switch (sPunti) {
-                    case Costants.PUNTI -> dataA.add(punti);
-                    case Costants.TOTALE_PUNTI -> dataA.add(totPunti);
-                    case Costants.PT_TVST -> dataA.add(ptTvst);
+        List<String> giornate = new ArrayList<>();
+        List<Double> dataA = new ArrayList<>();
+        List<Double> dataB = new ArrayList<>();
+
+        for (ClassificaBean item : items) {
+            giornate.add(item.getGiornata());
+
+            if (attoreA.getDescAttore().equals(item.getSquadra())) {
+                dataA.add(extractPoints(item, tipoPunti));
+            } else if (attoreB.getDescAttore().equals(item.getSquadra())) {
+                dataB.add(extractPoints(item, tipoPunti));
+            }
+        }
+
+        Series primaSerie = new Series<>(attoreA.getDescAttore(), dataA.toArray());
+        Series secondaSerie = new Series<>(attoreB.getDescAttore(), dataB.toArray());
+
+        ApexCharts lineChart = ApexChartsBuilder.get()
+                .withChart(ChartBuilder.get()
+                        .withType(Type.LINE)
+                        .withZoom(ZoomBuilder.get().withEnabled(false).build())
+                        .build())
+                .withStroke(StrokeBuilder.get().withCurve(Curve.STRAIGHT).build())
+                .withTitle(TitleSubtitleBuilder.get()
+                        .withText(Costants.CLASSIFICA_PER + " " + tipoPunti)
+                        .withAlign(Align.LEFT)
+                        .build())
+                .withGrid(GridBuilder.get()
+                        .withRow(RowBuilder.get()
+                                .withColors("#f3f3f3", "transparent")
+                                .withOpacity(0.5)
+                                .build())
+                        .build())
+                .withXaxis(XAxisBuilder.get().withCategories(giornate).build())
+                .withSeries(primaSerie, secondaSerie)
+                .build();
+
+        lineChart.setHeight("400px");
+        lineChart.setWidth("70%");
+        return lineChart;
+    }
+
+    private double extractPoints(ClassificaBean item, String tipoPunti) {
+        return switch (tipoPunti) {
+            case Costants.PUNTI -> item.getPunti();
+            case Costants.TOTALE_PUNTI -> item.getTotPunti();
+            case Costants.PT_TVST -> item.getPtTvst();
+            default -> 0d;
+        };
+    }
+
+    private void setStatisticheA(VerticalLayout layout, FcCampionato campionato, FcAttore attore) {
+        HorizontalLayout actionsLayout = new HorizontalLayout();
+        actionsLayout.setSpacing(true);
+
+        addPdfDownloadButton(
+                actionsLayout,
+                "Statistiche Voti pdf",
+                "StatisticheVoti.pdf",
+                "classpath:reports/statisticheVoti.jasper",
+                campionato);
+
+        addPdfDownloadButton(
+                actionsLayout,
+                "Statistiche Voti Free Players pdf",
+                "StatisticheVotiFreePlayers.pdf",
+                "classpath:reports/statisticheVotiFreePlayers.jasper",
+                campionato);
+
+        if (isAdmin(attore)) {
+            salvaStat = new Button("Aggiorna Statistiche");
+            salvaStat.setIcon(VaadinIcon.DATABASE.create());
+            salvaStat.addClickListener(this);
+            actionsLayout.add(salvaStat);
+        }
+
+        layout.add(actionsLayout);
+
+        HorizontalLayout filterLayout = buildFilterLayout();
+        layout.add(filterLayout);
+
+        List<FcStatistiche> items = statisticheService.findAll();
+        PaginatedGrid<FcStatistiche, ?> grid = buildGrid(items);
+
+        layout.add(grid);
+    }
+
+    private void addPdfDownloadButton(
+            HorizontalLayout layout,
+            String buttonText,
+            String fileName,
+            String reportPath,
+            FcCampionato campionato) {
+        try {
+            Button button = new Button(buttonText);
+            FileDownloadWrapper wrapper = createPdfWrapper(fileName, reportPath, campionato);
+            wrapper.wrapComponent(button);
+            layout.add(wrapper);
+        } catch (Exception e) {
+            log.error("Errore nella creazione del download PDF {}: {}", fileName, e.getMessage(), e);
+        }
+    }
+
+    private FileDownloadWrapper createPdfWrapper(String fileName, String reportPath, FcCampionato campionato) throws Exception {
+        if (jdbcTemplate.getDataSource() == null) {
+            throw new IllegalStateException("DataSource non disponibile");
+        }
+
+        Connection conn = jdbcTemplate.getDataSource().getConnection();
+        Map<String, Object> params = new HashMap<>();
+        params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
+        params.put("DIVISORE", String.valueOf(Costants.DIVISORE_100));
+
+        Resource resource = resourceLoader.getResource(reportPath);
+
+        return new FileDownloadWrapper(
+                Utils.getStreamResource(fileName, conn, params, resource.getInputStream()));
+    }
+
+    private boolean isAdmin(FcAttore attore) {
+        return attore != null && attore.getRoles().stream().anyMatch(Role.ADMIN::equals);
+    }
+
+    private HorizontalLayout buildFilterLayout() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+
+        toggleP = buildRoleToggle(Costants.P, true);
+        toggleD = buildRoleToggle(Costants.D, true);
+        toggleC = buildRoleToggle(Costants.C, true);
+        toggleA = buildRoleToggle(Costants.A, true);
+
+        comboSquadreA = buildSquadraCombo();
+        txtQuotazione = buildQuotazioneField();
+        freePlayers = buildRoleToggle("Free Players", false);
+        comboProprietario = buildProprietarioCombo();
+        radioGroup = buildGiocatoriRadioGroup();
+
+        layout.add(
+                toggleP,
+                toggleD,
+                toggleC,
+                toggleA,
+                comboSquadreA,
+                txtQuotazione,
+                freePlayers,
+                comboProprietario,
+                radioGroup);
+
+        return layout;
+    }
+
+    private ToggleButton buildRoleToggle(String label, boolean defaultValue) {
+        ToggleButton toggle = new ToggleButton();
+        toggle.setLabel(label);
+        toggle.setValue(defaultValue);
+        return toggle;
+    }
+
+    private ComboBox<FcSquadra> buildSquadraCombo() {
+        ComboBox<FcSquadra> combo = new ComboBox<>(Costants.SQUADRA);
+        combo.setItems(squadreSerieA);
+        combo.setItemLabelGenerator(FcSquadra::getNomeSquadra);
+        combo.setClearButtonVisible(true);
+        combo.setPlaceholder(Costants.SQUADRA);
+        combo.setRenderer(new ComponentRenderer<>(item -> {
+            VerticalLayout container = new VerticalLayout();
+
+            if (item != null && item.getImg() != null) {
+                try {
+                    Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
+                    container.add(img);
+                } catch (SQLException e) {
+                    log.error("Errore caricamento immagine squadra {}: {}", item.getNomeSquadra(), e.getMessage(), e);
                 }
-
-			} else if (squadra.equals(descAttoreB)) {
-                switch (sPunti) {
-                    case Costants.PUNTI -> dataB.add(punti);
-                    case Costants.TOTALE_PUNTI -> dataB.add(totPunti);
-                    case Costants.PT_TVST -> dataB.add(ptTvst);
-                }
-			}
-		}
-
-		Series primaSerie = new Series<>(descAttoreA,dataA.toArray());
-		Series secondaSerie = new Series<>(descAttoreB,dataB.toArray());
-
-		ApexCharts lineChart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.LINE).withZoom(ZoomBuilder.get().withEnabled(false).build()).build()).withStroke(StrokeBuilder.get().withCurve(Curve.STRAIGHT).build()).withTitle(TitleSubtitleBuilder.get().withText(Costants.CLASSIFICA_PER + " " + sPunti).withAlign(Align.LEFT).build()).withGrid(GridBuilder.get().withRow(RowBuilder.get().withColors("#f3f3f3", "transparent").withOpacity(0.5).build()).build()).withXaxis(XAxisBuilder.get().withCategories(giornate).build()).withSeries(primaSerie, secondaSerie).build();
-		lineChart.setWidth("600px");
-		lineChart.setHeight("400px");
-		lineChart.setWidth("70%");
-
-		return lineChart;
-	}
-
-	private void setStatisticheA(VerticalLayout layout, FcCampionato campionato,
-			FcAttore att) {
-
-		HorizontalLayout layout1 = new HorizontalLayout();
-		layout1.setSpacing(true);
-
-		try {
-
-			Button stampaPdf = new Button("Statistiche Voti pdf");
-            assert jdbcTemplate.getDataSource() != null;
-            Connection conn = jdbcTemplate.getDataSource().getConnection();
-			Map<String, Object> hm = new HashMap<>();
-			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-			hm.put("DIVISORE", "" + Costants.DIVISORE_100);
-			Resource resource = resourceLoader.getResource("classpath:reports/statisticheVoti.jasper");
-			FileDownloadWrapper button1Wrapper = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVoti.pdf", conn, hm, resource.getInputStream()));
-
-			button1Wrapper.wrapComponent(stampaPdf);
-			layout1.add(button1Wrapper);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		try {
-			Button stampaPdf2 = new Button("Statistiche Voti Free Players pdf");
-            assert jdbcTemplate.getDataSource() != null;
-            Connection conn = jdbcTemplate.getDataSource().getConnection();
-			Map<String, Object> hm = new HashMap<>();
-			hm.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-			hm.put("DIVISORE", "" + Costants.DIVISORE_100);
-			Resource resource = resourceLoader.getResource("classpath:reports/statisticheVotiFreePlayers.jasper");
-			FileDownloadWrapper button1Wrapper2 = new FileDownloadWrapper(Utils.getStreamResource("StatisticheVotiFreePlayers.pdf", conn, hm, resource.getInputStream()));
-
-			button1Wrapper2.wrapComponent(stampaPdf2);
-			layout1.add(button1Wrapper2);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		boolean isAdmin = false;
-		for (Role r : att.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				isAdmin = true;
-				break;
-			}
-		}
-
-		if (isAdmin) {
-			salvaStat = new Button("Aggiorna Statistiche");
-			salvaStat.setIcon(VaadinIcon.DATABASE.create());
-			salvaStat.addClickListener(this);
-			layout1.add(salvaStat);
-		}
-
-		layout.add(layout1);
-
-		HorizontalLayout layoutFilter = new HorizontalLayout();
-		layoutFilter.setSpacing(true);
-
-		toggleP = new ToggleButton();
-		toggleP.setLabel(Costants.P);
-		toggleP.setValue(true);
-		toggleD = new ToggleButton();
-		toggleD.setLabel(Costants.D);
-		toggleD.setValue(true);
-		toggleC = new ToggleButton();
-		toggleC.setLabel(Costants.C);
-		toggleC.setValue(true);
-		toggleA = new ToggleButton();
-		toggleA.setLabel(Costants.A);
-		toggleA.setValue(true);
-
-		comboSquadreA = new ComboBox<>(Costants.SQUADRA);
-		comboSquadreA.setItems(squadreSerieA);
-		comboSquadreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
-		comboSquadreA.setClearButtonVisible(true);
-		comboSquadreA.setPlaceholder(Costants.SQUADRA);
-		comboSquadreA.setRenderer(new ComponentRenderer<>(item -> {
-			VerticalLayout container = new VerticalLayout();
-			if (item != null && item.getImg() != null) {
-				try {
-					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
-					container.add(img);
-				} catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-			}
-            assert item != null;
-            Span lblSquadra = new Span(item.getNomeSquadra());
-			container.add(lblSquadra);
-			return container;
-		}));
-
-		txtQuotazione = new NumberField("Quotazione <=");
-		txtQuotazione.setMin(0d);
-		txtQuotazione.setMax(500d);
-
-		freePlayers = new ToggleButton();
-		freePlayers.setLabel("Free Players");
-		freePlayers.setValue(false);
-
-		comboProprietario = new ComboBox<>(Costants.PROPETARIO);
-		comboProprietario.setItems(proprietari);
-		comboProprietario.setItemLabelGenerator(FcAttore::getDescAttore);
-		comboProprietario.setClearButtonVisible(true);
-		comboProprietario.setPlaceholder(Costants.PROPETARIO);
-		comboProprietario.setRenderer(new ComponentRenderer<>(item -> {
-			VerticalLayout container = new VerticalLayout();
-			Span lblProp = new Span(item.getDescAttore());
-			container.add(lblProp);
-			return container;
-		}));
-
-		radioGroup = new RadioButtonGroup<>();
-		radioGroup.setLabel("Giocatori");
-		radioGroup.setItems("Tutti", "Attivi", "Non Attivi");
-		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-		radioGroup.setValue("Tutti");
-
-		layoutFilter.add(toggleP);
-		layoutFilter.add(toggleD);
-		layoutFilter.add(toggleC);
-		layoutFilter.add(toggleA);
-		layoutFilter.add(comboSquadreA);
-		layoutFilter.add(txtQuotazione);
-		layoutFilter.add(freePlayers);
-		layoutFilter.add(comboProprietario);
-		layoutFilter.add(radioGroup);
-
-		layout.add(layoutFilter);
-
-		List<FcStatistiche> items = statisticheService.findAll();
-
-		PaginatedGrid<FcStatistiche, ?> grid = new PaginatedGrid<>();
-		ListDataProvider<FcStatistiche> dataProvider = new ListDataProvider<>(items);
-		grid.setDataProvider(dataProvider);
-
-		toggleP.addValueChangeListener(event -> applyFilter(dataProvider));
-		toggleD.addValueChangeListener(event -> applyFilter(dataProvider));
-		toggleC.addValueChangeListener(event -> applyFilter(dataProvider));
-		toggleA.addValueChangeListener(event -> applyFilter(dataProvider));
-		comboSquadreA.addValueChangeListener(event -> applyFilter(dataProvider));
-		txtQuotazione.addValueChangeListener(event -> applyFilter(dataProvider));
-		freePlayers.addValueChangeListener(event -> applyFilter(dataProvider));
-		comboProprietario.addValueChangeListener(event -> applyFilter(dataProvider));
-		radioGroup.addValueChangeListener(event -> applyFilter(dataProvider));
-
-		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-		grid.setMultiSort(true);
-		grid.setAllRowsVisible(true);
-
-		Column<FcStatistiche> ruoloColumn = grid.addColumn(new ComponentRenderer<>(g -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
-			if (g != null && g.getIdRuolo() != null) {
-				
-				Checkbox check = new Checkbox();
-				check.setValue(g.isFlagAttivo());
-				check.setEnabled(false);
-				
-				cellLayout.add(check);
-				
-				Image img = Utils.buildImage(g.getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getIdRuolo().toLowerCase() + ".png"));
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-		ruoloColumn.setKey(Costants.RUOLO);
-		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader(Costants.R);
-		ruoloColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> giocatoreColumn = grid.addColumn(FcStatistiche::getCognGiocatore).setKey(Costants.GIOCATORE);
-		giocatoreColumn.setSortable(true);
-		giocatoreColumn.setHeader(Costants.GIOCATORE);
-		giocatoreColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			if (s != null && s.getNomeSquadra() != null) {
-				Image img = Utils.buildImage(s.getNomeSquadra() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMG_SQUADRE + s.getNomeSquadra() + ".png"));
-				Span lblSquadra = new Span(s.getNomeSquadra());
-				cellLayout.add(img);
-				cellLayout.add(lblSquadra);
-			}
-
-			return cellLayout;
-
-		}));
-		nomeSquadraColumn.setSortable(true);
-		nomeSquadraColumn.setComparator(Comparator.comparing(FcStatistiche::getNomeSquadra));
-		nomeSquadraColumn.setHeader(Costants.SQUADRA);
-		nomeSquadraColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> quotazioneColumn = grid.addColumn(s -> s.getFcGiocatore() != null ? s.getFcGiocatore().getQuotazione() : 0);
-		quotazioneColumn.setSortable(true);
-		quotazioneColumn.setHeader(Costants.Q);
-		quotazioneColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> proprietarioColumn = grid.addColumn(FcStatistiche::getProprietario).setKey(Costants.PROPETARIO);
-		proprietarioColumn.setSortable(true);
-		proprietarioColumn.setHeader(Costants.PROPETARIO);
-		proprietarioColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> giocateColumn = grid.addColumn(FcStatistiche::getGiocate).setKey(Costants.GIOCATE);
-		giocateColumn.setSortable(true);
-		giocateColumn.setHeader(Costants.GIOCATE);
-		giocateColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> mediaVotoColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			if (s != null && s.getFcGiocatore() != null) {
-				String imgThink = "2.png";
-				if (s.getMediaVoto() != 0) {
-					if (s.getMediaVoto() > Costants.RANGE_MAX_MV) {
-						imgThink = "1.png";
-					} else if (s.getMediaVoto() < Costants.RANGE_MIN_MV) {
-						imgThink = "3.png";
-					}
-				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
-
-				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d;
-                d = s.getMediaVoto() / Costants.DIVISORE_100;
-                String sTotPunti = myFormatter.format(d);
-				Span lbl = new Span(sTotPunti);
-
-				cellLayout.add(img);
-				cellLayout.add(lbl);
-
-			}
-			return cellLayout;
-		}));
-		mediaVotoColumn.setSortable(true);
-		mediaVotoColumn.setComparator(Comparator.comparing(FcStatistiche::getMediaVoto));
-		mediaVotoColumn.setHeader(Costants.MV);
-		mediaVotoColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> fantaMediaColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			if (s != null && s.getFcGiocatore() != null) {
-				String imgThink = "2.png";
-				if (s.getFantaMedia() != 0) {
-					if (s.getFantaMedia() > Costants.RANGE_MAX_MV) {
-						imgThink = "1.png";
-					} else if (s.getFantaMedia() < Costants.RANGE_MIN_MV) {
-						imgThink = "3.png";
-					}
-				}
-				Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
-
-				DecimalFormat myFormatter = new DecimalFormat("#0.00");
-				Double d;
-                d = s.getFantaMedia() / Costants.DIVISORE_100;
-                String sTotPunti = myFormatter.format(d);
-				Span lbl = new Span(sTotPunti);
-
-				cellLayout.add(img);
-				cellLayout.add(lbl);
-			}
-			return cellLayout;
-		}));
-		fantaMediaColumn.setSortable(true);
-		fantaMediaColumn.setComparator(Comparator.comparing(FcStatistiche::getFantaMedia));
-		fantaMediaColumn.setHeader(Costants.FMV);
-		fantaMediaColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> golFattoColumn = grid.addColumn(FcStatistiche::getGoalFatto).setKey("golFatto");
-		golFattoColumn.setSortable(true);
-		golFattoColumn.setHeader(Costants.G + "+");
-		golFattoColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> golSubitoColumn = grid.addColumn(FcStatistiche::getGoalSubito).setKey("golSubito");
-		golSubitoColumn.setSortable(true);
-		golSubitoColumn.setHeader(Costants.G + "-");
-		golSubitoColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> assistColumn = grid.addColumn(FcStatistiche::getAssist).setKey("assist");
-		assistColumn.setSortable(true);
-		assistColumn.setHeader(Costants.ASSIST);
-		assistColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> ammonizioneColumn = grid.addColumn(FcStatistiche::getAmmonizione).setKey("ammonizione");
-		ammonizioneColumn.setSortable(true);
-		ammonizioneColumn.setHeader(Costants.AMM);
-		ammonizioneColumn.setAutoWidth(true);
-
-		Column<FcStatistiche> espulsioneColumn = grid.addColumn(FcStatistiche::getEspulsione).setKey("espulsione");
-		espulsioneColumn.setSortable(true);
-		espulsioneColumn.setHeader(Costants.ESP);
-		espulsioneColumn.setAutoWidth(true);
-
-		// Sets the max number of items to be rendered on the grid for each page
-		grid.setPageSize(25);
-
-		// Sets how many pages should be visible on the pagination before and/or
-		// after the current selected page
-		grid.setPaginatorSize(5);
-
-		layout.add(grid);
-
-	}
-
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-
-		try {
-			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-			if (event.getSource() == salvaStat) {
-				jobProcessGiornata.statistiche(campionato);
-			}
-			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
-
-	private void applyFilter(ListDataProvider<FcStatistiche> dataProvider) {
-
-		dataProvider.clearFilters();
-
-		if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equals(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))))) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P));
-		} else if (Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D));
-		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue())))))) && Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(!toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D));
-		} else if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(!toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(toggleA.getValue()))) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleA.getValue()))) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (Boolean.TRUE.equals(!toggleP.getValue() && !toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(!toggleP.getValue() && toggleD.getValue() && !toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && toggleC.getValue()) && Boolean.TRUE.equals(!toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.C));
-		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && !toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(toggleP.getValue() && toggleD.getValue() && !toggleC.getValue()) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.D) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else if (Boolean.TRUE.equals(Boolean.TRUE.equals(toggleP.getValue() && !toggleD.getValue() && toggleC.getValue())) && Boolean.TRUE.equals(toggleA.getValue())) {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase(Costants.P) || s.getIdRuolo().equalsIgnoreCase(Costants.C) || s.getIdRuolo().equalsIgnoreCase(Costants.A));
-		} else {
-			dataProvider.addFilter(s -> s.getIdRuolo().equalsIgnoreCase("-"));
-		}
-
-		if (comboSquadreA.getValue() != null) {
-			dataProvider.addFilter(s -> comboSquadreA.getValue().getNomeSquadra().equals(s.getNomeSquadra()));
-		}
-
-		if (txtQuotazione.getValue() != null) {
-			dataProvider.addFilter(s -> s.getFcGiocatore().getQuotazione() <= txtQuotazione.getValue().intValue());
-		}
-
-		if (Boolean.TRUE.equals(Boolean.TRUE.equals(freePlayers.getValue()))) {
-			dataProvider.addFilter(s -> StringUtils.isEmpty(s.getProprietario()));
-		}
-
-		if (comboProprietario.getValue() != null) {
-			dataProvider.addFilter(s -> comboProprietario.getValue().getDescAttore().equals(s.getProprietario()));
-		}
-
-		if ("Attivi".equals(radioGroup.getValue())) {
-			dataProvider.addFilter(FcStatistiche::isFlagAttivo);
-		} else if ("Non Attivi".equals(radioGroup.getValue())) {
-			dataProvider.addFilter(s -> !s.isFlagAttivo());
-		}
-
-	}
-
+            }
+
+            if (item != null) {
+                container.add(new Span(item.getNomeSquadra()));
+            }
+
+            return container;
+        }));
+        return combo;
+    }
+
+    private NumberField buildQuotazioneField() {
+        NumberField field = new NumberField("Quotazione <=");
+        field.setMin(0d);
+        field.setMax(500d);
+        return field;
+    }
+
+    private ComboBox<FcAttore> buildProprietarioCombo() {
+        ComboBox<FcAttore> combo = new ComboBox<>(Costants.PROPETARIO);
+        combo.setItems(proprietari);
+        combo.setItemLabelGenerator(FcAttore::getDescAttore);
+        combo.setClearButtonVisible(true);
+        combo.setPlaceholder(Costants.PROPETARIO);
+        combo.setRenderer(new ComponentRenderer<>(item -> {
+            VerticalLayout container = new VerticalLayout();
+            if (item != null) {
+                container.add(new Span(item.getDescAttore()));
+            }
+            return container;
+        }));
+        return combo;
+    }
+
+    private RadioButtonGroup<String> buildGiocatoriRadioGroup() {
+        RadioButtonGroup<String> group = new RadioButtonGroup<>();
+        group.setLabel("Giocatori");
+        group.setItems(GIOCATORI_TUTTI, GIOCATORI_ATTIVI, GIOCATORI_NON_ATTIVI);
+        group.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        group.setValue(GIOCATORI_TUTTI);
+        return group;
+    }
+
+    private PaginatedGrid<FcStatistiche, ?> buildGrid(List<FcStatistiche> items) {
+        PaginatedGrid<FcStatistiche, ?> grid = new PaginatedGrid<>();
+        ListDataProvider<FcStatistiche> dataProvider = new ListDataProvider<>(items);
+
+        grid.setDataProvider(dataProvider);
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        grid.addThemeVariants(
+                GridVariant.LUMO_NO_BORDER,
+                GridVariant.LUMO_NO_ROW_BORDERS,
+                GridVariant.LUMO_ROW_STRIPES);
+        grid.setMultiSort(true);
+        grid.setAllRowsVisible(true);
+        grid.setPageSize(25);
+        grid.setPaginatorSize(5);
+
+        bindFilters(dataProvider);
+        configureGridColumns(grid);
+
+        return grid;
+    }
+
+    private void bindFilters(ListDataProvider<FcStatistiche> dataProvider) {
+        toggleP.addValueChangeListener(event -> applyFilter(dataProvider));
+        toggleD.addValueChangeListener(event -> applyFilter(dataProvider));
+        toggleC.addValueChangeListener(event -> applyFilter(dataProvider));
+        toggleA.addValueChangeListener(event -> applyFilter(dataProvider));
+        comboSquadreA.addValueChangeListener(event -> applyFilter(dataProvider));
+        txtQuotazione.addValueChangeListener(event -> applyFilter(dataProvider));
+        freePlayers.addValueChangeListener(event -> applyFilter(dataProvider));
+        comboProprietario.addValueChangeListener(event -> applyFilter(dataProvider));
+        radioGroup.addValueChangeListener(event -> applyFilter(dataProvider));
+    }
+
+    private void configureGridColumns(PaginatedGrid<FcStatistiche, ?> grid) {
+        addRuoloColumn(grid);
+        addGiocatoreColumn(grid);
+        addSquadraColumn(grid);
+        addQuotazioneColumn(grid);
+        addProprietarioColumn(grid);
+        addGiocateColumn(grid);
+        addMediaVotoColumn(grid);
+        addFantaMediaColumn(grid);
+        addSimpleColumn(grid, FcStatistiche::getGoalFatto, "golFatto", Costants.G + "+");
+        addSimpleColumn(grid, FcStatistiche::getGoalSubito, "golSubito", Costants.G + "-");
+        addSimpleColumn(grid, FcStatistiche::getAssist, "assist", Costants.ASSIST);
+        addSimpleColumn(grid, FcStatistiche::getAmmonizione, "ammonizione", Costants.AMM);
+        addSimpleColumn(grid, FcStatistiche::getEspulsione, "espulsione", Costants.ESP);
+    }
+
+    private void addRuoloColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        Column<FcStatistiche> column = grid.addColumn(new ComponentRenderer<>(stat -> {
+            HorizontalLayout cellLayout = createCompactCellLayout();
+
+            if (stat != null && stat.getIdRuolo() != null) {
+                Checkbox check = new Checkbox();
+                check.setValue(stat.isFlagAttivo());
+                check.setEnabled(false);
+
+                Image img = Utils.buildImage(
+                        stat.getIdRuolo().toLowerCase() + ".png",
+                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + stat.getIdRuolo().toLowerCase() + ".png"));
+
+                cellLayout.add(check, img);
+            }
+
+            return cellLayout;
+        }));
+
+        column.setKey(Costants.RUOLO);
+        column.setSortable(true);
+        column.setHeader(Costants.R);
+        column.setAutoWidth(true);
+    }
+
+    private void addGiocatoreColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        grid.addColumn(FcStatistiche::getCognGiocatore)
+                .setKey(Costants.GIOCATORE)
+                .setSortable(true)
+                .setHeader(Costants.GIOCATORE)
+                .setAutoWidth(true);
+    }
+
+    private void addSquadraColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        Column<FcStatistiche> column = grid.addColumn(new ComponentRenderer<>(stat -> {
+            HorizontalLayout cellLayout = createCompactCellLayout();
+
+            if (stat != null && stat.getNomeSquadra() != null) {
+                Image img = Utils.buildImage(
+                        stat.getNomeSquadra() + ".png",
+                        resourceLoader.getResource(Costants.CLASSPATH_IMG_SQUADRE + stat.getNomeSquadra() + ".png"));
+                Span label = new Span(stat.getNomeSquadra());
+                cellLayout.add(img, label);
+            }
+
+            return cellLayout;
+        }));
+
+        column.setSortable(true);
+        column.setComparator(Comparator.comparing(FcStatistiche::getNomeSquadra));
+        column.setHeader(Costants.SQUADRA);
+        column.setAutoWidth(true);
+    }
+
+    private void addQuotazioneColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        grid.addColumn(stat -> stat.getFcGiocatore() != null ? stat.getFcGiocatore().getQuotazione() : 0)
+                .setSortable(true)
+                .setHeader(Costants.Q)
+                .setAutoWidth(true);
+    }
+
+    private void addProprietarioColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        grid.addColumn(FcStatistiche::getProprietario)
+                .setKey(Costants.PROPETARIO)
+                .setSortable(true)
+                .setHeader(Costants.PROPETARIO)
+                .setAutoWidth(true);
+    }
+
+    private void addGiocateColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        grid.addColumn(FcStatistiche::getGiocate)
+                .setKey(Costants.GIOCATE)
+                .setSortable(true)
+                .setHeader(Costants.GIOCATE)
+                .setAutoWidth(true);
+    }
+
+    private void addMediaVotoColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        Column<FcStatistiche> column = grid.addColumn(new ComponentRenderer<>(stat -> buildValueWithTrend(stat, true)));
+        column.setSortable(true);
+        column.setComparator(Comparator.comparing(FcStatistiche::getMediaVoto));
+        column.setHeader(Costants.MV);
+        column.setAutoWidth(true);
+    }
+
+    private void addFantaMediaColumn(PaginatedGrid<FcStatistiche, ?> grid) {
+        Column<FcStatistiche> column = grid.addColumn(new ComponentRenderer<>(stat -> buildValueWithTrend(stat, false)));
+        column.setSortable(true);
+        column.setComparator(Comparator.comparing(FcStatistiche::getFantaMedia));
+        column.setHeader(Costants.FMV);
+        column.setAutoWidth(true);
+    }
+
+    private <T> void addSimpleColumn(
+            PaginatedGrid<FcStatistiche, ?> grid,
+            com.vaadin.flow.function.ValueProvider<FcStatistiche, T> valueProvider,
+            String key,
+            String header) {
+        grid.addColumn(valueProvider)
+                .setKey(key)
+                .setSortable(true)
+                .setHeader(header)
+                .setAutoWidth(true);
+    }
+
+    private HorizontalLayout buildValueWithTrend(FcStatistiche stat, boolean mediaVoto) {
+        HorizontalLayout cellLayout = createCompactCellLayout();
+
+        if (stat == null || stat.getFcGiocatore() == null) {
+            return cellLayout;
+        }
+
+        double value = mediaVoto ? stat.getMediaVoto() : stat.getFantaMedia();
+        String trendIcon = getTrendIcon(value);
+
+        Image img = Utils.buildImage(trendIcon, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + trendIcon));
+        Span label = new Span(formatStatValue(value));
+
+        cellLayout.add(img, label);
+        return cellLayout;
+    }
+
+    private String getTrendIcon(double value) {
+        if (value == 0) {
+            return "2.png";
+        }
+        if (value > Costants.RANGE_MAX_MV) {
+            return "1.png";
+        }
+        if (value < Costants.RANGE_MIN_MV) {
+            return "3.png";
+        }
+        return "2.png";
+    }
+
+    private String formatStatValue(double value) {
+        DecimalFormat formatter = new DecimalFormat("#0.00");
+        return formatter.format(value / Costants.DIVISORE_100);
+    }
+
+    private HorizontalLayout createCompactCellLayout() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setMargin(false);
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        layout.setAlignItems(Alignment.STRETCH);
+        return layout;
+    }
+
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            FcCampionato campionato = getCurrentCampionato();
+
+            if (event.getSource() == salvaStat) {
+                jobProcessGiornata.statistiche(campionato);
+            }
+
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(
+                    CustomMessageDialog.MSG_ERROR_GENERIC,
+                    e.getMessage());
+        }
+    }
+
+    private void applyFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        dataProvider.clearFilters();
+
+        applyRoleFilter(dataProvider);
+        applySquadraFilter(dataProvider);
+        applyQuotazioneFilter(dataProvider);
+        applyFreePlayersFilter(dataProvider);
+        applyProprietarioFilter(dataProvider);
+        applyAttivitaFilter(dataProvider);
+    }
+
+    private void applyRoleFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        Set<String> selectedRoles = getSelectedRoles();
+
+        if (selectedRoles.isEmpty()) {
+            dataProvider.addFilter(stat -> false);
+            return;
+        }
+
+        dataProvider.addFilter(stat ->
+                stat.getIdRuolo() != null && selectedRoles.contains(stat.getIdRuolo().toUpperCase()));
+    }
+
+    private Set<String> getSelectedRoles() {
+        Set<String> roles = new java.util.HashSet<>();
+
+        if (Boolean.TRUE.equals(toggleP.getValue())) {
+            roles.add(Costants.P.toUpperCase());
+        }
+        if (Boolean.TRUE.equals(toggleD.getValue())) {
+            roles.add(Costants.D.toUpperCase());
+        }
+        if (Boolean.TRUE.equals(toggleC.getValue())) {
+            roles.add(Costants.C.toUpperCase());
+        }
+        if (Boolean.TRUE.equals(toggleA.getValue())) {
+            roles.add(Costants.A.toUpperCase());
+        }
+
+        return roles;
+    }
+
+    private void applySquadraFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        if (comboSquadreA.getValue() != null) {
+            String squadra = comboSquadreA.getValue().getNomeSquadra();
+            dataProvider.addFilter(stat -> squadra.equals(stat.getNomeSquadra()));
+        }
+    }
+
+    private void applyQuotazioneFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        if (txtQuotazione.getValue() != null) {
+            int quotazioneMax = txtQuotazione.getValue().intValue();
+            dataProvider.addFilter(stat ->
+                    stat.getFcGiocatore() != null && stat.getFcGiocatore().getQuotazione() <= quotazioneMax);
+        }
+    }
+
+    private void applyFreePlayersFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        if (Boolean.TRUE.equals(freePlayers.getValue())) {
+            dataProvider.addFilter(stat -> StringUtils.isBlank(stat.getProprietario()));
+        }
+    }
+
+    private void applyProprietarioFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        if (comboProprietario.getValue() != null) {
+            String proprietario = comboProprietario.getValue().getDescAttore();
+            dataProvider.addFilter(stat -> proprietario.equals(stat.getProprietario()));
+        }
+    }
+
+    private void applyAttivitaFilter(ListDataProvider<FcStatistiche> dataProvider) {
+        String selected = radioGroup.getValue();
+
+        if (GIOCATORI_ATTIVI.equals(selected)) {
+            dataProvider.addFilter(FcStatistiche::isFlagAttivo);
+        } else if (GIOCATORI_NON_ATTIVI.equals(selected)) {
+            dataProvider.addFilter(stat -> !stat.isFlagAttivo());
+        }
+    }
 }

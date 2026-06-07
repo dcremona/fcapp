@@ -1,6 +1,7 @@
 package fcapp.ui.views.admin;
 
 import java.io.Serial;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,82 +33,236 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Giornata")
 @Route(value = "giornata", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcGiornataView extends VerticalLayout{
+public class FcGiornataView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient GiornataService giornataService;
-	private final transient AttoreService attoreService;
-	private final transient GiornataInfoService giornataInfoService;
-	private final transient TipoGiornataService tipoGiornataService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcGiornataView.class);
 
-	public FcGiornataView(GiornataService giornataService,AttoreService attoreService,GiornataInfoService giornataInfoService,TipoGiornataService tipoGiornataService,AccessoService accessoService) {
-		log.info("FcGiornataView()");
-		this.giornataService = giornataService;
-		this.attoreService = attoreService;
-		this.giornataInfoService = giornataInfoService;
-		this.tipoGiornataService = tipoGiornataService;
-		this.accessoService = accessoService;
-	}
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_FC_TIPO_GIORNATA = "fcTipoGiornata";
+    private static final String FIELD_FC_GIORNATA_INFO = "fcGiornataInfo";
+    private static final String FIELD_ATTORE_CASA = "fcAttoreByIdAttoreCasa";
+    private static final String FIELD_ATTORE_FUORI = "fcAttoreByIdAttoreFuori";
+    private static final String FIELD_GOL_CASA = "golCasa";
+    private static final String FIELD_GOL_FUORI = "golFuori";
+    private static final String FIELD_TOT_CASA = "totCasa";
+    private static final String FIELD_TOT_FUORI = "totFuori";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final transient GiornataService giornataService;
+    private final transient AttoreService attoreService;
+    private final transient GiornataInfoService giornataInfoService;
+    private final transient TipoGiornataService tipoGiornataService;
+    private final transient AccessoService accessoService;
 
-	private void initLayout() {
+    public FcGiornataView(
+            GiornataService giornataService,
+            AttoreService attoreService,
+            GiornataInfoService giornataInfoService,
+            TipoGiornataService tipoGiornataService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcGiornataView.class.getSimpleName());
+        this.giornataService = giornataService;
+        this.attoreService = attoreService;
+        this.giornataInfoService = giornataInfoService;
+        this.tipoGiornataService = tipoGiornataService;
+        this.accessoService = accessoService;
+    }
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcGiornataView.class.getSimpleName());
 
-		GridCrud<FcGiornata> crud = new GridCrud<>(FcGiornata.class,new HorizontalSplitCrudLayout());
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		DefaultCrudFormFactory<FcGiornata> formFactory = new DefaultCrudFormFactory<>(FcGiornata.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa", "fcAttoreByIdAttoreFuori", "golCasa", "golFuori", "totCasa", "totFuori");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa", "fcAttoreByIdAttoreFuori", "golCasa", "golFuori", "totCasa", "totFuori");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa", "fcAttoreByIdAttoreFuori", "golCasa", "golFuori", "totCasa", "totFuori");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcTipoGiornata", "fcGiornataInfo", "fcAttoreByIdAttoreCasa");
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getIdGiornata() : "")).setHeader("Id Giornata");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcTipoGiornata() != null ? f.getFcTipoGiornata().getDescTipoGiornata() : "")).setHeader("Tipo Giornata");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttoreByIdAttoreCasa() != null ? f.getFcAttoreByIdAttoreCasa().getDescAttore() : "")).setHeader("Attore Casa");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttoreByIdAttoreFuori() != null ? f.getFcAttoreByIdAttoreFuori().getDescAttore() : "")).setHeader("Attore Fuori");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getGolCasa() != null ? f.getGolCasa().toString() : "")).setHeader("Gol Casa");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getGolFuori() != null ? f.getGolFuori().toString() : "")).setHeader("Gol Fuori");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotCasa() != null ? f.getTotCasa().toString() : "")).setHeader("Tot Casa");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotFuori() != null ? f.getTotFuori().toString() : "")).setHeader("Tot Fuori");
+    private GridCrud<FcGiornata> buildCrud() {
+        GridCrud<FcGiornata> crud =
+                new GridCrud<>(FcGiornata.class, new HorizontalSplitCrudLayout());
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureOperations(crud);
 
-		crud.getCrudFormFactory().setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoService.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
-		crud.getCrudFormFactory().setFieldProvider("fcAttoreByIdAttoreCasa", new ComboBoxProvider<>("Attore Casa",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcAttoreByIdAttoreFuori", new ComboBoxProvider<>("Attore Fuori",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		crud.getCrudFormFactory().setFieldProvider("fcTipoGiornata", new ComboBoxProvider<>("Tipo Giornata",tipoGiornataService.findAll(),new TextRenderer<>(FcTipoGiornata::getDescTipoGiornata),FcTipoGiornata::getDescTipoGiornata));
+        crud.setRowCountCaption("%d Giornata(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		crud.setRowCountCaption("%d Giornata(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        return crud;
+    }
 
-		crud.setFindAllOperation(giornataService::findAll);
-		crud.setAddOperation(giornataService::save);
-		crud.setUpdateOperation(giornataService::save);
-		crud.setDeleteOperation(giornataService::delete);
+    private void configureFormFactory(GridCrud<FcGiornata> crud) {
+        DefaultCrudFormFactory<FcGiornata> formFactory =
+                new DefaultCrudFormFactory<>(FcGiornata.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-		add(crud);
-	}
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.READ,
+                FIELD_ID,
+                FIELD_FC_TIPO_GIORNATA,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_ATTORE_CASA,
+                FIELD_ATTORE_FUORI,
+                FIELD_GOL_CASA,
+                FIELD_GOL_FUORI,
+                FIELD_TOT_CASA,
+                FIELD_TOT_FUORI);
 
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.ADD,
+                FIELD_ID,
+                FIELD_FC_TIPO_GIORNATA,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_ATTORE_CASA,
+                FIELD_ATTORE_FUORI,
+                FIELD_GOL_CASA,
+                FIELD_GOL_FUORI,
+                FIELD_TOT_CASA,
+                FIELD_TOT_FUORI);
+
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.UPDATE,
+                FIELD_ID,
+                FIELD_FC_TIPO_GIORNATA,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_ATTORE_CASA,
+                FIELD_ATTORE_FUORI,
+                FIELD_GOL_CASA,
+                FIELD_GOL_FUORI,
+                FIELD_TOT_CASA,
+                FIELD_TOT_FUORI);
+
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.DELETE,
+                FIELD_ID,
+                FIELD_FC_TIPO_GIORNATA,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_ATTORE_CASA);
+
+        List<FcGiornataInfo> giornateInfo = giornataInfoService.findAll();
+        List<FcAttore> attori = attoreService.findByActive(true);
+        List<FcTipoGiornata> tipiGiornata = tipoGiornataService.findAll();
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_FC_GIORNATA_INFO,
+                new ComboBoxProvider<>(
+                        "Giornata",
+                        giornateInfo,
+                        new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),
+                        FcGiornataInfo::getDescGiornataFc));
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_ATTORE_CASA,
+                new ComboBoxProvider<>(
+                        "Attore Casa",
+                        attori,
+                        new TextRenderer<>(FcAttore::getDescAttore),
+                        FcAttore::getDescAttore));
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_ATTORE_FUORI,
+                new ComboBoxProvider<>(
+                        "Attore Fuori",
+                        attori,
+                        new TextRenderer<>(FcAttore::getDescAttore),
+                        FcAttore::getDescAttore));
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_FC_TIPO_GIORNATA,
+                new ComboBoxProvider<>(
+                        "Tipo Giornata",
+                        tipiGiornata,
+                        new TextRenderer<>(FcTipoGiornata::getDescTipoGiornata),
+                        FcTipoGiornata::getDescTipoGiornata));
+    }
+
+    private void configureGrid(GridCrud<FcGiornata> crud) {
+        crud.getGrid().removeAllColumns();
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getId() != null
+                                ? String.valueOf(item.getId().getIdGiornata())
+                                : ""))
+                .setHeader("Id Giornata");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcGiornataInfo() != null
+                                ? item.getFcGiornataInfo().getDescGiornataFc()
+                                : ""))
+                .setHeader("Giornata");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcTipoGiornata() != null
+                                ? item.getFcTipoGiornata().getDescTipoGiornata()
+                                : ""))
+                .setHeader("Tipo Giornata");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcAttoreByIdAttoreCasa() != null
+                                ? item.getFcAttoreByIdAttoreCasa().getDescAttore()
+                                : ""))
+                .setHeader("Attore Casa");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcAttoreByIdAttoreFuori() != null
+                                ? item.getFcAttoreByIdAttoreFuori().getDescAttore()
+                                : ""))
+                .setHeader("Attore Fuori");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getGolCasa() != null
+                                ? item.getGolCasa().toString()
+                                : ""))
+                .setHeader("Gol Casa");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getGolFuori() != null
+                                ? item.getGolFuori().toString()
+                                : ""))
+                .setHeader("Gol Fuori");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getTotCasa() != null
+                                ? item.getTotCasa().toString()
+                                : ""))
+                .setHeader("Tot Casa");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getTotFuori() != null
+                                ? item.getTotFuori().toString()
+                                : ""))
+                .setHeader("Tot Fuori");
+
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
+
+    private void configureOperations(GridCrud<FcGiornata> crud) {
+        crud.setFindAllOperation(giornataService::findAll);
+        crud.setAddOperation(giornataService::save);
+        crud.setUpdateOperation(giornataService::save);
+        crud.setDeleteOperation(giornataService::delete);
+    }
 }

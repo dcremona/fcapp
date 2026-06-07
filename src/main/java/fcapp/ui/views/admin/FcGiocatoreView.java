@@ -3,6 +3,8 @@ package fcapp.ui.views.admin;
 import java.io.File;
 import java.io.Serial;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
@@ -46,173 +48,326 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle(Costants.GIOCATORE)
 @Route(value = Costants.GIOCATORE, layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcGiocatoreView extends VerticalLayout{
+public class FcGiocatoreView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient Environment env;
-	private final transient GiocatoreService giocatoreService;
-	private final transient SquadraService squadraService;
-	private final transient RuoloService ruoloService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcGiocatoreView.class);
 
-	private final ComboBox<FcRuolo> ruoloFilter = new ComboBox<>();
-	private final ComboBox<FcSquadra> squadraFilter = new ComboBox<>();
+    private static final String SESSION_CAMPIONATO = "CAMPIONATO";
+    private static final String ENV_PATH_TMP = "PATH_TMP";
+    private static final String TYPE_SERIE_A = "1";
+    private static final String SMALL_PREFIX = "small-";
+    private static final String CLEAR_LABEL = "clear";
 
-	public FcGiocatoreView(Environment env,GiocatoreService giocatoreService,SquadraService squadraService,RuoloService ruoloService,AccessoService accessoService) {
-		log.info("FcGiocatoreView()");
-		this.env = env;
-		this.giocatoreService = giocatoreService;
-		this.squadraService = squadraService;
-		this.ruoloService = ruoloService;
-		this.accessoService = accessoService;
-	}
+    private static final String FIELD_ID_GIOCATORE = "idGiocatore";
+    private static final String FIELD_COGN_GIOCATORE = "cognGiocatore";
+    private static final String FIELD_NOME_IMG = "nomeImg";
+    private static final String FIELD_FC_SQUADRA = "fcSquadra";
+    private static final String FIELD_FC_RUOLO = "fcRuolo";
+    private static final String FIELD_FLAG_ATTIVO = "flagAttivo";
+    private static final String FIELD_QUOTAZIONE = "quotazione";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final transient Environment env;
+    private final transient GiocatoreService giocatoreService;
+    private final transient SquadraService squadraService;
+    private final transient RuoloService ruoloService;
+    private final transient AccessoService accessoService;
 
-	private void initLayout() {
+    private final ComboBox<FcRuolo> ruoloFilter = new ComboBox<>(Costants.RUOLO);
+    private final ComboBox<FcSquadra> squadraFilter = new ComboBox<>(Costants.SQUADRA);
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    public FcGiocatoreView(
+            Environment env,
+            GiocatoreService giocatoreService,
+            SquadraService squadraService,
+            RuoloService ruoloService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcGiocatoreView.class.getSimpleName());
+        this.env = env;
+        this.giocatoreService = giocatoreService;
+        this.squadraService = squadraService;
+        this.ruoloService = ruoloService;
+        this.accessoService = accessoService;
+    }
 
-		GridCrud<FcGiocatore> crud = new GridCrud<>(FcGiocatore.class,new HorizontalSplitCrudLayout());
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcGiocatoreView.class.getSimpleName());
 
-		DefaultCrudFormFactory<FcGiocatore> formFactory = new DefaultCrudFormFactory<>(FcGiocatore.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		formFactory.setVisibleProperties(CrudOperation.READ, "idGiocatore", "cognGiocatore", "quotazione", "nomeImg", "fcSquadra", "fcRuolo", "flagAttivo", "quotazione");
-		formFactory.setVisibleProperties(CrudOperation.ADD, "idGiocatore", "cognGiocatore", "nomeImg", "fcSquadra", "fcRuolo", "flagAttivo", "quotazione");
-		formFactory.setVisibleProperties(CrudOperation.UPDATE, "cognGiocatore", "quotazione", "nomeImg", "fcSquadra", "fcRuolo", "flagAttivo", "quotazione");
-		formFactory.setVisibleProperties(CrudOperation.DELETE, "idGiocatore", "cognGiocatore");
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getGrid().removeAllColumns();
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		if ("1".equals(campionato.getType())) {
-			Column<FcGiocatore> giocatreColumn = crud.getGrid().addColumn(new ComponentRenderer<>(g -> {
-				HorizontalLayout cellLayout = new HorizontalLayout();
-				cellLayout.setSizeFull();
-				if (g != null && g.getNomeImg() != null) {
-					try {
-						Image img = Utils.getImage(g.getNomeImg(), g.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						log.error(e.getMessage());
-					}
+    private GridCrud<FcGiocatore> buildCrud() {
+        GridCrud<FcGiocatore> crud =
+                new GridCrud<>(FcGiocatore.class, new HorizontalSplitCrudLayout());
 
-					Image imgOnline = new Image(Costants.HTTP_URL_IMG + g.getNomeImg(),g.getNomeImg());
-					cellLayout.add(imgOnline);
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureFilters(crud);
+        configureOperations(crud);
 
-					Button updateImg = new Button("Salva");
-					updateImg.setIcon(VaadinIcon.DATABASE.create());
-					updateImg.addClickListener(event -> {
-						try {
-							String basePathData = env.getProperty("PATH_TMP");
-                            log.info("basePathData {}", basePathData);
+        crud.setRowCountCaption("%d Giocatore(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-                            assert basePathData != null;
-                            File f = new File(basePathData);
-							if (!f.exists()) {
-								CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Impossibile trovare il percorso specificato " + basePathData);
-								return;
-							}
+        return crud;
+    }
 
-							String newImg = g.getNomeImg();
-                            log.info("newImg {}", newImg);
-							log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
+    private void configureFormFactory(GridCrud<FcGiocatore> crud) {
+        DefaultCrudFormFactory<FcGiocatore> formFactory =
+                new DefaultCrudFormFactory<>(FcGiocatore.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-                            boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, basePathData + newImg);
-                            log.info("bResult 1 {}", flag);
-							flag = Utils.buildFileSmall(basePathData + newImg, basePathData + "small-" + newImg);
-                            log.info("bResult 2 {}", flag);
+        formFactory.setVisibleProperties(
+                CrudOperation.READ,
+                FIELD_ID_GIOCATORE,
+                FIELD_COGN_GIOCATORE,
+                FIELD_QUOTAZIONE,
+                FIELD_NOME_IMG,
+                FIELD_FC_SQUADRA,
+                FIELD_FC_RUOLO,
+                FIELD_FLAG_ATTIVO,
+                FIELD_QUOTAZIONE);
 
-							g.setImg(BlobProxy.generateProxy(Utils.getImage(basePathData + newImg)));
-							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
+        formFactory.setVisibleProperties(
+                CrudOperation.ADD,
+                FIELD_ID_GIOCATORE,
+                FIELD_COGN_GIOCATORE,
+                FIELD_NOME_IMG,
+                FIELD_FC_SQUADRA,
+                FIELD_FC_RUOLO,
+                FIELD_FLAG_ATTIVO,
+                FIELD_QUOTAZIONE);
 
-							log.info("SAVE GIOCATORE ");
-							giocatoreService.save(g);
+        formFactory.setVisibleProperties(
+                CrudOperation.UPDATE,
+                FIELD_COGN_GIOCATORE,
+                FIELD_QUOTAZIONE,
+                FIELD_NOME_IMG,
+                FIELD_FC_SQUADRA,
+                FIELD_FC_RUOLO,
+                FIELD_FLAG_ATTIVO,
+                FIELD_QUOTAZIONE);
 
-							CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-						} catch (Exception e) {
-							CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-						}
-					});
+        formFactory.setVisibleProperties(
+                CrudOperation.DELETE,
+                FIELD_ID_GIOCATORE,
+                FIELD_COGN_GIOCATORE);
 
-					cellLayout.add(updateImg);
-				}
-				return cellLayout;
-			}));
-			giocatreColumn.setWidth("350px");
-		}
+        List<FcSquadra> squadre = squadraService.findAll();
+        List<FcRuolo> ruoli = ruoloService.findAll();
 
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getIdGiocatore())).setHeader("Id");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcRuolo().getIdRuolo())).setHeader(Costants.RUOLO);
+        formFactory.setFieldProvider(
+                FIELD_FC_SQUADRA,
+                new ComboBoxProvider<>(
+                        FIELD_FC_SQUADRA,
+                        squadre,
+                        new TextRenderer<>(FcSquadra::getNomeSquadra),
+                        FcSquadra::getNomeSquadra));
 
-		Column<FcGiocatore> giocatoreColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getCognGiocatore())).setHeader(Costants.GIOCATORE);
-		giocatoreColumn.setSortable(false);
-		giocatoreColumn.setAutoWidth(true);
+        formFactory.setFieldProvider(
+                FIELD_FC_RUOLO,
+                new ComboBoxProvider<>(
+                        FIELD_FC_RUOLO,
+                        ruoli,
+                        new TextRenderer<>(FcRuolo::getDescRuolo),
+                        FcRuolo::getDescRuolo));
+    }
 
-		Column<FcGiocatore> squadraColumn = crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : g.getFcSquadra().getNomeSquadra())).setHeader(Costants.SQUADRA);
-		squadraColumn.setSortable(false);
-		squadraColumn.setAutoWidth(true);
+    private void configureGrid(GridCrud<FcGiocatore> crud) {
+        crud.getGrid().removeAllColumns();
 
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g == null ? "" : "" + g.getQuotazione())).setHeader("Quotazione");
+        if (isSerieACompetition()) {
+            addImageColumn(crud);
+        }
 
-		crud.getGrid().addColumn(new ComponentRenderer<>(g -> {
-			Checkbox check = new Checkbox();
-			check.setValue(g.isFlagAttivo());
-			check.setEnabled(false);
-			return check;
-		})).setHeader("Attivo");
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(g ->
+                        g == null ? "" : String.valueOf(g.getIdGiocatore())))
+                .setHeader("Id");
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(g ->
+                        g != null && g.getFcRuolo() != null ? g.getFcRuolo().getIdRuolo() : ""))
+                .setHeader(Costants.RUOLO);
 
-		formFactory.setFieldProvider("fcSquadra", new ComboBoxProvider<>("fcSquadra",squadraService.findAll(),new TextRenderer<>(FcSquadra::getNomeSquadra),FcSquadra::getNomeSquadra));
-		formFactory.setFieldProvider("fcRuolo", new ComboBoxProvider<>("fcRuolo",ruoloService.findAll(),new TextRenderer<>(FcRuolo::getDescRuolo),FcRuolo::getDescRuolo));
+        Column<FcGiocatore> giocatoreColumn = crud.getGrid()
+                .addColumn(new TextRenderer<>(g ->
+                        g == null ? "" : defaultString(g.getCognGiocatore())))
+                .setHeader(Costants.GIOCATORE);
+        giocatoreColumn.setSortable(false);
+        giocatoreColumn.setAutoWidth(true);
 
-		crud.setRowCountCaption("%d Giocatore(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        Column<FcGiocatore> squadraColumn = crud.getGrid()
+                .addColumn(new TextRenderer<>(g ->
+                        g != null && g.getFcSquadra() != null ? g.getFcSquadra().getNomeSquadra() : ""))
+                .setHeader(Costants.SQUADRA);
+        squadraColumn.setSortable(false);
+        squadraColumn.setAutoWidth(true);
 
-		ruoloFilter.setPlaceholder(Costants.RUOLO);
-		ruoloFilter.setItems(ruoloService.findAll());
-		ruoloFilter.setItemLabelGenerator(FcRuolo::getIdRuolo);
-		ruoloFilter.setClearButtonVisible(true);
-		ruoloFilter.addValueChangeListener(e -> crud.refreshGrid());
-		crud.getCrudLayout().addFilterComponent(ruoloFilter);
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(g ->
+                        g == null ? "" : String.valueOf(g.getQuotazione())))
+                .setHeader("Quotazione");
 
-		squadraFilter.setPlaceholder(Costants.SQUADRA);
-		squadraFilter.setItems(squadraService.findAll());
-		squadraFilter.setItemLabelGenerator(FcSquadra::getNomeSquadra);
-		squadraFilter.setClearButtonVisible(true);
-		squadraFilter.addValueChangeListener(e -> crud.refreshGrid());
-		crud.getCrudLayout().addFilterComponent(squadraFilter);
+        crud.getGrid()
+                .addColumn(new ComponentRenderer<>(g -> {
+                    Checkbox check = new Checkbox();
+                    check.setValue(g != null && g.isFlagAttivo());
+                    check.setReadOnly(true);
+                    return check;
+                }))
+                .setHeader("Attivo");
 
-		Button clearFilters = new Button("clear");
-		clearFilters.addClickListener(event -> {
-			ruoloFilter.clear();
-			squadraFilter.clear();
-		});
-		crud.getCrudLayout().addFilterComponent(clearFilters);
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
 
-		crud.setFindAllOperation(() -> giocatoreService.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(ruoloFilter.getValue(), squadraFilter.getValue()));
-		crud.setAddOperation(giocatoreService::save);
-		crud.setUpdateOperation(giocatoreService::save);
-		crud.setDeleteOperation(giocatoreService::delete);
+    private void addImageColumn(GridCrud<FcGiocatore> crud) {
+        Column<FcGiocatore> imageColumn = crud.getGrid().addColumn(
+                new ComponentRenderer<>(this::buildImageCell));
+        imageColumn.setWidth("350px");
+    }
 
-		add(crud);
+    private HorizontalLayout buildImageCell(FcGiocatore giocatore) {
+        HorizontalLayout cellLayout = new HorizontalLayout();
+        cellLayout.setSizeFull();
 
-	}
+        if (giocatore == null || giocatore.getNomeImg() == null) {
+            return cellLayout;
+        }
+
+        addStoredImage(cellLayout, giocatore);
+        addOnlineImage(cellLayout, giocatore);
+        cellLayout.add(createSaveImageButton(giocatore));
+
+        return cellLayout;
+    }
+
+    private void addStoredImage(HorizontalLayout layout, FcGiocatore giocatore) {
+        try {
+            if (giocatore.getImg() != null) {
+                Image image = Utils.getImage(giocatore.getNomeImg(), giocatore.getImg().getBinaryStream());
+                layout.add(image);
+            }
+        } catch (SQLException e) {
+            LOG.error("Error loading stored image for {}", giocatore.getNomeImg(), e);
+        }
+    }
+
+    private void addOnlineImage(HorizontalLayout layout, FcGiocatore giocatore) {
+        Image onlineImage =
+                new Image(Costants.HTTP_URL_IMG + giocatore.getNomeImg(), giocatore.getNomeImg());
+        layout.add(onlineImage);
+    }
+
+    private Button createSaveImageButton(FcGiocatore giocatore) {
+        Button updateImg = new Button("Salva");
+        updateImg.setIcon(VaadinIcon.DATABASE.create());
+        updateImg.addClickListener(event -> savePlayerImages(giocatore));
+        return updateImg;
+    }
+
+    private void savePlayerImages(FcGiocatore giocatore) {
+        try {
+            String basePath = getValidatedBasePath();
+            String imageName = giocatore.getNomeImg();
+
+            LOG.info("Saving image {}", imageName);
+            LOG.info("httpUrlImg {}", Costants.HTTP_URL_IMG);
+
+            boolean downloaded =
+                    Utils.downloadFile(Costants.HTTP_URL_IMG + imageName, basePath + imageName);
+            LOG.info("Download result {}", downloaded);
+
+            boolean resized =
+                    Utils.buildFileSmall(basePath + imageName, basePath + SMALL_PREFIX + imageName);
+            LOG.info("Resize result {}", resized);
+
+            giocatore.setImg(BlobProxy.generateProxy(Utils.getImage(basePath + imageName)));
+            giocatore.setImg(BlobProxy.generateProxy(Utils.getImage(basePath + imageName)));
+            giocatore.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePath + SMALL_PREFIX + imageName)));
+
+            giocatoreService.save(giocatore);
+
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+        } catch (Exception e) {
+            LOG.error("Error saving image for {}", giocatore != null ? giocatore.getNomeImg() : null, e);
+            CustomMessageDialog.showMessageErrorDetails(
+                    CustomMessageDialog.MSG_ERROR_GENERIC,
+                    defaultString(e.getMessage()));
+        }
+    }
+
+    private void configureFilters(GridCrud<FcGiocatore> crud) {
+        ruoloFilter.setItems(ruoloService.findAll());
+        ruoloFilter.setItemLabelGenerator(FcRuolo::getIdRuolo);
+        ruoloFilter.setClearButtonVisible(true);
+        ruoloFilter.addValueChangeListener(event -> crud.refreshGrid());
+
+        squadraFilter.setItems(squadraService.findAll());
+        squadraFilter.setItemLabelGenerator(FcSquadra::getNomeSquadra);
+        squadraFilter.setClearButtonVisible(true);
+        squadraFilter.addValueChangeListener(event -> crud.refreshGrid());
+
+        Button clearFilters = new Button(CLEAR_LABEL);
+        clearFilters.addClickListener(event -> {
+            ruoloFilter.clear();
+            squadraFilter.clear();
+        });
+
+        crud.getCrudLayout().addFilterComponent(ruoloFilter);
+        crud.getCrudLayout().addFilterComponent(squadraFilter);
+        crud.getCrudLayout().addFilterComponent(clearFilters);
+    }
+
+    private void configureOperations(GridCrud<FcGiocatore> crud) {
+        crud.setFindAllOperation(() ->
+                giocatoreService.findByFcRuoloAndFcSquadraOrderByQuotazioneDesc(
+                        ruoloFilter.getValue(),
+                        squadraFilter.getValue()));
+        crud.setAddOperation(giocatoreService::save);
+        crud.setUpdateOperation(giocatoreService::save);
+        crud.setDeleteOperation(giocatoreService::delete);
+    }
+
+    private boolean isSerieACompetition() {
+        FcCampionato campionato =
+                (FcCampionato) VaadinSession.getCurrent().getAttribute(SESSION_CAMPIONATO);
+        return campionato != null && Objects.equals(TYPE_SERIE_A, campionato.getType());
+    }
+
+    private String getValidatedBasePath() {
+        String basePath = env.getProperty(ENV_PATH_TMP);
+        LOG.info("basePathData {}", basePath);
+
+        if (basePath == null || basePath.isBlank()) {
+            throw new IllegalStateException("Percorso temporaneo non configurato");
+        }
+
+        File directory = new File(basePath);
+        if (!directory.exists()) {
+            throw new IllegalStateException("Impossibile trovare il percorso specificato " + basePath);
+        }
+
+        return basePath;
+    }
+
+    private String defaultString(String value) {
+        return value == null ? "" : value;
+    }
 }

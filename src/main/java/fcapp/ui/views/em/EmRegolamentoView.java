@@ -1,8 +1,11 @@
 package fcapp.ui.views.em;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serial;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -38,138 +39,160 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Regolamento")
 @Route(value = "regolamentoEm", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class EmRegolamentoView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class EmRegolamentoView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient ResourceLoader resourceLoader;
-	private final transient AccessoService accessoService;
-	private final transient RegolamentoService regolamentoService;
+    private static final String DEFAULT_REGOLAMENTO_PATH =
+            "classpath:html/fcqatar2022_regolamento.html";
 
-	private String html = "";
-	private FcRegolamento regolamento = null;
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final ResourceLoader resourceLoader;
+    private final AccessoService accessoService;
+    private final RegolamentoService regolamentoService;
 
-	private VaadinCKEditor decoupledEditor = null;
-	private Button salvaDb;
+    private String html = "";
+    private FcRegolamento regolamento;
 
-	public EmRegolamentoView(ResourceLoader resourceLoader,AccessoService accessoService,
-			RegolamentoService regolamentoService) {
-		log.info("EmRegolamentoView()");
-		this.resourceLoader = resourceLoader;
-		this.accessoService = accessoService;
-		this.regolamentoService = regolamentoService;
-	}
+    private VaadinCKEditor decoupledEditor;
+    private Button salvaDb;
 
-	@PostConstruct
-	void init() {
-		// LOG.debug("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initData();
-		initLayout();
-	}
+    public EmRegolamentoView(
+            ResourceLoader resourceLoader,
+            AccessoService accessoService,
+            RegolamentoService regolamentoService) {
+        log.info("EmRegolamentoView()");
+        this.resourceLoader = resourceLoader;
+        this.accessoService = accessoService;
+        this.regolamentoService = regolamentoService;
+    }
 
-	private void initData() {
-		List<FcRegolamento> l = regolamentoService.findAll();
-		try {
+    @PostConstruct
+    void init() {
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-			BufferedReader br;
-			BufferedReader br2;
-			if (l != null && !l.isEmpty()) {
-				FcRegolamento r = l.get(0);
-				regolamento = r;
-				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
-				br2 = new BufferedReader(isr2);
+        accessoService.insertAccesso(getClass().getName());
+        initData();
+        initLayout();
+    }
 
-                String line2;
-                html = "";
-                while ((line2 = br2.readLine()) != null) {
-                    html += line2;
-                }
+    private void initData() {
+        try {
+            regolamento = loadFirstRegolamento();
+            html = regolamento != null
+                    ? readFromDatabase(regolamento)
+                    : readFromResource(DEFAULT_REGOLAMENTO_PATH);
 
-            } else {
-				Resource resource = resourceLoader.getResource("classpath:html/fcqatar2022_regolamento.html");
-				InputStreamReader isr = new InputStreamReader(resource.getInputStream());
-				br = new BufferedReader(isr);
+            log.debug("Regolamento caricato");
+        } catch (Exception e) {
+            log.error("Errore durante il caricamento del regolamento", e);
+            html = "";
+        }
+    }
 
-                String line;
-                html = "";
-                while ((line = br.readLine()) != null) {
-                    html += line;
-                }
+    private FcRegolamento loadFirstRegolamento() {
+        List<FcRegolamento> regolamenti = regolamentoService.findAll();
+        if (regolamenti == null || regolamenti.isEmpty()) {
+            return null;
+        }
+        return regolamenti.get(0);
+    }
+
+    private String readFromDatabase(FcRegolamento fcRegolamento) throws Exception {
+        try (Reader reader = fcRegolamento.getSrc().getCharacterStream()) {
+            return readAll(reader);
+        }
+    }
+
+    private String readFromResource(String path) throws IOException {
+        Resource resource = resourceLoader.getResource(path);
+        try (InputStreamReader reader =
+                     new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+            return readAll(reader);
+        }
+    }
+
+    private String readAll(Reader reader) throws IOException {
+        StringBuilder content = new StringBuilder();
+
+        try (BufferedReader bufferedReader = new BufferedReader(reader)) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                content.append(line);
             }
-			log.debug(html);
+        }
 
-        } catch (Exception ex2) {
-            log.error("ex2 {}", ex2.getMessage());
-		}
-	}
+        return content.toString();
+    }
 
-	private void initLayout() {
+    private void initLayout() {
+        FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+        boolean isAdmin = isAdmin(attore);
 
-		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+        salvaDb = buildSaveButton(isAdmin);
+        decoupledEditor = buildEditor(isAdmin);
 
-		salvaDb = new Button("Salva");
-		salvaDb.setIcon(VaadinIcon.DATABASE.create());
-		salvaDb.addClickListener(this);
-		boolean isAdmin = false;
-		for (Role r : attore.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				isAdmin = true;
-				break;
-			}
-		}
-		salvaDb.setVisible(isAdmin);
+        add(salvaDb);
+        add(decoupledEditor);
+        add(buildPreviewHtml());
+    }
 
-		this.add(salvaDb);
+    private boolean isAdmin(FcAttore attore) {
+        if (attore == null || attore.getRoles() == null) {
+            return false;
+        }
 
-        decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
-			builder.editorType = EditorType.DECOUPLED;
-			builder.editorData = html;
-		}).createVaadinCKEditor();
-		decoupledEditor.setReadOnly(!isAdmin);
+        return attore.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
+    }
 
-		this.add(decoupledEditor);
+    private Button buildSaveButton(boolean isAdmin) {
+        Button button = new Button("Salva");
+        button.setIcon(VaadinIcon.DATABASE.create());
+        button.setVisible(isAdmin);
+        button.addClickListener(event -> saveRegolamento());
+        return button;
+    }
 
-		VerticalLayout previewHtml = new VerticalLayout();
-		try {
+    private VaadinCKEditor buildEditor(boolean isAdmin) {
+        VaadinCKEditor editor = new VaadinCKEditorBuilder().with(builder -> {
+            builder.editorType = EditorType.DECOUPLED;
+            builder.editorData = html;
+        }).createVaadinCKEditor();
 
-			previewHtml.getElement().setProperty("innerHTML", html);
+        editor.setReadOnly(!isAdmin);
+        return editor;
+    }
 
-			this.add(previewHtml);
+    private VerticalLayout buildPreviewHtml() {
+        VerticalLayout previewHtml = new VerticalLayout();
+        previewHtml.getElement().setProperty("innerHTML", html);
+        return previewHtml;
+    }
 
-		} catch (Exception ex2) {
-            log.error("ex2 {}", ex2.getMessage());
-		}
+    private void saveRegolamento() {
+        try {
+            log.info("SALVA");
 
-	}
+            String valueHtml = decoupledEditor.getValue();
+            log.debug("Html size={}", valueHtml != null ? valueHtml.length() : 0);
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-		try {
-			if (event.getSource() == salvaDb) {
-				log.info("SALVA");
+            if (regolamento == null) {
+                regolamento = new FcRegolamento();
+            }
 
-				String valueHtml = decoupledEditor.getValue();
-				log.info(valueHtml);
-				if (regolamento == null) {
-					regolamento = new FcRegolamento();
-				}
-				regolamento.setData(LocalDateTime.now());
-				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+            regolamento.setData(LocalDateTime.now());
+            regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+            regolamentoService.save(regolamento);
 
-				regolamentoService.save(regolamento);
-
-				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			}
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
-
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+        } catch (Exception e) {
+            log.error("Errore durante il salvataggio del regolamento", e);
+            CustomMessageDialog.showMessageErrorDetails(
+                    CustomMessageDialog.MSG_ERROR_GENERIC,
+                    e.getMessage());
+        }
+    }
 }

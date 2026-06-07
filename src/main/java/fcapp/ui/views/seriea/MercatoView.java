@@ -3,10 +3,14 @@ package fcapp.ui.views.seriea;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -57,607 +61,685 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "mercato")
 @PageTitle("Mercato")
 @RolesAllowed("ADMIN")
-public class MercatoView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
-	@Serial
+public class MercatoView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient JdbcTemplate jdbcTemplate;
-	private final transient AttoreService attoreService;
-	private final transient GiocatoreService giocatoreService;
-	private final transient FormazioneService formazioneService;
-	private final transient ClassificaService classificaService;
-	private final transient AccessoService accessoService;
-	private final transient SquadraService squadraService;
-
-	private String idCampionato = null;
-
-	private Button randomSaveButton;
-	private Button saveButton;
-	private Span lblError;
-
-	private Grid<FcFormazione>[] tablePlayer;
-	private Span[] lblCreditoPlayer;
-	private Span[] lblTotPagatoPlayer;
-	private Span[] lblResiduoPlayer;
-	private Span[] lblRuoliPlayer;
-	private Grid<FcProperties>[] tableContaPlayer;
-
-	private List<FcAttore> squadre = new ArrayList<>();
-	private List<FcGiocatore> giocatori = new ArrayList<>();
-	private List<FcClassifica> creditiFm = new ArrayList<>();
-
-
-	public MercatoView(
-			JdbcTemplate jdbcTemplate,
-			AttoreService attoreService,
-			GiocatoreService giocatoreService,
-			FormazioneService formazioneService,
-			ClassificaService classificaService,
-			AccessoService accessoService,
-			SquadraService squadraService) {
-		log.info("MercatoView");
-		this.jdbcTemplate = jdbcTemplate;
-		this.attoreService = attoreService;
-		this.giocatoreService = giocatoreService;
-		this.formazioneService = formazioneService;
-		this.classificaService = classificaService;
-		this.accessoService = accessoService;
-		this.squadraService = squadraService;
-	}
-
-	private void randomFormazioni() {
-		Random rand = new Random();
-
-		List<Integer> p = new ArrayList<>();
-		List<Integer> d = new ArrayList<>();
-		List<Integer> c = new ArrayList<>();
-		List<Integer> a = new ArrayList<>();
-
-		for (FcGiocatore g : giocatori) {
-
-			if (g.getQuotazione() < 5) {
-				continue;
-			}
-
-			if (Costants.P.equals(g.getFcRuolo().getIdRuolo())) {
-				p.add(g.getIdGiocatore());
-			} else if (Costants.D.equals(g.getFcRuolo().getIdRuolo())) {
-				d.add(g.getIdGiocatore());
-			} else if (Costants.C.equals(g.getFcRuolo().getIdRuolo())) {
-				c.add(g.getIdGiocatore());
-			} else if (Costants.A.equals(g.getFcRuolo().getIdRuolo())) {
-				a.add(g.getIdGiocatore());
-			}
-		}
-
-		for (FcAttore attore : squadre) {
-
-			List<Integer> list = new ArrayList<>();
-
-			int numberOfElementsP = 1;
-			while (numberOfElementsP <= 3) {
-				int randomIndex = rand.nextInt(p.size());
-				Integer randomElement = p.get(randomIndex);
-				if (!list.contains(randomElement)) {
-					list.add(randomElement);
-					numberOfElementsP++;
-				}
-			}
-
-			int numberOfElementsD = 1;
-			while (numberOfElementsD <= 8) {
-				int randomIndex = rand.nextInt(d.size());
-				Integer randomElement = d.get(randomIndex);
-				if (!list.contains(randomElement)) {
-					list.add(randomElement);
-					numberOfElementsD++;
-				}
-			}
-
-			int numberOfElementsC = 1;
-			while (numberOfElementsC <= 8) {
-				int randomIndex = rand.nextInt(c.size());
-				Integer randomElement = c.get(randomIndex);
-				if (!list.contains(randomElement)) {
-					list.add(randomElement);
-					numberOfElementsC++;
-				}
-			}
-
-			int numberOfElementsA = 1;
-			while (numberOfElementsA <= 6) {
-				int randomIndex = rand.nextInt(a.size());
-				Integer randomElement = a.get(randomIndex);
-				if (!list.contains(randomElement)) {
-					list.add(randomElement);
-					numberOfElementsA++;
-				}
-			}
-
-			int ordinamento = 1;
-			for (Integer id : list) {
-                String update = "UPDATE fc_formazione SET" +
-                        " ID_GIOCATORE=" + id.toString() + "," +
-                        " TOT_PAGATO=1" +
-                        " WHERE ID_CAMPIONATO = " +
-                        idCampionato +
-                        " AND ID_ATTORE = " +
-                        attore.getIdAttore() +
-                        " AND ORDINAMENTO = " +
-                        ordinamento;
-				jdbcTemplate.update(update);
-				ordinamento++;
-			}
-		}
-	}
-
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initData();
-		initLayout();
-	}
-
-	private void initData() {
-		log.info("initData");
-		squadre = attoreService.findByActive(true);
-		giocatori = giocatoreService.findAll();
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		creditiFm = classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void initLayout() {
-
-		try {
-
-			Button button = new Button("Home");
-			RouterLink menuHome = new RouterLink("",HomeView.class);
-			menuHome.getElement().appendChild(button.getElement());
-
-			Button button2 = new Button("FreePlayers");
-			RouterLink menuFreePlayers = new RouterLink("",FreePlayersView.class);
-			menuFreePlayers.getElement().appendChild(button2.getElement());
-
-			saveButton = new Button("Save");
-			saveButton.addClickListener(this);
-			saveButton.setEnabled(!giocatori.isEmpty());
-
-			randomSaveButton = new Button("Random Save");
-			randomSaveButton.addClickListener(this);
-			randomSaveButton.setVisible(true);
-
-			lblError = new Span();
-			lblError.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-			lblError.getStyle().set(Costants.BACKGROUND, "#EC7063");
-			lblError.setVisible(false);
-
-			HorizontalLayout layoutButton = new HorizontalLayout();
-			layoutButton.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-			layoutButton.setSpacing(true);
-			layoutButton.add(menuHome);
-			layoutButton.add(menuFreePlayers);
-			layoutButton.add(saveButton);
-			layoutButton.add(randomSaveButton);
-			layoutButton.add(lblError);
-
-			this.add(layoutButton);
-
-			if (!giocatori.isEmpty()) {
-
-				HorizontalLayout layout0 = new HorizontalLayout();
-				layout0.setMargin(false);
-				layout0.setSpacing(false);
-				HorizontalLayout layout1 = new HorizontalLayout();
-				layout1.setMargin(false);
-				layout1.setSpacing(false);
-				HorizontalLayout layout2 = new HorizontalLayout();
-				layout2.setMargin(false);
-				layout2.setSpacing(false);
-				HorizontalLayout layout3 = new HorizontalLayout();
-				layout3.setMargin(false);
-				layout3.setSpacing(false);
-
-				Span[] lblAttore = new Span[squadre.size()];
-				tablePlayer = new Grid[squadre.size()];
-				lblRuoliPlayer = new Span[squadre.size()];
-				lblCreditoPlayer = new Span[squadre.size()];
-				lblTotPagatoPlayer = new Span[squadre.size()];
-				lblResiduoPlayer = new Span[squadre.size()];
-				tableContaPlayer = new Grid[squadre.size()];
-
-				int att = 0;
-				for (FcAttore a : squadre) {
-					VerticalLayout layoutHeaderInfo = new VerticalLayout();
-					layoutHeaderInfo.setMargin(false);
-					layoutHeaderInfo.setSpacing(false);
-
-					lblAttore[att] = new Span(a.getDescAttore());
-					lblAttore[att].setWidth(Costants.WIDTH_205);
-					lblAttore[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-					lblAttore[att].getStyle().set(Costants.BACKGROUND, "#D2E6F0");
-					layoutHeaderInfo.add(lblAttore[att]);
-
-					layout0.add(layoutHeaderInfo);
-
-					tablePlayer[att] = buildTable(a);
-					layout1.add(tablePlayer[att]);
-
-					VerticalLayout layoutInfo = new VerticalLayout();
-					layoutInfo.setMargin(false);
-					layoutInfo.setSpacing(false);
-
-					lblCreditoPlayer[att] = new Span("Credito");
-					lblCreditoPlayer[att].setWidth(Costants.WIDTH_205);
-					lblCreditoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-					lblCreditoPlayer[att].getStyle().set(Costants.BACKGROUND, "#F5E37F");
-					layoutInfo.add(lblCreditoPlayer[att]);
-
-					lblTotPagatoPlayer[att] = new Span("Pagato");
-					lblTotPagatoPlayer[att].setWidth(Costants.WIDTH_205);
-					lblTotPagatoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-					lblTotPagatoPlayer[att].getStyle().set(Costants.BACKGROUND, "#D7DBDD");
-					layoutInfo.add(lblTotPagatoPlayer[att]);
-
-					lblResiduoPlayer[att] = new Span("Residuo");
-					lblResiduoPlayer[att].setWidth(Costants.WIDTH_205);
-					lblResiduoPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-					lblResiduoPlayer[att].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
-					layoutInfo.add(lblResiduoPlayer[att]);
-
-					lblRuoliPlayer[att] = new Span("P D C A");
-					lblRuoliPlayer[att].getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-					lblRuoliPlayer[att].getStyle().set(Costants.BACKGROUND, "#AED6F1");
-					lblRuoliPlayer[att].setWidth(Costants.WIDTH_205);
-					layoutInfo.add(lblRuoliPlayer[att]);
-
-					layout2.add(layoutInfo);
-
-					tableContaPlayer[att] = buildTableContaPlayer();
-
-					layout3.add(tableContaPlayer[att]);
-
-					att++;
-				}
-
-				this.add(layout0);
-				this.add(layout1);
-				this.add(layout2);
-				this.add(layout3);
-
-				updateInfoAttore();
-
-			}
-
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
-
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-
-		try {
-			if (event.getSource() == randomSaveButton) {
-
-				String msg = "Confermi inserimento giocatori random? ";
-
-				ConfirmDialog dialog = new ConfirmDialog();
-				dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
-				dialog.setText(msg);
-				dialog.setCancelable(true);
-				dialog.setCancelText("Annulla");
-				dialog.setRejectable(false);
-				dialog.setConfirmText("Conferma");
-				dialog.addConfirmListener(e -> {
-
-					randomFormazioni();
-					CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
-
-				});
-				dialog.open();
-
-			} else if (event.getSource() == saveButton) {
-				int att = 0;
-				for (FcAttore a : squadre) {
-
-					if (a.isActive()) {
-						List<FcFormazione> data = tablePlayer[att].getDataProvider().fetch(new Query<>()).toList();
-						for (FcFormazione f : data) {
-							FcGiocatore bean = f.getFcGiocatore();
-							String ordinamento = "" + f.getId().getOrdinamento();
-
-							StringBuilder update = new StringBuilder();
-							if (bean != null && f.getTotPagato() != null) {
-								String valoreIdGiocatore = "" + bean.getIdGiocatore();
-								String valorePagato = f.getTotPagato().toString();
-
-								update.append("UPDATE fc_formazione SET");
-								update.append(" ID_GIOCATORE=").append(valoreIdGiocatore).append(",");
-								update.append(" TOT_PAGATO=").append(valorePagato);
-                            } else {
-								update.append("UPDATE fc_formazione SET");
-								update.append(" ID_GIOCATORE=null,");
-								update.append(" TOT_PAGATO=null");
-                            }
-                            update.append(" WHERE ID_CAMPIONATO = ").append(idCampionato);
-                            update.append(" AND ID_ATTORE = ").append(a.getIdAttore());
-                            update.append(" AND ORDINAMENTO = ").append(ordinamento);
-                            jdbcTemplate.update(update.toString());
-						}
-					}
-					att++;
-				}
-				CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
-			}
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
-
-	private void updateInfoAttore() {
-
-		log.info("START updateInfoAttore");
-
-		int att = 1;
-		StringBuilder descError = new StringBuilder();
-		for (int i = 0; i < tablePlayer.length; i++) {
-
-			int countP = 0;
-			int countD = 0;
-			int countC = 0;
-			int countA = 0;
-
-			HashMap<String, String> map = new HashMap<>();
-			List<FcFormazione> data = tablePlayer[i].getDataProvider().fetch(new Query<>()).toList();
-
-			int totCrediti = 0;
-			for (FcClassifica fc : creditiFm) {
-				if (fc.getFcAttore().getIdAttore() == att) {
-					totCrediti = 500 + fc.getTotFm();
-				}
-			}
-
-			int somma = 0;
-			String descAttore = "";
-			for (FcFormazione f : data) {
-				FcGiocatore bean = f.getFcGiocatore();
-				descAttore = "[" + f.getFcAttore().getDescAttore() + "]";
-				if (bean != null && f.getTotPagato() != null) {
-					somma += f.getTotPagato();
-                    switch (bean.getFcRuolo().getIdRuolo()) {
-                        case Costants.P -> countP++;
-                        case Costants.D -> countD++;
-                        case Costants.C -> countC++;
-                        case Costants.A -> countA++;
+    private static final String BG_ERROR = "#EC7063";
+    private static final String BG_HEADER = "#D2E6F0";
+    private static final String BG_CREDITO = "#F5E37F";
+    private static final String BG_PAGATO = "#D7DBDD";
+    private static final String BG_RESIDUO_OK = "#ABEBC6";
+    private static final String BG_RUOLI = "#AED6F1";
+
+    private static final int MIN_RANDOM_QUOTAZIONE = 5;
+    private static final int BASE_CREDITI = 500;
+
+    private static final int REQUIRED_P = 3;
+    private static final int REQUIRED_D = 8;
+    private static final int REQUIRED_C = 8;
+    private static final int REQUIRED_A = 6;
+
+    private final transient Logger log = LoggerFactory.getLogger(getClass());
+
+    private final transient JdbcTemplate jdbcTemplate;
+    private final transient AttoreService attoreService;
+    private final transient GiocatoreService giocatoreService;
+    private final transient FormazioneService formazioneService;
+    private final transient ClassificaService classificaService;
+    private final transient AccessoService accessoService;
+    private final transient SquadraService squadraService;
+
+    private String idCampionato;
+
+    private Button randomSaveButton;
+    private Button saveButton;
+    private Span lblError;
+
+    private Grid<FcFormazione>[] tablePlayer;
+    private Span[] lblCreditoPlayer;
+    private Span[] lblTotPagatoPlayer;
+    private Span[] lblResiduoPlayer;
+    private Span[] lblRuoliPlayer;
+    private Grid<FcProperties>[] tableContaPlayer;
+
+    private List<FcAttore> squadre = new ArrayList<>();
+    private List<FcGiocatore> giocatori = new ArrayList<>();
+    private List<FcClassifica> creditiFm = new ArrayList<>();
+
+    public MercatoView(
+            JdbcTemplate jdbcTemplate,
+            AttoreService attoreService,
+            GiocatoreService giocatoreService,
+            FormazioneService formazioneService,
+            ClassificaService classificaService,
+            AccessoService accessoService,
+            SquadraService squadraService) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.attoreService = attoreService;
+        this.giocatoreService = giocatoreService;
+        this.formazioneService = formazioneService;
+        this.classificaService = classificaService;
+        this.accessoService = accessoService;
+        this.squadraService = squadraService;
+    }
+
+    @PostConstruct
+    void init() {
+        log.info("init");
+
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
+
+        accessoService.insertAccesso(getClass().getName());
+        initData();
+        initLayout();
+    }
+
+    private void initData() {
+        log.info("initData");
+
+        squadre = attoreService.findByActive(true);
+        giocatori = giocatoreService.findAll();
+
+        FcCampionato campionato = getCampionatoFromSession();
+        if (campionato != null) {
+            idCampionato = String.valueOf(campionato.getIdCampionato());
+            creditiFm = classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initLayout() {
+        try {
+            add(buildTopActions());
+
+            if (giocatori.isEmpty()) {
+                return;
+            }
+
+            HorizontalLayout headerLayout = createCompactRow();
+            HorizontalLayout playerTablesLayout = createCompactRow();
+            HorizontalLayout infoLayout = createCompactRow();
+            HorizontalLayout counterTablesLayout = createCompactRow();
+
+            Span[] lblAttore = new Span[squadre.size()];
+            tablePlayer = new Grid[squadre.size()];
+            lblRuoliPlayer = new Span[squadre.size()];
+            lblCreditoPlayer = new Span[squadre.size()];
+            lblTotPagatoPlayer = new Span[squadre.size()];
+            lblResiduoPlayer = new Span[squadre.size()];
+            tableContaPlayer = new Grid[squadre.size()];
+
+            for (int index = 0; index < squadre.size(); index++) {
+                FcAttore attore = squadre.get(index);
+
+                lblAttore[index] = buildAttoreLabel(attore);
+                headerLayout.add(wrap(lblAttore[index]));
+
+                tablePlayer[index] = buildTable(attore);
+                playerTablesLayout.add(tablePlayer[index]);
+
+                VerticalLayout summary = buildSummaryLayout(index);
+                infoLayout.add(summary);
+
+                tableContaPlayer[index] = buildTableContaPlayer();
+                counterTablesLayout.add(tableContaPlayer[index]);
+            }
+
+            add(headerLayout, playerTablesLayout, infoLayout, counterTablesLayout);
+            updateInfoAttore();
+
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+        }
+    }
+
+    private HorizontalLayout buildTopActions() {
+        Button homeButton = new Button("Home");
+        RouterLink menuHome = new RouterLink("", HomeView.class);
+        menuHome.getElement().appendChild(homeButton.getElement());
+
+        Button freePlayersButton = new Button("FreePlayers");
+        RouterLink menuFreePlayers = new RouterLink("", FreePlayersView.class);
+        menuFreePlayers.getElement().appendChild(freePlayersButton.getElement());
+
+        saveButton = new Button("Save");
+        saveButton.addClickListener(this);
+        saveButton.setEnabled(!giocatori.isEmpty());
+
+        randomSaveButton = new Button("Random Save");
+        randomSaveButton.addClickListener(this);
+        randomSaveButton.setVisible(true);
+
+        lblError = new Span();
+        lblError.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        lblError.getStyle().set(Costants.BACKGROUND, BG_ERROR);
+        lblError.setVisible(false);
+
+        HorizontalLayout layout = new HorizontalLayout(menuHome, menuFreePlayers, saveButton, randomSaveButton, lblError);
+        layout.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        layout.setSpacing(true);
+
+        return layout;
+    }
+
+    private HorizontalLayout createCompactRow() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setMargin(false);
+        layout.setSpacing(false);
+        return layout;
+    }
+
+    private VerticalLayout wrap(Span component) {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
+        layout.setSpacing(false);
+        layout.add(component);
+        return layout;
+    }
+
+    private Span buildAttoreLabel(FcAttore attore) {
+        Span label = new Span(attore.getDescAttore());
+        label.setWidth(Costants.WIDTH_205);
+        label.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        label.getStyle().set(Costants.BACKGROUND, BG_HEADER);
+        return label;
+    }
+
+    private VerticalLayout buildSummaryLayout(int index) {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
+        layout.setSpacing(false);
+
+        lblCreditoPlayer[index] = buildInfoLabel("Credito", BG_CREDITO);
+        lblTotPagatoPlayer[index] = buildInfoLabel("Pagato", BG_PAGATO);
+        lblResiduoPlayer[index] = buildInfoLabel("Residuo", BG_RESIDUO_OK);
+        lblRuoliPlayer[index] = buildInfoLabel("P D C A", BG_RUOLI);
+
+        layout.add(
+                lblCreditoPlayer[index],
+                lblTotPagatoPlayer[index],
+                lblResiduoPlayer[index],
+                lblRuoliPlayer[index]);
+
+        return layout;
+    }
+
+    private Span buildInfoLabel(String text, String background) {
+        Span label = new Span(text);
+        label.setWidth(Costants.WIDTH_205);
+        label.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        label.getStyle().set(Costants.BACKGROUND, background);
+        return label;
+    }
+
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            if (event.getSource() == randomSaveButton) {
+                openRandomConfirmDialog();
+                return;
+            }
+
+            if (event.getSource() == saveButton) {
+                saveFormazioni();
+                CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
+            }
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+        }
+    }
+
+    private void openRandomConfirmDialog() {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
+        dialog.setText("Confermi inserimento giocatori random?");
+        dialog.setCancelable(true);
+        dialog.setCancelText("Annulla");
+        dialog.setRejectable(false);
+        dialog.setConfirmText("Conferma");
+        dialog.addConfirmListener(e -> {
+            randomFormazioni();
+            CustomMessageDialog.showMessageInfo("Formazioni aggiornate con successo!");
+        });
+        dialog.open();
+    }
+
+    private void saveFormazioni() {
+        for (int index = 0; index < squadre.size(); index++) {
+            FcAttore attore = squadre.get(index);
+            if (!attore.isActive()) {
+                continue;
+            }
+
+            List<FcFormazione> formazioneList = getGridItems(tablePlayer[index]);
+            for (FcFormazione formazione : formazioneList) {
+                updateFormazione(attore.getIdAttore(), formazione);
+            }
+        }
+    }
+
+    private void randomFormazioni() {
+        Random rand = new Random();
+
+        Map<String, List<Integer>> giocatoriPerRuolo = giocatori.stream()
+                .filter(g -> g.getQuotazione() >= MIN_RANDOM_QUOTAZIONE)
+                .collect(Collectors.groupingBy(
+                        g -> g.getFcRuolo().getIdRuolo(),
+                        Collectors.mapping(FcGiocatore::getIdGiocatore, Collectors.toList())));
+
+        List<Integer> portieri = giocatoriPerRuolo.getOrDefault(Costants.P, List.of());
+        List<Integer> difensori = giocatoriPerRuolo.getOrDefault(Costants.D, List.of());
+        List<Integer> centrocampisti = giocatoriPerRuolo.getOrDefault(Costants.C, List.of());
+        List<Integer> attaccanti = giocatoriPerRuolo.getOrDefault(Costants.A, List.of());
+
+        for (FcAttore attore : squadre) {
+            List<Integer> selectedPlayers = new ArrayList<>();
+            selectedPlayers.addAll(extractRandomDistinct(portieri, REQUIRED_P, rand));
+            selectedPlayers.addAll(extractRandomDistinct(difensori, REQUIRED_D, rand));
+            selectedPlayers.addAll(extractRandomDistinct(centrocampisti, REQUIRED_C, rand));
+            selectedPlayers.addAll(extractRandomDistinct(attaccanti, REQUIRED_A, rand));
+
+            for (int ordinamento = 0; ordinamento < selectedPlayers.size(); ordinamento++) {
+                updateFormazioneRandom(attore.getIdAttore(), ordinamento + 1, selectedPlayers.get(ordinamento));
+            }
+        }
+    }
+
+    private List<Integer> extractRandomDistinct(List<Integer> source, int requiredSize, Random rand) {
+        if (source.size() < requiredSize) {
+            throw new IllegalStateException("Giocatori insufficienti per completare l'estrazione casuale.");
+        }
+
+        Set<Integer> selected = new LinkedHashSet<>();
+        while (selected.size() < requiredSize) {
+            selected.add(source.get(rand.nextInt(source.size())));
+        }
+        return new ArrayList<>(selected);
+    }
+
+    private void updateFormazioneRandom(int idAttore, int ordinamento, Integer idGiocatore) {
+        String update = """
+                UPDATE fc_formazione
+                   SET ID_GIOCATORE = ?,
+                       TOT_PAGATO = ?
+                 WHERE ID_CAMPIONATO = ?
+                   AND ID_ATTORE = ?
+                   AND ORDINAMENTO = ?
+                """;
+
+        jdbcTemplate.update(update, idGiocatore, 1, idCampionato, idAttore, ordinamento);
+    }
+
+    private void updateFormazione(int idAttore, FcFormazione formazione) {
+        String updateWithPlayer = """
+                UPDATE fc_formazione
+                   SET ID_GIOCATORE = ?,
+                       TOT_PAGATO = ?
+                 WHERE ID_CAMPIONATO = ?
+                   AND ID_ATTORE = ?
+                   AND ORDINAMENTO = ?
+                """;
+
+        String updateWithoutPlayer = """
+                UPDATE fc_formazione
+                   SET ID_GIOCATORE = NULL,
+                       TOT_PAGATO = NULL
+                 WHERE ID_CAMPIONATO = ?
+                   AND ID_ATTORE = ?
+                   AND ORDINAMENTO = ?
+                """;
+
+        FcGiocatore giocatore = formazione.getFcGiocatore();
+        Integer ordinamento = formazione.getId().getOrdinamento();
+
+        if (giocatore != null && formazione.getTotPagato() != null) {
+            jdbcTemplate.update(
+                    updateWithPlayer,
+                    giocatore.getIdGiocatore(),
+                    formazione.getTotPagato(),
+                    idCampionato,
+                    idAttore,
+                    ordinamento);
+            return;
+        }
+
+        jdbcTemplate.update(updateWithoutPlayer, idCampionato, idAttore, ordinamento);
+    }
+
+    private void updateInfoAttore() {
+        log.info("START updateInfoAttore");
+
+        StringBuilder descError = new StringBuilder();
+
+        for (int index = 0; index < tablePlayer.length; index++) {
+            FcAttore attore = squadre.get(index);
+            List<FcFormazione> data = getGridItems(tablePlayer[index]);
+
+            AttoreSummary summary = calculateSummary(attore, data);
+            updateSummaryLabels(index, summary);
+            updateCounterTable(index, summary.squadreList);
+
+            appendValidationErrors(descError, summary);
+        }
+
+        applyValidationState(descError);
+
+        log.info("END updateInfoAttore");
+    }
+
+    private AttoreSummary calculateSummary(FcAttore attore, List<FcFormazione> data) {
+        AttoreSummary summary = new AttoreSummary();
+        summary.descAttore = "[" + attore.getDescAttore() + "]";
+        summary.credito = getTotCrediti(attore.getIdAttore());
+
+        for (FcFormazione formazione : data) {
+            FcGiocatore giocatore = formazione.getFcGiocatore();
+            if (giocatore == null || formazione.getTotPagato() == null) {
+                continue;
+            }
+
+            summary.pagato += formazione.getTotPagato();
+            incrementRoleCounter(summary, giocatore.getFcRuolo().getIdRuolo());
+            incrementSquadraCounter(summary.countBySquadra, giocatore.getFcSquadra().getNomeSquadra());
+        }
+
+        summary.residuo = summary.credito - summary.pagato;
+        summary.squadreList = toPropertiesList(summary.countBySquadra);
+
+        for (Map.Entry<String, Integer> entry : summary.countBySquadra.entrySet()) {
+            if (entry.getValue() <= 5) {
+                continue;
+            }
+
+            int extraNonPortieri = getExtraNonPortieriForSquadra(data, entry.getKey(), entry.getValue());
+            if (extraNonPortieri > 5) {
+                summary.errors.add(summary.descAttore + " Troppi giocatori per la squadra " + entry.getKey());
+            }
+        }
+
+        if (summary.residuo < 0) {
+            summary.errors.add(summary.descAttore + " Residuo minore di 0 - Residuo attuale " + summary.residuo);
+        }
+
+        return summary;
+    }
+
+    private int getTotCrediti(int idAttore) {
+        for (FcClassifica fc : creditiFm) {
+            if (fc.getFcAttore().getIdAttore() == idAttore) {
+                return BASE_CREDITI + fc.getTotFm();
+            }
+        }
+        return 0;
+    }
+
+    private void incrementRoleCounter(AttoreSummary summary, String ruolo) {
+        switch (ruolo) {
+            case Costants.P -> summary.countP++;
+            case Costants.D -> summary.countD++;
+            case Costants.C -> summary.countC++;
+            case Costants.A -> summary.countA++;
+            default -> {
+                // nessuna azione
+            }
+        }
+    }
+
+    private void incrementSquadraCounter(Map<String, Integer> map, String squadra) {
+        map.merge(squadra, 1, Integer::sum);
+    }
+
+    private List<FcProperties> toPropertiesList(Map<String, Integer> countBySquadra) {
+        return countBySquadra.entrySet().stream()
+                .map(entry -> {
+                    FcProperties properties = new FcProperties();
+                    properties.setKey(entry.getKey());
+                    properties.setValue(String.valueOf(entry.getValue()));
+                    return properties;
+                })
+                .sorted(Comparator.comparing(FcProperties::getValue, String.CASE_INSENSITIVE_ORDER).reversed())
+                .toList();
+    }
+
+    private int getExtraNonPortieriForSquadra(List<FcFormazione> data, String squadra, int totalForSquadra) {
+        int countPortieri = 0;
+
+        for (FcFormazione formazione : data) {
+            FcGiocatore giocatore = formazione.getFcGiocatore();
+            if (giocatore == null || formazione.getTotPagato() == null) {
+                continue;
+            }
+
+            boolean sameSquadra = squadra.equals(giocatore.getFcSquadra().getNomeSquadra());
+            boolean isPortiere = Costants.P.equals(giocatore.getFcRuolo().getIdRuolo());
+
+            if (sameSquadra && isPortiere) {
+                countPortieri++;
+            }
+        }
+
+        return totalForSquadra - countPortieri;
+    }
+
+    private void updateSummaryLabels(int index, AttoreSummary summary) {
+        lblCreditoPlayer[index].setText("Credito  = " + summary.credito);
+        lblTotPagatoPlayer[index].setText("Pagato   = " + summary.pagato);
+        lblResiduoPlayer[index].setText("Residuo  = " + summary.residuo);
+        lblRuoliPlayer[index].setText(
+                "P=" + summary.countP +
+                " D=" + summary.countD +
+                " C=" + summary.countC +
+                " A=" + summary.countA);
+
+        lblResiduoPlayer[index].getStyle().set(Costants.BACKGROUND, summary.residuo < 0 ? BG_ERROR : BG_RESIDUO_OK);
+    }
+
+    private void updateCounterTable(int index, List<FcProperties> list) {
+        tableContaPlayer[index].setItems(list);
+        tableContaPlayer[index].getDataProvider().refreshAll();
+    }
+
+    private void appendValidationErrors(StringBuilder descError, AttoreSummary summary) {
+        for (String error : summary.errors) {
+            if (!descError.isEmpty()) {
+                descError.append(" - ");
+            }
+            descError.append(error);
+        }
+    }
+
+    private void applyValidationState(StringBuilder descError) {
+        saveButton.setEnabled(true);
+        lblError.setVisible(false);
+
+        if (StringUtils.isNotBlank(descError)) {
+            saveButton.setEnabled(false);
+            lblError.setText(descError.toString());
+            lblError.setVisible(true);
+        }
+    }
+
+    private Grid<FcFormazione> buildTable(FcAttore attore) {
+        FcCampionato campionato = getCampionatoFromSession();
+        List<FcFormazione> listFormazione =
+                formazioneService.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
+
+        Grid<FcFormazione> grid = new Grid<>();
+        grid.setAllRowsVisible(true);
+        grid.addThemeVariants(GridVariant.LUMO_COMPACT);
+        grid.setWidth(Costants.WIDTH_240);
+        grid.setItems(listFormazione);
+
+        if (listFormazione.isEmpty()) {
+            return grid;
+        }
+
+        Binder<FcFormazione> binder = new Binder<>(FcFormazione.class);
+        grid.getEditor().setBinder(binder);
+
+        ComboBox<FcGiocatore> giocatoreField = buildGiocatoreEditor(grid);
+        IntegerField totPagatoField = buildTotPagatoEditor(grid);
+
+        Column<FcFormazione> cognGiocatoreColumn = grid.addColumn(
+                formazione -> formazione.getFcGiocatore() != null ? formazione.getFcGiocatore().getCognGiocatore() : null);
+        cognGiocatoreColumn.setKey("fcGiocatore");
+        cognGiocatoreColumn.setEditorComponent(giocatoreField);
+        binder.bind(giocatoreField, "fcGiocatore");
+
+        Column<FcFormazione> totPagatoColumn = grid.addColumn(f -> f.getFcGiocatore() != null ? f.getTotPagato() : 0);
+        totPagatoColumn.setKey("totPagato");
+        totPagatoColumn.setEditorComponent(totPagatoField);
+        totPagatoColumn.setTextAlign(ColumnTextAlign.END);
+        binder.bind(totPagatoField, "totPagato");
+
+        binder.addValueChangeListener(evt -> {
+            if (evt.getValue() instanceof FcGiocatore selected) {
+                applyDefaultQuotazione(grid, selected);
+            }
+        });
+
+        binder.addValueChangeListener(event -> {
+            grid.getEditor().refresh();
+            try {
+                updateInfoAttore();
+            } catch (Exception e) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+            }
+        });
+
+        grid.addItemDoubleClickListener(event -> grid.getEditor().editItem(event.getItem()));
+
+        return grid;
+    }
+
+    private ComboBox<FcGiocatore> buildGiocatoreEditor(Grid<FcFormazione> grid) {
+        ComboBox<FcGiocatore> giocatore = new ComboBox<>();
+        giocatore.setItemLabelGenerator(FcGiocatore::getCognGiocatore);
+        giocatore.setClearButtonVisible(true);
+        giocatore.setPlaceholder(Costants.GIOCATORE);
+        giocatore.setItems(giocatori);
+        giocatore.setWidth(Costants.WIDTH_140);
+        giocatore.getStyle().set("--vaadin-combo-box-overlay-width", "16em");
+
+        giocatore.setRenderer(new ComponentRenderer<>(g -> {
+            VerticalLayout container = new VerticalLayout();
+            container.setPadding(false);
+            container.setSpacing(false);
+
+            Span c1 = new Span(g.getCognGiocatore());
+            Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+            Span c3 = new Span("Q " + g.getQuotazione());
+
+            c2.getStyle().set("fontSize", "smaller");
+            c3.getStyle().set("fontSize", "smaller");
+
+            container.add(c1, c2, c3);
+            return container;
+        }));
+
+        giocatore.getElement()
+                .addEventListener("keydown", event -> grid.getEditor().cancel())
+                .setFilter("event.key === 'Tab' && !event.shiftKey");
+
+        return giocatore;
+    }
+
+    private IntegerField buildTotPagatoEditor(Grid<FcFormazione> grid) {
+        IntegerField totPagato = new IntegerField();
+        totPagato.setMin(0);
+        totPagato.setMax(500);
+        totPagato.setStepButtonsVisible(true);
+        totPagato.setWidth(Costants.WIDTH_100);
+
+        totPagato.getElement()
+                .addEventListener("keydown", event -> grid.getEditor().cancel())
+                .setFilter("event.key === 'Tab' && event.shiftKey");
+
+        return totPagato;
+    }
+
+    private void applyDefaultQuotazione(Grid<FcFormazione> grid, FcGiocatore selectedGiocatore) {
+        List<FcFormazione> data = getGridItems(grid);
+
+        for (FcFormazione formazione : data) {
+            if (formazione.getFcGiocatore() == null) {
+                continue;
+            }
+
+            if (formazione.getFcGiocatore().getCognGiocatore().equals(selectedGiocatore.getCognGiocatore())) {
+                formazione.setTotPagato(selectedGiocatore.getQuotazione());
+                grid.getDataProvider().refreshItem(formazione);
+                break;
+            }
+        }
+    }
+
+    private Grid<FcProperties> buildTableContaPlayer() {
+        Grid<FcProperties> grid = new Grid<>();
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        grid.setAllRowsVisible(true);
+        grid.addThemeVariants(
+                GridVariant.LUMO_NO_BORDER,
+                GridVariant.LUMO_NO_ROW_BORDERS,
+                GridVariant.LUMO_ROW_STRIPES);
+        grid.setWidth(Costants.WIDTH_240);
+
+        Column<FcProperties> keyColumn = grid.addColumn(new ComponentRenderer<>(property -> {
+            HorizontalLayout cellLayout = new HorizontalLayout();
+            cellLayout.setMargin(false);
+            cellLayout.setPadding(false);
+            cellLayout.setSpacing(false);
+            cellLayout.setAlignItems(Alignment.STRETCH);
+
+            if (property != null && property.getKey() != null) {
+                FcSquadra squadra = squadraService.findByNomeSquadra(property.getKey());
+                if (squadra != null && squadra.getImg() != null) {
+                    try {
+                        Image img = Utils.getImage(squadra.getNomeSquadra(), squadra.getImg().getBinaryStream());
+                        cellLayout.add(img);
+                    } catch (SQLException e) {
+                        log.error(e.getMessage(), e);
                     }
-					refreshContaGiocatori(map, bean.getFcSquadra().getNomeSquadra());
-				}
-			}
-			int residuo = totCrediti - somma;
-
-			List<FcProperties> list = new ArrayList<>();
-			if (!map.isEmpty()) {
-                for (Map.Entry<String, String> stringStringEntry : map.entrySet()) {
-                    @SuppressWarnings("rawtypes")
-                    Map.Entry pairs = stringStringEntry;
-                    FcProperties p = new FcProperties();
-                    p.setKey((String) pairs.getKey());
-                    p.setValue((String) pairs.getValue());
-
-                    if (Integer.parseInt((String) pairs.getValue()) > 5) {
-
-                        String sq = (String) pairs.getKey();
-						int maxG = getMaxG(data, sq, pairs);
-						if (maxG > 5) {
-                            descError.append(descAttore).append(" Troppi giocatori per la squadra ").append(sq).append(" - ");
-                        }
-                    }
-                    list.add(p);
                 }
-			}
 
-			list.sort((p1,
-					p2) -> p2.getValue().compareToIgnoreCase(p1.getValue()));
-			tableContaPlayer[i].setItems(list);
-			tableContaPlayer[i].getDataProvider().refreshAll();
+                cellLayout.add(new Span(property.getKey()));
+            }
 
-			lblCreditoPlayer[i].setText("Credito  = " + totCrediti);
-			lblTotPagatoPlayer[i].setText("Pagato   = " + somma);
-			lblResiduoPlayer[i].setText("Residuo  = " + residuo);
-			lblRuoliPlayer[i].setText("P=" + countP + " D=" + countD + " C=" + countC + " A=" + countA);
+            return cellLayout;
+        }));
+        keyColumn.setSortable(false);
+        keyColumn.setAutoWidth(true);
 
-			lblResiduoPlayer[i].getStyle().set(Costants.BACKGROUND, "#ABEBC6");
-			if (residuo < 0) {
-				lblResiduoPlayer[i].getStyle().set(Costants.BACKGROUND, "#EC7063");
-				descError.append(descAttore).append(" Residuo minore di 0 - Residuo attuale ").append(residuo);
-			}
+        Column<FcProperties> valueColumn = grid.addColumn(FcProperties::getValue);
+        valueColumn.setSortable(false);
+        valueColumn.setAutoWidth(true);
 
-			att++;
-		}
+        return grid;
+    }
 
-		saveButton.setEnabled(true);
-		lblError.setVisible(false);
-		if (StringUtils.isNotEmpty(descError)) {
-			saveButton.setEnabled(false);
-			lblError.setText(descError.toString());
-			lblError.setVisible(true);
-		}
+    private FcCampionato getCampionatoFromSession() {
+        return (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+    }
 
-		log.info("END updateInfoAttore");
-	}
+    private List<FcFormazione> getGridItems(Grid<FcFormazione> grid) {
+        return grid.getDataProvider().fetch(new Query<>()).toList();
+    }
 
-	private int getMaxG(List<FcFormazione> data, String sq, Map.Entry pairs) {
-		int countPSq = 0;
-		for (FcFormazione f : data) {
-			FcGiocatore bean = f.getFcGiocatore();
-			if (bean != null && f.getTotPagato() != null && Costants.P.equals(bean.getFcRuolo().getIdRuolo()) && sq.equals(bean.getFcSquadra().getNomeSquadra())) {
-				countPSq++;
-			}
-		}
-        return Integer.parseInt((String) pairs.getValue()) - countPSq;
-	}
-
-	private void refreshContaGiocatori(HashMap<String, String> m, String sq) {
-
-		if (m.containsKey(sq)) {
-			String v = m.get(sq);
-			int newValue = Integer.parseInt(v) + 1;
-			m.put(sq, "" + newValue);
-		} else {
-			m.put(sq, "1");
-		}
-	}
-
-	private Grid<FcFormazione> buildTable(FcAttore attore) {
-
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		idCampionato = "" + campionato.getIdCampionato();
-
-		List<FcFormazione> listFormazione = formazioneService.findByFcCampionatoAndFcAttoreOrderByIdOrdinamentoAsc(campionato, attore);
-
-		Grid<FcFormazione> grid = new Grid<>();
-		grid.setAllRowsVisible(true);
-		grid.addThemeVariants(GridVariant.LUMO_COMPACT);
-		grid.setWidth(Costants.WIDTH_240);
-		grid.setItems(listFormazione);
-
-		if (listFormazione.isEmpty()) {
-			return grid;
-		}
-
-		Binder<FcFormazione> binder = new Binder<>(FcFormazione.class);
-		grid.getEditor().setBinder(binder);
-
-		ComboBox<FcGiocatore> giocatore = new ComboBox<>();
-		giocatore.setItemLabelGenerator(FcGiocatore::getCognGiocatore);
-		giocatore.setClearButtonVisible(true);
-		giocatore.setPlaceholder(Costants.GIOCATORE);
-		giocatore.setRenderer(new ComponentRenderer<>(g -> {
-			VerticalLayout container = new VerticalLayout();
-
-			Span c1 = new Span(g.getCognGiocatore());
-			container.add(c1);
-
-			Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
-			c2.getStyle().set("fontSize", "smaller");
-			container.add(c2);
-
-			Span c3 = new Span("Q " + g.getQuotazione());
-			c2.getStyle().set("fontSize", "smaller");
-			container.add(c3);
-
-			return container;
-		}));
-		giocatore.setItems(giocatori);
-		giocatore.setWidth(Costants.WIDTH_140);
-		giocatore.addValueChangeListener(evt -> {
-		});
-		giocatore.getElement().addEventListener("keydown", event -> grid.getEditor().cancel()).setFilter("event.key === 'Tab' && !event.shiftKey");
-		giocatore.getStyle().set("--vaadin-combo-box-overlay-width", "16em");
-
-		IntegerField totPagato = new IntegerField();
-		totPagato.setMin(0);
-		totPagato.setMax(500);
-		totPagato.setStepButtonsVisible(true);
-		totPagato.setWidth(Costants.WIDTH_100);
-		totPagato.getElement().addEventListener("keydown", event -> grid.getEditor().cancel()).setFilter("event.key === 'Tab' && event.shiftKey");
-
-		Column<FcFormazione> cognGiocatoreColumn = grid.addColumn(formazione -> formazione.getFcGiocatore() != null ? formazione.getFcGiocatore().getCognGiocatore() : null);
-		cognGiocatoreColumn.setKey("fcGiocatore");
-		binder.bind(giocatore, "fcGiocatore");
-		cognGiocatoreColumn.setEditorComponent(giocatore);
-
-		Column<FcFormazione> totPagatoColumn = grid.addColumn(f -> {
-			if (f.getFcGiocatore() != null) {
-				return f.getTotPagato();
-			}
-			return 0;
-		});
-		totPagatoColumn.setKey("totPagato");
-		binder.bind(totPagato, "totPagato");
-		totPagatoColumn.setEditorComponent(totPagato);
-		totPagatoColumn.setTextAlign(ColumnTextAlign.END);
-
-		binder.addValueChangeListener(evt -> {
-			if (evt.getValue() instanceof FcGiocatore g) {
-                List<FcFormazione> data = grid.getDataProvider().fetch(new Query<>()).toList();
-				for (FcFormazione f : data) {
-					if (f.getFcGiocatore() != null && f.getFcGiocatore().getCognGiocatore().equals(g.getCognGiocatore())) {
-						f.setTotPagato(g.getQuotazione());
-						grid.getDataProvider().refreshItem(f);
-						break;
-					}
-				}
-			}
-		});
-
-		binder.addValueChangeListener(event -> {
-			grid.getEditor().refresh();
-
-			try {
-				updateInfoAttore();
-			} catch (Exception e) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-			}
-		});
-
-		grid.addItemDoubleClickListener(event -> grid.getEditor().editItem(event.getItem()));
-
-		grid.addItemClickListener(event -> {
-		});
-
-		return grid;
-	}
-
-	private Grid<FcProperties> buildTableContaPlayer() {
-
-		Grid<FcProperties> grid = new Grid<>();
-		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		grid.setAllRowsVisible(true);
-		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-		grid.setWidth(Costants.WIDTH_240);
-
-		Column<FcProperties> keyColumn = grid.addColumn(new ComponentRenderer<>(f -> {
-
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-
-			if (f != null && f.getKey() != null) {
-				FcSquadra sq = squadraService.findByNomeSquadra(f.getKey());
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						log.error(e.getMessage());
-					}
-				}
-
-				Span lblSquadra = new Span(f.getKey());
-				cellLayout.add(lblSquadra);
-			}
-
-			return cellLayout;
-
-		}));
-		keyColumn.setSortable(false);
-		keyColumn.setAutoWidth(true);
-
-		Column<FcProperties> valueColumn = grid.addColumn(FcProperties::getValue);
-		valueColumn.setSortable(false);
-		valueColumn.setAutoWidth(true);
-
-		return grid;
-	}
-
+    private static class AttoreSummary {
+        private String descAttore;
+        private int credito;
+        private int pagato;
+        private int residuo;
+        private int countP;
+        private int countD;
+        private int countC;
+        private int countA;
+        private final Map<String, Integer> countBySquadra = new HashMap<>();
+        private List<FcProperties> squadreList = new ArrayList<>();
+        private final List<String> errors = new ArrayList<>();
+    }
 }

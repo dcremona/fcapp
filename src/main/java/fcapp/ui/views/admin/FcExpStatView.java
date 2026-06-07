@@ -9,9 +9,6 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -27,66 +24,124 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("ExpStat")
 @Route(value = "fcExpStat", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcExpStatView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class FcExpStatView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient ExpStatService expStatService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcExpStatView.class);
 
-	public FcExpStatView(ExpStatService expStatService,AccessoService accessoService) {
-		log.info("FcExpStatView()");
-		this.expStatService = expStatService;
-		this.accessoService = accessoService;
-	}
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_ANNO = "anno";
+    private static final String FIELD_CAMPIONATO = "campionato";
+    private static final String FIELD_P2 = "p2";
+    private static final String FIELD_P3 = "p3";
+    private static final String FIELD_P4 = "p4";
+    private static final String FIELD_P5 = "p5";
+    private static final String FIELD_P6 = "p6";
+    private static final String FIELD_P7 = "p7";
+    private static final String FIELD_P8 = "p8";
+    private static final String FIELD_SCUDETTO = "scudetto";
+    private static final String FIELD_WIN_CLAS_PT = "winClasPt";
+    private static final String FIELD_WIN_CLAS_REG = "winClasReg";
+    private static final String FIELD_WIN_CLAS_TVS_T = "winClasTvsT";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final transient ExpStatService expStatService;
+    private final transient AccessoService accessoService;
 
-	private void initLayout() {
+    public FcExpStatView(
+            ExpStatService expStatService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcExpStatView.class.getSimpleName());
+        this.expStatService = expStatService;
+        this.accessoService = accessoService;
+    }
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcExpStatView.class.getSimpleName());
 
-		GridCrud<FcExpStat> crud = new GridCrud<>(FcExpStat.class,new HorizontalSplitCrudLayout());
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		DefaultCrudFormFactory<FcExpStat> formFactory = new DefaultCrudFormFactory<>(FcExpStat.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg", "winClasTvsT");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg", "winClasTvsT");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "anno", "campionato", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "scudetto", "winClasPt", "winClasReg", "winClasTvsT");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id");
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+    private GridCrud<FcExpStat> buildCrud() {
+        GridCrud<FcExpStat> crud =
+                new GridCrud<>(FcExpStat.class, new HorizontalSplitCrudLayout());
 
-		crud.setRowCountCaption("%d ExpStat(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        configureFormFactory(crud);
+        configureOperations(crud);
 
-		crud.setFindAllOperation(expStatService::findAll);
-		crud.setAddOperation(expStatService::save);
-		crud.setUpdateOperation(expStatService::save);
-		crud.setDeleteOperation(expStatService::delete);
+        crud.getGrid().setColumnReorderingAllowed(true);
+        crud.setRowCountCaption("%d ExpStat(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		add(crud);
-	}
+        return crud;
+    }
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
+    private void configureFormFactory(GridCrud<FcExpStat> crud) {
+        DefaultCrudFormFactory<FcExpStat> formFactory =
+                new DefaultCrudFormFactory<>(FcExpStat.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-	}
+        String[] readFields = {
+                FIELD_ID,
+                FIELD_ANNO,
+                FIELD_CAMPIONATO,
+                FIELD_P2,
+                FIELD_P3,
+                FIELD_P4,
+                FIELD_P5,
+                FIELD_P6,
+                FIELD_P7,
+                FIELD_P8,
+                FIELD_SCUDETTO,
+                FIELD_WIN_CLAS_PT,
+                FIELD_WIN_CLAS_REG,
+                FIELD_WIN_CLAS_TVS_T
+        };
 
+        String[] addFields = readFields;
+
+        String[] updateFields = {
+                FIELD_ANNO,
+                FIELD_CAMPIONATO,
+                FIELD_P2,
+                FIELD_P3,
+                FIELD_P4,
+                FIELD_P5,
+                FIELD_P6,
+                FIELD_P7,
+                FIELD_P8,
+                FIELD_SCUDETTO,
+                FIELD_WIN_CLAS_PT,
+                FIELD_WIN_CLAS_REG,
+                FIELD_WIN_CLAS_TVS_T
+        };
+
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, readFields);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, addFields);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, updateFields);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, FIELD_ID);
+    }
+
+    private void configureOperations(GridCrud<FcExpStat> crud) {
+        crud.setFindAllOperation(expStatService::findAll);
+        crud.setAddOperation(expStatService::save);
+        crud.setUpdateOperation(expStatService::save);
+        crud.setDeleteOperation(expStatService::delete);
+    }
 }

@@ -2,6 +2,7 @@ package fcapp.ui.views.admin;
 
 import java.io.Serial;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,86 +38,215 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("MercatoDett")
 @Route(value = "mercatoDett", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcMercatoDettView extends VerticalLayout{
+public class FcMercatoDettView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient MercatoService mercatoService;
-	private final transient GiornataInfoService giornataInfoService;
-	private final transient AttoreService attoreService;
-	private final transient GiocatoreService giocatoreService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcMercatoDettView.class);
 
-	public FcMercatoDettView(MercatoService mercatoService,GiornataInfoService giornataInfoService,AttoreService attoreService,GiocatoreService giocatoreService,AccessoService accessoService) {
-		log.info("FcMercatoDettView()");
-		this.mercatoService = mercatoService;
-		this.giornataInfoService = giornataInfoService;
-		this.attoreService = attoreService;
-		this.giocatoreService = giocatoreService;
-		this.accessoService = accessoService;
-	}
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_FC_GIORNATA_INFO = "fcGiornataInfo";
+    private static final String FIELD_FC_ATTORE = "fcAttore";
+    private static final String FIELD_GIOCATORE_VENDUTO = "fcGiocatoreByIdGiocVen";
+    private static final String FIELD_GIOCATORE_ACQUISTATO = "fcGiocatoreByIdGiocAcq";
+    private static final String FIELD_DATA_CAMBIO = "dataCambio";
+    private static final String FIELD_NOTA = "nota";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final transient MercatoService mercatoService;
+    private final transient GiornataInfoService giornataInfoService;
+    private final transient AttoreService attoreService;
+    private final transient GiocatoreService giocatoreService;
+    private final transient AccessoService accessoService;
 
-	private void initLayout() {
+    public FcMercatoDettView(
+            MercatoService mercatoService,
+            GiornataInfoService giornataInfoService,
+            AttoreService attoreService,
+            GiocatoreService giocatoreService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcMercatoDettView.class.getSimpleName());
+        this.mercatoService = mercatoService;
+        this.giornataInfoService = giornataInfoService;
+        this.attoreService = attoreService;
+        this.giocatoreService = giocatoreService;
+        this.accessoService = accessoService;
+    }
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcMercatoDettView.class.getSimpleName());
 
-		GridCrud<FcMercatoDett> crud = new GridCrud<>(FcMercatoDett.class,new HorizontalSplitCrudLayout());
-		DefaultCrudFormFactory<FcMercatoDett> formFactory = new DefaultCrudFormFactory<>(FcMercatoDett.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		formFactory.setVisibleProperties(CrudOperation.READ, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "dataCambio", "nota");
-		formFactory.setVisibleProperties(CrudOperation.ADD, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "dataCambio", "nota");
-		formFactory.setVisibleProperties(CrudOperation.UPDATE, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "dataCambio", "nota");
-		formFactory.setVisibleProperties(CrudOperation.DELETE, "id", "fcGiornataInfo", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq");
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getGrid().setColumns("id", "fcAttore", "fcGiocatoreByIdGiocVen", "fcGiocatoreByIdGiocAcq", "fcGiornataInfo", "dataCambio", "nota");
-		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? "" + g.getId() : "")).setHeader("Id");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcGiornataInfo() != null ? f.getFcGiornataInfo().getDescGiornataFc() : "")).setHeader("Giornata");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? g.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocVen() != null ? g.getFcGiocatoreByIdGiocVen().getCognGiocatore() : "")).setHeader("Giocatore Ven");
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null && g.getFcGiocatoreByIdGiocAcq() != null ? g.getFcGiocatoreByIdGiocAcq().getCognGiocatore() : "")).setHeader("Giocatore Acq");
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		Column<FcMercatoDett> dataColumn = crud.getGrid().addColumn(new LocalDateTimeRenderer<>(FcMercatoDett::getDataCambio,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
-		dataColumn.setHeader("Data Cambio");
-		dataColumn.setSortable(false);
-		dataColumn.setAutoWidth(true);
-		dataColumn.setFlexGrow(2);
+    private GridCrud<FcMercatoDett> buildCrud() {
+        GridCrud<FcMercatoDett> crud =
+                new GridCrud<>(FcMercatoDett.class, new HorizontalSplitCrudLayout());
 
-		crud.getGrid().addColumn(new TextRenderer<>(g -> g != null ? g.getNota() : "")).setHeader("Nota");
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureOperations(crud);
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+        crud.setRowCountCaption("%d Mercato(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		formFactory.setFieldProvider("fcGiornataInfo", new ComboBoxProvider<>("Giornata",giornataInfoService.findAll(),new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),FcGiornataInfo::getDescGiornataFc));
-		formFactory.setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
-		formFactory.setFieldProvider("fcGiocatoreByIdGiocVen", new ComboBoxProvider<>("Giocatore Acq",giocatoreService.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
-		formFactory.setFieldProvider("fcGiocatoreByIdGiocAcq", new ComboBoxProvider<>("Giocatore Ven",giocatoreService.findAll(),new TextRenderer<>(FcGiocatore::getCognGiocatore),FcGiocatore::getCognGiocatore));
-		formFactory.setFieldProvider("dataCambio", a -> new DateTimePicker());
+        return crud;
+    }
 
-		crud.setRowCountCaption("%d Mercato(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+    private void configureFormFactory(GridCrud<FcMercatoDett> crud) {
+        DefaultCrudFormFactory<FcMercatoDett> formFactory =
+                new DefaultCrudFormFactory<>(FcMercatoDett.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-		crud.setFindAllOperation(mercatoService::findAll);
-		crud.setAddOperation(mercatoService::save);
-		crud.setUpdateOperation(mercatoService::save);
-		crud.setDeleteOperation(mercatoService::delete);
+        formFactory.setVisibleProperties(
+                CrudOperation.READ,
+                FIELD_ID,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_FC_ATTORE,
+                FIELD_GIOCATORE_VENDUTO,
+                FIELD_GIOCATORE_ACQUISTATO,
+                FIELD_DATA_CAMBIO,
+                FIELD_NOTA);
 
-		add(crud);
-	}
+        formFactory.setVisibleProperties(
+                CrudOperation.ADD,
+                FIELD_ID,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_FC_ATTORE,
+                FIELD_GIOCATORE_VENDUTO,
+                FIELD_GIOCATORE_ACQUISTATO,
+                FIELD_DATA_CAMBIO,
+                FIELD_NOTA);
+
+        formFactory.setVisibleProperties(
+                CrudOperation.UPDATE,
+                FIELD_ID,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_FC_ATTORE,
+                FIELD_GIOCATORE_VENDUTO,
+                FIELD_GIOCATORE_ACQUISTATO,
+                FIELD_DATA_CAMBIO,
+                FIELD_NOTA);
+
+        formFactory.setVisibleProperties(
+                CrudOperation.DELETE,
+                FIELD_ID,
+                FIELD_FC_GIORNATA_INFO,
+                FIELD_FC_ATTORE,
+                FIELD_GIOCATORE_VENDUTO,
+                FIELD_GIOCATORE_ACQUISTATO);
+
+        List<FcGiornataInfo> giornate = giornataInfoService.findAll();
+        List<FcAttore> attori = attoreService.findByActive(true);
+        List<FcGiocatore> giocatori = giocatoreService.findAll();
+
+        formFactory.setFieldProvider(
+                FIELD_FC_GIORNATA_INFO,
+                new ComboBoxProvider<>(
+                        "Giornata",
+                        giornate,
+                        new TextRenderer<>(FcGiornataInfo::getDescGiornataFc),
+                        FcGiornataInfo::getDescGiornataFc));
+
+        formFactory.setFieldProvider(
+                FIELD_FC_ATTORE,
+                new ComboBoxProvider<>(
+                        "Attore",
+                        attori,
+                        new TextRenderer<>(FcAttore::getDescAttore),
+                        FcAttore::getDescAttore));
+
+        formFactory.setFieldProvider(
+                FIELD_GIOCATORE_VENDUTO,
+                new ComboBoxProvider<>(
+                        "Giocatore Ven",
+                        giocatori,
+                        new TextRenderer<>(FcGiocatore::getCognGiocatore),
+                        FcGiocatore::getCognGiocatore));
+
+        formFactory.setFieldProvider(
+                FIELD_GIOCATORE_ACQUISTATO,
+                new ComboBoxProvider<>(
+                        "Giocatore Acq",
+                        giocatori,
+                        new TextRenderer<>(FcGiocatore::getCognGiocatore),
+                        FcGiocatore::getCognGiocatore));
+
+        formFactory.setFieldProvider(FIELD_DATA_CAMBIO, field -> new DateTimePicker());
+    }
+
+    private void configureGrid(GridCrud<FcMercatoDett> crud) {
+        crud.getGrid().removeAllColumns();
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null ? String.valueOf(item.getId()) : ""))
+                .setHeader("Id");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcGiornataInfo() != null
+                                ? item.getFcGiornataInfo().getDescGiornataFc()
+                                : ""))
+                .setHeader("Giornata");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcAttore() != null
+                                ? item.getFcAttore().getDescAttore()
+                                : ""))
+                .setHeader("Attore");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcGiocatoreByIdGiocVen() != null
+                                ? item.getFcGiocatoreByIdGiocVen().getCognGiocatore()
+                                : ""))
+                .setHeader("Giocatore Ven");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcGiocatoreByIdGiocAcq() != null
+                                ? item.getFcGiocatoreByIdGiocAcq().getCognGiocatore()
+                                : ""))
+                .setHeader("Giocatore Acq");
+
+        Column<FcMercatoDett> dataColumn = crud.getGrid().addColumn(
+                new LocalDateTimeRenderer<>(
+                        FcMercatoDett::getDataCambio,
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+        dataColumn.setHeader("Data Cambio");
+        dataColumn.setSortable(false);
+        dataColumn.setAutoWidth(true);
+        dataColumn.setFlexGrow(2);
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getNota() != null ? item.getNota() : ""))
+                .setHeader("Nota");
+
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
+
+    private void configureOperations(GridCrud<FcMercatoDett> crud) {
+        crud.setFindAllOperation(mercatoService::findAll);
+        crud.setAddOperation(mercatoService::save);
+        crud.setUpdateOperation(mercatoService::save);
+        crud.setDeleteOperation(mercatoService::delete);
+    }
 }

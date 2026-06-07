@@ -2,6 +2,7 @@ package fcapp.ui.views.seriea;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -9,14 +10,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
@@ -32,7 +31,6 @@ import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -78,986 +76,896 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "admin", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 public class ImpostazioniView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+        implements ComponentEventListener<ClickEvent<Button>> {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient Environment env;
-	private final transient JobProcessFileCsv jobProcessFileCsv;
-	private final transient JobProcessGiornata jobProcessGiornata;
-	private final transient JobProcessSendMail jobProcessSendMail;
-	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
-	private final transient GiornataInfoService giornataInfoService;
-	private final transient AttoreService attoreService;
-	private final transient SquadraService squadraService;
-	private final transient ClassificaService classificaService;
-	private final transient FormazioneService formazioneService;
-	private final transient ProprietaService proprietaService;
-	private final transient AccessoService accessoService;
-	private final transient EmailService emailService;
+    private static final String SESSION_PROPERTIES = "PROPERTIES";
+    private static final String SESSION_CAMPIONATO = "CAMPIONATO";
+    private static final String SESSION_GIORNATA_INFO = "GIORNATA_INFO";
 
-	private List<FcAttore> squadre = null;
-	private List<FcSquadra> squadreSerieA = null;
-	private List<FcGiornataInfo> giornate = null;
+    private static final String PATH_TMP = "PATH_TMP";
+    private static final String URL_FANTA = "URL_FANTA";
+    private static final String MAIL_PRIMARY_USERNAME = "spring.mail.primary.username";
+    private static final String MAIL_SECONDARY_USERNAME = "spring.mail.secondary.username";
 
-	private Button initDb;
-	private Button generaCalendar;
-	private ComboBox<FcGiornataInfo> comboGiornata;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private ComboBox<FcAttore> comboAttore;
-	private Button resetFormazione;
-	private Button ultimaFormazione;
-	private Button formazione422;
+    private final transient Environment env;
+    private final transient JobProcessFileCsv jobProcessFileCsv;
+    private final transient JobProcessGiornata jobProcessGiornata;
+    private final transient JobProcessSendMail jobProcessSendMail;
+    private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+    private final transient GiornataInfoService giornataInfoService;
+    private final transient AttoreService attoreService;
+    private final transient SquadraService squadraService;
+    private final transient ClassificaService classificaService;
+    private final transient FormazioneService formazioneService;
+    private final transient ProprietaService proprietaService;
+    private final transient AccessoService accessoService;
+    private final transient EmailService emailService;
+    private final transient GiornataService giornataService;
+    private final transient ResourceLoader resourceLoader;
 
-	private Button downloadQuotazioni;
-	private Button updateGiocatori;
-	private Checkbox chkUpdateQuotazioni;
-	private Checkbox chkUpdateImg;
-	private NumberField txtPercentuale;
-	private Grid<FcGiocatore> tableGiocatoreAdd;
-	private Grid<FcGiocatore> tableGiocatoreDel;
+    private List<FcAttore> squadre = new ArrayList<>();
+    private List<FcSquadra> squadreSerieA = new ArrayList<>();
+    private List<FcGiornataInfo> giornate = new ArrayList<>();
 
-	private Button testMailPrimary;
-	private Button testMailSecondary;
+    private Button initDb;
+    private Button generaCalendar;
+    private ComboBox<FcGiornataInfo> comboGiornata;
 
-	private Button init;
-	private Button download;
-	private Button seiPolitico;
-	private ComboBox<FcSquadra> comboSquadreA;
-	private Button calcola;
-	private ToggleButton chkForzaVotoGiocatore;
-	private ToggleButton chkRoundVotoGiocatore;
-	private Button calcolaStatistiche;
-	private Button pdfAndMail;
+    private ComboBox<FcAttore> comboAttore;
+    private Button resetFormazione;
+    private Button ultimaFormazione;
+    private Button formazione422;
 
-	private Button salva;
-	private Button resetDate;
-	private Checkbox chkUfficiali;
-	private Checkbox chkSendMail;
+    private Button downloadQuotazioni;
+    private Button updateGiocatori;
+    private Checkbox chkUpdateQuotazioni;
+    private Checkbox chkUpdateImg;
+    private NumberField txtPercentuale;
+    private Grid<FcGiocatore> tableGiocatoreAdd;
+    private Grid<FcGiocatore> tableGiocatoreDel;
 
-	private Details panelSetup;
-	private DateTimePicker da1;
-	private DateTimePicker da2;
-	private DateTimePicker dg;
-	private DateTimePicker dp;
-	
-	public ImpostazioniView(
-			Environment env,
-			JobProcessFileCsv jobProcessFileCsv,
-			JobProcessGiornata jobProcessGiornata,
-			JobProcessSendMail jobProcessSendMail,
-			GiornataInfoService giornataInfoService,
-			CalendarioCompetizioneService calendarioCompetizioneService,
-			AttoreService attoreService,
-			SquadraService squadraService,
-			ClassificaService classificaService,
-			FormazioneService formazioneService,
-			ProprietaService proprietaService,
-			AccessoService accessoService,
-			EmailService emailService) {
-		log.info("ImpostazioniView()");
-		this.env = env;
-		this.jobProcessFileCsv = jobProcessFileCsv;
-		this.jobProcessGiornata = jobProcessGiornata;
-		this.jobProcessSendMail = jobProcessSendMail;
-		this.calendarioCompetizioneService = calendarioCompetizioneService;
-		this.giornataInfoService = giornataInfoService;
-		this.attoreService = attoreService;
-		this.squadraService = squadraService;
-		this.classificaService = classificaService;
-		this.formazioneService = formazioneService;
-		this.proprietaService = proprietaService;
-		this.accessoService = accessoService;
-		this.emailService = emailService;
-	}
+    private Button testMailPrimary;
+    private Button testMailSecondary;
 
-	@PostConstruct
-	void init() {
-		log.debug("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initData();
-		initLayout();
-	}
+    private Button init;
+    private Button download;
+    private Button seiPolitico;
+    private ComboBox<FcSquadra> comboSquadreA;
+    private Button calcola;
+    private ToggleButton chkForzaVotoGiocatore;
+    private ToggleButton chkRoundVotoGiocatore;
+    private Button calcolaStatistiche;
+    private Button pdfAndMail;
 
-	private void initData() {
-		squadre = attoreService.findByActive(true);
-		squadreSerieA = squadraService.findAll();
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		Integer from = campionato.getStart();
-		Integer to = campionato.getEnd();
-		log.info("from and then ({},{})", from, to);
-		giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
-	}
+    private Button salva;
+    private Button resetDate;
+    private Checkbox chkUfficiali;
+    private Checkbox chkSendMail;
 
-	private void initLayout() {
+    private Details panelSetup;
+    private DateTimePicker da1;
+    private DateTimePicker da2;
+    private DateTimePicker dg;
+    private DateTimePicker dp;
 
-		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+    public ImpostazioniView(
+            Environment env,
+            JobProcessFileCsv jobProcessFileCsv,
+            JobProcessGiornata jobProcessGiornata,
+            JobProcessSendMail jobProcessSendMail,
+            GiornataInfoService giornataInfoService,
+            CalendarioCompetizioneService calendarioCompetizioneService,
+            AttoreService attoreService,
+            SquadraService squadraService,
+            ClassificaService classificaService,
+            FormazioneService formazioneService,
+            ProprietaService proprietaService,
+            AccessoService accessoService,
+            EmailService emailService,
+            GiornataService giornataService,
+            ResourceLoader resourceLoader) {
 
-		initDb = new Button("Init Db Formazioni/Classifica");
-		initDb.setIcon(VaadinIcon.START_COG.create());
-		initDb.addClickListener(this);
+        this.env = env;
+        this.jobProcessFileCsv = jobProcessFileCsv;
+        this.jobProcessGiornata = jobProcessGiornata;
+        this.jobProcessSendMail = jobProcessSendMail;
+        this.calendarioCompetizioneService = calendarioCompetizioneService;
+        this.giornataInfoService = giornataInfoService;
+        this.attoreService = attoreService;
+        this.squadraService = squadraService;
+        this.classificaService = classificaService;
+        this.formazioneService = formazioneService;
+        this.proprietaService = proprietaService;
+        this.accessoService = accessoService;
+        this.emailService = emailService;
+        this.giornataService = giornataService;
+        this.resourceLoader = resourceLoader;
 
-		generaCalendar = new Button("Genera Calendario");
-		generaCalendar.setIcon(VaadinIcon.CALENDAR.create());
-		generaCalendar.addClickListener(this);
+        log.info("ImpostazioniView()");
+    }
 
-		comboGiornata = new ComboBox<>();
-		comboGiornata.setItemLabelGenerator(Utils::buildInfoGiornata);
-		comboGiornata.setItems(giornate);
-		comboGiornata.setClearButtonVisible(true);
-		comboGiornata.setPlaceholder("Seleziona la giornata");
-		comboGiornata.addValueChangeListener(event -> {
-			FcGiornataInfo fcGiornataInfo2 = null;
-			if (event.getSource().isEmpty()) {
-				log.info("event.getSource().isEmpty()");
-			} else if (event.getOldValue() == null) {
-				log.info("event.getOldValue()");
-				fcGiornataInfo2 = event.getValue();
-			} else {
-				fcGiornataInfo2 = event.getValue();
-			}
-			if (fcGiornataInfo2 != null && da1 != null && da2 != null && dg != null && dp != null) {
-                log.info("giornata {}", fcGiornataInfo2.getCodiceGiornata());
-				if (fcGiornataInfo2.getDataAnticipo1() != null) {
-					da1.setValue(fcGiornataInfo2.getDataAnticipo1());
-				}
+    @PostConstruct
+    void init() {
+        log.debug("init");
 
-				if (fcGiornataInfo2.getDataAnticipo2() != null) {
-					da2.setValue(fcGiornataInfo2.getDataAnticipo2());
-				}
-				if (fcGiornataInfo2.getDataGiornata() != null) {
-					dg.setValue(fcGiornataInfo2.getDataGiornata());
-				}
-				if (fcGiornataInfo2.getDataPosticipo() != null) {
-					dp.setValue(fcGiornataInfo2.getDataPosticipo());
-				}
-				panelSetup.setOpened(false);
-				initDb.setEnabled(false);
-				generaCalendar.setEnabled(false);
-                log.info("getCodiceGiornata {}", fcGiornataInfo2.getCodiceGiornata());
-				if (fcGiornataInfo2.getCodiceGiornata() == 1 || fcGiornataInfo2.getCodiceGiornata() == 20) {
-					panelSetup.setOpened(true);
-					initDb.setEnabled(true);
-					generaCalendar.setEnabled(true);
-				}
-			}
-		});
-		comboGiornata.setValue(giornataInfo);
-		comboGiornata.setWidthFull();
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		this.add(comboGiornata);
+        accessoService.insertAccesso(getClass().getName());
+        initData();
+        initLayout();
+    }
 
-		HorizontalLayout layoutSetup = new HorizontalLayout();
-		layoutSetup.setMargin(true);
-		layoutSetup.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-		layoutSetup.add(initDb);
-		layoutSetup.add(generaCalendar);
+    private void initData() {
+        squadre = attoreService.findByActive(true);
+        squadreSerieA = squadraService.findAll();
 
-		panelSetup = new Details("Setup",layoutSetup);
-		panelSetup.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+        FcCampionato campionato = getSessionAttribute(SESSION_CAMPIONATO, FcCampionato.class);
+        if (campionato == null) {
+            return;
+        }
 
-		this.add(panelSetup);
+        Integer from = campionato.getStart();
+        Integer to = campionato.getEnd();
 
-		panelSetup.setOpened(false);
-		initDb.setEnabled(false);
-		generaCalendar.setEnabled(false);
-		if (giornataInfo.getCodiceGiornata() == 1 || giornataInfo.getCodiceGiornata() == 20) {
-			panelSetup.setOpened(true);
-			initDb.setEnabled(true);
-			generaCalendar.setEnabled(true);
-		}
+        log.info("from and to ({},{})", from, to);
+        giornate = giornataInfoService
+                .findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+    }
 
-		comboAttore = new ComboBox<>();
-		comboAttore.setItems(squadre);
-		comboAttore.setItemLabelGenerator(FcAttore::getDescAttore);
-		comboAttore.setClearButtonVisible(true);
-		comboAttore.setPlaceholder("Seleziona attore");
+    private void initLayout() {
+        FcGiornataInfo giornataInfo = getSessionAttribute(SESSION_GIORNATA_INFO, FcGiornataInfo.class);
+        if (giornataInfo == null) {
+            return;
+        }
 
-		resetFormazione = new Button("Reset Formazione");
-		resetFormazione.setIcon(VaadinIcon.PLUS_SQUARE_O.create());
-		resetFormazione.addClickListener(this);
+        buildSetupSection(giornataInfo);
+        buildUpdateSection();
+        buildCalcolaSection();
+        buildDateSection(giornataInfo);
+    }
 
-		ultimaFormazione = new Button("Inserisci Ultima Formazione");
-		ultimaFormazione.setIcon(VaadinIcon.PLUS_SQUARE_O.create());
-		ultimaFormazione.addClickListener(this);
+    private void buildSetupSection(FcGiornataInfo giornataInfo) {
+        initDb = createButton("Init Db Formazioni/Classifica", VaadinIcon.START_COG, this);
+        generaCalendar = createButton("Genera Calendario", VaadinIcon.CALENDAR, this);
 
-		formazione422 = new Button("Formazione 422");
-		formazione422.setIcon(VaadinIcon.PLUS_SQUARE_O.create());
-		formazione422.addClickListener(this);
-		formazione422.setEnabled(true);
+        comboGiornata = new ComboBox<>();
+        comboGiornata.setItemLabelGenerator(Utils::buildInfoGiornata);
+        comboGiornata.setItems(giornate);
+        comboGiornata.setClearButtonVisible(true);
+        comboGiornata.setPlaceholder("Seleziona la giornata");
+        comboGiornata.setValue(giornataInfo);
+        comboGiornata.setWidthFull();
+        comboGiornata.addValueChangeListener(event -> onGiornataChanged(event.getValue()));
 
-		HorizontalLayout layoutUpdateRow1 = new HorizontalLayout();
-		layoutUpdateRow1.setMargin(true);
+        add(comboGiornata);
 
-		layoutUpdateRow1.add(comboAttore);
-		layoutUpdateRow1.add(resetFormazione);
-		layoutUpdateRow1.add(ultimaFormazione);
-		layoutUpdateRow1.add(formazione422);
+        HorizontalLayout layoutSetup = new HorizontalLayout();
+        layoutSetup.setMargin(true);
+        layoutSetup.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        layoutSetup.add(initDb, generaCalendar);
 
-		downloadQuotazioni = new Button("Download Quotazioni");
-		downloadQuotazioni.setIcon(VaadinIcon.DOWNLOAD.create());
-		downloadQuotazioni.addClickListener(this);
+        panelSetup = new Details("Setup", layoutSetup);
+        panelSetup.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+        add(panelSetup);
 
-		updateGiocatori = new Button("Update Giocatori");
-		updateGiocatori.setIcon(VaadinIcon.PIN.create());
-		updateGiocatori.addClickListener(this);
+        updateSetupState(giornataInfo);
+    }
 
-		txtPercentuale = new NumberField();
-		txtPercentuale.setMin(0d);
-		txtPercentuale.setMax(100d);
-		txtPercentuale.setStepButtonsVisible(true);
-		txtPercentuale.setValue(70d);
+    private void buildUpdateSection() {
+        comboAttore = new ComboBox<>();
+        comboAttore.setItems(squadre);
+        comboAttore.setItemLabelGenerator(FcAttore::getDescAttore);
+        comboAttore.setClearButtonVisible(true);
+        comboAttore.setPlaceholder("Seleziona attore");
 
-		chkUpdateQuotazioni = new Checkbox("Update Quotazioni");
-		chkUpdateImg = new Checkbox("Update Img");
+        resetFormazione = createButton("Reset Formazione", VaadinIcon.PLUS_SQUARE_O, this);
+        ultimaFormazione = createButton("Inserisci Ultima Formazione", VaadinIcon.PLUS_SQUARE_O, this);
+        formazione422 = createButton("Formazione 422", VaadinIcon.PLUS_SQUARE_O, this);
 
-		HorizontalLayout layoutUpdateRow2 = new HorizontalLayout();
-		layoutUpdateRow2.setMargin(true);
+        HorizontalLayout layoutUpdateRow1 = new HorizontalLayout(comboAttore, resetFormazione, ultimaFormazione, formazione422);
+        layoutUpdateRow1.setMargin(true);
 
-		layoutUpdateRow2.add(downloadQuotazioni);
-		layoutUpdateRow2.add(updateGiocatori);
-		layoutUpdateRow2.add(txtPercentuale);
-		layoutUpdateRow2.add(chkUpdateQuotazioni);
-		layoutUpdateRow2.add(chkUpdateImg);
+        downloadQuotazioni = createButton("Download Quotazioni", VaadinIcon.DOWNLOAD, this);
+        updateGiocatori = createButton("Update Giocatori", VaadinIcon.PIN, this);
 
-		HorizontalLayout layoutUpdateRow3 = new HorizontalLayout();
-		layoutUpdateRow3.setMargin(true);
-		tableGiocatoreAdd = getTableGiocatori();
-		layoutUpdateRow3.add(tableGiocatoreAdd);
+        txtPercentuale = new NumberField();
+        txtPercentuale.setMin(0d);
+        txtPercentuale.setMax(100d);
+        txtPercentuale.setStepButtonsVisible(true);
+        txtPercentuale.setValue(70d);
 
-		HorizontalLayout layoutUpdateRow4 = new HorizontalLayout();
-		layoutUpdateRow4.setMargin(true);
-		tableGiocatoreDel = getTableGiocatori();
-		layoutUpdateRow4.add(tableGiocatoreDel);
+        chkUpdateQuotazioni = new Checkbox("Update Quotazioni");
+        chkUpdateImg = new Checkbox("Update Img");
 
-		testMailPrimary = new Button("Test Mail Primary");
-		testMailPrimary.setIcon(VaadinIcon.MAILBOX.create());
-		testMailPrimary.addClickListener(this);
+        HorizontalLayout layoutUpdateRow2 = new HorizontalLayout(
+                downloadQuotazioni,
+                updateGiocatori,
+                txtPercentuale,
+                chkUpdateQuotazioni,
+                chkUpdateImg);
+        layoutUpdateRow2.setMargin(true);
 
-		testMailSecondary = new Button("Test Mail Secondary");
-		testMailSecondary.setIcon(VaadinIcon.MAILBOX.create());
-		testMailSecondary.addClickListener(this);
+        tableGiocatoreAdd = getTableGiocatori();
+        tableGiocatoreDel = getTableGiocatori();
 
-		VerticalLayout layoutUpdate = new VerticalLayout();
-		layoutUpdate.setMargin(true);
-		layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        HorizontalLayout layoutUpdateRow3 = new HorizontalLayout(tableGiocatoreAdd);
+        layoutUpdateRow3.setMargin(true);
 
-		layoutUpdate.add(layoutUpdateRow1);
-		layoutUpdate.add(layoutUpdateRow2);
-		layoutUpdate.add(layoutUpdateRow3);
-		layoutUpdate.add(layoutUpdateRow4);
-		layoutUpdate.add(testMailPrimary);
-		layoutUpdate.add(testMailSecondary);
+        HorizontalLayout layoutUpdateRow4 = new HorizontalLayout(tableGiocatoreDel);
+        layoutUpdateRow4.setMargin(true);
 
-		InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((
-				metadata, data) -> {
+        testMailPrimary = createButton("Test Mail Primary", VaadinIcon.MAILBOX, this);
+        testMailSecondary = createButton("Test Mail Secondary", VaadinIcon.MAILBOX, this);
+
+        VerticalLayout layoutUpdate = new VerticalLayout();
+        layoutUpdate.setMargin(true);
+        layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        layoutUpdate.add(layoutUpdateRow1, layoutUpdateRow2, layoutUpdateRow3, layoutUpdateRow4,
+                testMailPrimary, testMailSecondary, buildUpload());
+
+        Details panelUpdate = new Details("Update", layoutUpdate);
+        panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+        panelUpdate.setOpened(true);
+        add(panelUpdate);
+    }
+
+    private void buildCalcolaSection() {
+        init = createButton("Avvia", VaadinIcon.ADD_DOCK, this);
+        download = createButton("Download Voti", VaadinIcon.DOWNLOAD, this);
+        seiPolitico = createButton("Sei Politico", VaadinIcon.PIN, this);
+        calcola = createButton("Calcola", VaadinIcon.PIN, this);
+        calcolaStatistiche = createButton("Calcola Statistiche", VaadinIcon.PRESENTATION, this);
+        pdfAndMail = createButton("Crea Pdf - Invia email", VaadinIcon.MAILBOX, this);
+
+        chkUfficiali = new Checkbox("Ufficiali");
+        chkSendMail = new Checkbox("Invia Email a tutti");
+
+        comboSquadreA = new ComboBox<>();
+        comboSquadreA.setItems(squadreSerieA);
+        comboSquadreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
+        comboSquadreA.setClearButtonVisible(true);
+        comboSquadreA.setPlaceholder(Costants.SQUADRA);
+        comboSquadreA.setRenderer(new ComponentRenderer<>(item -> {
+            VerticalLayout container = new VerticalLayout();
+            if (item != null && item.getImg() != null) {
+                try {
+                    container.add(Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream()));
+                } catch (SQLException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            if (item != null) {
+                container.add(new Span(item.getNomeSquadra()));
+            }
+            return container;
+        }));
+
+        chkForzaVotoGiocatore = new ToggleButton();
+        chkForzaVotoGiocatore.setLabel("Forza Voto 0");
+        chkForzaVotoGiocatore.setValue(false);
+
+        chkRoundVotoGiocatore = new ToggleButton();
+        chkRoundVotoGiocatore.setLabel("Round Voto");
+        chkRoundVotoGiocatore.setValue(true);
+
+        HorizontalLayout row1 = new HorizontalLayout(download, chkUfficiali, seiPolitico, comboSquadreA);
+        HorizontalLayout row2 = new HorizontalLayout(calcola, chkForzaVotoGiocatore, chkRoundVotoGiocatore, calcolaStatistiche);
+
+        VerticalLayout layoutCalcola = new VerticalLayout();
+        layoutCalcola.setMargin(true);
+        layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        layoutCalcola.add(init, row1, row2, pdfAndMail, chkSendMail);
+
+        Details panelCalcola = new Details("Calcola", layoutCalcola);
+        panelCalcola.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+        panelCalcola.setOpened(true);
+        add(panelCalcola);
+    }
+
+    private void buildDateSection(FcGiornataInfo giornataInfo) {
+        da1 = new DateTimePicker("Data Anticipo1");
+        da1.setValue(giornataInfo.getDataAnticipo1());
+
+        da2 = new DateTimePicker("Data Anticipo2");
+        da2.setValue(giornataInfo.getDataAnticipo2());
+
+        dg = new DateTimePicker("Data Giornata");
+        dg.setValue(giornataInfo.getDataGiornata());
+
+        dp = new DateTimePicker("Data Posticipo");
+        dp.setValue(giornataInfo.getDataPosticipo());
+
+        salva = createButton("Salva", VaadinIcon.DATABASE, this);
+        resetDate = createButton("Reset", VaadinIcon.REFRESH, this);
+
+        HorizontalLayout layoutRow1 = new HorizontalLayout(salva, resetDate);
+        HorizontalLayout layoutRow2 = new HorizontalLayout(da1, da2);
+        HorizontalLayout layoutRow22 = new HorizontalLayout(dg, dp);
+
+        VerticalLayout pnlUfficiali = new VerticalLayout(
+                getCheck("1_UFFICIALI", "DOM_Ufficiali"),
+                getCheck("2_UFFICIALI", "LUN_Ufficiali"),
+                getCheck("3_UFFICIALI", "MAR_Ufficiali"),
+                getCheck("4_UFFICIALI", "MER_Ufficiali"),
+                getCheck("5_UFFICIALI", "GIO_Ufficiali"),
+                getCheck("6_UFFICIALI", "VEN_Ufficiali"),
+                getCheck("7_UFFICIALI", "SAB_Ufficiali"));
+        pnlUfficiali.setSizeUndefined();
+
+        VerticalLayout pnlUfficiosi = new VerticalLayout(
+                getCheck("1_UFFICIOSI", "DOM_Ufficiosi"),
+                getCheck("2_UFFICIOSI", "LUN_Ufficiosi"),
+                getCheck("3_UFFICIOSI", "MAR_Ufficiosi"),
+                getCheck("4_UFFICIOSI", "MER_Ufficiosi"),
+                getCheck("5_UFFICIOSI", "GIO_Ufficiosi"),
+                getCheck("6_UFFICIOSI", "VEN_Ufficiosi"),
+                getCheck("7_UFFICIOSI", "SAB_Ufficiosi"));
+        pnlUfficiosi.setSizeUndefined();
+
+        HorizontalLayout layoutRow3 = new HorizontalLayout(pnlUfficiali, pnlUfficiosi);
+
+        VerticalLayout layoutDate = new VerticalLayout(layoutRow1, layoutRow2, layoutRow22, layoutRow3);
+        layoutDate.setMargin(true);
+        layoutDate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+
+        Details panelGiornata = new Details("Imposta Date", layoutDate);
+        panelGiornata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+        panelGiornata.setOpened(true);
+        add(panelGiornata);
+    }
+
+    private Upload buildUpload() {
+        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
             try {
-				InputStream is = new ByteArrayInputStream(data);
-				jobProcessGiornata.updateImgGiocatore(is);
-				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			} catch (Exception e) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-			}
-		});
-		Upload upload = new Upload(inMemoryHandler);
+                InputStream is = new ByteArrayInputStream(data);
+                jobProcessGiornata.updateImgGiocatore(is);
+                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            } catch (Exception e) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+            }
+        });
+        return new Upload(inMemoryHandler);
+    }
 
-		layoutUpdate.add(upload);
+    private void onGiornataChanged(FcGiornataInfo giornata) {
+        if (giornata == null || da1 == null || da2 == null || dg == null || dp == null) {
+            return;
+        }
 
-		Details panelUpdate = new Details("Update",layoutUpdate);
-		panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelUpdate.setOpened(true);
-		this.add(panelUpdate);
+        log.info("giornata {}", giornata.getCodiceGiornata());
 
-		init = new Button("Avvia");
-		init.setIcon(VaadinIcon.ADD_DOCK.create());
-		init.addClickListener(this);
+        da1.setValue(giornata.getDataAnticipo1());
+        da2.setValue(giornata.getDataAnticipo2());
+        dg.setValue(giornata.getDataGiornata());
+        dp.setValue(giornata.getDataPosticipo());
 
-		download = new Button("Download Voti");
-		download.setIcon(VaadinIcon.DOWNLOAD.create());
-		download.addClickListener(this);
+        updateSetupState(giornata);
+    }
 
-		chkUfficiali = new Checkbox("Ufficiali");
+    private void updateSetupState(FcGiornataInfo giornataInfo) {
+        boolean enabled = giornataInfo != null
+                && (giornataInfo.getCodiceGiornata() == 1 || giornataInfo.getCodiceGiornata() == 20);
 
-		seiPolitico = new Button("Sei Politico");
-		seiPolitico.setIcon(VaadinIcon.PIN.create());
-		seiPolitico.addClickListener(this);
+        panelSetup.setOpened(enabled);
+        initDb.setEnabled(enabled);
+        generaCalendar.setEnabled(enabled);
+    }
 
-		comboSquadreA = new ComboBox<>();
-		comboSquadreA.setItems(squadreSerieA);
-		comboSquadreA.setItemLabelGenerator(FcSquadra::getNomeSquadra);
-		comboSquadreA.setClearButtonVisible(true);
-		comboSquadreA.setPlaceholder(Costants.SQUADRA);
-		comboSquadreA.setRenderer(new ComponentRenderer<>(item -> {
-			VerticalLayout container = new VerticalLayout();
-			if (item != null && item.getImg() != null) {
-				try {
-					Image img = Utils.getImage(item.getNomeSquadra(), item.getImg().getBinaryStream());
-					container.add(img);
-				} catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-			}
-			Span lblSquadra = new Span(Objects.requireNonNull(item).getNomeSquadra());
-			container.add(lblSquadra);
-			return container;
-		}));
+    private Button createButton(String text, VaadinIcon icon, ComponentEventListener<ClickEvent<Button>> listener) {
+        Button button = new Button(text);
+        button.setIcon(icon.create());
+        button.addClickListener(listener);
+        return button;
+    }
 
-		calcola = new Button("Calcola");
-		calcola.setIcon(VaadinIcon.PIN.create());
-		calcola.addClickListener(this);
+    private Checkbox getCheck(String key, String label) {
+        Properties properties = getSessionAttribute(SESSION_PROPERTIES, Properties.class);
 
-		chkForzaVotoGiocatore = new ToggleButton();
-		chkForzaVotoGiocatore.setLabel("Forza Voto 0");
-		chkForzaVotoGiocatore.setValue(false);
+        Checkbox check = new Checkbox(label);
+        boolean value = properties != null && "1".equals(properties.getProperty(key));
+        check.setValue(value);
 
-		chkRoundVotoGiocatore = new ToggleButton();
-		chkRoundVotoGiocatore.setLabel("Round Voto");
-		chkRoundVotoGiocatore.setValue(true);
+        check.addValueChangeListener(event -> {
+            try {
+                boolean checked = Boolean.TRUE.equals(event.getValue());
 
-		calcolaStatistiche = new Button("Calcola Statistiche");
-		calcolaStatistiche.setIcon(VaadinIcon.PRESENTATION.create());
-		calcolaStatistiche.addClickListener(this);
+                FcProperties proprieta = new FcProperties();
+                proprieta.setKey(key);
+                proprieta.setValue(checked ? "1" : "0");
+                proprietaService.save(proprieta);
 
-		pdfAndMail = new Button("Crea Pdf - Invia email");
-		pdfAndMail.setIcon(VaadinIcon.MAILBOX.create());
-		pdfAndMail.addClickListener(this);
+                if (properties != null) {
+                    properties.setProperty(key, checked ? "1" : "0");
+                }
 
-		chkSendMail = new Checkbox("Invia Email a tutti");
+                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            } catch (Exception e) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+            }
+        });
 
-		VerticalLayout layoutCalcola = new VerticalLayout();
-		layoutCalcola.setMargin(true);
-		layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        return check;
+    }
 
-		HorizontalLayout vHor = new HorizontalLayout();
-		vHor.add(download);
-		vHor.add(chkUfficiali);
-		vHor.add(seiPolitico);
-		vHor.add(comboSquadreA);
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            Properties properties = getSessionAttribute(SESSION_PROPERTIES, Properties.class);
+            FcCampionato campionato = getSessionAttribute(SESSION_CAMPIONATO, FcCampionato.class);
 
-		HorizontalLayout vHor2 = new HorizontalLayout();
-		vHor2.add(calcola);
-		vHor2.add(chkForzaVotoGiocatore);
-		vHor2.add(chkRoundVotoGiocatore);
-		vHor2.add(calcolaStatistiche);
+            FcGiornataInfo giornataInfo = comboGiornata != null ? comboGiornata.getValue() : null;
+            int codiceGiornata = giornataInfo != null ? giornataInfo.getCodiceGiornata() : 0;
+            FcAttore attore = comboAttore != null ? comboAttore.getValue() : null;
 
-		layoutCalcola.add(init);
-		layoutCalcola.add(vHor);
-		layoutCalcola.add(vHor2);
-		layoutCalcola.add(pdfAndMail);
-		layoutCalcola.add(chkSendMail);
-
-		Details panelCalcola = new Details("Calcola",layoutCalcola);
-		panelCalcola.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelCalcola.setOpened(true);
-		this.add(panelCalcola);
-
-		da1 = new DateTimePicker("Data Anticipo1");
-		if (giornataInfo.getDataAnticipo1() != null) {
-			da1.setValue(giornataInfo.getDataAnticipo1());
-		}
-
-		da2 = new DateTimePicker("Data Anticipo2");
-		if (giornataInfo.getDataAnticipo2() != null) {
-			da2.setValue(giornataInfo.getDataAnticipo2());
-		}
-
-		dg = new DateTimePicker("Data Giornata");
-		if (giornataInfo.getDataGiornata() != null) {
-			dg.setValue(giornataInfo.getDataGiornata());
-		}
-
-		dp = new DateTimePicker("Data Posticipo");
-		if (giornataInfo.getDataPosticipo() != null) {
-			dp.setValue(giornataInfo.getDataPosticipo());
-		}
-
-		salva = new Button("Salva");
-		salva.setIcon(VaadinIcon.DATABASE.create());
-		salva.addClickListener(this);
-
-		resetDate = new Button("Reset");
-		resetDate.setIcon(VaadinIcon.REFRESH.create());
-		resetDate.addClickListener(this);
-
-		HorizontalLayout layoutRow1 = new HorizontalLayout();
-		layoutRow1.add(salva);
-		layoutRow1.add(resetDate);
-
-		HorizontalLayout layoutRow2 = new HorizontalLayout();
-		layoutRow2.add(da1);
-		layoutRow2.add(da2);
-
-		HorizontalLayout layoutRow22 = new HorizontalLayout();
-		layoutRow22.add(dg);
-		layoutRow22.add(dp);
-
-		VerticalLayout pnlUfficiali = new VerticalLayout();
-		pnlUfficiali.setSizeUndefined();
-		pnlUfficiali.add(getCheck("1_UFFICIALI", "DOM_Ufficiali"));
-		pnlUfficiali.add(getCheck("2_UFFICIALI", "LUN_Ufficiali"));
-		pnlUfficiali.add(getCheck("3_UFFICIALI", "MAR_Ufficiali"));
-		pnlUfficiali.add(getCheck("4_UFFICIALI", "MER_Ufficiali"));
-		pnlUfficiali.add(getCheck("5_UFFICIALI", "GIO_Ufficiali"));
-		pnlUfficiali.add(getCheck("6_UFFICIALI", "VEN_Ufficiali"));
-		pnlUfficiali.add(getCheck("7_UFFICIALI", "SAB_Ufficiali"));
-
-		VerticalLayout pnlUfficiosi = new VerticalLayout();
-		pnlUfficiosi.setSizeUndefined();
-		pnlUfficiosi.add(getCheck("1_UFFICIOSI", "DOM_Ufficiosi"));
-		pnlUfficiosi.add(getCheck("2_UFFICIOSI", "LUN_Ufficiosi"));
-		pnlUfficiosi.add(getCheck("3_UFFICIOSI", "MAR_Ufficiosi"));
-		pnlUfficiosi.add(getCheck("4_UFFICIOSI", "MER_Ufficiosi"));
-		pnlUfficiosi.add(getCheck("5_UFFICIOSI", "GIO_Ufficiosi"));
-		pnlUfficiosi.add(getCheck("6_UFFICIOSI", "VEN_Ufficiosi"));
-		pnlUfficiosi.add(getCheck("7_UFFICIOSI", "SAB_Ufficiosi"));
-
-		HorizontalLayout layoutRow3 = new HorizontalLayout();
-		layoutRow3.add(pnlUfficiali);
-		layoutRow3.add(pnlUfficiosi);
-
-		VerticalLayout layoutDate = new VerticalLayout();
-		layoutDate.setMargin(true);
-		layoutDate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-
-		layoutDate.add(layoutRow1);
-		layoutDate.add(layoutRow2);
-		layoutDate.add(layoutRow22);
-		layoutDate.add(layoutRow3);
-
-		Details panelGiornata = new Details("Imposta Date",layoutDate);
-		panelGiornata.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelGiornata.setOpened(true);
-		this.add(panelGiornata);
-	}
-
-	private Checkbox getCheck(String key, String label) {
-
-		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-
-		Checkbox check = new Checkbox(label);
-		boolean val = "1".equals(p.getProperty(key));
-		check.setValue(val);
-
-		check.addValueChangeListener(event -> {
-			try {
-				Boolean value = event.getValue();
-				FcProperties proprieta = new FcProperties();
-				proprieta.setKey(key);
-				proprieta.setValue(Boolean.TRUE.equals(value) ? "1" : "0");
-				proprietaService.save(proprieta);
-				p.setProperty(key, Boolean.TRUE.equals(value) ? "1" : "0");
-				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			} catch (Exception e) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-			}
-		});
-
-		return check;
-	}
-
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-
-		try {
-			Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-
-			FcGiornataInfo giornataInfo = null;
-			int codiceGiornata = 0;
-			if (!comboGiornata.isEmpty()) {
-				giornataInfo = comboGiornata.getValue();
-				codiceGiornata = giornataInfo.getCodiceGiornata();
-			}
-			FcAttore attore = comboAttore.getValue();
             log.info("codice giornata {}", codiceGiornata);
 
-			String basePathData = env.getProperty("PATH_TMP");
+            String basePathData = env.getProperty(PATH_TMP);
             log.info("basePathData {}", basePathData);
-            assert basePathData != null;
-            File f = new File(basePathData);
-			if (!f.exists()) {
-				CustomMessageDialog.showMessageError("Impossibile trovare il percorso specificato " + basePathData);
-				return;
-			}
-
-			if (event.getSource() == initDb) {
-
-				List<FcAttore> attori = attoreService.findAll();
-				for (FcAttore a : attori) {
-					if (a.isActive()) {
-						for (int j = 1; j <= 26; j++) {
-							formazioneService.createFormazione(a, campionato.getIdCampionato(), j);
-						}
-						classificaService.create(a, campionato, (double) 0);
-					}
-				}
-
-			} else if (event.getSource() == testMailPrimary) {
-
-				try {
-					// String fromPrimary = "notifiche-fclt@hostingtt.it";
-					String fromPrimary = env.getProperty("spring.mail.primary.username");
-					String toPrimary = "davide.cremona@gmail.com";
-					String subjectPrimary = "Testing from Spring Boot sendEmailPrimary";
-					String textPrimary = "Testing from Spring Boot sendEmailPrimary";
-					this.emailService.sendPrimaryEmail(fromPrimary, toPrimary, subjectPrimary, textPrimary);
-				} catch (Exception e) {
-					log.error(e.getMessage());
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-					return;
-				}
-
-			} else if (event.getSource() == testMailSecondary) {
-
-				try {
-					// String fromSecondary = "notifichefclt@gmail.com";
-					String fromSecondary = env.getProperty("spring.mail.secondary.username");
-					String toSecondary = "davide.cremona@gmail.com";
-					String subjectSecondary = "Testing from Spring Boot sendEmailSecondary";
-					String textSecondary = "Testing from Spring Boot sendEmailSecondary";
-					this.emailService.sendSecondaryEmail(fromSecondary, toSecondary, subjectSecondary, textSecondary);
-				} catch (Exception e2) {
-					log.error(e2.getMessage());
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e2.getMessage());
-					return;
-				}
-
-			} else if (event.getSource() == downloadQuotazioni) {
-
-				// **************************************
-				// DOWNLOAD FILE QUOTAZIONI
-				// **************************************
-
-				String urlFanta = (String) p.get("URL_FANTA");
-                String quotazioni = "Giocatori-Quotazioni-Excel";
-				String httpUrl = urlFanta + quotazioni + ".asp?giornata=" + codiceGiornata;
-
-                log.info("httpUrl {}", httpUrl);
-				String fileName = "Q_" + codiceGiornata;
-				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-				jobCsv.downloadCsv(httpUrl, basePathData, fileName, 2);
-
-			} else if (event.getSource() == updateGiocatori) {
-
-				// **************************************
-				// UPDATE GIOCATORI
-				// **************************************
-
-				log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
-                String fileName = "Q_" + codiceGiornata;
-				fileName = basePathData + fileName + ".csv";
-				boolean updateQuotazioni = chkUpdateQuotazioni.getValue();
-				boolean updateImg = chkUpdateImg.getValue();
-				String percentuale = "" + txtPercentuale.getValue().intValue();
-				HashMap<Object, Object> map = jobProcessGiornata.initDbGiocatori(Costants.HTTP_URL_IMG, basePathData, fileName, updateQuotazioni, updateImg, percentuale);
-
-				@SuppressWarnings("unchecked")
-				ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
-				@SuppressWarnings("unchecked")
-				ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
 
-                log.info("listGiocatoriAdd {}", listGiocatoriAdd.size());
-                log.info("listGiocatoriDel {}", listGiocatoriDel.size());
-
-				tableGiocatoreAdd.setItems(listGiocatoriAdd);
-				tableGiocatoreDel.setItems(listGiocatoriDel);
-
-				tableGiocatoreAdd.getDataProvider().refreshAll();
-				tableGiocatoreDel.getDataProvider().refreshAll();
-
-			} else if (event.getSource() == generaCalendar) {
-
-				jobProcessGiornata.generaCalendario(campionato);
-
-			} else if (event.getSource() == formazione422) {
-
-				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligatoria");
-					return;
-				}
-
-				ConfirmDialog dialog = getConfirmDialog(codiceGiornata, campionato);
-				dialog.open();
-
-				return;
-
-			} else if (event.getSource() == resetFormazione) {
-
-				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligatoria");
-					return;
-				}
-
-				if (attore == null) {
-					CustomMessageDialog.showMessageError("Attore obbligatorio");
-					return;
-				}
-
-				jobProcessGiornata.resetFormazione(attore.getIdAttore(), codiceGiornata);
-
-			} else if (event.getSource() == ultimaFormazione) {
-
-				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligatoria");
-					return;
-				}
-
-				if (attore == null) {
-					CustomMessageDialog.showMessageError("Attore obbligatorio");
-					return;
-				}
-
-				jobProcessGiornata.inserisciUltimaFormazione(attore.getIdAttore(), codiceGiornata);
-
-			} else if (event.getSource() == init) {
-
-				if (codiceGiornata == 0) {
-					CustomMessageDialog.showMessageError("Giornata obbligatoria");
-					return;
-				}
-
-				jobProcessGiornata.initPagelle(codiceGiornata);
-
-				try {
-					sendMailInfoGiornata(giornataInfo);
-				} catch (Exception e) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
-				}
-
-			} else if (event.getSource() == download) {
-
-				String urlFanta = (String) p.get("URL_FANTA");
-
-				String votiExcel = "Voti-Ufficiosi-Excel";
-				if (Boolean.TRUE.equals(chkUfficiali.getValue())) {
-					votiExcel = "Voti-Ufficiali-Excel";
-				}
-
-				String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
-				String fileName = "voti_" + codiceGiornata;
-				jobProcessFileCsv.downloadCsv(httpUrl, basePathData, fileName, 3);
-
-				fileName = basePathData + "voti_" + codiceGiornata + ".csv";
-				jobProcessGiornata.aggiornamentoPFGiornata(p, fileName, "" + codiceGiornata);
-
-                assert giornataInfo != null;
-                jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
-
-			} else if (event.getSource() == seiPolitico) {
-
-				FcSquadra squadra = this.comboSquadreA.getValue();
-				if (squadra == null) {
-					CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, "Squadra obbligatoria");
-					return;
-				}
-
-				jobProcessGiornata.seiPolitico(codiceGiornata, squadra);
-
-			} else if (event.getSource() == calcola) {
-
-				int forzaVotoGiocatore = -1;
-				if (Boolean.TRUE.equals(chkForzaVotoGiocatore.getValue())) {
-					forzaVotoGiocatore = 0;
-				}
-				jobProcessGiornata.algoritmo(codiceGiornata, campionato, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
-				jobProcessGiornata.statistiche(campionato);
-
-				jobProcessGiornata.aggiornaVotiGiocatori(codiceGiornata, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
-				jobProcessGiornata.aggiornaTotRosa("" + campionato.getIdCampionato(), codiceGiornata);
-				jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt", "score");
-				jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_old");
-				jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_grand_prix");
-
-			} else if (event.getSource() == calcolaStatistiche) {
-
-				jobProcessGiornata.statistiche(campionato);
-
-			} else if (event.getSource() == pdfAndMail) {
-
-				String pathImg = "images/";
-				p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
-				if (Boolean.TRUE.equals(chkUfficiali.getValue())) {
-					p.setProperty("INFO_RESULT", "UFFICIALI");
-				} else {
-					p.setProperty("INFO_RESULT", "UFFICIOSI");
-				}
-                assert giornataInfo != null;
-                jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, basePathData);
-
-			} else if (event.getSource() == salva) {
-                log.info("da1 {}", da1.getValue());
-                log.info("da2 {}", da2.getValue());
-                log.info("dg {}", dg.getValue());
-                log.info("dp {}", dp.getValue());
-                assert giornataInfo != null;
-                giornataInfo.setDataAnticipo1(da1.getValue());
-				giornataInfo.setDataAnticipo2(da2.getValue());
-				giornataInfo.setDataGiornata(dg.getValue());
-				giornataInfo.setDataPosticipo(dp.getValue());
-                log.info("getDataAnticipo2 {}", giornataInfo.getDataAnticipo2());
-                log.info("getDataGiornata {}", giornataInfo.getDataGiornata());
-                log.info("getDataPosticipo {}", giornataInfo.getDataPosticipo());
-				giornataInfoService.save(giornataInfo);
-			} else if (event.getSource() == resetDate) {
-				da1.setValue(null);
-				da2.setValue(null);
-				dg.setValue(null);
-				dp.setValue(null);
-                log.info("1 {}", da1.getValue());
-                log.info("1 {}", da2.getValue());
-                log.info("1 {}", dg.getValue());
-                log.info("1 {}", dp.getValue());
-
-				List<FcCalendarioCompetizione> listCalendario = calendarioCompetizioneService.findCustom(giornataInfo);
-				LocalDateTime tmpData = listCalendario.get(0).getData();
-				ArrayList<LocalDateTime> listDate = new ArrayList<>();
-				for (FcCalendarioCompetizione c : listCalendario) {
-                    log.info("{}", tmpData.getDayOfWeek());
-					if (tmpData.getDayOfWeek() != (c.getData().getDayOfWeek())) {
-						listDate.add(tmpData);
-						tmpData = c.getData();
-					}
-				}
-
-				listDate.add(tmpData);
-
-				if (listDate.size() == 1) {
-					LocalDateTime localDateTime1 = listDate.get(0);
-					da1.setValue(null);
-					da2.setValue(null);
-					dg.setValue(localDateTime1.minusMinutes(1));
-					dp.setValue(null);
-				} else if (listDate.size() == 2) {
-					LocalDateTime localDateTime1 = listDate.get(0);
-					LocalDateTime localDateTime2 = listDate.get(1);
-					da1.setValue(null);
-					da2.setValue(localDateTime1.minusMinutes(1));
-					dg.setValue(localDateTime2.minusMinutes(1));
-					dp.setValue(null);
-				} else if (listDate.size() == 3) {
-					LocalDateTime localDateTime1 = listDate.get(0);
-					LocalDateTime localDateTime2 = listDate.get(1);
-					LocalDateTime localDateTime3 = listDate.get(2);
-					da1.setValue(null);
-					da2.setValue(localDateTime1.minusMinutes(1));
-					dg.setValue(localDateTime2.minusMinutes(1));
-					dp.setValue(localDateTime3.minusMinutes(1));
-				} else {
-					LocalDateTime localDateTime1 = listDate.get(0);
-					LocalDateTime localDateTime2 = listDate.get(1);
-					LocalDateTime localDateTime3 = listDate.get(2);
-					LocalDateTime localDateTime4 = listDate.get(3);
-					da1.setValue(localDateTime1.minusMinutes(1));
-					da2.setValue(localDateTime2.minusMinutes(1));
-					dg.setValue(localDateTime3.minusMinutes(1));
-					dp.setValue(localDateTime4.minusMinutes(1));
-				}
-
-                log.info("2 {}", da1.getValue());
-                log.info("2 {}", da2.getValue());
-                log.info("2 {}", dg.getValue());
-                log.info("2 {}", dp.getValue());
-			}
-			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
-
-	private @NonNull ConfirmDialog getConfirmDialog(int codiceGiornata, FcCampionato campionato) {
-		String msg = "Confermi inserimento formazioni 422 per la giornata " + codiceGiornata;
-
-		ConfirmDialog dialog = new ConfirmDialog();
-		dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
-		dialog.setText(msg);
-		dialog.setCancelable(true);
-		dialog.setCancelText("Annulla");
-		dialog.setRejectable(false);
-		dialog.setConfirmText("Conferma");
-		dialog.addConfirmListener(e -> {
-			try {
-				int giornata = 0;
-				if (!comboGiornata.isEmpty()) {
-					FcGiornataInfo ggInfo = comboGiornata.getValue();
-					giornata = ggInfo.getCodiceGiornata();
-				}
-				for (FcAttore a : squadre) {
-					jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
-				}
-
-				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			} catch (Exception exception) {
-				CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, exception.getMessage());
-			}
-		});
-		return dialog;
-	}
-
-	@Autowired
-	private GiornataService giornataService;
-
-	private void sendMailInfoGiornata(FcGiornataInfo ggInfo) throws Exception {
-
-		String subject = "Avvio Giornata - " + Utils.buildInfoGiornataHtml(ggInfo);
-
-		StringBuilder formazioneHtml = new StringBuilder();
-		formazioneHtml.append("<html><head><title>FC</title></head>\n");
-		formazioneHtml.append("<body>\n");
-		formazioneHtml.append("<p>Prossima Giornata: ").append(Utils.buildInfoGiornataHtml(ggInfo)).append("</p>\n");
-		formazioneHtml.append("<br>\n");
-		formazioneHtml.append("<br>\n");
-
-		formazioneHtml.append("<table>");
-
-		List<FcGiornata> all = giornataService.findByFcGiornataInfo(ggInfo);
-		for (FcGiornata g : all) {
-			formazioneHtml.append("<tr>");
-			formazioneHtml.append("<td>");
-			formazioneHtml.append(g.getFcAttoreByIdAttoreCasa().getDescAttore());
-			formazioneHtml.append("</td>");
-			formazioneHtml.append("<td>");
-			formazioneHtml.append(g.getFcAttoreByIdAttoreFuori().getDescAttore());
-			formazioneHtml.append("</td>");
-			formazioneHtml.append("</tr>");
-		}
-
-		formazioneHtml.append("</table>\n");
-
-		formazioneHtml.append("<br>");
-		formazioneHtml.append("<br>");
-		formazioneHtml.append("<p>Data Anticipo1:  ").append(ggInfo.getDataAnticipo1() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo1(), Costants.DATA_FORMATTED)).append("</p>");
-		formazioneHtml.append("<p>Data Anticipo2:  ").append(ggInfo.getDataAnticipo2() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataAnticipo2(), Costants.DATA_FORMATTED)).append("</p>");
-		formazioneHtml.append("<p>Data Giornata:  ").append(ggInfo.getDataGiornata() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataGiornata(), Costants.DATA_FORMATTED)).append("</p>");
-		formazioneHtml.append("<p>Data Posticipo: ").append(ggInfo.getDataPosticipo() == null ? "" : Utils.formatLocalDateTime(ggInfo.getDataPosticipo(), Costants.DATA_FORMATTED)).append("</p>");
-		formazioneHtml.append("<br>");
-		formazioneHtml.append("<br>");
-		formazioneHtml.append("<p>Ciao Davide</p>");
-		formazioneHtml.append("</body>");
-		formazioneHtml.append("<html>");
-
-		Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-		p.setProperty("ACTIVE_MAIL", this.chkSendMail.getValue().toString());
-
-		StringBuilder emailDestinatario = new StringBuilder();
-		String activeMail = p.getProperty("ACTIVE_MAIL");
-		if ("true".equals(activeMail)) {
-			List<FcAttore> attori = attoreService.findByActive(true);
-			for (FcAttore a : attori) {
-				if (a.isNotifiche()) {
-					emailDestinatario.append(a.getEmail());
-					emailDestinatario.append(";");
-				}
-			}
-		} else {
-			emailDestinatario.append(p.getProperty("to"));
-		}
-
-		String[] to = null;
-		if (StringUtils.isNotEmpty(emailDestinatario.toString())) {
-			to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
-		}
-		try {
-			String from = env.getProperty("spring.mail.secondary.username");
-			emailService.sendMail(false, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			try {
-				String from = env.getProperty("spring.mail.primary.username");
-				emailService.sendMail(true, from, to, null, null, subject, formazioneHtml.toString(), "text/html", null);
-			} catch (Exception e2) {
-				log.error(e2.getMessage());
-				throw e2;
-			}
-		}
-	}
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	private Grid<FcGiocatore> getTableGiocatori() {
-
-		Grid<FcGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<>());
-		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		grid.setAllRowsVisible(true);
-		grid.setWidth("550px");
-
-		Column<FcGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(g -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
-			if (g != null) {
-				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-		ruoloColumn.setSortable(true);
-		ruoloColumn.setHeader(Costants.RUOLO);
-		ruoloColumn.setAutoWidth(true);
-
-		Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			cellLayout.setSizeFull();
-			if (g != null) {
-				try {
-					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
-					cellLayout.add(img);
-				} catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-				Span lblGiocatore = new Span(g.getCognGiocatore());
-				cellLayout.add(lblGiocatore);
-			}
-			return cellLayout;
-		}));
-		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
-		cognGiocatoreColumn.setAutoWidth(true);
-
-		Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setMargin(false);
-			cellLayout.setPadding(false);
-			cellLayout.setSpacing(false);
-			cellLayout.setAlignItems(Alignment.STRETCH);
-			if (g != null && g.getFcSquadra() != null) {
-				FcSquadra sq = g.getFcSquadra();
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						log.error(e.getMessage());
-					}
-				}
-				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
-		}));
-		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader(Costants.SQUADRA);
-		nomeSquadraColumn.setAutoWidth(true);
-
-		Column<FcGiocatore> quotazioneColumn = grid.addColumn(FcGiocatore::getQuotazione);
-		quotazioneColumn.setSortable(true);
-		quotazioneColumn.setHeader("Q");
-		quotazioneColumn.setAutoWidth(true);
-
-		return grid;
-	}
-
+            validateBasePath(basePathData);
+
+            if (event.getSource() == initDb) {
+                handleInitDb(campionato);
+            } else if (event.getSource() == testMailPrimary) {
+                handleTestMailPrimary();
+            } else if (event.getSource() == testMailSecondary) {
+                handleTestMailSecondary();
+            } else if (event.getSource() == downloadQuotazioni) {
+                handleDownloadQuotazioni(properties, basePathData, codiceGiornata);
+            } else if (event.getSource() == updateGiocatori) {
+                handleUpdateGiocatori(basePathData, codiceGiornata);
+            } else if (event.getSource() == generaCalendar) {
+                jobProcessGiornata.generaCalendario(campionato);
+            } else if (event.getSource() == formazione422) {
+                validateGiornata(codiceGiornata);
+                getConfirmDialog(codiceGiornata, campionato).open();
+                return;
+            } else if (event.getSource() == resetFormazione) {
+                validateGiornata(codiceGiornata);
+                validateAttore(attore);
+                jobProcessGiornata.resetFormazione(attore.getIdAttore(), codiceGiornata);
+            } else if (event.getSource() == ultimaFormazione) {
+                validateGiornata(codiceGiornata);
+                validateAttore(attore);
+                jobProcessGiornata.inserisciUltimaFormazione(attore.getIdAttore(), codiceGiornata);
+            } else if (event.getSource() == init) {
+                validateGiornata(codiceGiornata);
+                jobProcessGiornata.initPagelle(codiceGiornata);
+                try {
+                    sendMailInfoGiornata(giornataInfo);
+                } catch (Exception e) {
+                    CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
+                }
+            } else if (event.getSource() == download) {
+                handleDownloadVoti(properties, basePathData, codiceGiornata, giornataInfo);
+            } else if (event.getSource() == seiPolitico) {
+                handleSeiPolitico(codiceGiornata);
+            } else if (event.getSource() == calcola) {
+                handleCalcola(codiceGiornata, campionato);
+            } else if (event.getSource() == calcolaStatistiche) {
+                jobProcessGiornata.statistiche(campionato);
+            } else if (event.getSource() == pdfAndMail) {
+                handlePdfAndMail(campionato, giornataInfo, properties, basePathData);
+            } else if (event.getSource() == salva) {
+                handleSalvaDate(giornataInfo);
+            } else if (event.getSource() == resetDate) {
+                handleResetDate(giornataInfo);
+            }
+
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+        }
+    }
+
+    private void handleInitDb(FcCampionato campionato) {
+        List<FcAttore> attori = attoreService.findAll();
+        for (FcAttore a : attori) {
+            if (a.isActive()) {
+                for (int j = 1; j <= 26; j++) {
+                    formazioneService.createFormazione(a, campionato.getIdCampionato(), j);
+                }
+                classificaService.create(a, campionato, 0d);
+            }
+        }
+    }
+
+    private void handleTestMailPrimary() {
+        String from = env.getProperty(MAIL_PRIMARY_USERNAME);
+        emailService.sendPrimaryEmail(
+                from,
+                "davide.cremona@gmail.com",
+                "Testing from Spring Boot sendEmailPrimary",
+                "Testing from Spring Boot sendEmailPrimary");
+    }
+
+    private void handleTestMailSecondary() {
+        String from = env.getProperty(MAIL_SECONDARY_USERNAME);
+        emailService.sendSecondaryEmail(
+                from,
+                "davide.cremona@gmail.com",
+                "Testing from Spring Boot sendEmailSecondary",
+                "Testing from Spring Boot sendEmailSecondary");
+    }
+
+    private void handleDownloadQuotazioni(Properties properties, String basePathData, int codiceGiornata) throws Exception {
+        String urlFanta = (String) properties.get(URL_FANTA);
+        String httpUrl = urlFanta + "Giocatori-Quotazioni-Excel.asp?giornata=" + codiceGiornata;
+
+        log.info("httpUrl {}", httpUrl);
+
+        String fileName = "Q_" + codiceGiornata;
+        new JobProcessFileCsv().downloadCsv(httpUrl, basePathData, fileName, 2);
+    }
+
+    private void handleUpdateGiocatori(String basePathData, int codiceGiornata) throws Exception {
+        String fileName = basePathData + "Q_" + codiceGiornata + ".csv";
+        boolean updateQuotazioni = chkUpdateQuotazioni.getValue();
+        boolean updateImg = chkUpdateImg.getValue();
+        String percentuale = String.valueOf(txtPercentuale.getValue().intValue());
+
+        HashMap<Object, Object> map = jobProcessGiornata.initDbGiocatori(
+                Costants.HTTP_URL_IMG,
+                basePathData,
+                fileName,
+                updateQuotazioni,
+                updateImg,
+                percentuale);
+
+        @SuppressWarnings("unchecked")
+        ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
+        @SuppressWarnings("unchecked")
+        ArrayList<FcGiocatore> listGiocatoriDel = (ArrayList<FcGiocatore>) map.get("listDel");
+
+        log.info("listGiocatoriAdd {}", listGiocatoriAdd.size());
+        log.info("listGiocatoriDel {}", listGiocatoriDel.size());
+
+        tableGiocatoreAdd.setItems(listGiocatoriAdd);
+        tableGiocatoreDel.setItems(listGiocatoriDel);
+        tableGiocatoreAdd.getDataProvider().refreshAll();
+        tableGiocatoreDel.getDataProvider().refreshAll();
+    }
+
+    private void handleDownloadVoti(
+            Properties properties,
+            String basePathData,
+            int codiceGiornata,
+            FcGiornataInfo giornataInfo) throws Exception {
+
+        String urlFanta = (String) properties.get(URL_FANTA);
+        String votiExcel = Boolean.TRUE.equals(chkUfficiali.getValue())
+                ? "Voti-Ufficiali-Excel"
+                : "Voti-Ufficiosi-Excel";
+
+        String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
+        String fileName = "voti_" + codiceGiornata;
+
+        jobProcessFileCsv.downloadCsv(httpUrl, basePathData, fileName, 3);
+
+        fileName = basePathData + "voti_" + codiceGiornata + ".csv";
+        jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
+
+        if (giornataInfo != null) {
+            jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+        }
+    }
+
+    private void handleSeiPolitico(int codiceGiornata) {
+        FcSquadra squadra = comboSquadreA.getValue();
+        if (squadra == null) {
+            throw new IllegalArgumentException("Squadra obbligatoria");
+        }
+
+        jobProcessGiornata.seiPolitico(codiceGiornata, squadra);
+    }
+
+    private void handleCalcola(int codiceGiornata, FcCampionato campionato) {
+        int forzaVotoGiocatore = Boolean.TRUE.equals(chkForzaVotoGiocatore.getValue()) ? 0 : -1;
+
+        jobProcessGiornata.algoritmo(
+                codiceGiornata,
+                campionato,
+                forzaVotoGiocatore,
+                chkRoundVotoGiocatore.getValue());
+
+        jobProcessGiornata.statistiche(campionato);
+        jobProcessGiornata.aggiornaVotiGiocatori(codiceGiornata, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
+        jobProcessGiornata.aggiornaTotRosa(String.valueOf(campionato.getIdCampionato()), codiceGiornata);
+        jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt", "score");
+        jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_old");
+        jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_grand_prix");
+    }
+
+    private void handlePdfAndMail(
+            FcCampionato campionato,
+            FcGiornataInfo giornataInfo,
+            Properties properties,
+            String basePathData) throws SQLException, IOException {
+
+        String pathImg = "images/";
+        properties.setProperty("ACTIVE_MAIL", String.valueOf(chkSendMail.getValue()));
+        properties.setProperty("INFO_RESULT", Boolean.TRUE.equals(chkUfficiali.getValue()) ? "UFFICIALI" : "UFFICIOSI");
+
+        jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, properties, pathImg, basePathData);
+    }
+
+    private void handleSalvaDate(FcGiornataInfo giornataInfo) {
+        if (giornataInfo == null) {
+            return;
+        }
+
+        log.info("da1 {}", da1.getValue());
+        log.info("da2 {}", da2.getValue());
+        log.info("dg {}", dg.getValue());
+        log.info("dp {}", dp.getValue());
+
+        giornataInfo.setDataAnticipo1(da1.getValue());
+        giornataInfo.setDataAnticipo2(da2.getValue());
+        giornataInfo.setDataGiornata(dg.getValue());
+        giornataInfo.setDataPosticipo(dp.getValue());
+
+        giornataInfoService.save(giornataInfo);
+    }
+
+    private void handleResetDate(FcGiornataInfo giornataInfo) {
+        da1.setValue(null);
+        da2.setValue(null);
+        dg.setValue(null);
+        dp.setValue(null);
+
+        if (giornataInfo == null) {
+            return;
+        }
+
+        List<FcCalendarioCompetizione> listCalendario = calendarioCompetizioneService.findCustom(giornataInfo);
+        if (listCalendario.isEmpty()) {
+            return;
+        }
+
+        LocalDateTime tmpData = listCalendario.get(0).getData();
+        ArrayList<LocalDateTime> listDate = new ArrayList<>();
+
+        for (FcCalendarioCompetizione c : listCalendario) {
+            log.info("{}", tmpData.getDayOfWeek());
+            if (tmpData.getDayOfWeek() != c.getData().getDayOfWeek()) {
+                listDate.add(tmpData);
+                tmpData = c.getData();
+            }
+        }
+        listDate.add(tmpData);
+
+        if (listDate.size() == 1) {
+            dg.setValue(listDate.get(0).minusMinutes(1));
+        } else if (listDate.size() == 2) {
+            da2.setValue(listDate.get(0).minusMinutes(1));
+            dg.setValue(listDate.get(1).minusMinutes(1));
+        } else if (listDate.size() == 3) {
+            da2.setValue(listDate.get(0).minusMinutes(1));
+            dg.setValue(listDate.get(1).minusMinutes(1));
+            dp.setValue(listDate.get(2).minusMinutes(1));
+        } else if (listDate.size() >= 4) {
+            da1.setValue(listDate.get(0).minusMinutes(1));
+            da2.setValue(listDate.get(1).minusMinutes(1));
+            dg.setValue(listDate.get(2).minusMinutes(1));
+            dp.setValue(listDate.get(3).minusMinutes(1));
+        }
+
+        log.info("2 {}", da1.getValue());
+        log.info("2 {}", da2.getValue());
+        log.info("2 {}", dg.getValue());
+        log.info("2 {}", dp.getValue());
+    }
+
+    private void validateBasePath(String basePathData) {
+        if (basePathData == null) {
+            throw new IllegalArgumentException("PATH_TMP non configurato");
+        }
+
+        File file = new File(basePathData);
+        if (!file.exists()) {
+            CustomMessageDialog.showMessageError("Impossibile trovare il percorso specificato " + basePathData);
+            throw new IllegalArgumentException("Percorso non valido");
+        }
+    }
+
+    private void validateGiornata(int codiceGiornata) {
+        if (codiceGiornata == 0) {
+            throw new IllegalArgumentException("Giornata obbligatoria");
+        }
+    }
+
+    private void validateAttore(FcAttore attore) {
+        if (attore == null) {
+            throw new IllegalArgumentException("Attore obbligatorio");
+        }
+    }
+
+    private @NonNull ConfirmDialog getConfirmDialog(int codiceGiornata, FcCampionato campionato) {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader(CustomMessageDialog.TITLE_MSG_CONFIRM);
+        dialog.setText("Confermi inserimento formazioni 422 per la giornata " + codiceGiornata);
+        dialog.setCancelable(true);
+        dialog.setCancelText("Annulla");
+        dialog.setRejectable(false);
+        dialog.setConfirmText("Conferma");
+        dialog.addConfirmListener(e -> {
+            try {
+                int giornata = comboGiornata != null && !comboGiornata.isEmpty()
+                        ? comboGiornata.getValue().getCodiceGiornata()
+                        : 0;
+
+                for (FcAttore a : squadre) {
+                    jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
+                }
+
+                CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            } catch (Exception exception) {
+                CustomMessageDialog.showMessageErrorDetails(
+                        CustomMessageDialog.MSG_ERROR_GENERIC,
+                        exception.getMessage());
+            }
+        });
+        return dialog;
+    }
+
+    private void sendMailInfoGiornata(FcGiornataInfo ggInfo) throws Exception {
+        String subject = "Avvio Giornata - " + Utils.buildInfoGiornataHtml(ggInfo);
+
+        StringBuilder html = new StringBuilder();
+        html.append("<html><head><title>FC</title></head>");
+        html.append("<body>");
+        html.append("<p>Prossima Giornata: ").append(Utils.buildInfoGiornataHtml(ggInfo)).append("</p>");
+        html.append("<br><br>");
+        html.append("<table>");
+
+        List<FcGiornata> partite = giornataService.findByFcGiornataInfo(ggInfo);
+        for (FcGiornata partita : partite) {
+            html.append("<tr>")
+                    .append("<td>").append(partita.getFcAttoreByIdAttoreCasa().getDescAttore()).append("</td>")
+                    .append("<td>").append(partita.getFcAttoreByIdAttoreFuori().getDescAttore()).append("</td>")
+                    .append("</tr>");
+        }
+
+        html.append("</table>");
+        html.append("<br><br>");
+        html.append("<p>Data Anticipo1: ").append(formatDate(ggInfo.getDataAnticipo1())).append("</p>");
+        html.append("<p>Data Anticipo2: ").append(formatDate(ggInfo.getDataAnticipo2())).append("</p>");
+        html.append("<p>Data Giornata: ").append(formatDate(ggInfo.getDataGiornata())).append("</p>");
+        html.append("<p>Data Posticipo: ").append(formatDate(ggInfo.getDataPosticipo())).append("</p>");
+        html.append("<br><br>");
+        html.append("<p>Ciao Davide</p>");
+        html.append("</body><html>");
+
+        Properties properties = getSessionAttribute(SESSION_PROPERTIES, Properties.class);
+        properties.setProperty("ACTIVE_MAIL", String.valueOf(chkSendMail.getValue()));
+
+        String[] to = buildMailRecipients(properties);
+
+        try {
+            String from = env.getProperty(MAIL_SECONDARY_USERNAME);
+            emailService.sendMail(false, from, to, null, null, subject, html.toString(), "text/html", null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            String from = env.getProperty(MAIL_PRIMARY_USERNAME);
+            emailService.sendMail(true, from, to, null, null, subject, html.toString(), "text/html", null);
+        }
+    }
+
+    private String formatDate(LocalDateTime value) {
+        return value == null ? "" : Utils.formatLocalDateTime(value, Costants.DATA_FORMATTED);
+    }
+
+    private String[] buildMailRecipients(Properties properties) {
+        StringBuilder destinatari = new StringBuilder();
+        String activeMail = properties.getProperty("ACTIVE_MAIL");
+
+        if ("true".equals(activeMail)) {
+            List<FcAttore> attori = attoreService.findByActive(true);
+            for (FcAttore a : attori) {
+                if (a.isNotifiche()) {
+                    destinatari.append(a.getEmail()).append(";");
+                }
+            }
+        } else {
+            destinatari.append(properties.getProperty("to"));
+        }
+
+        return StringUtils.isNotEmpty(destinatari.toString())
+                ? Utils.tornaArrayString(destinatari.toString(), ";")
+                : null;
+    }
+
+    private Grid<FcGiocatore> getTableGiocatori() {
+        Grid<FcGiocatore> grid = new Grid<>();
+        grid.setItems(new ArrayList<>());
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        grid.setAllRowsVisible(true);
+        grid.setWidth("550px");
+
+        Column<FcGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+            HorizontalLayout cellLayout = buildCompactRow();
+            cellLayout.setAlignItems(Alignment.STRETCH);
+            cellLayout.setSizeFull();
+
+            if (g != null && g.getFcRuolo() != null) {
+                String ruolo = g.getFcRuolo().getIdRuolo().toLowerCase();
+                cellLayout.add(Utils.buildImage(
+                        ruolo + ".png",
+                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png")));
+            }
+            return cellLayout;
+        }));
+        ruoloColumn.setSortable(true);
+        ruoloColumn.setHeader(Costants.RUOLO);
+        ruoloColumn.setAutoWidth(true);
+
+        Column<FcGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+            HorizontalLayout cellLayout = buildCompactRow();
+            cellLayout.setAlignItems(Alignment.STRETCH);
+            cellLayout.setSizeFull();
+
+            if (g != null) {
+                try {
+                    cellLayout.add(Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream()));
+                } catch (SQLException e) {
+                    log.error(e.getMessage(), e);
+                }
+                cellLayout.add(new Span(g.getCognGiocatore()));
+            }
+            return cellLayout;
+        }));
+        cognGiocatoreColumn.setSortable(false);
+        cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
+        cognGiocatoreColumn.setAutoWidth(true);
+
+        Column<FcGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(g -> {
+            HorizontalLayout cellLayout = buildCompactRow();
+            cellLayout.setAlignItems(Alignment.STRETCH);
+
+            if (g != null && g.getFcSquadra() != null) {
+                FcSquadra sq = g.getFcSquadra();
+                if (sq.getImg() != null) {
+                    try {
+                        cellLayout.add(Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream()));
+                    } catch (SQLException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+                cellLayout.add(new Span(sq.getNomeSquadra()));
+            }
+            return cellLayout;
+        }));
+        nomeSquadraColumn.setSortable(false);
+        nomeSquadraColumn.setHeader(Costants.SQUADRA);
+        nomeSquadraColumn.setAutoWidth(true);
+
+        Column<FcGiocatore> quotazioneColumn = grid.addColumn(FcGiocatore::getQuotazione);
+        quotazioneColumn.setSortable(true);
+        quotazioneColumn.setHeader("Q");
+        quotazioneColumn.setAutoWidth(true);
+
+        return grid;
+    }
+
+    private HorizontalLayout buildCompactRow() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setMargin(false);
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        return layout;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getSessionAttribute(String key, Class<T> type) {
+        Object value = VaadinSession.getCurrent().getAttribute(key);
+        return value == null ? null : (T) value;
+    }
 }

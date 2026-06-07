@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.Serial;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.jspecify.annotations.NonNull;
@@ -53,333 +52,349 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Download")
 @Route(value = "download", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class DownloadView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+public class DownloadView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient JobProcessGiornata jobProcessGiornata;
-	private final transient Environment env;
-	private final transient ExpRoseAService expRoseAService;
-	private final transient ExpFreePlService expFreePlService;
-	private final transient AccessoService accessoService;
+    private static final String SESSION_ATTORE = "ATTORE";
+    private static final String SESSION_CAMPIONATO = "CAMPIONATO";
+    private static final String PATH_OUTPUT_PDF = "PATH_OUTPUT_PDF";
+    private static final String DATE_PATTERN = "yyyyddMM";
 
-	private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
-	private final Grid<FcExpRosea> gridRosea = new Grid<>();
-	private Button salvaRoseA = null;
-	private Button salvaFreePl = null;
-	int resX = 0;
-	int resY = 0;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public DownloadView(JobProcessGiornata jobProcessGiornata,Environment env,ExpRoseAService expRoseAService,ExpFreePlService expFreePlService,AccessoService accessoService) {
-		log.info("DownloadView()");
-		this.jobProcessGiornata = jobProcessGiornata;
-		this.env = env;
-		this.expRoseAService = expRoseAService;
-		this.expFreePlService = expFreePlService;
-		this.accessoService = accessoService;
-	}
+    private final transient JobProcessGiornata jobProcessGiornata;
+    private final transient Environment env;
+    private final transient ExpRoseAService expRoseAService;
+    private final transient ExpFreePlService expFreePlService;
+    private final transient AccessoService accessoService;
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final Grid<FcExpFreePl> gridFreePl = new Grid<>();
+    private final Grid<FcExpRosea> gridRosea = new Grid<>();
 
-	private void initLayout() {
+    private Button salvaRoseA;
+    private Button salvaFreePl;
 
-		UI.getCurrent().getPage().retrieveExtendedClientDetails(event -> {
-			resX = event.getScreenWidth();
-			resY = event.getScreenHeight();
-            log.info("resx {}", resX);
+    private int resX;
+    private int resY;
+
+    public DownloadView(
+            JobProcessGiornata jobProcessGiornata,
+            Environment env,
+            ExpRoseAService expRoseAService,
+            ExpFreePlService expFreePlService,
+            AccessoService accessoService) {
+
+        this.jobProcessGiornata = jobProcessGiornata;
+        this.env = env;
+        this.expRoseAService = expRoseAService;
+        this.expFreePlService = expFreePlService;
+        this.accessoService = accessoService;
+
+        log.info("DownloadView()");
+    }
+
+    @PostConstruct
+    void init() {
+        log.info("init");
+
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
+
+        accessoService.insertAccesso(getClass().getName());
+        initLayout();
+    }
+
+    private void initLayout() {
+        UI.getCurrent().getPage().retrieveExtendedClientDetails(event -> {
+            resX = event.getScreenWidth();
+            resY = event.getScreenHeight();
+            log.info("resX {}", resX);
             log.info("resY {}", resY);
-		});
+        });
 
-		salvaRoseA = new Button("Aggiorna");
-		salvaRoseA.setIcon(VaadinIcon.DATABASE.create());
-		salvaRoseA.addClickListener(this);
+        FcAttore attore = getSessionAttribute(SESSION_ATTORE, FcAttore.class);
+        if (attore == null) {
+            return;
+        }
 
-		salvaFreePl = new Button("Aggiorna");
-		salvaFreePl.setIcon(VaadinIcon.DATABASE.create());
-		salvaFreePl.addClickListener(this);
+        salvaRoseA = buildUpdateButton();
+        salvaFreePl = buildUpdateButton();
 
-		final VerticalLayout layout1 = new VerticalLayout();
-		FcAttore att = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-		for (Role r : att.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				layout1.add(salvaRoseA);
-			}
-		}
+        VerticalLayout roseALayout = new VerticalLayout();
+        if (isAdmin(attore)) {
+            roseALayout.add(salvaRoseA);
+        }
+        setRoseA(roseALayout);
 
-		setRoseA(layout1);
+        VerticalLayout freePlayersLayout = new VerticalLayout();
+        if (isAdmin(attore)) {
+            freePlayersLayout.add(salvaFreePl);
+        }
+        setFreePlayer(freePlayersLayout);
 
-		final VerticalLayout layout2 = new VerticalLayout();
-		for (Role r : att.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				layout2.add(salvaFreePl);
-			}
-		}
-		setFreePlayer(layout2);
+        FileSelect fileSelect = getFileSelect(resolvePdfRootDirectory());
 
-		String pathPdf = env.getProperty("PATH_OUTPUT_PDF");
-        assert pathPdf != null;
-        File rootFile3 = new File(pathPdf);
-        log.info(" pathPdf {}", rootFile3.exists());
-		if (!rootFile3.exists()) {
-			String basePathData = System.getProperty("user.dir");
-			rootFile3 = new File(basePathData);
-            log.info(" pathPdf {}", rootFile3.exists());
-		}
-		FileSelect fileSelect = getFileSelect(rootFile3);
+        TabSheet tabSheet = new TabSheet();
+        tabSheet.add("Rose A", roseALayout);
+        tabSheet.add("Free Players", freePlayersLayout);
+        tabSheet.add("Pdf", fileSelect);
+        tabSheet.setSizeFull();
 
-		TabSheet tabSheet = new TabSheet();
-		tabSheet.add("Rose A", layout1);
-		tabSheet.add("Free Players", layout2);
-		tabSheet.add("Pdf", fileSelect);
-		tabSheet.setSizeFull();
-		this.add(tabSheet);
-	}
+        add(tabSheet);
+    }
 
-	private @NonNull FileSelect getFileSelect(File rootFile3) {
-		FileSelect fileSelect = new FileSelect(rootFile3);
-		fileSelect.addValueChangeListener(event -> {
-			File file = fileSelect.getValue();
-			Date date = new Date(file.lastModified());
-			if (!file.isDirectory()) {
-				Dialog dialog = new Dialog();
-				VerticalLayout dialogLayout = createDialogLayout(dialog, file);
-				dialog.add(dialogLayout);
-				dialog.open();
+    private Button buildUpdateButton() {
+        Button button = new Button("Aggiorna");
+        button.setIcon(VaadinIcon.DATABASE.create());
+        button.addClickListener(this);
+        return button;
+    }
 
-				Notification.show(file.getPath() + ", " + date + ", " + file.length());
+    private boolean isAdmin(FcAttore attore) {
+        return attore.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
+    }
 
-			} else {
-				Notification.show(file.getPath() + ", " + date);
-			}
-		});
-		fileSelect.setWidth(resX + "px");
-		fileSelect.setHeight(resY + "px");
-		fileSelect.setLabel("Select file");
-		return fileSelect;
-	}
+    private File resolvePdfRootDirectory() {
+        String pathPdf = env.getProperty(PATH_OUTPUT_PDF);
+        File rootFile = pathPdf != null ? new File(pathPdf) : null;
 
-	private VerticalLayout createDialogLayout(Dialog dialog, File f) {
-		VerticalLayout dialogLayout;
+        if (rootFile != null) {
+            log.info("pathPdf exists {}", rootFile.exists());
+        }
 
-		int resX2 = resX - 200;
-		int resY2 = resY - 200;
+        if (rootFile == null || !rootFile.exists()) {
+            rootFile = new File(System.getProperty("user.dir"));
+            log.info("fallback path exists {}", rootFile.exists());
+        }
 
-		PdfViewer pdfViewer = new PdfViewer();
-		pdfViewer.setSrc(DownloadHandler.forFile(f));
-		pdfViewer.setSizeFull();
+        return rootFile;
+    }
 
-		Button closeButton = new Button("Chiudi");
-		closeButton.addClickListener(e -> dialog.close());
+    private @NonNull FileSelect getFileSelect(File rootFile) {
+        FileSelect fileSelect = new FileSelect(rootFile);
+        fileSelect.addValueChangeListener(event -> openSelectedFile(fileSelect.getValue()));
+        fileSelect.setWidth(resX + "px");
+        fileSelect.setHeight(resY + "px");
+        fileSelect.setLabel("Select file");
+        return fileSelect;
+    }
 
-		dialogLayout = new VerticalLayout(pdfViewer,closeButton);
-		dialogLayout.setPadding(false);
-		dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
-		dialogLayout.getStyle().set("width", resX2 + "px").set("max-width", "100%");
-		dialogLayout.getStyle().set("height", resY2 + "px").set("max-height", "100%");
-		dialogLayout.setAlignSelf(FlexComponent.Alignment.END, closeButton);
+    private void openSelectedFile(File file) {
+        if (file == null) {
+            return;
+        }
 
-		return dialogLayout;
-	}
+        if (!file.isDirectory()) {
+            Dialog dialog = new Dialog();
+            dialog.add(createDialogLayout(dialog, file));
+            dialog.open();
 
-	private void setRoseA(VerticalLayout layout) {
+            Notification.show(file.getPath() + ", " + new java.util.Date(file.lastModified()) + ", " + file.length());
+        } else {
+            Notification.show(file.getPath() + ", " + new java.util.Date(file.lastModified()));
+        }
+    }
 
-		List<FcExpRosea> items = expRoseAService.findAll();
+    private VerticalLayout createDialogLayout(Dialog dialog, File file) {
+        int width = Math.max(resX - 200, 600);
+        int height = Math.max(resY - 200, 400);
 
-		gridRosea.setItems(items);
-		gridRosea.setSelectionMode(Grid.SelectionMode.SINGLE);
-		gridRosea.setAllRowsVisible(true);
-		gridRosea.addThemeVariants(GridVariant.LUMO_COMPACT);
+        PdfViewer pdfViewer = new PdfViewer();
+        pdfViewer.setSrc(DownloadHandler.forFile(file));
+        pdfViewer.setSizeFull();
 
-		for (int i = 1; i < 11; i++) {
+        Button closeButton = new Button("Chiudi");
+        closeButton.addClickListener(e -> dialog.close());
 
-			Column<FcExpRosea> rxColumn;
-			Column<FcExpRosea> sxColumn;
-			Column<FcExpRosea> qxColumn;
-			if (i == 1) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR1);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS1);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ1);
-			} else if (i == 2) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR2);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS2);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ2);
-			} else if (i == 3) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR3);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS3);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ3);
-			} else if (i == 4) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR4);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS4);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ4);
-			} else if (i == 5) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR5);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS5);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ5);
-			} else if (i == 6) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR6);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS6);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ6);
-			} else if (i == 7) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR7);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS7);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ7);
-			} else if (i == 8) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR8);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS8);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ8);
-			} else if (i == 9) {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR9);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS9);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ9);
-			} else {
-				rxColumn = gridRosea.addColumn(FcExpRosea::getR10);
-				sxColumn = gridRosea.addColumn(FcExpRosea::getS10);
-				qxColumn = gridRosea.addColumn(FcExpRosea::getQ10);
-			}
-			if (rxColumn != null) {
-				rxColumn.setKey("r" + i);
-				rxColumn.setWidth("2rem").setFlexGrow(0);
-			}
-			if (sxColumn != null) {
-				sxColumn.setKey("s" + i);
-			}
-			if (qxColumn != null) {
-				qxColumn.setKey("q" + i);
-				qxColumn.setWidth("2rem").setFlexGrow(0);
-			}
-		}
+        VerticalLayout dialogLayout = new VerticalLayout(pdfViewer, closeButton);
+        dialogLayout.setPadding(false);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+        dialogLayout.getStyle().set("width", width + "px").set("max-width", "100%");
+        dialogLayout.getStyle().set("height", height + "px").set("max-height", "100%");
+        dialogLayout.setAlignSelf(FlexComponent.Alignment.END, closeButton);
 
-		GridExporter<FcExpRosea> exporter = GridExporter.createFor(gridRosea);
-		exporter.setAutoAttachExportButtons(false);
-		exporter.setAutoSizeColumns(false);
-		exporter.setTitle("rosea");
-		exporter.setFileName("rosea" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-		Anchor excelLink = new Anchor("","Export to Excel");
-		excelLink.setHref(exporter.getExcelStreamResource());
-		excelLink.getElement().setAttribute("download", true);
-		layout.add(new HorizontalLayout(excelLink));
+        return dialogLayout;
+    }
 
-		layout.add(gridRosea);
-	}
+    private void setRoseA(VerticalLayout layout) {
+        List<FcExpRosea> items = expRoseAService.findAll();
 
-	private void setFreePlayer(VerticalLayout layout) {
+        gridRosea.setItems(items);
+        gridRosea.setSelectionMode(Grid.SelectionMode.SINGLE);
+        gridRosea.setAllRowsVisible(true);
+        gridRosea.addThemeVariants(GridVariant.LUMO_COMPACT);
 
-		List<FcExpFreePl> items = expFreePlService.findAll();
-		gridFreePl.setItems(items);
-		gridFreePl.setSelectionMode(Grid.SelectionMode.SINGLE);
-		gridFreePl.setAllRowsVisible(true);
-		gridFreePl.addThemeVariants(GridVariant.LUMO_COMPACT);
+        addRoseAColumns(gridRosea);
+        layout.add(new HorizontalLayout(buildExcelLink(gridRosea, "rosea")));
+        layout.add(gridRosea);
+    }
 
-		for (int i = 1; i < 11; i++) {
+    private void addRoseAColumns(Grid<FcExpRosea> grid) {
+        for (int i = 1; i <= 10; i++) {
+            Column<FcExpRosea> ruoloColumn = switch (i) {
+                case 1 -> grid.addColumn(FcExpRosea::getR1);
+                case 2 -> grid.addColumn(FcExpRosea::getR2);
+                case 3 -> grid.addColumn(FcExpRosea::getR3);
+                case 4 -> grid.addColumn(FcExpRosea::getR4);
+                case 5 -> grid.addColumn(FcExpRosea::getR5);
+                case 6 -> grid.addColumn(FcExpRosea::getR6);
+                case 7 -> grid.addColumn(FcExpRosea::getR7);
+                case 8 -> grid.addColumn(FcExpRosea::getR8);
+                case 9 -> grid.addColumn(FcExpRosea::getR9);
+                default -> grid.addColumn(FcExpRosea::getR10);
+            };
 
-			Column<FcExpFreePl> rxColumn;
-			Column<FcExpFreePl> sxColumn;
-			Column<FcExpFreePl> qxColumn;
-			if (i == 1) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR1);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS1);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ1);
-			} else if (i == 2) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR2);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS2);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ2);
-			} else if (i == 3) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR3);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS3);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ3);
-			} else if (i == 4) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR4);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS4);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ4);
-			} else if (i == 5) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR5);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS5);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ5);
-			} else if (i == 6) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR6);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS6);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ6);
-			} else if (i == 7) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR7);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS7);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ7);
-			} else if (i == 8) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR8);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS8);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ8);
-			} else if (i == 9) {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR9);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS9);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ9);
-			} else {
-				rxColumn = gridFreePl.addColumn(FcExpFreePl::getR10);
-				sxColumn = gridFreePl.addColumn(FcExpFreePl::getS10);
-				qxColumn = gridFreePl.addColumn(FcExpFreePl::getQ10);
-			}
+            Column<FcExpRosea> squadraColumn = switch (i) {
+                case 1 -> grid.addColumn(FcExpRosea::getS1);
+                case 2 -> grid.addColumn(FcExpRosea::getS2);
+                case 3 -> grid.addColumn(FcExpRosea::getS3);
+                case 4 -> grid.addColumn(FcExpRosea::getS4);
+                case 5 -> grid.addColumn(FcExpRosea::getS5);
+                case 6 -> grid.addColumn(FcExpRosea::getS6);
+                case 7 -> grid.addColumn(FcExpRosea::getS7);
+                case 8 -> grid.addColumn(FcExpRosea::getS8);
+                case 9 -> grid.addColumn(FcExpRosea::getS9);
+                default -> grid.addColumn(FcExpRosea::getS10);
+            };
 
-			if (rxColumn != null) {
-				rxColumn.setKey("r" + i);
-				rxColumn.setWidth("2rem").setFlexGrow(0);
-			}
-			if (sxColumn != null) {
-				sxColumn.setKey("s" + i);
-				//sxColumn.setAutoWidth(true);
-			}
-			if (qxColumn != null) {
-				qxColumn.setKey("q" + i);
-				qxColumn.setWidth("2rem").setFlexGrow(0);
-			}
-		}
+            Column<FcExpRosea> quotazioneColumn = switch (i) {
+                case 1 -> grid.addColumn(FcExpRosea::getQ1);
+                case 2 -> grid.addColumn(FcExpRosea::getQ2);
+                case 3 -> grid.addColumn(FcExpRosea::getQ3);
+                case 4 -> grid.addColumn(FcExpRosea::getQ4);
+                case 5 -> grid.addColumn(FcExpRosea::getQ5);
+                case 6 -> grid.addColumn(FcExpRosea::getQ6);
+                case 7 -> grid.addColumn(FcExpRosea::getQ7);
+                case 8 -> grid.addColumn(FcExpRosea::getQ8);
+                case 9 -> grid.addColumn(FcExpRosea::getQ9);
+                default -> grid.addColumn(FcExpRosea::getQ10);
+            };
 
-		GridExporter<FcExpFreePl> exporter = GridExporter.createFor(gridFreePl);
-		exporter.setAutoAttachExportButtons(false);
-		exporter.setAutoSizeColumns(false);
-		exporter.setTitle("freePlayers");
-		exporter.setFileName("freePlayers" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-		Anchor excelLink = new Anchor("","Export to Excel");
-		excelLink.setHref(exporter.getExcelStreamResource());
-		excelLink.getElement().setAttribute("download", true);
-		layout.add(new HorizontalLayout(excelLink));
+            configureTripleColumns(ruoloColumn, squadraColumn, quotazioneColumn, i);
+        }
+    }
 
-		layout.add(gridFreePl);
+    private void setFreePlayer(VerticalLayout layout) {
+        List<FcExpFreePl> items = expFreePlService.findAll();
 
-	}
+        gridFreePl.setItems(items);
+        gridFreePl.setSelectionMode(Grid.SelectionMode.SINGLE);
+        gridFreePl.setAllRowsVisible(true);
+        gridFreePl.addThemeVariants(GridVariant.LUMO_COMPACT);
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
+        addFreePlayerColumns(gridFreePl);
+        layout.add(new HorizontalLayout(buildExcelLink(gridFreePl, "freePlayers")));
+        layout.add(gridFreePl);
+    }
 
-		try {
-			FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
+    private void addFreePlayerColumns(Grid<FcExpFreePl> grid) {
+        for (int i = 1; i <= 10; i++) {
+            Column<FcExpFreePl> ruoloColumn = switch (i) {
+                case 1 -> grid.addColumn(FcExpFreePl::getR1);
+                case 2 -> grid.addColumn(FcExpFreePl::getR2);
+                case 3 -> grid.addColumn(FcExpFreePl::getR3);
+                case 4 -> grid.addColumn(FcExpFreePl::getR4);
+                case 5 -> grid.addColumn(FcExpFreePl::getR5);
+                case 6 -> grid.addColumn(FcExpFreePl::getR6);
+                case 7 -> grid.addColumn(FcExpFreePl::getR7);
+                case 8 -> grid.addColumn(FcExpFreePl::getR8);
+                case 9 -> grid.addColumn(FcExpFreePl::getR9);
+                default -> grid.addColumn(FcExpFreePl::getR10);
+            };
 
-			if (event.getSource() == salvaRoseA) {
-				jobProcessGiornata.executeUpdateDbFcExpRoseA(false, campionato.getIdCampionato());
+            Column<FcExpFreePl> squadraColumn = switch (i) {
+                case 1 -> grid.addColumn(FcExpFreePl::getS1);
+                case 2 -> grid.addColumn(FcExpFreePl::getS2);
+                case 3 -> grid.addColumn(FcExpFreePl::getS3);
+                case 4 -> grid.addColumn(FcExpFreePl::getS4);
+                case 5 -> grid.addColumn(FcExpFreePl::getS5);
+                case 6 -> grid.addColumn(FcExpFreePl::getS6);
+                case 7 -> grid.addColumn(FcExpFreePl::getS7);
+                case 8 -> grid.addColumn(FcExpFreePl::getS8);
+                case 9 -> grid.addColumn(FcExpFreePl::getS9);
+                default -> grid.addColumn(FcExpFreePl::getS10);
+            };
 
-				List<FcExpRosea> items = expRoseAService.findAll();
-				gridRosea.setItems(items);
-				gridRosea.getDataProvider().refreshAll();
+            Column<FcExpFreePl> quotazioneColumn = switch (i) {
+                case 1 -> grid.addColumn(FcExpFreePl::getQ1);
+                case 2 -> grid.addColumn(FcExpFreePl::getQ2);
+                case 3 -> grid.addColumn(FcExpFreePl::getQ3);
+                case 4 -> grid.addColumn(FcExpFreePl::getQ4);
+                case 5 -> grid.addColumn(FcExpFreePl::getQ5);
+                case 6 -> grid.addColumn(FcExpFreePl::getQ6);
+                case 7 -> grid.addColumn(FcExpFreePl::getQ7);
+                case 8 -> grid.addColumn(FcExpFreePl::getQ8);
+                case 9 -> grid.addColumn(FcExpFreePl::getQ9);
+                default -> grid.addColumn(FcExpFreePl::getQ10);
+            };
 
-			} else if (event.getSource() == salvaFreePl) {
-				jobProcessGiornata.executeUpdateDbFcExpRoseA(true, campionato.getIdCampionato());
+            configureTripleColumns(ruoloColumn, squadraColumn, quotazioneColumn, i);
+        }
+    }
 
-				List<FcExpFreePl> items = expFreePlService.findAll();
-				gridFreePl.setItems(items);
-				gridFreePl.getDataProvider().refreshAll();
-			}
-			CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
+    private <T> void configureTripleColumns(
+            Column<T> ruoloColumn,
+            Column<T> squadraColumn,
+            Column<T> quotazioneColumn,
+            int index) {
 
+        ruoloColumn.setKey("r" + index);
+        ruoloColumn.setWidth("2rem").setFlexGrow(0);
+
+        squadraColumn.setKey("s" + index);
+
+        quotazioneColumn.setKey("q" + index);
+        quotazioneColumn.setWidth("2rem").setFlexGrow(0);
+    }
+
+    private <T> Anchor buildExcelLink(Grid<T> grid, String title) {
+        GridExporter<T> exporter = GridExporter.createFor(grid);
+        exporter.setAutoAttachExportButtons(false);
+        exporter.setAutoSizeColumns(false);
+        exporter.setTitle(title);
+        exporter.setFileName(title + new SimpleDateFormat(DATE_PATTERN).format(Calendar.getInstance().getTime()));
+
+        Anchor excelLink = new Anchor("", "Export to Excel");
+        excelLink.setHref(exporter.getExcelStreamResource());
+        excelLink.getElement().setAttribute("download", true);
+
+        return excelLink;
+    }
+
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            FcCampionato campionato = getSessionAttribute(SESSION_CAMPIONATO, FcCampionato.class);
+            if (campionato == null) {
+                return;
+            }
+
+            if (event.getSource() == salvaRoseA) {
+                jobProcessGiornata.executeUpdateDbFcExpRoseA(false, campionato.getIdCampionato());
+                gridRosea.setItems(expRoseAService.findAll());
+                gridRosea.getDataProvider().refreshAll();
+
+            } else if (event.getSource() == salvaFreePl) {
+                jobProcessGiornata.executeUpdateDbFcExpRoseA(true, campionato.getIdCampionato());
+                gridFreePl.setItems(expFreePlService.findAll());
+                gridFreePl.getDataProvider().refreshAll();
+            }
+
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(
+                    CustomMessageDialog.MSG_ERROR_GENERIC,
+                    e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getSessionAttribute(String key, Class<T> type) {
+        Object value = VaadinSession.getCurrent().getAttribute(key);
+        return value == null ? null : (T) value;
+    }
 }

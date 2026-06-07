@@ -39,133 +39,171 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "regolamento", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class RegolamentoView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+        implements ComponentEventListener<ClickEvent<Button>> {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient ResourceLoader resourceLoader;
-	private final transient AccessoService accessoService;
-	private final transient RegolamentoService regolamentoService;
+    private static final String DEFAULT_HTML_PATH = "classpath:html/regolamento3.html";
+    private static final String SESSION_ATTORE = "ATTORE";
 
-	private String html = "";
-	private FcRegolamento regolamento = null;
-	private VaadinCKEditor decoupledEditor = null;
-	private Button salvaDb;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public RegolamentoView(ResourceLoader resourceLoader,AccessoService accessoService,RegolamentoService regolamentoService) {
-		log.info("RegolamentoView()");
-		this.resourceLoader = resourceLoader;
-		this.accessoService = accessoService;
-		this.regolamentoService = regolamentoService;
-	}
+    private final transient ResourceLoader resourceLoader;
+    private final transient AccessoService accessoService;
+    private final transient RegolamentoService regolamentoService;
 
-	@PostConstruct
-	void init() {
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initData();
-		initLayout();
-	}
+    private String html = "";
+    private FcRegolamento regolamento;
+    private VaadinCKEditor decoupledEditor;
+    private Button salvaDb;
 
-	private void initData() {
-		List<FcRegolamento> l = regolamentoService.findAll();
-		try {
+    public RegolamentoView(
+            ResourceLoader resourceLoader,
+            AccessoService accessoService,
+            RegolamentoService regolamentoService) {
 
-			BufferedReader br;
-			BufferedReader br2;
-			if (l != null && !l.isEmpty()) {
-				FcRegolamento r = l.get(0);
-				regolamento = r;
-				InputStreamReader isr2 = new InputStreamReader(r.getSrc().getAsciiStream());
-				br2 = new BufferedReader(isr2);
+        this.resourceLoader = resourceLoader;
+        this.accessoService = accessoService;
+        this.regolamentoService = regolamentoService;
 
-                String line2;
-                html = "";
-                while ((line2 = br2.readLine()) != null) {
-                    html += line2;
-                }
+        log.info("RegolamentoView()");
+    }
 
+    @PostConstruct
+    void init() {
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
+
+        accessoService.insertAccesso(getClass().getName());
+        initData();
+        initLayout();
+    }
+
+    private void initData() {
+        try {
+            List<FcRegolamento> regolamenti = regolamentoService.findAll();
+
+            if (regolamenti != null && !regolamenti.isEmpty()) {
+                regolamento = regolamenti.get(0);
+                html = readFromDatabase(regolamento);
             } else {
-				Resource resource = resourceLoader.getResource("classpath:html/regolamento3.html");
-				InputStreamReader isr = new InputStreamReader(resource.getInputStream());
-				br = new BufferedReader(isr);
-
-                String line;
-                html = "";
-                while ((line = br.readLine()) != null) {
-                    html += line;
-                }
+                html = readDefaultHtml();
             }
-			log.debug(html);
 
-		} catch (Exception ex2) {
-            log.error("ex2 {}", ex2.getMessage());
-		}
-	}
+            log.debug(html);
 
-	private void initLayout() {
+        } catch (Exception e) {
+            log.error("Errore initData", e);
+        }
+    }
 
-		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
+    private String readFromDatabase(FcRegolamento regolamento) throws Exception {
+        try (InputStreamReader reader = new InputStreamReader(regolamento.getSrc().getAsciiStream());
+             BufferedReader bufferedReader = new BufferedReader(reader)) {
+            return readAll(bufferedReader);
+        }
+    }
 
-		boolean isAdmin = false;
-		for (Role r : attore.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				isAdmin = true;
-				break;
-			}
-		}
+    private String readDefaultHtml() throws Exception {
+        Resource resource = resourceLoader.getResource(DEFAULT_HTML_PATH);
 
-		salvaDb = new Button("Salva");
-		salvaDb.setIcon(VaadinIcon.DATABASE.create());
-		salvaDb.addClickListener(this);
-		salvaDb.setVisible(isAdmin);
+        try (InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+             BufferedReader bufferedReader = new BufferedReader(reader)) {
+            return readAll(bufferedReader);
+        }
+    }
 
-		this.add(salvaDb);
+    private String readAll(BufferedReader reader) throws Exception {
+        StringBuilder builder = new StringBuilder();
+        String line;
 
-        decoupledEditor = new VaadinCKEditorBuilder().with(builder -> {
-			builder.editorType = EditorType.DECOUPLED;
-			// builder.editorData = html;
-		}).createVaadinCKEditor();
-		decoupledEditor.setVisible(isAdmin);
-		decoupledEditor.setValue(html);
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
 
-		this.add(decoupledEditor);
+        return builder.toString();
+    }
 
-		VerticalLayout previewHtml = new VerticalLayout();
-		try {
-			previewHtml.getElement().setProperty("innerHTML", html);
-			this.add(previewHtml);
-		} catch (Exception ex2) {
-            log.error("ex2 {}", ex2.getMessage());
-		}
-	}
+    private void initLayout() {
+        FcAttore attore = getSessionAttribute(SESSION_ATTORE, FcAttore.class);
+        boolean isAdmin = isAdmin(attore);
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-		try {
-			if (event.getSource() == salvaDb) {
-				log.info("SALVA");
+        salvaDb = new Button("Salva");
+        salvaDb.setIcon(VaadinIcon.DATABASE.create());
+        salvaDb.addClickListener(this);
+        salvaDb.setVisible(isAdmin);
+        add(salvaDb);
 
-				String valueHtml;
-				valueHtml = decoupledEditor.getValue();
-				log.info(valueHtml);
-                if (regolamento == null) {
-					regolamento = new FcRegolamento();
-				}
-				regolamento.setData(LocalDateTime.now());
-				regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+        decoupledEditor = new VaadinCKEditorBuilder()
+                .with(builder -> builder.editorType = EditorType.DECOUPLED)
+                .createVaadinCKEditor();
+        decoupledEditor.setVisible(isAdmin);
+        decoupledEditor.setValue(html);
+        add(decoupledEditor);
 
-				regolamentoService.save(regolamento);
+        add(buildPreviewHtml());
+    }
 
-				CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
-			}
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
+    private boolean isAdmin(FcAttore attore) {
+        if (attore == null || attore.getRoles() == null) {
+            return false;
+        }
 
+        for (Role role : attore.getRoles()) {
+            if (role.equals(Role.ADMIN)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private VerticalLayout buildPreviewHtml() {
+        VerticalLayout previewHtml = new VerticalLayout();
+
+        try {
+            previewHtml.getElement().setProperty("innerHTML", html);
+        } catch (Exception e) {
+            log.error("Errore buildPreviewHtml", e);
+        }
+
+        return previewHtml;
+    }
+
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            if (event.getSource() != salvaDb) {
+                return;
+            }
+
+            log.info("SALVA");
+
+            String valueHtml = decoupledEditor.getValue();
+            log.info(valueHtml);
+
+            if (regolamento == null) {
+                regolamento = new FcRegolamento();
+            }
+
+            regolamento.setData(LocalDateTime.now());
+            regolamento.setSrc(ClobProxy.generateProxy(valueHtml));
+
+            regolamentoService.save(regolamento);
+
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(
+                    CustomMessageDialog.MSG_ERROR_GENERIC,
+                    e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getSessionAttribute(String key, Class<T> type) {
+        Object value = VaadinSession.getCurrent().getAttribute(key);
+        return value == null ? null : (T) value;
+    }
 }

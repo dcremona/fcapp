@@ -49,279 +49,322 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("USER")
 @PageTitle("Squalificati-Indisponibili")
 public class SqualificatiIndisponibiliView extends VerticalLayout
-		implements ComponentEventListener<ClickEvent<Button>>{
+        implements ComponentEventListener<ClickEvent<Button>> {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient JobProcessGiornata jobProcessGiornata;
-	private final transient ResourceLoader resourceLoader;
-	private final transient Environment env;
-	private final transient AccessoService accessoService;
-	private final transient GiornataGiocatoreService giornataGiocatoreService;
+    private static final String SESSION_ATTORE = "ATTORE";
+    private static final String SESSION_GIORNATA_INFO = "GIORNATA_INFO";
+    private static final String SESSION_PROPERTIES = "PROPERTIES";
 
-	private Button salvaDb;
-	private Grid<FcGiornataGiocatore> tableSqualificati;
-	private Grid<FcGiornataGiocatore> tableInfortunati;
+    private static final String FILE_SQUALIFICATI = "SQUALIFICATI_";
+    private static final String FILE_INFORTUNATI = "INFORTUNATI_";
+    private static final String FILE_PROBABILI = "PROBABILI_";
+    private static final String FILE_SQUALIFICATI_INFORTUNATI_FG = "SQUALIFICATI_INFORTUNATI_FANTA_GAZZETTA_";
+    private static final String FILE_PROBABILI_FG = "PROBABILI_FANTA_GAZZETTA_";
 
-	public SqualificatiIndisponibiliView(JobProcessGiornata jobProcessGiornata,ResourceLoader resourceLoader,Environment env,AccessoService accessoService,GiornataGiocatoreService giornataGiocatoreService) {
-		log.info("SqualificatiIndisponibiliView()");
-		this.jobProcessGiornata = jobProcessGiornata;
-		this.resourceLoader = resourceLoader;
-		this.env = env;
-		this.accessoService = accessoService;
-		this.giornataGiocatoreService = giornataGiocatoreService;
-	}
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-	@PostConstruct
-	void init() {
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final transient JobProcessGiornata jobProcessGiornata;
+    private final transient ResourceLoader resourceLoader;
+    private final transient Environment env;
+    private final transient AccessoService accessoService;
+    private final transient GiornataGiocatoreService giornataGiocatoreService;
 
-	private void initLayout() {
+    private Button salvaDb;
+    private Grid<FcGiornataGiocatore> tableSqualificati;
+    private Grid<FcGiornataGiocatore> tableInfortunati;
 
-		FcAttore attore = (FcAttore) VaadinSession.getCurrent().getAttribute("ATTORE");
-		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+    public SqualificatiIndisponibiliView(
+            JobProcessGiornata jobProcessGiornata,
+            ResourceLoader resourceLoader,
+            Environment env,
+            AccessoService accessoService,
+            GiornataGiocatoreService giornataGiocatoreService) {
 
-		boolean isAdmin = false;
-		for (Role r : attore.getRoles()) {
-			if (r.equals(Role.ADMIN)) {
-				isAdmin = true;
-				break;
-			}
-		}
+        this.jobProcessGiornata = jobProcessGiornata;
+        this.resourceLoader = resourceLoader;
+        this.env = env;
+        this.accessoService = accessoService;
+        this.giornataGiocatoreService = giornataGiocatoreService;
 
-		salvaDb = new Button("Salva " + giornataInfo.getDescGiornata());
-		salvaDb.setIcon(VaadinIcon.DATABASE.create());
-		salvaDb.addClickListener(this);
-		salvaDb.setVisible(isAdmin);
+        log.info("SqualificatiIndisponibiliView()");
+    }
 
-		this.add(salvaDb);
+    @PostConstruct
+    void init() {
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		tableSqualificati = getTableSqualificatiInfortunati();
+        accessoService.insertAccesso(getClass().getName());
+        initLayout();
+    }
 
-		VerticalLayout layoutSqualificati = new VerticalLayout();
-		layoutSqualificati.setMargin(true);
-		layoutSqualificati.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-		layoutSqualificati.add(tableSqualificati);
-		Details panelSqualificati = new Details("Squalificati",layoutSqualificati);
-		panelSqualificati.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelSqualificati.setOpened(true);
+    private void initLayout() {
+        FcAttore attore = getSessionAttribute(SESSION_ATTORE, FcAttore.class);
+        FcGiornataInfo giornataInfo = getSessionAttribute(SESSION_GIORNATA_INFO, FcGiornataInfo.class);
 
-		this.add(panelSqualificati);
+        if (attore == null || giornataInfo == null) {
+            return;
+        }
 
-		tableInfortunati = getTableSqualificatiInfortunati();
+        salvaDb = new Button("Salva " + giornataInfo.getDescGiornata());
+        salvaDb.setIcon(VaadinIcon.DATABASE.create());
+        salvaDb.addClickListener(this);
+        salvaDb.setVisible(isAdmin(attore));
+        add(salvaDb);
 
-		VerticalLayout layoutInfortunati = new VerticalLayout();
-		layoutInfortunati.setMargin(true);
-		layoutInfortunati.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-		layoutInfortunati.add(tableInfortunati);
-		Details panelInfortunati = new Details("Infortunati",layoutInfortunati);
-		panelInfortunati.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
-		panelInfortunati.setOpened(true);
+        tableSqualificati = createGridSqualificatiInfortunati();
+        tableInfortunati = createGridSqualificatiInfortunati();
 
-		this.add(panelInfortunati);
+        add(buildDetailsPanel("Squalificati", tableSqualificati));
+        add(buildDetailsPanel("Infortunati", tableInfortunati));
 
-		try {
+        refreshTables(giornataInfo);
+    }
 
-			List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-			ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<>();
-			ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<>();
+    private boolean isAdmin(FcAttore attore) {
+        for (Role role : attore.getRoles()) {
+            if (role.equals(Role.ADMIN)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-			for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
-				if (gg.isSqualificato()) {
-					listSqualificati.add(gg);
-				} else if (gg.isInfortunato()) {
-					listInfortunati.add(gg);
-				}
-			}
+    private Details buildDetailsPanel(String title, Grid<FcGiornataGiocatore> grid) {
+        VerticalLayout content = new VerticalLayout();
+        content.setMargin(true);
+        content.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        content.add(grid);
 
-            log.info("listaSqualificati {}", listSqualificati.size());
-			tableSqualificati.setItems(listSqualificati);
-			tableSqualificati.getDataProvider().refreshAll();
+        Details panel = new Details(title, content);
+        panel.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
+        panel.setOpened(true);
 
-            log.info("listaInfortunati {}", listInfortunati.size());
-			tableInfortunati.setItems(listInfortunati);
-			tableInfortunati.getDataProvider().refreshAll();
+        return panel;
+    }
 
-		} catch (Exception ex2) {
-            log.error("ex2 {}", ex2.getMessage());
-		}
+    private void refreshTables(FcGiornataInfo giornataInfo) {
+        try {
+            List<FcGiornataGiocatore> items = giornataGiocatoreService.findByCustonm(giornataInfo, null);
 
-	}
+            List<FcGiornataGiocatore> squalificati = new ArrayList<>();
+            List<FcGiornataGiocatore> infortunati = new ArrayList<>();
 
-	@Override
-	public void onComponentEvent(ClickEvent<Button> event) {
-		try {
-			if (event.getSource() == salvaDb) {
-				log.info("SALVA");
-				Properties p = (Properties) VaadinSession.getCurrent().getAttribute("PROPERTIES");
-				FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
+            for (FcGiornataGiocatore item : items) {
+                if (item.isSqualificato()) {
+                    squalificati.add(item);
+                } else if (item.isInfortunato()) {
+                    infortunati.add(item);
+                }
+            }
 
-				String basePathData = env.getProperty("PATH_TMP");
-				String urlFanta = (String) p.get("URL_FANTA");
+            log.info("listaSqualificati {}", squalificati.size());
+            tableSqualificati.setItems(squalificati);
+            tableSqualificati.getDataProvider().refreshAll();
 
-                giornataGiocatoreService.deleteByCustonm(giornataInfo);
+            log.info("listaInfortunati {}", infortunati.size());
+            tableInfortunati.setItems(infortunati);
+            tableInfortunati.getDataProvider().refreshAll();
 
-				JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-				String fileName;
-				boolean bFantaGazzetta = true;
+        } catch (Exception e) {
+            log.error("Errore refreshTables", e);
+        }
+    }
 
-				if (!bFantaGazzetta) {
-					// **************************************
-					// DOWNLOAD FILE SQUALIFICATI
-					// **************************************
-					String httpUrlSqualificati = urlFanta + "giocatori-squalificati.asp";
-                    log.info("httpUrlSqualificati {}", httpUrlSqualificati);
-					String fileName1 = "SQUALIFICATI_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvSqualificatiInfortunati(httpUrlSqualificati, basePathData, fileName1);
+    @Override
+    public void onComponentEvent(ClickEvent<Button> event) {
+        try {
+            if (event.getSource() != salvaDb) {
+                return;
+            }
 
-					fileName = basePathData + fileName1 + ".csv";
-					jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
+            log.info("SALVA");
 
-					// **************************************
-					// DOWNLOAD FILE INFORTUNATI
-					// **************************************
-					String httpUrlInfortunati = urlFanta + "giocatori-infortunati.asp";
-                    log.info("httpUrlInfortunati {}", httpUrlInfortunati);
-					String fileName2 = "INFORTUNATI_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvSqualificatiInfortunati(httpUrlInfortunati, basePathData, fileName2);
+            Properties properties = getSessionAttribute(SESSION_PROPERTIES, Properties.class);
+            FcGiornataInfo giornataInfo = getSessionAttribute(SESSION_GIORNATA_INFO, FcGiornataInfo.class);
 
-					fileName = basePathData + fileName2 + ".csv";
-					jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
+            if (properties == null || giornataInfo == null) {
+                return;
+            }
 
-					// **************************************
-					// DOWNLOAD FILE PROBABILI
-					// **************************************
-					String httpUrlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
-                    log.info("httpUrlProbabili {}", httpUrlProbabili);
-					String fileName3 = "PROBABILI_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvProbabili(httpUrlProbabili, basePathData, fileName3);
-					fileName = basePathData + fileName3 + ".csv";
-					jobProcessGiornata.initDbProbabili(fileName);
+            String basePathData = env.getProperty("PATH_TMP");
+            String urlFanta = (String) properties.get("URL_FANTA");
 
-				} else {
+            giornataGiocatoreService.deleteByCustonm(giornataInfo);
 
-					// ****************************************************************************
-					// DOWNLOAD FILE SQUALIFICATI_INFORTUNATI FANTAGAZZETTA
-					// ****************************************************************************
+            JobProcessFileCsv jobCsv = new JobProcessFileCsv();
+            boolean useFantaGazzetta = true;
 
-					String fileName5 = "SQUALIFICATI_INFORTUNATI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePathData, fileName5);
+            if (useFantaGazzetta) {
+                processFantaGazzettaFiles(jobCsv, giornataInfo, basePathData);
+            } else {
+                processLegacyFiles(jobCsv, giornataInfo, basePathData, urlFanta);
+            }
 
-					fileName = basePathData + fileName5 + ".csv";
-					jobProcessGiornata.initDbSqualificatiInfortunatiFantaGazzetta(giornataInfo, fileName);
+            refreshTables(giornataInfo);
+            CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
 
-					// **************************************
-					// DOWNLOAD FILE PROBABILI FANTAGAZZETTA
-					// **************************************
-					String fileName4 = "PROBABILI_FANTA_GAZZETTA_" + giornataInfo.getCodiceGiornata();
-					jobCsv.downloadCsvProbabiliFantaGazzetta(Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI, basePathData, fileName4);
+        } catch (Exception e) {
+            CustomMessageDialog.showMessageErrorDetails(
+                    CustomMessageDialog.MSG_ERROR_GENERIC,
+                    e.getMessage());
+        }
+    }
 
-					fileName = basePathData + fileName4 + ".csv";
-					jobProcessGiornata.initDbProbabiliFantaGazzetta(fileName);
+    private void processLegacyFiles(
+            JobProcessFileCsv jobCsv,
+            FcGiornataInfo giornataInfo,
+            String basePathData,
+            String urlFanta) throws Exception {
 
-				}
+        String fileName;
 
-				List<FcGiornataGiocatore> listSqualificatiInfortunati = giornataGiocatoreService.findByCustonm(giornataInfo, null);
-				ArrayList<FcGiornataGiocatore> listSqualificati = new ArrayList<>();
-				ArrayList<FcGiornataGiocatore> listInfortunati = new ArrayList<>();
+        String urlSqualificati = urlFanta + "giocatori-squalificati.asp";
+        log.info("httpUrlSqualificati {}", urlSqualificati);
+        String fileNameSqualificati = FILE_SQUALIFICATI + giornataInfo.getCodiceGiornata();
+        jobCsv.downloadCsvSqualificatiInfortunati(urlSqualificati, basePathData, fileNameSqualificati);
+        fileName = buildCsvPath(basePathData, fileNameSqualificati);
+        jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
 
-				for (FcGiornataGiocatore gg : listSqualificatiInfortunati) {
-					if (gg.isSqualificato()) {
-						listSqualificati.add(gg);
-					} else if (gg.isInfortunato()) {
-						listInfortunati.add(gg);
-					}
-				}
+        String urlInfortunati = urlFanta + "giocatori-infortunati.asp";
+        log.info("httpUrlInfortunati {}", urlInfortunati);
+        String fileNameInfortunati = FILE_INFORTUNATI + giornataInfo.getCodiceGiornata();
+        jobCsv.downloadCsvSqualificatiInfortunati(urlInfortunati, basePathData, fileNameInfortunati);
+        fileName = buildCsvPath(basePathData, fileNameInfortunati);
+        jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
 
-                log.info("listSqualificati {}", listSqualificati.size());
-				tableSqualificati.setItems(listSqualificati);
-				tableSqualificati.getDataProvider().refreshAll();
+        String urlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
+        log.info("httpUrlProbabili {}", urlProbabili);
+        String fileNameProbabili = FILE_PROBABILI + giornataInfo.getCodiceGiornata();
+        jobCsv.downloadCsvProbabili(urlProbabili, basePathData, fileNameProbabili);
+        fileName = buildCsvPath(basePathData, fileNameProbabili);
+        jobProcessGiornata.initDbProbabili(fileName);
+    }
 
-                log.info("listInfortunati {}", listInfortunati.size());
-				tableInfortunati.setItems(listInfortunati);
-				tableInfortunati.getDataProvider().refreshAll();
+    private void processFantaGazzettaFiles(
+            JobProcessFileCsv jobCsv,
+            FcGiornataInfo giornataInfo,
+            String basePathData) throws Exception {
 
-			}
-		} catch (Exception e) {
-			CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
-		}
-	}
+        String fileNameSqualificatiInfortunati =
+                FILE_SQUALIFICATI_INFORTUNATI_FG + giornataInfo.getCodiceGiornata();
+        jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(
+                Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI,
+                basePathData,
+                fileNameSqualificatiInfortunati);
 
-	private Grid<FcGiornataGiocatore> getTableSqualificatiInfortunati() {
+        String fileName = buildCsvPath(basePathData, fileNameSqualificatiInfortunati);
+        jobProcessGiornata.initDbSqualificatiInfortunatiFantaGazzetta(giornataInfo, fileName);
 
-		Grid<FcGiornataGiocatore> grid = new Grid<>();
-		grid.setItems(new ArrayList<>());
-		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		grid.setAllRowsVisible(true);
+        String fileNameProbabili = FILE_PROBABILI_FG + giornataInfo.getCodiceGiornata();
+        jobCsv.downloadCsvProbabiliFantaGazzetta(
+                Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI,
+                basePathData,
+                fileNameProbabili);
 
-		Column<FcGiornataGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			FcGiocatore g = gg.getFcGiocatore();
-			if (g != null) {
-				Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-				cellLayout.add(img);
-			}
-			return cellLayout;
-		}));
-		ruoloColumn.setSortable(false);
-		ruoloColumn.setHeader(Costants.RUOLO);
-		ruoloColumn.setAutoWidth(true);
+        fileName = buildCsvPath(basePathData, fileNameProbabili);
+        jobProcessGiornata.initDbProbabiliFantaGazzetta(fileName);
+    }
 
-		Column<FcGiornataGiocatore> cognGiocatoreColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			FcGiocatore g = gg.getFcGiocatore();
-			if (g != null) {
-				try {
-					Image img = Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream());
-					cellLayout.add(img);
-				} catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-				Span lblGiocatore = new Span(g.getCognGiocatore());
-				cellLayout.add(lblGiocatore);
-			}
-			return cellLayout;
-		}));
-		cognGiocatoreColumn.setSortable(false);
-		cognGiocatoreColumn.setHeader(Costants.GIOCATORE);
-		cognGiocatoreColumn.setAutoWidth(true);
+    private String buildCsvPath(String basePathData, String fileName) {
+        return basePathData + fileName + ".csv";
+    }
 
-		Column<FcGiornataGiocatore> nomeSquadraColumn = grid.addColumn(new ComponentRenderer<>(gg -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			FcGiocatore g = gg.getFcGiocatore();
-			if (g != null && g.getFcSquadra() != null) {
-				FcSquadra sq = g.getFcSquadra();
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						log.error(e.getMessage());
-					}
-				}
-				Span lblSquadra = new Span(g.getFcSquadra().getNomeSquadra());
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
+    private Grid<FcGiornataGiocatore> createGridSqualificatiInfortunati() {
+        Grid<FcGiornataGiocatore> grid = new Grid<>();
+        grid.setItems(new ArrayList<>());
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        grid.setAllRowsVisible(true);
 
-		}));
-		nomeSquadraColumn.setSortable(false);
-		nomeSquadraColumn.setHeader(Costants.SQUADRA);
-		nomeSquadraColumn.setAutoWidth(true);
+        Column<FcGiornataGiocatore> ruoloColumn = grid.addColumn(new ComponentRenderer<>(this::buildRuoloCell));
+        ruoloColumn.setSortable(false);
+        ruoloColumn.setHeader(Costants.RUOLO);
+        ruoloColumn.setAutoWidth(true);
 
-		Column<FcGiornataGiocatore> noteColumn = grid.addColumn(FcGiornataGiocatore::getNote);
-		noteColumn.setSortable(false);
-		noteColumn.setHeader(Costants.NOTE);
-		noteColumn.setAutoWidth(true);
+        Column<FcGiornataGiocatore> giocatoreColumn = grid.addColumn(new ComponentRenderer<>(this::buildGiocatoreCell));
+        giocatoreColumn.setSortable(false);
+        giocatoreColumn.setHeader(Costants.GIOCATORE);
+        giocatoreColumn.setAutoWidth(true);
 
-		return grid;
-	}
+        Column<FcGiornataGiocatore> squadraColumn = grid.addColumn(new ComponentRenderer<>(this::buildSquadraCell));
+        squadraColumn.setSortable(false);
+        squadraColumn.setHeader(Costants.SQUADRA);
+        squadraColumn.setAutoWidth(true);
 
+        Column<FcGiornataGiocatore> noteColumn = grid.addColumn(FcGiornataGiocatore::getNote);
+        noteColumn.setSortable(false);
+        noteColumn.setHeader(Costants.NOTE);
+        noteColumn.setAutoWidth(true);
+
+        return grid;
+    }
+
+    private HorizontalLayout buildRuoloCell(FcGiornataGiocatore giornataGiocatore) {
+        HorizontalLayout cellLayout = new HorizontalLayout();
+
+        FcGiocatore giocatore = giornataGiocatore.getFcGiocatore();
+        if (giocatore != null && giocatore.getFcRuolo() != null) {
+            String ruolo = giocatore.getFcRuolo().getIdRuolo().toLowerCase();
+            cellLayout.add(buildImage(Costants.CLASSPATH_IMAGES + ruolo + ".png", ruolo + ".png"));
+        }
+
+        return cellLayout;
+    }
+
+    private HorizontalLayout buildGiocatoreCell(FcGiornataGiocatore giornataGiocatore) {
+        HorizontalLayout cellLayout = new HorizontalLayout();
+
+        FcGiocatore giocatore = giornataGiocatore.getFcGiocatore();
+        if (giocatore != null) {
+            if (giocatore.getImgSmall() != null) {
+                try {
+                    cellLayout.add(Utils.getImage(
+                            giocatore.getNomeImg(),
+                            giocatore.getImgSmall().getBinaryStream()));
+                } catch (SQLException e) {
+                    log.error("Errore caricamento immagine giocatore {}", giocatore.getCognGiocatore(), e);
+                }
+            }
+            cellLayout.add(new Span(giocatore.getCognGiocatore()));
+        }
+
+        return cellLayout;
+    }
+
+    private HorizontalLayout buildSquadraCell(FcGiornataGiocatore giornataGiocatore) {
+        HorizontalLayout cellLayout = new HorizontalLayout();
+
+        FcGiocatore giocatore = giornataGiocatore.getFcGiocatore();
+        if (giocatore != null && giocatore.getFcSquadra() != null) {
+            FcSquadra squadra = giocatore.getFcSquadra();
+
+            if (squadra.getImg() != null) {
+                try {
+                    cellLayout.add(Utils.getImage(
+                            squadra.getNomeSquadra(),
+                            squadra.getImg().getBinaryStream()));
+                } catch (SQLException e) {
+                    log.error("Errore caricamento immagine squadra {}", squadra.getNomeSquadra(), e);
+                }
+            }
+
+            cellLayout.add(new Span(squadra.getNomeSquadra()));
+        }
+
+        return cellLayout;
+    }
+
+    private Image buildImage(String resourcePath, String imageName) {
+        return Utils.buildImage(imageName, resourceLoader.getResource(resourcePath));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getSessionAttribute(String key, Class<T> type) {
+        Object value = VaadinSession.getCurrent().getAttribute(key);
+        return value == null ? null : (T) value;
+    }
 }

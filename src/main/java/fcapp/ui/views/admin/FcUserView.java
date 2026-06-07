@@ -34,144 +34,221 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Utenti")
 @Route(value = "user", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcUserView extends VerticalLayout{
+public class FcUserView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient AttoreService attoreService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcUserView.class);
 
-	public FcUserView(AttoreService attoreService,AccessoService accessoService) {
-		log.info("FcUserView()");
-		this.attoreService = attoreService;
-		this.accessoService = accessoService;
-	}
+    private static final int BCRYPT_STRENGTH = 10;
+    private static final Long SIMULATED_ERROR_USER_ID = 10L;
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_USERNAME = "username";
+    private static final String FIELD_HASHED_PASSWORD = "hashedPassword";
+    private static final String FIELD_NAME = "name";
+    private static final String FIELD_ROLES = "roles";
+    private static final String FIELD_ID_ATTORE = "idAttore";
+    private static final String FIELD_DESC_ATTORE = "descAttore";
+    private static final String FIELD_COGNOME = "cognome";
+    private static final String FIELD_NOME = "nome";
+    private static final String FIELD_CELLULARE = "cellulare";
+    private static final String FIELD_EMAIL = "email";
+    private static final String FIELD_NOTIFICHE = "notifiche";
+    private static final String FIELD_ACTIVE = "active";
 
-	private void initLayout() {
+    private final transient AttoreService attoreService;
+    private final transient AccessoService accessoService;
+    private final transient BCryptPasswordEncoder passwordEncoder =
+            new BCryptPasswordEncoder(BCRYPT_STRENGTH, new SecureRandom());
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    public FcUserView(
+            AttoreService attoreService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcUserView.class.getSimpleName());
+        this.attoreService = attoreService;
+        this.accessoService = accessoService;
+    }
 
-		GridCrud<FcAttore> crud = new GridCrud<>(FcAttore.class,new HorizontalSplitCrudLayout());
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcUserView.class.getSimpleName());
 
-		DefaultCrudFormFactory<FcAttore> formFactory = new DefaultCrudFormFactory<>(FcAttore.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		formFactory.setVisibleProperties(CrudOperation.READ, "id", "username", "hashedPassword", "name", "roles",  "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
-		formFactory.setVisibleProperties(CrudOperation.ADD, "id", "username", "hashedPassword", "name", "roles",  "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
-		formFactory.setVisibleProperties(CrudOperation.UPDATE, "username", "hashedPassword", "name", "roles", "idAttore", "descAttore", "cognome", "nome", "cellulare", "email", "notifiche", "active");
-		formFactory.setVisibleProperties(CrudOperation.DELETE, "id", "username");
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getGrid().setColumns("id","idAttore", "descAttore", "username", "cellulare", "roles");
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
-			Checkbox check = new Checkbox();
-			check.setValue(user.isNotifiche());
-			check.setEnabled(false);
-			return check;
-		})).setHeader("Notifiche");
+    private GridCrud<FcAttore> buildCrud() {
+        GridCrud<FcAttore> crud =
+                new GridCrud<>(FcAttore.class, new HorizontalSplitCrudLayout());
 
-		crud.getGrid().addColumn(new ComponentRenderer<>(user -> {
-			Checkbox check = new Checkbox();
-			check.setValue(user.isActive());
-			check.setEnabled(false);
-			return check;
-		})).setHeader("Attivo");
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureOperations(crud);
 
-		crud.getGrid().addColumn(new ComponentRenderer<>(u -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-			cellLayout.setSizeFull();
-			if (u != null && u.getProfilePicture() != null) {
-				Avatar avatar = new Avatar(u.getName());
-				avatar.setImageResource(Utils.getStreamResource("profile-pic", u.getProfilePicture()));
-				avatar.setThemeName("xsmall");
-				avatar.getElement().setAttribute("tabindex", "-1");
-				cellLayout.add(avatar);
+        crud.setRowCountCaption("%d user(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-			}
-			return cellLayout;
-		}));
-		/*
-		 * Column<FcAttore> profilePictureColumn = crud.getGrid().addColumn(new
-		 * ComponentRenderer<>(u -> { HorizontalLayout cellLayout = new
-		 * HorizontalLayout(); cellLayout.setSizeFull();
-		 * 
-		 * FileBuffer fileBuffer = new FileBuffer(); Upload singleFileUpload =
-		 * new Upload(fileBuffer); singleFileUpload.setDropAllowed(true);
-		 * singleFileUpload.addSucceededListener(event -> { try {
-		 * 
-		 * // Get information about the uploaded file InputStream fileData =
-		 * fileBuffer.getInputStream(); // String fileName =
-		 * event.getFileName(); // long contentLength =
-		 * event.getContentLength(); // String mimeType = event.getMIMEType();
-		 * 
-		 * ByteArrayOutputStream buffer = new ByteArrayOutputStream(); int
-		 * nRead; byte[] data = new byte[4]; while ((nRead = fileData.read(data,
-		 * 0, data.length)) != -1) { buffer.write(data, 0, nRead); }
-		 * buffer.flush(); byte[] targetArray = buffer.toByteArray();
-		 * u.setProfilePicture(targetArray); attoreService.update(u);
-		 * CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK); }
-		 * catch (Exception e) {
-		 * CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.
-		 * MSG_ERROR_GENERIC, e.getMessage()); }
-		 * 
-		 * }); cellLayout.add(singleFileUpload);
-		 * 
-		 * return cellLayout; })); profilePictureColumn.setWidth("350px");
-		 */
-		formFactory.setFieldType("hashedPassword", PasswordField.class);
-		formFactory.setFieldProvider("roles", user -> {
-			CheckboxGroup<Role> checkboxes = new CheckboxGroup<>();
-			checkboxes.setItems(Role.values());
-			return checkboxes;
-		});
-		
-		crud.getGrid().setColumnReorderingAllowed(true);
+        return crud;
+    }
 
-		crud.setRowCountCaption("%d user(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+    private void configureFormFactory(GridCrud<FcAttore> crud) {
+        DefaultCrudFormFactory<FcAttore> formFactory =
+                new DefaultCrudFormFactory<>(FcAttore.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-		// logic configuration
-		crud.setOperations(attoreService::findAll, attoreService::save, user -> {
-			// String password = user.getHashedPassword();
-			int strength = 10; // work factor of bcrypt
-			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength,new SecureRandom());
-			String encodedPassword = bCryptPasswordEncoder.encode(user.getHashedPassword());
-			// System.out.println(encodedPassword);
-			// boolean isPasswordMatch = bCryptPasswordEncoder.matches(password,
-			// encodedPassword);
-			// System.out.println("Password : " + password + " isPasswordMatch :
-			// " +
-			// isPasswordMatch);
-			// isPasswordMatch = bCryptPasswordEncoder.matches(password,
-			// encodedPassword);
-			// System.out.println("Password : " + password + " isPasswordMatch :
-			// " +
-			// isPasswordMatch);
-			user.setHashedPassword(encodedPassword);
-			if (user.getId().equals(10L)) {
-				throw new CrudOperationException("Simulated error.");
-			}
-			return attoreService.save(user);
-		}, user -> attoreService.delete(user.getId()));
+        formFactory.setVisibleProperties(
+                CrudOperation.READ,
+                FIELD_ID,
+                FIELD_USERNAME,
+                FIELD_HASHED_PASSWORD,
+                FIELD_NAME,
+                FIELD_ROLES,
+                FIELD_ID_ATTORE,
+                FIELD_DESC_ATTORE,
+                FIELD_COGNOME,
+                FIELD_NOME,
+                FIELD_CELLULARE,
+                FIELD_EMAIL,
+                FIELD_NOTIFICHE,
+                FIELD_ACTIVE);
 
-		add(crud);
+        formFactory.setVisibleProperties(
+                CrudOperation.ADD,
+                FIELD_ID,
+                FIELD_USERNAME,
+                FIELD_HASHED_PASSWORD,
+                FIELD_NAME,
+                FIELD_ROLES,
+                FIELD_ID_ATTORE,
+                FIELD_DESC_ATTORE,
+                FIELD_COGNOME,
+                FIELD_NOME,
+                FIELD_CELLULARE,
+                FIELD_EMAIL,
+                FIELD_NOTIFICHE,
+                FIELD_ACTIVE);
 
-	}
+        formFactory.setVisibleProperties(
+                CrudOperation.UPDATE,
+                FIELD_USERNAME,
+                FIELD_HASHED_PASSWORD,
+                FIELD_NAME,
+                FIELD_ROLES,
+                FIELD_ID_ATTORE,
+                FIELD_DESC_ATTORE,
+                FIELD_COGNOME,
+                FIELD_NOME,
+                FIELD_CELLULARE,
+                FIELD_EMAIL,
+                FIELD_NOTIFICHE,
+                FIELD_ACTIVE);
 
+        formFactory.setVisibleProperties(
+                CrudOperation.DELETE,
+                FIELD_ID,
+                FIELD_USERNAME);
+
+        formFactory.setFieldType(FIELD_HASHED_PASSWORD, PasswordField.class);
+        formFactory.setFieldProvider(FIELD_ROLES, field -> {
+            CheckboxGroup<Role> checkboxes = new CheckboxGroup<>();
+            checkboxes.setItems(Role.values());
+            return checkboxes;
+        });
+    }
+
+    private void configureGrid(GridCrud<FcAttore> crud) {
+        crud.getGrid().removeAllColumns();
+
+        crud.getGrid().addColumn(FcAttore::getId).setHeader("Id");
+        crud.getGrid().addColumn(FcAttore::getIdAttore).setHeader("Id Attore");
+        crud.getGrid().addColumn(FcAttore::getDescAttore).setHeader("Descrizione");
+        crud.getGrid().addColumn(FcAttore::getUsername).setHeader("Username");
+        crud.getGrid().addColumn(FcAttore::getCellulare).setHeader("Cellulare");
+        crud.getGrid().addColumn(user -> user.getRoles() != null ? user.getRoles().toString() : "")
+                .setHeader("Roles");
+
+        crud.getGrid()
+                .addColumn(new ComponentRenderer<>(this::buildNotificheCheckbox))
+                .setHeader("Notifiche");
+
+        crud.getGrid()
+                .addColumn(new ComponentRenderer<>(this::buildActiveCheckbox))
+                .setHeader("Attivo");
+
+        crud.getGrid()
+                .addColumn(new ComponentRenderer<>(this::buildAvatarLayout))
+                .setHeader("Avatar");
+
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
+
+    private Checkbox buildNotificheCheckbox(FcAttore user) {
+        Checkbox checkbox = new Checkbox();
+        checkbox.setValue(user != null && user.isNotifiche());
+        checkbox.setEnabled(false);
+        return checkbox;
+    }
+
+    private Checkbox buildActiveCheckbox(FcAttore user) {
+        Checkbox checkbox = new Checkbox();
+        checkbox.setValue(user != null && user.isActive());
+        checkbox.setEnabled(false);
+        return checkbox;
+    }
+
+    private HorizontalLayout buildAvatarLayout(FcAttore user) {
+        HorizontalLayout cellLayout = new HorizontalLayout();
+        cellLayout.setSizeFull();
+
+        if (user != null && user.getProfilePicture() != null) {
+            Avatar avatar = new Avatar(user.getName());
+            avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
+            avatar.setThemeName("xsmall");
+            avatar.getElement().setAttribute("tabindex", "-1");
+            cellLayout.add(avatar);
+        }
+
+        return cellLayout;
+    }
+
+    private void configureOperations(GridCrud<FcAttore> crud) {
+        crud.setOperations(
+                attoreService::findAll,
+                attoreService::save,
+                this::updateUser,
+                user -> attoreService.delete(user.getId()));
+    }
+
+    private FcAttore updateUser(FcAttore user) {
+        encodePassword(user);
+
+        if (SIMULATED_ERROR_USER_ID.equals(user.getId())) {
+            throw new CrudOperationException("Simulated error.");
+        }
+
+        return attoreService.save(user);
+    }
+
+    private void encodePassword(FcAttore user) {
+        if (user == null || user.getHashedPassword() == null || user.getHashedPassword().isBlank()) {
+            return;
+        }
+
+        user.setHashedPassword(passwordEncoder.encode(user.getHashedPassword()));
+    }
 }

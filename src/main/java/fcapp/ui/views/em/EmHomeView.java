@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -43,179 +44,259 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @Route(value = "homeEm", layout = MainLayout.class)
-// @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("Home")
 @RolesAllowed("USER")
-public class EmHomeView extends VerticalLayout{
+public class EmHomeView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient Environment env;
-	private final transient ResourceLoader resourceLoader;
-	private final transient GiornataInfoService giornataInfoService;
-	private final transient CalendarioCompetizioneService calendarioCompetizioneService;
-	private final transient AccessoService accessoService;
-	private final transient SquadraService squadraService;
+    private static final String ATTR_GIORNATA_INFO = "GIORNATA_INFO";
+    private static final String ATTR_CAMPIONATO = "CAMPIONATO";
+    private static final String ATTR_NEXT_DATE = "NEXTDATE";
+    private static final String ATTR_MILLIS_DIFF = "MILLISDIFF";
+    private static final int TEAM_LABEL_LENGTH = 3;
 
-	public EmHomeView(Environment env,ResourceLoader resourceLoader,GiornataInfoService giornataInfoService,CalendarioCompetizioneService calendarioCompetizioneService,AccessoService accessoService,SquadraService squadraService) {
-		log.info("EmHomeView()");
-		this.env = env;
-		this.resourceLoader = resourceLoader;
-		this.giornataInfoService = giornataInfoService;
-		this.calendarioCompetizioneService = calendarioCompetizioneService;
-		this.accessoService = accessoService;
-		this.squadraService = squadraService;
-	}
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-	@PostConstruct
-	void init() {
-		try {
-			log.info("init");
-			if (!Utils.isValidVaadinSession()) {
-				return;
-			}
-			accessoService.insertAccesso(this.getClass().getName());
+    private final transient Environment env;
+    private final transient ResourceLoader resourceLoader;
+    private final transient GiornataInfoService giornataInfoService;
+    private final transient CalendarioCompetizioneService calendarioCompetizioneService;
+    private final transient AccessoService accessoService;
+    private final transient SquadraService squadraService;
 
-			Image img = Utils.buildImage(env.getProperty("img.logo"), resourceLoader.getResource(Costants.CLASSPATH_IMAGES + env.getProperty("img.logo")));
-			this.add(img);
-			setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, img);
+    public EmHomeView(
+            Environment env,
+            ResourceLoader resourceLoader,
+            GiornataInfoService giornataInfoService,
+            CalendarioCompetizioneService calendarioCompetizioneService,
+            AccessoService accessoService,
+            SquadraService squadraService) {
+        this.env = env;
+        this.resourceLoader = resourceLoader;
+        this.giornataInfoService = giornataInfoService;
+        this.calendarioCompetizioneService = calendarioCompetizioneService;
+        this.accessoService = accessoService;
+        this.squadraService = squadraService;
+    }
 
-			this.add(buildLayoutAvviso());
+    @PostConstruct
+    void init() {
+        log.info("Initializing {}", getClass().getSimpleName());
 
-			buildGiornate();
+        try {
+            if (!Utils.isValidVaadinSession()) {
+                log.warn("Invalid Vaadin session");
+                return;
+            }
 
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
+            accessoService.insertAccesso(getClass().getName());
+            configureLayout();
+            addLogo();
+            add(buildLayoutAvviso());
+            add(buildGiornateTabSheet());
 
-	private void buildGiornate() {
+        } catch (Exception e) {
+            log.error("Error during view initialization", e);
+        }
+    }
 
-		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		Integer from = campionato.getStart();
-		Integer to = campionato.getEnd();
-		List<FcGiornataInfo> giornate = giornataInfoService.findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(from, to);
+    private void configureLayout() {
+        setSpacing(true);
+        setPadding(true);
+    }
+
+    private void addLogo() {
+        String logoName = env.getProperty("img.logo");
+        if (logoName == null || logoName.isBlank()) {
+            log.warn("Logo property 'img.logo' not configured");
+            return;
+        }
+
+        Image logo = Utils.buildImage(
+                logoName,
+                resourceLoader.getResource(Costants.CLASSPATH_IMAGES + logoName));
+
+        add(logo);
+        setHorizontalComponentAlignment(Alignment.CENTER, logo);
+    }
+
+    private TabSheet buildGiornateTabSheet() {
+        FcGiornataInfo currentGiornata = getSessionAttribute(ATTR_GIORNATA_INFO, FcGiornataInfo.class);
+        FcCampionato campionato = getSessionAttribute(ATTR_CAMPIONATO, FcCampionato.class);
 
         TabSheet tabSheet = new TabSheet();
-		for (FcGiornataInfo g : giornate) {
-			List<FcCalendarioCompetizione> listPartite = calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(g.getCodiceGiornata());
-			Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
-			final VerticalLayout layout = new VerticalLayout();
-			layout.setMargin(false);
-			layout.setPadding(false);
-			layout.setSpacing(false);
-			layout.add(tablePartite);
 
-			// Tab tab = tabs.add(g.getDescGiornata(), layout, false);
-			Tab tab = tabSheet.add(g.getDescGiornata(), layout);
-			if (g.getDescGiornata().equals(giornataInfo.getDescGiornata())) {
-                log.info(" selected tab {}", giornataInfo.getDescGiornata());
-				// tabs.select(tab);
-				tabSheet.setSelectedTab(tab);
-			}
-		}
+        if (currentGiornata == null || campionato == null) {
+            log.warn("Missing session data for giornate tab creation");
+            return tabSheet;
+        }
 
-		// this.add(tabs, container);
-		this.add(tabSheet);
-	}
+        List<FcGiornataInfo> giornate = giornataInfoService
+                .findByCodiceGiornataGreaterThanEqualAndCodiceGiornataLessThanEqual(
+                        campionato.getStart(),
+                        campionato.getEnd());
 
-	private Grid<FcCalendarioCompetizione> getTablePartite(
-			List<FcCalendarioCompetizione> listPartite) {
+        for (FcGiornataInfo giornata : giornate) {
+            Tab tab = tabSheet.add(giornata.getDescGiornata(), buildGiornataContent(giornata));
 
-		Grid<FcCalendarioCompetizione> grid = new Grid<>();
-		grid.setItems(listPartite);
-		grid.setSelectionMode(Grid.SelectionMode.NONE);
-		grid.setAllRowsVisible(true);
+            if (Objects.equals(giornata.getDescGiornata(), currentGiornata.getDescGiornata())) {
+                log.info("Selected tab {}", currentGiornata.getDescGiornata());
+                tabSheet.setSelectedTab(tab);
+            }
+        }
 
-        Column<FcCalendarioCompetizione> dataColumn = grid.addColumn(new LocalDateTimeRenderer<>(FcCalendarioCompetizione::getData,() -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
-		dataColumn.setSortable(false);
-		dataColumn.setAutoWidth(true);
-		// dataColumn.setFlexGrow(2);
+        return tabSheet;
+    }
 
-		Column<FcCalendarioCompetizione> nomeSquadraCasaColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && s.getSquadraCasa() != null) {
-                FcSquadra sq = squadraService.findByNomeSquadra(s.getSquadraCasa());
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						log.error(e.getMessage());
-					}
-				}
-				Span lblSquadra = new Span(s.getSquadraCasa().substring(0, 3));
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
+    private VerticalLayout buildGiornataContent(FcGiornataInfo giornata) {
+        List<FcCalendarioCompetizione> partite =
+                calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(giornata.getCodiceGiornata());
 
-		}));
-		nomeSquadraCasaColumn.setSortable(false);
-		nomeSquadraCasaColumn.setAutoWidth(true);
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        layout.add(buildPartiteGrid(partite));
 
-		Column<FcCalendarioCompetizione> nomeSquadraFuoriColumn = grid.addColumn(new ComponentRenderer<>(s -> {
-			HorizontalLayout cellLayout = new HorizontalLayout();
-            if (s != null && s.getSquadraCasa() != null) {
-                FcSquadra sq = squadraService.findByNomeSquadra(s.getSquadraFuori());
-				if (sq != null && sq.getImg() != null) {
-					try {
-						Image img = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						cellLayout.add(img);
-					} catch (SQLException e) {
-						log.error(e.getMessage());
-					}
-				}
-				Span lblSquadra = new Span(s.getSquadraFuori().substring(0, 3));
-				cellLayout.add(lblSquadra);
-			}
-			return cellLayout;
-		}));
-		nomeSquadraFuoriColumn.setSortable(false);
-		nomeSquadraFuoriColumn.setAutoWidth(true);
+        return layout;
+    }
 
-		Column<FcCalendarioCompetizione> risultatoColumn = grid.addColumn(c -> c != null && c.getRisultato() != null ? c.getRisultato() : "");
-		risultatoColumn.setSortable(false);
-		risultatoColumn.setAutoWidth(true);
-		// risultatoColumn.setFlexGrow(2);
+    private Grid<FcCalendarioCompetizione> buildPartiteGrid(List<FcCalendarioCompetizione> partite) {
+        Grid<FcCalendarioCompetizione> grid = new Grid<>();
+        grid.setItems(partite);
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        grid.setAllRowsVisible(true);
 
-		return grid;
-	}
+        addDataColumn(grid);
+        addSquadraColumn(grid, true);
+        addSquadraColumn(grid, false);
+        addRisultatoColumn(grid);
 
-	private VerticalLayout buildLayoutAvviso() {
+        return grid;
+    }
 
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		FcGiornataInfo giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
-		String nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
-		long millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
+    private void addDataColumn(Grid<FcCalendarioCompetizione> grid) {
+        Column<FcCalendarioCompetizione> column = grid.addColumn(
+                new LocalDateTimeRenderer<>(
+                        FcCalendarioCompetizione::getData,
+                        () -> DateTimeFormatter.ofPattern(Costants.DATA_FORMATTED)));
+
+        column.setSortable(false);
+        column.setAutoWidth(true);
+    }
+
+    private void addSquadraColumn(Grid<FcCalendarioCompetizione> grid, boolean isCasa) {
+        Column<FcCalendarioCompetizione> column = grid.addColumn(
+                new ComponentRenderer<>(match -> buildSquadraCell(match, isCasa)));
+
+        column.setSortable(false);
+        column.setAutoWidth(true);
+    }
+
+    private HorizontalLayout buildSquadraCell(FcCalendarioCompetizione match, boolean isCasa) {
+        HorizontalLayout cellLayout = new HorizontalLayout();
+        cellLayout.setSpacing(true);
+        cellLayout.setPadding(false);
+        cellLayout.setMargin(false);
+
+        if (match == null) {
+            return cellLayout;
+        }
+
+        String nomeSquadra = isCasa ? match.getSquadraCasa() : match.getSquadraFuori();
+        if (nomeSquadra == null || nomeSquadra.isBlank()) {
+            return cellLayout;
+        }
+
+        addSquadraImage(cellLayout, nomeSquadra);
+        cellLayout.add(new Span(abbreviateTeamName(nomeSquadra)));
+
+        return cellLayout;
+    }
+
+    private void addSquadraImage(HorizontalLayout layout, String nomeSquadra) {
+        FcSquadra squadra = squadraService.findByNomeSquadra(nomeSquadra);
+        if (squadra == null || squadra.getImg() == null) {
+            return;
+        }
+
+        try {
+            Image img = Utils.getImage(squadra.getNomeSquadra(), squadra.getImg().getBinaryStream());
+            layout.add(img);
+        } catch (SQLException e) {
+            log.error("Error loading image for squadra {}", nomeSquadra, e);
+        }
+    }
+
+    private void addRisultatoColumn(Grid<FcCalendarioCompetizione> grid) {
+        Column<FcCalendarioCompetizione> column = grid.addColumn(
+                match -> match != null && match.getRisultato() != null ? match.getRisultato() : "");
+
+        column.setSortable(false);
+        column.setAutoWidth(true);
+    }
+
+    private VerticalLayout buildLayoutAvviso() {
+        FcCampionato campionato = getSessionAttribute(ATTR_CAMPIONATO, FcCampionato.class);
+        FcGiornataInfo giornataInfo = getSessionAttribute(ATTR_GIORNATA_INFO, FcGiornataInfo.class);
+        String nextDate = getSessionAttribute(ATTR_NEXT_DATE, String.class);
+        Long millisDiff = getSessionAttribute(ATTR_MILLIS_DIFF, Long.class);
+
+        VerticalLayout layoutAvviso = new VerticalLayout();
+        layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
+        layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
+
+        if (campionato == null || giornataInfo == null || nextDate == null || millisDiff == null) {
+            log.warn("Missing session data for warning layout");
+            return layoutAvviso;
+        }
+
         log.info("millisDiff {}", millisDiff);
 
-		final VerticalLayout layoutAvviso = new VerticalLayout();
-		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
+        layoutAvviso.add(new HorizontalLayout(
+                new Span("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato))));
 
-		HorizontalLayout cssLayout = new HorizontalLayout();
-		Span lblInfo = new Span("Prossima Giornata: " + Utils.buildInfoGiornataEm(giornataInfo, campionato));
-		cssLayout.add(lblInfo);
-		layoutAvviso.add(cssLayout);
+        layoutAvviso.add(new HorizontalLayout(
+                new Span("Consegna Formazione entro: " + nextDate)));
 
-		HorizontalLayout cssLayout2 = new HorizontalLayout();
-		Span lblInfo2 = new Span("Consegna Formazione entro: " + nextDate);
-		cssLayout2.add(lblInfo2);
-		layoutAvviso.add(cssLayout2);
+        layoutAvviso.add(buildTimer(millisDiff));
 
-		SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-		timer.setHours(true);
-		timer.setMinutes(true);
-		timer.setFractions(false);
-		timer.start();
-		timer.isRunning();
-		timer.addTimerEndEvent(ev -> Notification.show("Timer ended"));
-		layoutAvviso.add(timer);
+        return layoutAvviso;
+    }
 
-		return layoutAvviso;
-	}
+    private SimpleTimer buildTimer(long millisDiff) {
+        long seconds = Math.max(0, millisDiff / 1000);
 
+        SimpleTimer timer = new SimpleTimer(BigDecimal.valueOf(seconds));
+        timer.setHours(true);
+        timer.setMinutes(true);
+        timer.setFractions(false);
+        timer.addTimerEndEvent(event -> Notification.show("Timer ended"));
+        timer.start();
+
+        return timer;
+    }
+
+    private String abbreviateTeamName(String teamName) {
+        return teamName.length() <= TEAM_LABEL_LENGTH
+                ? teamName
+                : teamName.substring(0, TEAM_LABEL_LENGTH);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getSessionAttribute(String attributeName, Class<T> type) {
+        Object value = VaadinSession.getCurrent().getAttribute(attributeName);
+        if (value == null) {
+            return null;
+        }
+
+        if (!type.isInstance(value)) {
+            log.warn("Session attribute {} is not of type {}", attributeName, type.getSimpleName());
+            return null;
+        }
+
+        return (T) value;
+    }
 }

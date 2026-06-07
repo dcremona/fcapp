@@ -24,62 +24,84 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Proprietà")
 @Route(value = "proprietà", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcPropertiesView extends VerticalLayout{
+public class FcPropertiesView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient ProprietaService proprietaService;
-	private final transient AccessoService accessoService;
+    private static final Logger LOG = LoggerFactory.getLogger(FcPropertiesView.class);
 
-	public FcPropertiesView(ProprietaService proprietaService,AccessoService accessoService) {
-		log.info("FcPropertiesView()");
-		this.proprietaService = proprietaService;
-		this.accessoService = accessoService;
-	}
+    private static final String FIELD_KEY = "key";
+    private static final String FIELD_VALUE = "value";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private final transient ProprietaService proprietaService;
+    private final transient AccessoService accessoService;
 
-	private void initLayout() {
+    public FcPropertiesView(
+            ProprietaService proprietaService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcPropertiesView.class.getSimpleName());
+        this.proprietaService = proprietaService;
+        this.accessoService = accessoService;
+    }
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcPropertiesView.class.getSimpleName());
 
-		GridCrud<FcProperties> crud = new GridCrud<>(FcProperties.class,new HorizontalSplitCrudLayout());
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		DefaultCrudFormFactory<FcProperties> formFactory = new DefaultCrudFormFactory<>(FcProperties.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "key", "value");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "key", "value");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "key", "value");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "key");
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		crud.getGrid().setColumns("key", "value");
+    private GridCrud<FcProperties> buildCrud() {
+        GridCrud<FcProperties> crud =
+                new GridCrud<>(FcProperties.class, new HorizontalSplitCrudLayout());
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureOperations(crud);
 
-		crud.setRowCountCaption("%d property(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        crud.setRowCountCaption("%d property(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		crud.setFindAllOperation(proprietaService::findAll);
-		crud.setAddOperation(proprietaService::save);
-		crud.setUpdateOperation(proprietaService::save);
-		crud.setDeleteOperation(proprietaService::delete);
+        return crud;
+    }
 
-		add(crud);
-	}
+    private void configureFormFactory(GridCrud<FcProperties> crud) {
+        DefaultCrudFormFactory<FcProperties> formFactory =
+                new DefaultCrudFormFactory<>(FcProperties.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, FIELD_KEY, FIELD_VALUE);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, FIELD_KEY, FIELD_VALUE);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, FIELD_KEY, FIELD_VALUE);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, FIELD_KEY);
+    }
+
+    private void configureGrid(GridCrud<FcProperties> crud) {
+        crud.getGrid().removeAllColumns();
+        crud.getGrid().addColumn(FcProperties::getKey).setHeader("Key");
+        crud.getGrid().addColumn(FcProperties::getValue).setHeader("Value");
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
+
+    private void configureOperations(GridCrud<FcProperties> crud) {
+        crud.setFindAllOperation(proprietaService::findAll);
+        crud.setAddOperation(proprietaService::save);
+        crud.setUpdateOperation(proprietaService::save);
+        crud.setDeleteOperation(proprietaService::delete);
+    }
 }

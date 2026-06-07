@@ -1,6 +1,7 @@
 package fcapp.ui.views.admin;
 
 import java.io.Serial;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,92 +34,216 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Classifica")
 @Route(value = "classificaAdmin", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class FcClassificaView extends VerticalLayout{
+public class FcClassificaView extends VerticalLayout {
 
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
- 
-	private final transient Logger log = LoggerFactory.getLogger(this.getClass());
-	private final transient ClassificaService classificaService;
-	private final transient AttoreService attoreService;
-	private final transient CampionatoService campionatoService;
-	private final transient AccessoService accessoService;
 
-	private final ComboBox<FcCampionato> campionatoFilter = new ComboBox<>();
+    private static final Logger LOG = LoggerFactory.getLogger(FcClassificaView.class);
 
-	public FcClassificaView(ClassificaService classificaService,AttoreService attoreService,CampionatoService campionatoService,AccessoService accessoService) {
-		log.info("FcClassificaView()");
-		this.classificaService = classificaService;
-		this.attoreService = attoreService;
-		this.campionatoService = campionatoService;
-		this.accessoService = accessoService;
-	}
+    private static final String SESSION_CAMPIONATO = "CAMPIONATO";
 
-	@PostConstruct
-	void init() {
-		log.info("init");
-		if (!Utils.isValidVaadinSession()) {
-			return;
-		}
-		accessoService.insertAccesso(this.getClass().getName());
-		initLayout();
-	}
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_FC_CAMPIONATO = "fcCampionato";
+    private static final String FIELD_FC_ATTORE = "fcAttore";
+    private static final String FIELD_PUNTI = "punti";
+    private static final String FIELD_ID_POSIZ = "idPosiz";
+    private static final String FIELD_ID_POSIZ_FINAL = "idPosizFinal";
+    private static final String FIELD_TOT_PUNTI = "totPunti";
+    private static final String FIELD_TOT_PUNTI_OLD = "totPuntiOld";
+    private static final String FIELD_TOT_PUNTI_ROSA = "totPuntiRosa";
 
-	private void initLayout() {
+    private final transient ClassificaService classificaService;
+    private final transient AttoreService attoreService;
+    private final transient CampionatoService campionatoService;
+    private final transient AccessoService accessoService;
 
-		this.setMargin(true);
-		this.setSpacing(true);
-		this.setSizeFull();
+    private final ComboBox<FcCampionato> campionatoFilter = new ComboBox<>("Campionato");
 
-		GridCrud<FcClassifica> crud = new GridCrud<>(FcClassifica.class,new HorizontalSplitCrudLayout());
+    public FcClassificaView(
+            ClassificaService classificaService,
+            AttoreService attoreService,
+            CampionatoService campionatoService,
+            AccessoService accessoService) {
+        LOG.info("Initializing {}", FcClassificaView.class.getSimpleName());
+        this.classificaService = classificaService;
+        this.attoreService = attoreService;
+        this.campionatoService = campionatoService;
+        this.accessoService = accessoService;
+    }
 
-		DefaultCrudFormFactory<FcClassifica> formFactory = new DefaultCrudFormFactory<>(FcClassifica.class);
-		crud.setCrudFormFactory(formFactory);
-		formFactory.setUseBeanValidation(false);
+    @PostConstruct
+    void init() {
+        LOG.info("Running init for {}", FcClassificaView.class.getSimpleName());
 
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "fcCampionato", "fcAttore", "punti", "idPosiz", "idPosizFinal", "totPunti", "totPuntiOld", "totPuntiRosa");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "id", "fcCampionato", "fcAttore", "punti", "idPosiz", "idPosizFinal", "totPunti", "totPuntiOld", "totPuntiRosa");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "fcCampionato", "fcAttore", "punti", "idPosiz", "idPosizFinal", "totPunti", "totPuntiOld", "totPuntiRosa");
-		crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "id", "fcCampionato", "fcAttore", "punti");
+        if (!Utils.isValidVaadinSession()) {
+            return;
+        }
 
-		crud.getGrid().removeAllColumns();
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? "" + f.getId().getIdCampionato() : "")).setHeader("Id");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcCampionato() != null ? f.getFcCampionato().getDescCampionato() : "")).setHeader("Campionato");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getFcAttore() != null ? f.getFcAttore().getDescAttore() : "")).setHeader("Attore");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? f.getPunti() + "" : "")).setHeader("Punti");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? f.getIdPosiz() + "" : "")).setHeader("idPosiz");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null ? f.getIdPosizFinal() + "" : "")).setHeader("idPosizFinal");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotPunti() != null ? f.getTotPunti().toString() : "")).setHeader("TotPunti");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotPuntiOld() != null ? f.getTotPuntiOld().toString() : "")).setHeader("TotPunti Old");
-		crud.getGrid().addColumn(new TextRenderer<>(f -> f != null && f.getTotPuntiRosa() != null ? f.getTotPuntiRosa().toString() : "")).setHeader("TotPunti Rosa");
+        accessoService.insertAccesso(getClass().getName());
+        configureLayout();
+        add(buildCrud());
+    }
 
-		crud.getGrid().setColumnReorderingAllowed(true);
+    private void configureLayout() {
+        setMargin(true);
+        setSpacing(true);
+        setSizeFull();
+    }
 
-		crud.getCrudFormFactory().setFieldProvider("fcCampionato", new ComboBoxProvider<>("Campionato",campionatoService.findAll(),new TextRenderer<>(FcCampionato::getDescCampionato),FcCampionato::getDescCampionato));
-		crud.getCrudFormFactory().setFieldProvider("fcAttore", new ComboBoxProvider<>("Attore",attoreService.findByActive(true),new TextRenderer<>(FcAttore::getDescAttore),FcAttore::getDescAttore));
+    private GridCrud<FcClassifica> buildCrud() {
+        GridCrud<FcClassifica> crud =
+                new GridCrud<>(FcClassifica.class, new HorizontalSplitCrudLayout());
 
-		crud.setRowCountCaption("%d Classifica(s) found");
-		crud.setClickRowToUpdate(true);
-		crud.setUpdateOperationVisible(true);
+        configureFormFactory(crud);
+        configureGrid(crud);
+        configureFilter(crud);
+        configureOperations(crud);
 
-		campionatoFilter.setPlaceholder("Campionato");
-		campionatoFilter.setItems(campionatoService.findAll());
-		campionatoFilter.setItemLabelGenerator(FcCampionato::getDescCampionato);
-		campionatoFilter.addValueChangeListener(e -> crud.refreshGrid());
-		crud.getCrudLayout().addFilterComponent(campionatoFilter);
-		FcCampionato campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
-		campionatoFilter.setValue(campionato);
+        crud.setRowCountCaption("%d Classifica(s) found");
+        crud.setClickRowToUpdate(true);
+        crud.setUpdateOperationVisible(true);
 
-		Button clearFilters = new Button("clear");
-		clearFilters.addClickListener(event -> campionatoFilter.clear());
-		crud.getCrudLayout().addFilterComponent(clearFilters);
+        return crud;
+    }
 
-		crud.setFindAllOperation(() -> classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionatoFilter.getValue()));
-		crud.setAddOperation(classificaService::save);
-		crud.setUpdateOperation(classificaService::save);
-		crud.setDeleteOperation(classificaService::delete);
+    private void configureFormFactory(GridCrud<FcClassifica> crud) {
+        DefaultCrudFormFactory<FcClassifica> formFactory =
+                new DefaultCrudFormFactory<>(FcClassifica.class);
+        formFactory.setUseBeanValidation(false);
+        crud.setCrudFormFactory(formFactory);
 
-		add(crud);
-	}
+        String[] detailFields = {
+                FIELD_ID,
+                FIELD_FC_CAMPIONATO,
+                FIELD_FC_ATTORE,
+                FIELD_PUNTI,
+                FIELD_ID_POSIZ,
+                FIELD_ID_POSIZ_FINAL,
+                FIELD_TOT_PUNTI,
+                FIELD_TOT_PUNTI_OLD,
+                FIELD_TOT_PUNTI_ROSA
+        };
 
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, detailFields);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, detailFields);
+        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, detailFields);
+        crud.getCrudFormFactory().setVisibleProperties(
+                CrudOperation.DELETE,
+                FIELD_ID,
+                FIELD_FC_CAMPIONATO,
+                FIELD_FC_ATTORE,
+                FIELD_PUNTI);
+
+        List<FcCampionato> campionati = campionatoService.findAll();
+        List<FcAttore> attori = attoreService.findByActive(true);
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_FC_CAMPIONATO,
+                new ComboBoxProvider<>(
+                        "Campionato",
+                        campionati,
+                        new TextRenderer<>(FcCampionato::getDescCampionato),
+                        FcCampionato::getDescCampionato));
+
+        crud.getCrudFormFactory().setFieldProvider(
+                FIELD_FC_ATTORE,
+                new ComboBoxProvider<>(
+                        "Attore",
+                        attori,
+                        new TextRenderer<>(FcAttore::getDescAttore),
+                        FcAttore::getDescAttore));
+    }
+
+    private void configureGrid(GridCrud<FcClassifica> crud) {
+        crud.getGrid().removeAllColumns();
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getId() != null
+                                ? String.valueOf(item.getId().getIdCampionato())
+                                : ""))
+                .setHeader("Id");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcCampionato() != null
+                                ? item.getFcCampionato().getDescCampionato()
+                                : ""))
+                .setHeader("Campionato");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getFcAttore() != null
+                                ? item.getFcAttore().getDescAttore()
+                                : ""))
+                .setHeader("Attore");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null ? String.valueOf(item.getPunti()) : ""))
+                .setHeader("Punti");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null ? String.valueOf(item.getIdPosiz()) : ""))
+                .setHeader("idPosiz");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null ? String.valueOf(item.getIdPosizFinal()) : ""))
+                .setHeader("idPosizFinal");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getTotPunti() != null
+                                ? item.getTotPunti().toString()
+                                : ""))
+                .setHeader("TotPunti");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getTotPuntiOld() != null
+                                ? item.getTotPuntiOld().toString()
+                                : ""))
+                .setHeader("TotPunti Old");
+
+        crud.getGrid()
+                .addColumn(new TextRenderer<>(item ->
+                        item != null && item.getTotPuntiRosa() != null
+                                ? item.getTotPuntiRosa().toString()
+                                : ""))
+                .setHeader("TotPunti Rosa");
+
+        crud.getGrid().setColumnReorderingAllowed(true);
+    }
+
+    private void configureFilter(GridCrud<FcClassifica> crud) {
+        List<FcCampionato> campionati = campionatoService.findAll();
+
+        campionatoFilter.setItems(campionati);
+        campionatoFilter.setItemLabelGenerator(FcCampionato::getDescCampionato);
+        campionatoFilter.setClearButtonVisible(true);
+        campionatoFilter.addValueChangeListener(event -> crud.refreshGrid());
+
+        FcCampionato currentCampionato =
+                (FcCampionato) VaadinSession.getCurrent().getAttribute(SESSION_CAMPIONATO);
+        if (currentCampionato != null) {
+            campionatoFilter.setValue(currentCampionato);
+        }
+
+        Button clearFilters = new Button("clear");
+        clearFilters.addClickListener(event -> campionatoFilter.clear());
+
+        crud.getCrudLayout().addFilterComponent(campionatoFilter);
+        crud.getCrudLayout().addFilterComponent(clearFilters);
+    }
+
+    private void configureOperations(GridCrud<FcClassifica> crud) {
+        crud.setFindAllOperation(() ->
+                classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionatoFilter.getValue()));
+        crud.setAddOperation(classificaService::save);
+        crud.setUpdateOperation(classificaService::save);
+        crud.setDeleteOperation(classificaService::delete);
+    }
 }
