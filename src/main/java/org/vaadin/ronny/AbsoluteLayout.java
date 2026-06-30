@@ -1,13 +1,13 @@
 package org.vaadin.ronny;
 
+import java.io.Serial;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasOrderedComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.orderedlayout.ThemableLayout;
 import com.vaadin.flow.dom.Style;
-
-import java.io.Serial;
 
 /**
  * AbsoluteLayout is a component container which allows to put the subcomponents

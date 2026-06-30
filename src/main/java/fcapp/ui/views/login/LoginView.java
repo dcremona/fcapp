@@ -1,5 +1,7 @@
 package fcapp.ui.views.login;
 
+import java.io.Serial;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +17,6 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import fcapp.security.AuthenticatedUser;
-
-import java.io.Serial;
 
 @AnonymousAllowed
 @PageTitle("Login")

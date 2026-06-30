@@ -1,5 +1,7 @@
 package fcapp;
 
+import java.io.Serial;
+
 import javax.sql.DataSource;
 
 import org.springframework.boot.SpringApplication;
@@ -13,8 +15,6 @@ import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
 
 import fcapp.backend.service.AttoreRepository;
-
-import java.io.Serial;
 
 /**
  * The entry point of the Spring Boot application.
