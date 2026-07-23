@@ -4467,6 +4467,8 @@ public class JobProcessGiornata {
 
 			DataFormatter dataFormatter = new DataFormatter();
 			log.info("Iterating over Rows and Columns using for-each loop");
+			
+			LocalDateTime now = LocalDateTime.now();
 
 			int conta = 0;
 			for (Row row : sheet) {
@@ -4538,6 +4540,8 @@ public class JobProcessGiornata {
 
 							g.setImg(BlobProxy.generateProxy(Utils.getImage(basePathData + newImg)));
 							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
+							
+							g.setData(now);
 
 							log.info("SAVE GIOCATORE ");
 							giocatoreService.save(g);
