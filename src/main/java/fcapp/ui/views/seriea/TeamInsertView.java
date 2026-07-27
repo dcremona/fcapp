@@ -2,10 +2,11 @@ package fcapp.ui.views.seriea;
 
 import java.io.InputStream;
 import java.io.Serial;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,8 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.ronny.AbsoluteLayout;
 
-import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
+import com.flowingcode.vaadin.addons.relativetime.Format;
+import com.flowingcode.vaadin.addons.relativetime.RelativeTime;
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -122,6 +124,7 @@ public class TeamInsertView extends VerticalLayout
 	private FcCampionato campionato = null;
 	private String nextDate = null;
 	private long millisDiff = 0;
+	private LocalDateTime dateTime = null;
 	private String idAttore = "";
 	private String descAttore = "";
 	private Properties p = null;
@@ -225,6 +228,7 @@ public class TeamInsertView extends VerticalLayout
 		campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
 		millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
+		dateTime  = (LocalDateTime) VaadinSession.getCurrent().getAttribute("FUTURE");
 
 		idAttore = "" + attore.getIdAttore();
 		descAttore = attore.getDescAttore();
@@ -457,14 +461,8 @@ public class TeamInsertView extends VerticalLayout
 		if (millisDiff == 0) {
 			showMessageStopInsert();
 		} else {
-			SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-			timer.setHours(true);
-			timer.setMinutes(true);
-			timer.setFractions(false);
-			timer.start();
-			timer.isRunning();
-			timer.addTimerEndEvent(ev -> showMessageStopInsert());
-			layoutAvviso.add(timer);
+			Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
+			layoutAvviso.add(new RelativeTime(future).setFormat(Format.DURATION));
 		}
 	}
 

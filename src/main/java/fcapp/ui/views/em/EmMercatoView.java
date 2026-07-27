@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -25,7 +27,8 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.ronny.AbsoluteLayout;
 
-import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
+import com.flowingcode.vaadin.addons.relativetime.Format;
+import com.flowingcode.vaadin.addons.relativetime.RelativeTime;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -139,6 +142,7 @@ public class EmMercatoView extends VerticalLayout
     private List<FcSquadra> squadre;
     private String nextDate;
     private long millisDiff = 0;
+    private LocalDateTime dateTime = null;
     private Properties p;
 
     private final List<FcGiocatore> modelFormazione = new ArrayList<>();
@@ -201,6 +205,7 @@ public class EmMercatoView extends VerticalLayout
         giornataInfo = (FcGiornataInfo) VaadinSession.getCurrent().getAttribute("GIORNATA_INFO");
         nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
         millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
+        dateTime  = (LocalDateTime) VaadinSession.getCurrent().getAttribute("FUTURE");
 
         currentGiornata = String.valueOf(giornataInfo.getCodiceGiornata());
         currentDescGiornata = giornataInfo.getDescGiornataFc();
@@ -412,13 +417,8 @@ public class EmMercatoView extends VerticalLayout
         layoutAvviso.add(new HorizontalLayout(new Span("Consegna entro: " + nextDate)));
 
         if (millisDiff != 0) {
-            SimpleTimer timer = new SimpleTimer(new BigDecimal(millisDiff / 1000));
-            timer.setHours(true);
-            timer.setMinutes(true);
-            timer.setFractions(false);
-            timer.start();
-            timer.addTimerEndEvent(ev -> showMessageStopInsert());
-            layoutAvviso.add(timer);
+			Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
+			layoutAvviso.add(new RelativeTime(future).setFormat(Format.DURATION));
         }
 
         left = 500;

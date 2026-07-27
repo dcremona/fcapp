@@ -1,8 +1,10 @@
 package fcapp.ui.views.em;
 
 import java.io.Serial;
-import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -12,12 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
-import com.flowingcode.vaadin.addons.simpletimer.SimpleTimer;
+import com.flowingcode.vaadin.addons.relativetime.Format;
+import com.flowingcode.vaadin.addons.relativetime.RelativeTime;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -54,6 +56,7 @@ public class EmHomeView extends VerticalLayout {
     private static final String ATTR_CAMPIONATO = "CAMPIONATO";
     private static final String ATTR_NEXT_DATE = "NEXTDATE";
     private static final String ATTR_MILLIS_DIFF = "MILLISDIFF";
+    private static final String ATTR_FUTURE = "FUTURE";
     private static final int TEAM_LABEL_LENGTH = 3;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -242,7 +245,8 @@ public class EmHomeView extends VerticalLayout {
         FcGiornataInfo giornataInfo = getSessionAttribute(ATTR_GIORNATA_INFO, FcGiornataInfo.class);
         String nextDate = getSessionAttribute(ATTR_NEXT_DATE, String.class);
         Long millisDiff = getSessionAttribute(ATTR_MILLIS_DIFF, Long.class);
-
+        LocalDateTime dateTime = getSessionAttribute(ATTR_FUTURE, LocalDateTime.class);
+        
         VerticalLayout layoutAvviso = new VerticalLayout();
         layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
         layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
@@ -260,23 +264,13 @@ public class EmHomeView extends VerticalLayout {
         layoutAvviso.add(new HorizontalLayout(
                 new Span("Consegna Formazione entro: " + nextDate)));
 
-        layoutAvviso.add(buildTimer(millisDiff));
+		Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
+		layoutAvviso.add(new RelativeTime(future).setFormat(Format.DURATION));
+
 
         return layoutAvviso;
     }
 
-    private SimpleTimer buildTimer(long millisDiff) {
-        long seconds = Math.max(0, millisDiff / 1000);
-
-        SimpleTimer timer = new SimpleTimer(BigDecimal.valueOf(seconds));
-        timer.setHours(true);
-        timer.setMinutes(true);
-        timer.setFractions(false);
-        timer.addTimerEndEvent(event -> Notification.show("Timer ended"));
-        timer.start();
-
-        return timer;
-    }
 
     private String abbreviateTeamName(String teamName) {
         return teamName.length() <= TEAM_LABEL_LENGTH

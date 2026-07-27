@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -209,10 +210,12 @@ public class MyScheduledTasks{
 		}
 
 		String fusoOrario = p.getProperty("FUSO_ORARIO");
-		String nextDate = Utils.getNextDate(giornataInfo);
+		HashMap map = Utils.getNextDate(giornataInfo);
+		String nextDateFormat = (String)map.get("2");
+
 		long millisDiff = 0;
 		try {
-			millisDiff = Utils.getMillisDiff(nextDate, fusoOrario);
+			millisDiff = Utils.getMillisDiff(nextDateFormat, fusoOrario);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

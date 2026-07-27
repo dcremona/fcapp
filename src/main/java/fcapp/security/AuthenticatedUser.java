@@ -1,7 +1,9 @@
 package fcapp.security;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -105,11 +107,13 @@ public class AuthenticatedUser{
         LOG.info("CurrentGG: {}", giornataInfo.getCodiceGiornata());
 
 		String fusoOrario = properties.getProperty("FUSO_ORARIO");
-		String nextDate = Utils.getNextDate(giornataInfo);
+		HashMap map = Utils.getNextDate(giornataInfo);
+		LocalDateTime nextDate = (LocalDateTime)map.get("1");
+		String nextDateFormat = (String)map.get("2");
 
 		long millisDiff = 0;
 		try {
-			millisDiff = Utils.getMillisDiff(nextDate, fusoOrario);
+			millisDiff = Utils.getMillisDiff(nextDateFormat, fusoOrario);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
@@ -121,9 +125,10 @@ public class AuthenticatedUser{
 		VaadinSession.getCurrent().setAttribute("ATTORE", attore);
 		VaadinSession.getCurrent().setAttribute("PROPERTIES", properties);
 		VaadinSession.getCurrent().setAttribute("CAMPIONATO", campionato);
-		VaadinSession.getCurrent().setAttribute("NEXTDATE", nextDate);
+		VaadinSession.getCurrent().setAttribute("FUTURE", nextDate);
+		VaadinSession.getCurrent().setAttribute("NEXTDATE", nextDateFormat);
 		VaadinSession.getCurrent().setAttribute("MILLISDIFF", millisDiff);
-		VaadinSession.getCurrent().setAttribute("COUNTDOWNDATE", getCalendarCountDown(nextDate, fusoOrario));
+		VaadinSession.getCurrent().setAttribute("COUNTDOWNDATE", getCalendarCountDown(nextDateFormat, fusoOrario));
 
 	}
 

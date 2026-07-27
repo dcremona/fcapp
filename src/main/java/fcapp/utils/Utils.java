@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -336,8 +337,9 @@ public class Utils {
 		return input.round(new MathContext(input.toBigInteger().toString().length(), RoundingMode.HALF_UP));
 	}
 
-	public static String getNextDate(FcGiornataInfo giornataInfo) {
+	public static HashMap getNextDate(FcGiornataInfo giornataInfo) {
 
+		HashMap map = new HashMap();
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime currentDate = LocalDateTime.now();
 
@@ -370,7 +372,10 @@ public class Utils {
 		}
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		return currentDate.format(formatter);
+		
+		map.put("1", currentDate);
+		map.put("2", currentDate.format(formatter));
+		return map;
 	}
 
 	private static @Nullable LocalDateTime getLocalDateTime(FcGiornataInfo giornataInfo, LocalDateTime now) {
