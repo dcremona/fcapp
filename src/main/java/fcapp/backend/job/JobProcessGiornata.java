@@ -4363,7 +4363,14 @@ public class JobProcessGiornata {
 				String titolarePanchina = r.get(1);
 				String percentuale = r.get(2);
 				String href = r.get(3);
-				FcGiocatore giocatore = this.giocatoreService.findByNomeImg(nomeImg + ".png",true);
+				FcGiocatore giocatore = null;
+				try {
+					giocatore = this.giocatoreService.findByNomeImg(nomeImg + ".png",true);
+				} catch (Exception e1) {
+					log.error("href {}",href);					
+					log.error("nomeImg {}",nomeImg);
+				}
+				
 				if (giocatore != null) {
 					giocatore.setNomeGiocatore(titolarePanchina);
 					int perc;
