@@ -1,5 +1,13 @@
-java -jar fcapp-v24-productionfc.jar &
+-- NEW
+nohup java -jar fcapp-v24-productionfc.jar > nohup.log 2>&1 &
 
+
+
+
+
+
+-- OLD
+java -jar fcapp-v24-productionfc.jar &
 
 -- OLD
 #!/bin/sh
@@ -10,8 +18,7 @@ echo "Usage: run.sh ( commands ... )  ./run.sh &>/dev/null &"
 echo "exit"
 exit 
 
-
--- NEW 
+-- OLD 
 nohup ./run.sh &
 
 #!/bin/sh
@@ -26,14 +33,6 @@ echo "exit"
 exit 
 
 
--- NEW 
-nohup ./run.sh > nohup.txt
-nohup ./run.sh &
-nohup ./run.sh > nohup.txt 2>&1
 
-#!/bin/sh
-java -jar fcapp-v24-productionfc.jar
 
-echo "exit"
 
-exit 
