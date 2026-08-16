@@ -12,5 +12,7 @@ public interface RuoloRepository extends CrudRepository<FcRuolo, Long>{
 	Page<FcRuolo> findAll(Pageable pageable);
 
 	Iterable<FcRuolo> findAll(Sort sort);
+	
+	FcRuolo findByIdRuolo(String idRuolo);
 
 }

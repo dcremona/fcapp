@@ -24,6 +24,10 @@ public class RuoloService{
 		return (List<FcRuolo>) ruoloRepository.findAll(sortByIdRuoloDesc());
 	}
 
+	public FcRuolo findByIdRuolo(String idRuolo) {
+		return ruoloRepository.findByIdRuolo(idRuolo);
+	}
+
 	private Sort sortByIdRuoloDesc() {
 		return Sort.by(Sort.Direction.DESC, "idRuolo");
 	}

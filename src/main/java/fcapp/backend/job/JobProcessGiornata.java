@@ -65,6 +65,7 @@ import fcapp.backend.service.GiornataGiocatoreService;
 import fcapp.backend.service.GiornataInfoService;
 import fcapp.backend.service.GiornataService;
 import fcapp.backend.service.PagelleService;
+import fcapp.backend.service.RuoloService;
 import fcapp.backend.service.SquadraService;
 import fcapp.backend.service.StatisticheService;
 import fcapp.utils.Buffer;
@@ -106,6 +107,9 @@ public class JobProcessGiornata {
 
 	@Autowired
 	private SquadraService squadraService;
+
+	@Autowired
+	private RuoloService ruoloService;
 
 	@Autowired
 	private StatisticheService statisticheService;
@@ -4515,47 +4519,55 @@ public class JobProcessGiornata {
 				}
 
 				if (StringUtils.isNotEmpty(idGiocatore)) {
-
-					List<FcGiocatore> lgiocatore = this.giocatoreService.findByCognGiocatoreContaining(cognGiocatore);
-					for (FcGiocatore g : lgiocatore) {
-						if (!g.getFcSquadra().getNomeSquadra().equals(nomeSquadra)) {
-							log.info("ATTENZIONE SQUADRA DIFFERENTE ");
-							log.info("{};{};{};{};{};{}", idGiocatore, cognGiocatore, idRuolo, nomeSquadra,
-									quotazioneAttuale, quotazioneAttuale);
-							continue;
+					log.info("{};{};{};{};{};{}", idGiocatore, cognGiocatore, idRuolo, nomeSquadra,	quotazioneAttuale, quotazioneAttuale);
+					FcRuolo ruolo = ruoloService.findByIdRuolo(idRuolo.toUpperCase());
+					if (ruolo == null) {
+						log.error(" FcRuolo null " + idRuolo);
+						continue;
+					}
+					
+					FcSquadra squadra = squadraService.findByNomeSquadra(nomeSquadra);
+					if (squadra == null) {
+						log.error(" FcSquadra null " + nomeSquadra);
+						continue;
+					}
+					FcGiocatore g = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(cognGiocatore,squadra,ruolo);
+					if (g == null) {
+						log.error(" FcGiocatore null " + cognGiocatore);
+						continue;
+					}
+					
+					String nomeImgNew = idGiocatore + ".png";
+					g.setNomeImg(nomeImgNew);
+					try {
+						String basePathData = env.getProperty("PATH_TMP");
+						log.info("basePathData {}", basePathData);
+						assert basePathData != null;
+						File f = new File(basePathData);
+						if (!f.exists()) {
+							log.error("Error basePathData {}", basePathData);
+							return;
 						}
-						String nomeImgNew = idGiocatore + ".png";
-						g.setNomeImg(nomeImgNew);
-						try {
-							String basePathData = env.getProperty("PATH_TMP");
-							log.info("basePathData {}", basePathData);
-							assert basePathData != null;
-							File f = new File(basePathData);
-							if (!f.exists()) {
-								log.error("Error basePathData {}", basePathData);
-								return;
-							}
 
-							String newImg = g.getNomeImg();
-							log.info("newImg {}", newImg);
-							log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
+						String newImg = g.getNomeImg();
+						log.info("newImg {}", newImg);
+						log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
 
-							boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, basePathData + newImg);
-							log.info("bResult 1 {}", flag);
-							flag = Utils.buildFileSmall(basePathData + newImg, basePathData + "small-" + newImg);
-							log.info("bResult 2 {}", flag);
+						boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, basePathData + newImg);
+						log.info("bResult 1 {}", flag);
+						flag = Utils.buildFileSmall(basePathData + newImg, basePathData + "small-" + newImg);
+						log.info("bResult 2 {}", flag);
 
-							g.setImg(BlobProxy.generateProxy(Utils.getImage(basePathData + newImg)));
-							g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
-							
-							g.setData(now);
+						g.setImg(BlobProxy.generateProxy(Utils.getImage(basePathData + newImg)));
+						g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
+						
+						g.setData(now);
 
-							log.info("SAVE GIOCATORE ");
-							giocatoreService.save(g);
+						log.info("SAVE GIOCATORE ");
+						giocatoreService.save(g);
 
-						} catch (Exception e) {
-							log.error("Error in download save img !!!");
-						}
+					} catch (Exception e) {
+						log.error("Error in download save img !!!");
 					}
 				}
 			}
