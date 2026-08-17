@@ -4475,10 +4475,7 @@ public class JobProcessGiornata {
 
 			// Getting the Sheet at index zero
 			Sheet sheet = workbook.getSheetAt(0);
-
 			DataFormatter dataFormatter = new DataFormatter();
-			log.info("Iterating over Rows and Columns using for-each loop");
-			
 			LocalDateTime now = LocalDateTime.now();
 
 			int conta = 0;
@@ -4520,7 +4517,7 @@ public class JobProcessGiornata {
 
 				if (StringUtils.isNotEmpty(idGiocatore)) {
 					log.info("{};{};{};{};{};{}", idGiocatore, cognGiocatore, idRuolo, nomeSquadra,	quotazioneAttuale, quotazioneAttuale);
-					FcRuolo ruolo = ruoloService.findByIdRuolo(idRuolo.toUpperCase());
+					FcRuolo ruolo = ruoloService.findByIdRuolo(idRuolo);
 					if (ruolo == null) {
 						log.error(" FcRuolo null " + idRuolo);
 						continue;
@@ -4541,33 +4538,36 @@ public class JobProcessGiornata {
 					g.setNomeImg(nomeImgNew);
 					try {
 						String basePathData = env.getProperty("PATH_TMP");
-						log.info("basePathData {}", basePathData);
+						//log.info("basePathData {}", basePathData);
 						assert basePathData != null;
 						File f = new File(basePathData);
 						if (!f.exists()) {
 							log.error("Error basePathData {}", basePathData);
 							return;
 						}
-
 						String newImg = g.getNomeImg();
-						log.info("newImg {}", newImg);
-						log.info("httpUrlImg " + Costants.HTTP_URL_IMG);
+						log.info("httpUrlImg " + Costants.HTTP_URL_IMG+newImg);
 
 						boolean flag = Utils.downloadFile(Costants.HTTP_URL_IMG + newImg, basePathData + newImg);
-						log.info("bResult 1 {}", flag);
+						if (!flag) {
+							log.info("bResult 1 {}", flag);	
+						}
 						flag = Utils.buildFileSmall(basePathData + newImg, basePathData + "small-" + newImg);
-						log.info("bResult 2 {}", flag);
+						if (!flag) {
+							log.info("bResult 2 {}", flag);	
+						}
 
 						g.setImg(BlobProxy.generateProxy(Utils.getImage(basePathData + newImg)));
 						g.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePathData + "small-" + newImg)));
 						
 						g.setData(now);
 
-						log.info("SAVE GIOCATORE ");
-						giocatoreService.save(g);
-
+						if (giocatoreService.save(g) == null) {
+							log.info("SAVE GIOCATORE null");	
+						}
+						
 					} catch (Exception e) {
-						log.error("Error in download save img !!!");
+						log.error("Error in download save img !!!" + nomeImgNew);
 					}
 				}
 			}
