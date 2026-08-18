@@ -1,11 +1,6 @@
 -- NEW
 nohup java -jar fcapp-v24-productionfc.jar > nohup.log 2>&1 &
 
-
-
-
-
-
 -- OLD
 java -jar fcapp-v24-productionfc.jar &
 
