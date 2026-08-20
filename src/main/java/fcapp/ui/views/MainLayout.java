@@ -67,6 +67,7 @@ import fcapp.ui.views.seriea.SqualificatiIndisponibiliView;
 import fcapp.ui.views.seriea.StatisticheView;
 import fcapp.ui.views.seriea.TeamInsertMobileView;
 import fcapp.ui.views.seriea.TeamInsertView;
+import fcapp.ui.views.user.ProfiloView;
 import fcapp.utils.Costants;
 import fcapp.utils.Utils;
 
@@ -390,6 +391,7 @@ public class MainLayout extends AppLayout{
 			div.getElement().getStyle().set("align-items", "center");
 			div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
 			userName.add(div);
+			userName.getSubMenu().addItem(new SideNavItem("Profilo",ProfiloView.class,LineAwesomeIcon.USER_EDIT_SOLID.create()));
 			userName.getSubMenu().addItem("Esci", e -> authenticatedUser.logout());
 
 			layout.add(userMenu);

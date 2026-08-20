@@ -308,7 +308,7 @@ public class ImpostazioniView extends VerticalLayout
         layoutUpdate.setMargin(true);
         layoutUpdate.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
         layoutUpdate.add(layoutUpdateRow1, layoutUpdateRow2, layoutUpdateRow3, layoutUpdateRow4,
-                testMailPrimary, testMailSecondary, buildUpload());
+                testMailPrimary, testMailSecondary, buildUploadUpdateImg());
 
         Details panelUpdate = new Details("Update", layoutUpdate);
         panelUpdate.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
@@ -355,7 +355,7 @@ public class ImpostazioniView extends VerticalLayout
         chkRoundVotoGiocatore.setLabel("Round Voto");
         chkRoundVotoGiocatore.setValue(true);
 
-        HorizontalLayout row1 = new HorizontalLayout(download, chkUfficiali, seiPolitico, comboSquadreA);
+        HorizontalLayout row1 = new HorizontalLayout(download, chkUfficiali, buildUploadUpdateVoti(),seiPolitico, comboSquadreA);
         HorizontalLayout row2 = new HorizontalLayout(calcola, chkForzaVotoGiocatore, chkRoundVotoGiocatore, calcolaStatistiche);
 
         VerticalLayout layoutCalcola = new VerticalLayout();
@@ -421,12 +421,45 @@ public class ImpostazioniView extends VerticalLayout
         add(panelGiornata);
     }
 
-    private Upload buildUpload() {
+    private Upload buildUploadUpdateImg() {
         InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
             try {
                 InputStream is = new ByteArrayInputStream(data);
                 jobProcessGiornata.updateImgGiocatore(is);
                 CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            } catch (Exception e) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+            }
+        });
+        return new Upload(inMemoryHandler);
+    }
+
+    private Upload buildUploadUpdateVoti() {
+        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
+            try {
+            	Properties properties = getSessionAttribute(SESSION_PROPERTIES, Properties.class);
+            	
+                String basePathData = env.getProperty(PATH_TMP);
+                log.info("basePathData {}", basePathData);
+
+                FcGiornataInfo giornataInfo = comboGiornata != null ? comboGiornata.getValue() : null;
+                int codiceGiornata = giornataInfo != null ? giornataInfo.getCodiceGiornata() : 0;
+
+                String fileName = "voti_" + codiceGiornata;
+                
+                InputStream is = new ByteArrayInputStream(data);
+                
+                jobProcessFileCsv.downloadCsvFromXlsx(is,basePathData,fileName);
+                
+                fileName = basePathData + "voti_" + codiceGiornata + ".csv";
+                jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
+
+                if (giornataInfo != null) {
+                	jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+                }
+                
+              	CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            
             } catch (Exception e) {
                 CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
             }

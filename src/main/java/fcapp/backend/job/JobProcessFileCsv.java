@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -14,6 +15,12 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -469,6 +476,163 @@ public class JobProcessFileCsv{
 				is.close();
 			}
 		}
+	}
+
+	public void downloadCsvFromXlsx(InputStream is, String pathCsv, String fileName) throws Exception {
+
+		log.info("downloadCsvFromXlsx START");
+
+		StringBuilder data = new StringBuilder();
+
+		try {
+
+			Workbook workbook = WorkbookFactory.create(is);
+
+			// Retrieving the number of sheets in the Workbook
+			log.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
+
+			// 1. You can obtain a sheetIterator and iterate over it
+			Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+			log.info("Retrieving Sheets using Iterator");
+			while (sheetIterator.hasNext()) {
+				Sheet sheet = sheetIterator.next();
+				log.info("=> {}", sheet.getSheetName());
+			}
+
+			// Getting the Sheet at index zero
+			Sheet sheet = workbook.getSheetAt(0);
+			DataFormatter dataFormatter = new DataFormatter();
+
+			int conta = 0;
+			for (Row row : sheet) {
+
+				if (conta == 0 || conta == 1 || conta == 2) {
+					conta++;
+					log.info("SCARTO RIGA HEADER ");
+					continue;
+				}
+
+				String idGiocatore = "";
+				String cognGiocatore = "";
+				String ruolo = "";
+				String squadra = "";
+				String minGiocati = "";
+				String g = "";
+				String goalRealizzato = "";
+				String goalSubito = "";
+				String autorete = "";
+				String assist = "";
+				String cs = "";
+				String ts = "";
+				String m3 = "";
+				String ammonizione = "";
+				String espulsione = "";
+				String rigoreFallito = "";
+				String rigoreParato = "";
+				String rigoreSegnato = "";
+				
+				for (Cell cell : row) {
+
+					String cellValue = dataFormatter.formatCellValue(cell);
+					if (cell.getColumnIndex() == 0) {
+						idGiocatore = cellValue;
+					} else if (cell.getColumnIndex() == 1) {
+						cognGiocatore = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 2) {
+						ruolo = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 4) {
+						squadra = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 5) {
+						minGiocati = cellValue;
+					} else if (cell.getColumnIndex() == 6) {
+						g = cellValue;
+					} else if (cell.getColumnIndex() == 7) {
+						goalRealizzato = cellValue;
+					} else if (cell.getColumnIndex() == 8) {
+						goalSubito = cellValue;
+					} else if (cell.getColumnIndex() == 9) {
+						autorete = cellValue;
+					} else if (cell.getColumnIndex() == 10) {
+						assist = cellValue;
+					} else if (cell.getColumnIndex() == 11) {
+						cs = cellValue;
+					} else if (cell.getColumnIndex() == 16) {
+						ts = cellValue;
+					} else if (cell.getColumnIndex() == 22) {
+						m3 = cellValue;
+					} else if (cell.getColumnIndex() == 23) {
+						ammonizione = cellValue;
+					} else if (cell.getColumnIndex() == 24) {
+						espulsione = cellValue;
+					} else if (cell.getColumnIndex() == 27) {
+						rigoreFallito = cellValue;
+					} else if (cell.getColumnIndex() == 28) {
+						rigoreParato = cellValue;
+					} else if (cell.getColumnIndex() == 29) {
+						rigoreSegnato = cellValue;
+					}
+				}
+				
+				if (StringUtils.isEmpty(cognGiocatore) && StringUtils.isEmpty(ruolo)
+						&& StringUtils.isEmpty(squadra) && StringUtils.isEmpty(idGiocatore)) {
+					log.info("SCARTO RIGA VUOTA ");
+					continue;
+				}
+				
+				data.append(idGiocatore);
+				data.append(";");
+				data.append(cognGiocatore);
+				data.append(";");
+				data.append(ruolo);
+				data.append(";");
+				data.append(squadra);
+				data.append(";");
+				data.append(minGiocati);
+				data.append(";");
+				data.append(g);
+				data.append(";");
+				data.append(goalRealizzato);
+				data.append(";");
+				data.append(goalSubito);
+				data.append(";");
+				data.append(autorete);
+				data.append(";");
+				data.append(assist);
+				data.append(";");
+				data.append(cs);
+				data.append(";");
+				data.append(ts);
+				data.append(";");
+				data.append(m3);
+				data.append(";");
+				data.append(ammonizione);
+				data.append(";");
+				data.append(espulsione);
+				data.append(";");
+				data.append(rigoreFallito);
+				data.append(";");
+				data.append(rigoreParato);
+				data.append(";");
+				data.append(rigoreSegnato);
+				data.append(";");
+				data.append("\n");
+			}
+
+
+		} catch (Exception e) {
+			log.error("Error in downloadCsvFromXlsx !!!");
+			throw e;
+		}
+
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
+			byte[] strToBytes = data.toString().getBytes();
+			outputStream.write(strToBytes);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+
+		log.info("downloadCsvFromXlsx END");
 	}
 
 	// public void cleanUp(Path path) throws IOException {
