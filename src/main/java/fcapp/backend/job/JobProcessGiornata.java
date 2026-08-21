@@ -678,8 +678,7 @@ public class JobProcessGiornata {
 					if (StringUtils.isNotEmpty(idGiocatore)) {
 						giocatore = this.giocatoreService.findByIdGiocatore(Integer.parseInt(idGiocatore));
 						if (giocatore == null) {
-							List<FcGiocatore> listGiocatore = this.giocatoreService
-									.findByCognGiocatoreContaining(cognGiocatore);
+							List<FcGiocatore> listGiocatore = this.giocatoreService.findByCognGiocatoreContaining(cognGiocatore);
 							if (listGiocatore != null && listGiocatore.size() == 1) {
 								giocatore = listGiocatore.get(0);
 							}

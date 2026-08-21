@@ -41,9 +41,6 @@ public class FcUserView extends VerticalLayout {
 
     private static final Logger LOG = LoggerFactory.getLogger(FcUserView.class);
 
-    private static final int BCRYPT_STRENGTH = 10;
-    private static final Long SIMULATED_ERROR_USER_ID = 10L;
-
     private static final String FIELD_ID = "id";
     private static final String FIELD_USERNAME = "username";
     private static final String FIELD_HASHED_PASSWORD = "hashedPassword";
@@ -60,8 +57,9 @@ public class FcUserView extends VerticalLayout {
 
     private final transient AttoreService attoreService;
     private final transient AccessoService accessoService;
-    private final transient BCryptPasswordEncoder passwordEncoder =
-            new BCryptPasswordEncoder(BCRYPT_STRENGTH, new SecureRandom());
+    
+    private static final int BCRYPT_STRENGTH = 10;
+    private final transient BCryptPasswordEncoder passwordEncoder =  new BCryptPasswordEncoder(BCRYPT_STRENGTH, new SecureRandom());
 
     public FcUserView(
             AttoreService attoreService,
@@ -229,18 +227,13 @@ public class FcUserView extends VerticalLayout {
     private void configureOperations(GridCrud<FcAttore> crud) {
         crud.setOperations(
                 attoreService::findAll,
-                attoreService::save,
+                this::updateUser,
                 this::updateUser,
                 user -> attoreService.delete(user.getId()));
     }
 
     private FcAttore updateUser(FcAttore user) {
         encodePassword(user);
-
-        if (SIMULATED_ERROR_USER_ID.equals(user.getId())) {
-            throw new CrudOperationException("Simulated error.");
-        }
-
         return attoreService.save(user);
     }
 
@@ -248,7 +241,6 @@ public class FcUserView extends VerticalLayout {
         if (user == null || user.getHashedPassword() == null || user.getHashedPassword().isBlank()) {
             return;
         }
-
         user.setHashedPassword(passwordEncoder.encode(user.getHashedPassword()));
     }
 }

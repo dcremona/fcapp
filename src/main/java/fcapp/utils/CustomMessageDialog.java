@@ -17,6 +17,7 @@ public class CustomMessageDialog {
 	public static final String MSG_ERROR_GENERIC = "Errore nel sistema, contattare amministratore";
 
 	public static final String MSG_ERROR_INSERT_GIOCATORI = "Attenzione, impostare tutti i giocatori";
+	public static final String MSG_ERROR_PASSWR = "Attenzione, le password inserite sono differenti";
 
 	public static final String TITLE_MSG_CONFIRM = "Per favore conferma:";
 	public static final String TITLE_MSG_ERROR = "Errore";
