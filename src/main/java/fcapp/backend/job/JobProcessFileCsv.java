@@ -27,8 +27,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import fcapp.backend.data.entity.FcGiocatore;
+import fcapp.backend.data.entity.FcRuolo;
+import fcapp.backend.data.entity.FcSquadra;
+import fcapp.backend.service.GiocatoreService;
+import fcapp.backend.service.RuoloService;
+import fcapp.backend.service.SquadraService;
 import fcapp.utils.Costants;
 
 @Controller
@@ -40,6 +47,15 @@ public class JobProcessFileCsv{
 
 	private static final String EXT_HTML = ".html";
 	private static final String EXT_CSV = ".csv";
+
+	@Autowired
+	private GiocatoreService giocatoreService;
+
+	@Autowired
+	private SquadraService squadraService;
+
+	@Autowired
+	private RuoloService ruoloService;
 
 	public void downloadCsv(String httpUrl, String pathCsv, String fileName,
 			int headCount) throws Exception {
@@ -633,6 +649,136 @@ public class JobProcessFileCsv{
 		}
 
 		log.info("downloadCsvFromXlsx END");
+	}
+
+	public void downloadQuotazioniCsvFromXlsx(InputStream is, String pathCsv, String fileName) throws Exception {
+
+		log.info("downloadQuotazioniFromXlsx START");
+
+		StringBuilder data = new StringBuilder();
+
+		try {
+
+			Workbook workbook = WorkbookFactory.create(is);
+
+			// Retrieving the number of sheets in the Workbook
+			log.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
+
+			// 1. You can obtain a sheetIterator and iterate over it
+			Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+			log.info("Retrieving Sheets using Iterator");
+			while (sheetIterator.hasNext()) {
+				Sheet sheet = sheetIterator.next();
+				log.info("=> {}", sheet.getSheetName());
+			}
+
+			// Getting the Sheet at index zero
+			Sheet sheet = workbook.getSheetAt(0);
+			DataFormatter dataFormatter = new DataFormatter();
+
+			data.append("idGiocatore");
+			data.append(";");
+			data.append("giocatore");
+			data.append(";");
+			data.append("r");
+			data.append(";");
+			data.append("r1");
+			data.append(";");
+			data.append("squadra");
+			data.append(";");
+			data.append("qi");
+			data.append(";");
+			data.append("qa");
+			data.append(";");
+			data.append("\n");
+
+			for (Row row : sheet) {
+
+				String r = "";
+				String r1 = "";
+				String giocatore = "";
+				String squadra = "";
+				String qi = "";
+				String qa = "";
+				
+				for (Cell cell : row) {
+
+					String cellValue = dataFormatter.formatCellValue(cell);
+					if (cell.getColumnIndex() == 0) {
+						r = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 1) {
+						r1 = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 2) {
+						giocatore = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 3) {
+						squadra = cellValue.toUpperCase();
+					} else if (cell.getColumnIndex() == 4) {
+						qi = cellValue;
+					} else if (cell.getColumnIndex() == 5) {
+						qa = cellValue;
+					}
+				}
+				
+				if (StringUtils.isEmpty(r) && StringUtils.isEmpty(giocatore) && StringUtils.isEmpty(squadra) && StringUtils.isEmpty(qa)) {
+					log.info("SCARTO RIGA VUOTA ");
+					continue;
+				}
+
+//				String idGiocatore = r.get(0);
+//				String cognGiocatore = r.get(1);
+//				String idRuolo = r.get(2);
+//				String nomeSquadra = r.get(4);
+//				String quotazioneIniziale = r.get(5);
+//				String quotazioneAttuale = r.get(6);
+
+				FcRuolo fcRuolo = ruoloService.findByIdRuolo(r);
+				if (fcRuolo == null) {
+					log.error(" FcRuolo null " + r);
+					continue;
+				}
+				
+				FcSquadra fcSquadra = squadraService.findByNomeSquadra(squadra);
+				if (fcSquadra == null) {
+					log.error(" FcSquadra null " + squadra);
+					continue;
+				}
+
+				String idGiocatore = "";
+				FcGiocatore g = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(giocatore,fcSquadra,fcRuolo);
+				if (g != null) {
+					idGiocatore = "" + g.getIdGiocatore();
+				}
+				data.append(idGiocatore);
+				data.append(";");
+				data.append(giocatore);
+				data.append(";");
+				data.append(r);
+				data.append(";");
+				data.append(r1);
+				data.append(";");
+				data.append(squadra);
+				data.append(";");
+				data.append(qi);
+				data.append(";");
+				data.append(qa);
+				data.append(";");
+				data.append("\n");
+			}
+
+		} catch (Exception e) {
+			log.error("Error in downloadQuotazioniFromXlsx !!!");
+			throw e;
+		}
+
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
+			byte[] strToBytes = data.toString().getBytes();
+			outputStream.write(strToBytes);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+
+		log.info("downloadQuotazioniFromXlsx END");
 	}
 
 	// public void cleanUp(Path path) throws IOException {

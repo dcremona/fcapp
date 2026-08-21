@@ -286,6 +286,7 @@ public class ImpostazioniView extends VerticalLayout
 
         HorizontalLayout layoutUpdateRow2 = new HorizontalLayout(
                 downloadQuotazioni,
+                buildDownloadQuotazioni(),
                 updateGiocatori,
                 txtPercentuale,
                 chkUpdateQuotazioni,
@@ -420,6 +421,32 @@ public class ImpostazioniView extends VerticalLayout
         panelGiornata.setOpened(true);
         add(panelGiornata);
     }
+    
+    private Upload buildDownloadQuotazioni() {
+        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
+            try {
+            	
+                String basePathData = env.getProperty(PATH_TMP);
+                log.info("basePathData {}", basePathData);
+
+                FcGiornataInfo giornataInfo = comboGiornata != null ? comboGiornata.getValue() : null;
+                int codiceGiornata = giornataInfo != null ? giornataInfo.getCodiceGiornata() : 0;
+
+                String fileName = "Q_" + codiceGiornata;
+                
+                InputStream is = new ByteArrayInputStream(data);
+
+                jobProcessFileCsv.downloadQuotazioniCsvFromXlsx(is,basePathData,fileName);
+                
+              	CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
+            
+            } catch (Exception e) {
+                CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
+            }
+        });
+        return new Upload(inMemoryHandler);
+    }
+
 
     private Upload buildUploadUpdateImg() {
         InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
@@ -945,14 +972,17 @@ public class ImpostazioniView extends VerticalLayout
             cellLayout.setAlignItems(Alignment.STRETCH);
             cellLayout.setSizeFull();
 
-            if (g != null) {
+            if (g != null &&  g.getImgSmall() != null) {
                 try {
                     cellLayout.add(Utils.getImage(g.getNomeImg(), g.getImgSmall().getBinaryStream()));
                 } catch (SQLException e) {
                     log.error(e.getMessage(), e);
                 }
-                cellLayout.add(new Span(g.getCognGiocatore()));
             }
+            cellLayout.add(new Span(""+g.getIdGiocatore()));
+            cellLayout.add(new Span(" - "));
+            cellLayout.add(new Span(g.getCognGiocatore()));
+            
             return cellLayout;
         }));
         cognGiocatoreColumn.setSortable(false);

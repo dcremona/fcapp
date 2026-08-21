@@ -176,8 +176,7 @@ public class JobProcessGiornata {
 						giocatore.setData(now);
 						int newQuotaz = calcolaQuotazione(quotazioneAttuale, percentuale);
 						giocatore.setQuotazione(newQuotaz);
-						log.info("NEW GIOCATORE {} {} {} {} {}", idGiocatore, cognGiocatore, idRuolo, nomeSquadra,
-								newQuotaz);
+						log.info("NEW GIOCATORE {} {} {} {} {}", idGiocatore, cognGiocatore, idRuolo, nomeSquadra,newQuotaz);
 						listGiocatoriAdd.add(giocatore);
 					}
 
@@ -272,6 +271,35 @@ public class JobProcessGiornata {
 						giocatore.setImg(BlobProxy.generateProxy(Utils.getImage(imgPath + nomeImg)));
 						giocatore.setImgSmall(BlobProxy.generateProxy(Utils.getImage(imgPath + "small-" + nomeImg)));
 					}
+				} else {
+
+
+					FcGiocatore giocatoreSenzaId = new FcGiocatore();
+					giocatoreSenzaId.setData(now);
+					
+					FcRuolo fcRuolo = ruoloService.findByIdRuolo(idRuolo);
+					if (fcRuolo == null) {
+						log.error(" FcRuolo null " + idRuolo);
+						continue;
+					}
+
+					FcSquadra fcSquadra = squadraService.findByNomeSquadra(nomeSquadra);
+					if (fcSquadra == null) {
+						log.error(" FcSquadra null " + nomeSquadra);
+						continue;
+					}
+
+					giocatoreSenzaId.setIdGiocatore(0);
+					giocatoreSenzaId.setCognGiocatore(cognGiocatore);
+					giocatoreSenzaId.setFcRuolo(fcRuolo);
+					giocatoreSenzaId.setFcSquadra(fcSquadra);
+					
+					int newQuotaz = calcolaQuotazione(quotazioneAttuale, percentuale);
+					giocatoreSenzaId.setQuotazione(newQuotaz);
+
+					log.info("NEW GIOCATORE {} {} {} {} {}", idGiocatore, cognGiocatore, idRuolo, nomeSquadra,newQuotaz);
+
+					listGiocatoriAdd.add(giocatoreSenzaId);
 				}
 			}
 
