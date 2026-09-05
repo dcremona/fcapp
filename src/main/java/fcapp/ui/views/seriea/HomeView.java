@@ -2,9 +2,7 @@ package fcapp.ui.views.seriea;
 
 import java.io.Serial;
 import java.text.DecimalFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -188,8 +186,8 @@ public class HomeView extends VerticalLayout {
 
 		layoutAvviso.add(buildRow("Consegna Formazione entro: " + Objects.toString(nextDate, "")));
 		
-		Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
-		layoutAvviso.add(new RelativeTime(future).setFormat(Format.DURATION));
+		//Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
+		layoutAvviso.add(new RelativeTime(dateTime).setFormat(Format.DURATION));
 		
 		return layoutAvviso;
 	}

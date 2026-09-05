@@ -30,10 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import fcapp.backend.data.entity.FcGiocatore;
 import fcapp.backend.data.entity.FcRuolo;
 import fcapp.backend.data.entity.FcSquadra;
-import fcapp.backend.service.GiocatoreService;
 import fcapp.backend.service.RuoloService;
 import fcapp.backend.service.SquadraService;
 import fcapp.utils.Costants;
@@ -47,9 +45,6 @@ public class JobProcessFileCsv{
 
 	private static final String EXT_HTML = ".html";
 	private static final String EXT_CSV = ".csv";
-
-	@Autowired
-	private GiocatoreService giocatoreService;
 
 	@Autowired
 	private SquadraService squadraService;
@@ -634,7 +629,6 @@ public class JobProcessFileCsv{
 				data.append("\n");
 			}
 
-
 		} catch (Exception e) {
 			log.error("Error in downloadCsvFromXlsx !!!");
 			throw e;
@@ -694,6 +688,7 @@ public class JobProcessFileCsv{
 
 			for (Row row : sheet) {
 
+				String idGiocatore = "";
 				String r = "";
 				String r1 = "";
 				String giocatore = "";
@@ -705,31 +700,26 @@ public class JobProcessFileCsv{
 
 					String cellValue = dataFormatter.formatCellValue(cell);
 					if (cell.getColumnIndex() == 0) {
-						r = cellValue.toUpperCase();
+						idGiocatore = cellValue.toUpperCase();
 					} else if (cell.getColumnIndex() == 1) {
-						r1 = cellValue.toUpperCase();
+						r = cellValue.toUpperCase();
 					} else if (cell.getColumnIndex() == 2) {
-						giocatore = cellValue.toUpperCase();
+						r1 = cellValue.toUpperCase();
 					} else if (cell.getColumnIndex() == 3) {
-						squadra = cellValue.toUpperCase();
+						giocatore = cellValue.toUpperCase();
 					} else if (cell.getColumnIndex() == 4) {
-						qi = cellValue;
+						squadra = cellValue;
 					} else if (cell.getColumnIndex() == 5) {
+						qi = cellValue;
+					} else if (cell.getColumnIndex() == 6) {
 						qa = cellValue;
 					}
 				}
 				
-				if (StringUtils.isEmpty(r) && StringUtils.isEmpty(giocatore) && StringUtils.isEmpty(squadra) && StringUtils.isEmpty(qa)) {
+				if (StringUtils.isEmpty(idGiocatore) && StringUtils.isEmpty(r) && StringUtils.isEmpty(giocatore) && StringUtils.isEmpty(squadra) && StringUtils.isEmpty(qa)) {
 					log.info("SCARTO RIGA VUOTA ");
 					continue;
 				}
-
-//				String idGiocatore = r.get(0);
-//				String cognGiocatore = r.get(1);
-//				String idRuolo = r.get(2);
-//				String nomeSquadra = r.get(4);
-//				String quotazioneIniziale = r.get(5);
-//				String quotazioneAttuale = r.get(6);
 
 				FcRuolo fcRuolo = ruoloService.findByIdRuolo(r);
 				if (fcRuolo == null) {
@@ -743,11 +733,6 @@ public class JobProcessFileCsv{
 					continue;
 				}
 
-				String idGiocatore = "";
-				FcGiocatore g = this.giocatoreService.findByCognGiocatoreStartingWithAndFcSquadraAndFcRuolo(giocatore,fcSquadra,fcRuolo);
-				if (g != null) {
-					idGiocatore = "" + g.getIdGiocatore();
-				}
 				data.append(idGiocatore);
 				data.append(";");
 				data.append(giocatore);

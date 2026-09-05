@@ -641,65 +641,39 @@ public class JobProcessGiornata {
 						continue;
 					}
 
-					c++;
+					c = 1;
 					String cognGiocatore = StringUtils.isEmpty(r.get(c)) ? "" : r.get(c);
-					c++;
+					c = 2;
 					String ruolo = StringUtils.isEmpty(r.get(c)) ? "" : r.get(c);
-					c++;
-					// String Ruolo2 = record.get(3);
-					c++;
+					c = 3;
 					String squadra = r.get(c);
-					c++;
+					c = 4;
 					String minGiocati = r.get(c);
-					c++;
+					c = 5;
 					String g = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 6;
 					String goalRealizzato = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 7;
 					String goalSubito = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 8;
 					String autorete = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 9;
 					String assist = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 10;
 					String cs = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
-					// String GF= record.get(11);
-					c++;
-					// String GS= record.get(12);
-					c++;
-					// String Aut= record.get(13);
-					c++;
-					// String Ass= record.get(14);
-					c++;
+					c = 11;
 					String ts = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
-					// String GF= record.get(16);
-					c++;
-					// String GS= record.get(17);
-					c++;
-					// String Aut = StringUtils.isEmpty(record.get(18)) ? "0" :
-					// record.get(18);
-					c++;
-					// String Ass = StringUtils.isEmpty(record.get(19)) ? "0" :
-					// record.get(19);
-					c++;
-					// String M2 = record.get(20);
-					c++;
+					c = 12;
 					String m3 = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 13;
 					String ammonizione = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
+					c = 14;
 					String espulsione = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);
-					c++;
-					// String Gdv = record.get(24);
-					c++;
-					// String Gdp = record.get(25);
-					c++;
+					c = 15;
 					String rigoreFallito = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);// RIGS
-					c++;
+					c = 16;
 					String rigoreParato = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);// RIGP
-					c++;
+					c = 17;
 					String rigoreSegnato = StringUtils.isEmpty(r.get(c)) ? "0" : r.get(c);// RT
 
 					FcGiocatore giocatore = null;

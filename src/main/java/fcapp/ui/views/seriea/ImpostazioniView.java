@@ -121,7 +121,7 @@ public class ImpostazioniView extends VerticalLayout
     private Button ultimaFormazione;
     private Button formazione422;
 
-    private Button downloadQuotazioni;
+    //private Button downloadQuotazioni;
     private Button updateGiocatori;
     private Checkbox chkUpdateQuotazioni;
     private Checkbox chkUpdateImg;
@@ -133,7 +133,7 @@ public class ImpostazioniView extends VerticalLayout
     private Button testMailSecondary;
 
     private Button init;
-    private Button download;
+    //private Button download;
     private Button seiPolitico;
     private ComboBox<FcSquadra> comboSquadreA;
     private Button calcola;
@@ -272,7 +272,7 @@ public class ImpostazioniView extends VerticalLayout
         HorizontalLayout layoutUpdateRow1 = new HorizontalLayout(comboAttore, resetFormazione, ultimaFormazione, formazione422);
         layoutUpdateRow1.setMargin(true);
 
-        downloadQuotazioni = createButton("Download Quotazioni", VaadinIcon.DOWNLOAD, this);
+        //downloadQuotazioni = createButton("Download Quotazioni", VaadinIcon.DOWNLOAD, this);
         updateGiocatori = createButton("Update Giocatori", VaadinIcon.PIN, this);
 
         txtPercentuale = new NumberField();
@@ -285,7 +285,7 @@ public class ImpostazioniView extends VerticalLayout
         chkUpdateImg = new Checkbox("Update Img");
 
         HorizontalLayout layoutUpdateRow2 = new HorizontalLayout(
-                downloadQuotazioni,
+//                downloadQuotazioni,
                 buildDownloadQuotazioni(),
                 updateGiocatori,
                 txtPercentuale,
@@ -319,7 +319,7 @@ public class ImpostazioniView extends VerticalLayout
 
     private void buildCalcolaSection() {
         init = createButton("Avvia", VaadinIcon.ADD_DOCK, this);
-        download = createButton("Download Voti", VaadinIcon.DOWNLOAD, this);
+//        download = createButton("Download Voti", VaadinIcon.DOWNLOAD, this);
         seiPolitico = createButton("Sei Politico", VaadinIcon.PIN, this);
         calcola = createButton("Calcola", VaadinIcon.PIN, this);
         calcolaStatistiche = createButton("Calcola Statistiche", VaadinIcon.PRESENTATION, this);
@@ -356,7 +356,7 @@ public class ImpostazioniView extends VerticalLayout
         chkRoundVotoGiocatore.setLabel("Round Voto");
         chkRoundVotoGiocatore.setValue(true);
 
-        HorizontalLayout row1 = new HorizontalLayout(download, chkUfficiali, buildUploadUpdateVoti(),seiPolitico, comboSquadreA);
+        HorizontalLayout row1 = new HorizontalLayout(buildUploadUpdateVoti(), chkUfficiali, seiPolitico, comboSquadreA);
         HorizontalLayout row2 = new HorizontalLayout(calcola, chkForzaVotoGiocatore, chkRoundVotoGiocatore, calcolaStatistiche);
 
         VerticalLayout layoutCalcola = new VerticalLayout();
@@ -577,8 +577,8 @@ public class ImpostazioniView extends VerticalLayout
                 handleTestMailPrimary();
             } else if (event.getSource() == testMailSecondary) {
                 handleTestMailSecondary();
-            } else if (event.getSource() == downloadQuotazioni) {
-                handleDownloadQuotazioni(properties, basePathData, codiceGiornata);
+//            } else if (event.getSource() == downloadQuotazioni) {
+//                handleDownloadQuotazioni(properties, basePathData, codiceGiornata);
             } else if (event.getSource() == updateGiocatori) {
                 handleUpdateGiocatori(basePathData, codiceGiornata);
             } else if (event.getSource() == generaCalendar) {
@@ -603,8 +603,8 @@ public class ImpostazioniView extends VerticalLayout
                 } catch (Exception e) {
                     CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
                 }
-            } else if (event.getSource() == download) {
-                handleDownloadVoti(properties, basePathData, codiceGiornata, giornataInfo);
+//            } else if (event.getSource() == download) {
+//                handleDownloadVoti(properties, basePathData, codiceGiornata, giornataInfo);
             } else if (event.getSource() == seiPolitico) {
                 handleSeiPolitico(codiceGiornata);
             } else if (event.getSource() == calcola) {
@@ -656,15 +656,15 @@ public class ImpostazioniView extends VerticalLayout
                 "Testing from Spring Boot sendEmailSecondary");
     }
 
-    private void handleDownloadQuotazioni(Properties properties, String basePathData, int codiceGiornata) throws Exception {
-        String urlFanta = (String) properties.get(URL_FANTA);
-        String httpUrl = urlFanta + "Giocatori-Quotazioni-Excel.asp?giornata=" + codiceGiornata;
-
-        log.info("httpUrl {}", httpUrl);
-
-        String fileName = "Q_" + codiceGiornata;
-        new JobProcessFileCsv().downloadCsv(httpUrl, basePathData, fileName, 2);
-    }
+//    private void handleDownloadQuotazioni(Properties properties, String basePathData, int codiceGiornata) throws Exception {
+//        String urlFanta = (String) properties.get(URL_FANTA);
+//        String httpUrl = urlFanta + "Giocatori-Quotazioni-Excel.asp?giornata=" + codiceGiornata;
+//
+//        log.info("httpUrl {}", httpUrl);
+//
+//        String fileName = "Q_" + codiceGiornata;
+//        new JobProcessFileCsv().downloadCsv(httpUrl, basePathData, fileName, 2);
+//    }
 
     private void handleUpdateGiocatori(String basePathData, int codiceGiornata) throws Exception {
         String fileName = basePathData + "Q_" + codiceGiornata + ".csv";
@@ -694,29 +694,29 @@ public class ImpostazioniView extends VerticalLayout
         tableGiocatoreDel.getDataProvider().refreshAll();
     }
 
-    private void handleDownloadVoti(
-            Properties properties,
-            String basePathData,
-            int codiceGiornata,
-            FcGiornataInfo giornataInfo) throws Exception {
-
-        String urlFanta = (String) properties.get(URL_FANTA);
-        String votiExcel = Boolean.TRUE.equals(chkUfficiali.getValue())
-                ? "Voti-Ufficiali-Excel"
-                : "Voti-Ufficiosi-Excel";
-
-        String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
-        String fileName = "voti_" + codiceGiornata;
-
-        jobProcessFileCsv.downloadCsv(httpUrl, basePathData, fileName, 3);
-
-        fileName = basePathData + "voti_" + codiceGiornata + ".csv";
-        jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
-
-        if (giornataInfo != null) {
-            jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
-        }
-    }
+//    private void handleDownloadVoti(
+//            Properties properties,
+//            String basePathData,
+//            int codiceGiornata,
+//            FcGiornataInfo giornataInfo) throws Exception {
+//
+//        String urlFanta = (String) properties.get(URL_FANTA);
+//        String votiExcel = Boolean.TRUE.equals(chkUfficiali.getValue())
+//                ? "Voti-Ufficiali-Excel"
+//                : "Voti-Ufficiosi-Excel";
+//
+//        String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
+//        String fileName = "voti_" + codiceGiornata;
+//
+//        jobProcessFileCsv.downloadCsv(httpUrl, basePathData, fileName, 3);
+//
+//        fileName = basePathData + "voti_" + codiceGiornata + ".csv";
+//        jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
+//
+//        if (giornataInfo != null) {
+//            jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+//        }
+//    }
 
     private void handleSeiPolitico(int codiceGiornata) {
         FcSquadra squadra = comboSquadreA.getValue();

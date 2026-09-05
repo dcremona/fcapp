@@ -4,9 +4,7 @@ import java.io.InputStream;
 import java.io.Serial;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -461,8 +459,8 @@ public class TeamInsertView extends VerticalLayout
 		if (millisDiff == 0) {
 			showMessageStopInsert();
 		} else {
-			Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
-			layoutAvviso.add(new RelativeTime(future).setFormat(Format.DURATION));
+			//Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
+			layoutAvviso.add(new RelativeTime(dateTime).setFormat(Format.DURATION));
 		}
 	}
 
