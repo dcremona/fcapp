@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -24,6 +25,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +115,120 @@ public class JobProcessFileCsv{
 		}
 
 		log.info("downloadCsv END");
+	}
+
+	
+	public void downloadCsvCalendarioSerieA(String httpUrl, String pathCsv, String fileName) throws Exception {
+
+		log.info("downloadCsvCalendarioSerieA START");
+
+		File input = null;
+		try {
+			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
+			input = new File(pathCsv + fileName + EXT_HTML);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+
+		StringBuilder data = new StringBuilder();
+
+		assert input != null;
+		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
+
+		Elements divRows = doc.select("div");
+
+		// Load ArrayList with table row strings
+		for (Element divRow : divRows) {
+
+			String className = divRow.className();
+			String rowData = divRow.text();
+			
+			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && "cal-partita-card".equals(className)) {
+				log.info(className);
+				List<Node> childNodes = divRow.childNodes();
+				
+				String sDataPartita = null;
+				String sOraPartita = null;
+				String sSquadraCasa = null;
+				String sSquadraFuori = null;
+				String sRis = null;
+
+				for (Node n : childNodes) {
+					String sclass = n.attr("class");
+					if ("cal-partita-datetime".equals(sclass)) {
+						for (Node n2 : n.childNodes()) {
+							String sclass2 = n2.attr("class");
+							if ("cal-partita-date".equals(sclass2)) {
+								Node dataPartita = n2.childNode(4);
+								if (dataPartita instanceof TextNode) {
+									TextNode textNode = (TextNode)dataPartita;
+									sDataPartita = textNode.text();
+									log.info(sDataPartita);
+								}
+							} else if ("cal-partita-time".equals(sclass2)) {
+								Node oraPartita = n2.childNode(2);
+								if (oraPartita instanceof TextNode) {
+									TextNode textNode = (TextNode)oraPartita;
+									sOraPartita = textNode.text();
+									log.info(sOraPartita);
+								}
+							}
+						}
+					} else if ("cal-partita-body".equals(sclass)) {
+						
+						for (Node n2 : n.childNodes()) {
+							String sclass2 = n2.attr("class");
+							if ("cal-partita-team".equals(sclass2)) {
+								Node teamName = n2.childNode(1);
+								if (teamName instanceof Element) {
+									Element e = (Element)teamName;
+									sSquadraCasa = e.text();
+									log.info(sSquadraCasa);
+								}
+							} else if ("cal-partita-score-wrap".equals(sclass2)) {
+								Node score = n2.childNode(0);
+								if (score instanceof Element) {
+									Element e = (Element)score;
+									sRis = e.text();
+									log.info(sRis);
+								}
+
+							} else if ("cal-partita-team cal-partita-team--away".equals(sclass2)) {
+								Node teamName = n2.childNode(0);
+								if (teamName instanceof Element) {
+									Element e = (Element)teamName;
+									sSquadraFuori = e.text();
+									log.info(sSquadraFuori);
+								}
+							}
+						}
+					}
+				}
+				data.append(sDataPartita + " " +sOraPartita);
+				data.append(";");
+				data.append(sSquadraCasa);
+				data.append(";");
+				data.append(sRis);
+				data.append(";");
+				data.append(sSquadraFuori);
+				data.append(";");
+				data.append("\n");
+			}
+		}
+
+		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
+
+			byte[] strToBytes = data.toString().getBytes();
+			outputStream.write(strToBytes);
+
+			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
+			// cleanUp(path);
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+
+		log.info("downloadCsvCalendarioSerieA END");
 	}
 
 	public void downloadCsvSqualificatiInfortunati(String httpUrl,

@@ -4034,15 +4034,12 @@ public class JobProcessGiornata {
 				String squadraCasa = r.get(1).toUpperCase();
 				String ris = r.get(2);
 				String squadraFuori = r.get(3).toUpperCase();
-				log.debug("data {} squadraCasa {} squadraFuori {}", dataOra, squadraCasa, squadraFuori);
+				log.info("data {} squadraCasa {} squadraFuori {}", dataOra, squadraCasa, squadraFuori);
 
 				for (FcCalendarioCompetizione cTim : listCalendarioTim) {
 					if (cTim.getSquadraCasa().substring(0, 3).toUpperCase().equals(squadraCasa.substring(0, 3))) {
-						String data = dataOra.substring(0, 6) + "20" + dataOra.substring(6, 8);
-						String ora = dataOra.substring(dataOra.length() - 5);
-						String str = data + " " + ora;
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH.mm");
-						LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+						LocalDateTime dateTime = LocalDateTime.parse(dataOra, formatter);
 						cTim.setData(dateTime);
 						cTim.setRisultato(ris);
 						calendarioCompetizioneService.save(cTim);

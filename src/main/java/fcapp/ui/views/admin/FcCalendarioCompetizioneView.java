@@ -420,8 +420,9 @@ public class FcCalendarioCompetizioneView extends VerticalLayout {
     private String downloadCalendarioSerieA(Properties properties, String basePathData, int giornata) throws Exception {
         String giornataValue = String.valueOf(giornata);
         String urlFanta = (String) properties.get(URL_FANTA);
-        String calendario = "Serie-A-Calendario";
-        String httpUrl = urlFanta + calendario + ".asp?GiornataA=" + giornataValue + "&Tipolink=0";
+        //https://www.pianetafanta.it/calendario-serie-a?giornata=2
+        String calendario = "calendario-serie-a";
+        String httpUrl = urlFanta + calendario + "?giornata=" + giornataValue ;
 
         LOG.info("url {}", httpUrl);
 
@@ -433,7 +434,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout {
 
     private void downloadCsv(String httpUrl, String basePathData, String fileName) throws Exception {
         JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-        jobCsv.downloadCsv(httpUrl, basePathData, fileName, 0);
+        jobCsv.downloadCsvCalendarioSerieA(httpUrl, basePathData, fileName);
     }
 
     private String getBasePathData() {

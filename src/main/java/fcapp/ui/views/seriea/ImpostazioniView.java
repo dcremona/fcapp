@@ -86,7 +86,7 @@ public class ImpostazioniView extends VerticalLayout
     private static final String SESSION_GIORNATA_INFO = "GIORNATA_INFO";
 
     private static final String PATH_TMP = "PATH_TMP";
-    private static final String URL_FANTA = "URL_FANTA";
+//    private static final String URL_FANTA = "URL_FANTA";
     private static final String MAIL_PRIMARY_USERNAME = "spring.mail.primary.username";
     private static final String MAIL_SECONDARY_USERNAME = "spring.mail.secondary.username";
 

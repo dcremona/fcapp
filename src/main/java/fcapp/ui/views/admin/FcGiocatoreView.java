@@ -270,8 +270,7 @@ public class FcGiocatoreView extends VerticalLayout {
     }
 
     private void addOnlineImage(HorizontalLayout layout, FcGiocatore giocatore) {
-        Image onlineImage =
-                new Image(Costants.HTTP_URL_IMG + giocatore.getNomeImg(), giocatore.getNomeImg());
+        Image onlineImage = new Image(Costants.HTTP_URL_IMG + giocatore.getNomeImg() +"?v=0", giocatore.getNomeImg());
         layout.add(onlineImage);
     }
 
@@ -290,15 +289,12 @@ public class FcGiocatoreView extends VerticalLayout {
             LOG.info("Saving image {}", imageName);
             LOG.info("httpUrlImg {}", Costants.HTTP_URL_IMG);
 
-            boolean downloaded =
-                    Utils.downloadFile(Costants.HTTP_URL_IMG + imageName, basePath + imageName);
+            boolean downloaded = Utils.downloadFile(Costants.HTTP_URL_IMG + imageName +"?v=0", basePath + imageName);
             LOG.info("Download result {}", downloaded);
 
-            boolean resized =
-                    Utils.buildFileSmall(basePath + imageName, basePath + SMALL_PREFIX + imageName);
+            boolean resized =  Utils.buildFileSmall(basePath + imageName, basePath + SMALL_PREFIX + imageName);
             LOG.info("Resize result {}", resized);
 
-            giocatore.setImg(BlobProxy.generateProxy(Utils.getImage(basePath + imageName)));
             giocatore.setImg(BlobProxy.generateProxy(Utils.getImage(basePath + imageName)));
             giocatore.setImgSmall(BlobProxy.generateProxy(Utils.getImage(basePath + SMALL_PREFIX + imageName)));
 
