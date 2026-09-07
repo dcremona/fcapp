@@ -86,7 +86,7 @@ public class ImpostazioniView extends VerticalLayout
     private static final String SESSION_GIORNATA_INFO = "GIORNATA_INFO";
 
     private static final String PATH_TMP = "PATH_TMP";
-//    private static final String URL_FANTA = "URL_FANTA";
+    private static final String URL_FANTA = "URL_FANTA";
     private static final String MAIL_PRIMARY_USERNAME = "spring.mail.primary.username";
     private static final String MAIL_SECONDARY_USERNAME = "spring.mail.secondary.username";
 
@@ -133,7 +133,8 @@ public class ImpostazioniView extends VerticalLayout
     private Button testMailSecondary;
 
     private Button init;
-    //private Button download;
+    
+    private Button downloadVoti;
     private Button seiPolitico;
     private ComboBox<FcSquadra> comboSquadreA;
     private Button calcola;
@@ -319,7 +320,7 @@ public class ImpostazioniView extends VerticalLayout
 
     private void buildCalcolaSection() {
         init = createButton("Avvia", VaadinIcon.ADD_DOCK, this);
-//        download = createButton("Download Voti", VaadinIcon.DOWNLOAD, this);
+        downloadVoti = createButton("Download Voti", VaadinIcon.DOWNLOAD, this);
         seiPolitico = createButton("Sei Politico", VaadinIcon.PIN, this);
         calcola = createButton("Calcola", VaadinIcon.PIN, this);
         calcolaStatistiche = createButton("Calcola Statistiche", VaadinIcon.PRESENTATION, this);
@@ -356,7 +357,7 @@ public class ImpostazioniView extends VerticalLayout
         chkRoundVotoGiocatore.setLabel("Round Voto");
         chkRoundVotoGiocatore.setValue(true);
 
-        HorizontalLayout row1 = new HorizontalLayout(buildUploadUpdateVoti(), chkUfficiali, seiPolitico, comboSquadreA);
+        HorizontalLayout row1 = new HorizontalLayout(downloadVoti,buildUploadUpdateVoti(), chkUfficiali, seiPolitico, comboSquadreA);
         HorizontalLayout row2 = new HorizontalLayout(calcola, chkForzaVotoGiocatore, chkRoundVotoGiocatore, calcolaStatistiche);
 
         VerticalLayout layoutCalcola = new VerticalLayout();
@@ -603,8 +604,8 @@ public class ImpostazioniView extends VerticalLayout
                 } catch (Exception e) {
                     CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_MAIL_KO, e.getMessage());
                 }
-//            } else if (event.getSource() == download) {
-//                handleDownloadVoti(properties, basePathData, codiceGiornata, giornataInfo);
+            } else if (event.getSource() == downloadVoti) {
+                handleDownloadVoti(properties, basePathData, codiceGiornata, giornataInfo);
             } else if (event.getSource() == seiPolitico) {
                 handleSeiPolitico(codiceGiornata);
             } else if (event.getSource() == calcola) {
@@ -693,30 +694,28 @@ public class ImpostazioniView extends VerticalLayout
         tableGiocatoreAdd.getDataProvider().refreshAll();
         tableGiocatoreDel.getDataProvider().refreshAll();
     }
+    
+    private void handleDownloadVoti(
+            Properties properties,
+            String basePathData,
+            int codiceGiornata,
+            FcGiornataInfo giornataInfo) throws Exception {
+    	//https://www.pianetafanta.it/api/voti/export?variante=ufficiali&stagione=2026_2027&bonusTipo=standard&giornata=3
+        String urlFanta = (String) properties.get(URL_FANTA);
+        String votiExcel = "api/voti/export?variante=ufficiali&stagione=2026_2027&bonusTipo=standard&giornata="+codiceGiornata;
 
-//    private void handleDownloadVoti(
-//            Properties properties,
-//            String basePathData,
-//            int codiceGiornata,
-//            FcGiornataInfo giornataInfo) throws Exception {
-//
-//        String urlFanta = (String) properties.get(URL_FANTA);
-//        String votiExcel = Boolean.TRUE.equals(chkUfficiali.getValue())
-//                ? "Voti-Ufficiali-Excel"
-//                : "Voti-Ufficiosi-Excel";
-//
-//        String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + codiceGiornata;
-//        String fileName = "voti_" + codiceGiornata;
-//
-//        jobProcessFileCsv.downloadCsv(httpUrl, basePathData, fileName, 3);
-//
-//        fileName = basePathData + "voti_" + codiceGiornata + ".csv";
-//        jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
-//
-//        if (giornataInfo != null) {
-//            jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
-//        }
-//    }
+        String httpUrl = urlFanta + votiExcel ;
+        String fileName = "voti_" + codiceGiornata;
+
+        jobProcessFileCsv.downloadVotiXlsxCsv(httpUrl, basePathData, fileName);
+
+        fileName = basePathData + "voti_" + codiceGiornata + ".csv";
+        jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
+
+        if (giornataInfo != null) {
+            jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+        }
+    }
 
     private void handleSeiPolitico(int codiceGiornata) {
         FcSquadra squadra = comboSquadreA.getValue();

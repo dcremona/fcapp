@@ -2,6 +2,7 @@ package fcapp.backend.job;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,6 +47,7 @@ public class JobProcessFileCsv{
 
 	private static final int SIZE = 1024;
 
+	private static final String EXT_XLSX = ".xlsx";
 	private static final String EXT_HTML = ".html";
 	private static final String EXT_CSV = ".csv";
 
@@ -116,7 +118,6 @@ public class JobProcessFileCsv{
 
 		log.info("downloadCsv END");
 	}
-
 	
 	public void downloadCsvCalendarioSerieA(String httpUrl, String pathCsv, String fileName) throws Exception {
 
@@ -604,6 +605,26 @@ public class JobProcessFileCsv{
 				is.close();
 			}
 		}
+	}
+	
+	public void downloadVotiXlsxCsv(String httpUrl, String pathCsv, String fileName) throws Exception {
+
+		log.info("downloadXlsx START");
+
+		try {
+			fileDownload(httpUrl, fileName + EXT_XLSX, pathCsv);
+			
+			File initialFile = new File(pathCsv + fileName + EXT_XLSX);
+			
+			InputStream is = new FileInputStream(initialFile);
+			
+			downloadCsvFromXlsx(is,pathCsv,fileName);
+
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+		
+		log.info("downloadXlsx END");
 	}
 
 	public void downloadCsvFromXlsx(InputStream is, String pathCsv, String fileName) throws Exception {

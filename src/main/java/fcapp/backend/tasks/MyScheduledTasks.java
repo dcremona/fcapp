@@ -67,7 +67,7 @@ public class MyScheduledTasks{
 	@Scheduled(cron = "#{@getCronValueUfficiosi}")
 	// @Scheduled(cron = "${ufficiosi.cron.expression}")
 	// @Scheduled(fixedRate = 6000)
-	// @Scheduled(cron = "0 59 12 * * *")
+	// @Scheduled(cron = "0 18 19 * * *")
 	public void jobUfficiosi() throws Exception {
 
         log.info("jobUfficiosi start at {}", Utils.formatDate(new Date(), "dd/MM/yyyy HH:mm:ss"));
@@ -96,10 +96,8 @@ public class MyScheduledTasks{
 		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
         log.info("dayOfWeek {}", dayOfWeek);
 
-		String votiExcel = "Voti-Ufficiosi-Excel";
 		String infoResult = "UFFICIOSI";
 		if (flagUfficiali) {
-			votiExcel = "Voti-Ufficiali-Excel";
 			infoResult = "UFFICIALI";
 		}
 
@@ -155,9 +153,12 @@ public class MyScheduledTasks{
 
 		Thread.sleep(60000L);
 
+    	//https://www.pianetafanta.it/api/voti/export?variante=ufficiali&stagione=2026_2027&bonusTipo=standard&giornata=3
 		String urlFanta = (String) p.get("URL_FANTA");
-		String httpUrl = urlFanta + votiExcel + ".asp?giornataScelta=" + giornataInfo.getCodiceGiornata();
-		jobProcessFileCsv.downloadCsv(httpUrl, basePathData, "voti_" + giornataInfo.getCodiceGiornata(), 3);
+        String votiExcel = "api/voti/export?variante=ufficiali&stagione=2026_2027&bonusTipo=standard&giornata="+giornataInfo.getCodiceGiornata();
+
+        String httpUrl = urlFanta + votiExcel ;
+		jobProcessFileCsv.downloadVotiXlsxCsv(httpUrl, basePathData, "voti_" + giornataInfo.getCodiceGiornata());
 
 		String fileName = basePathData + "/voti_" + giornataInfo.getCodiceGiornata() + ".csv";
 		jobProcessGiornata.aggiornamentoPFGiornata(p, fileName, "" + giornataInfo.getCodiceGiornata());
