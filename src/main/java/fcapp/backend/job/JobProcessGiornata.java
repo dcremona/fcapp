@@ -1178,7 +1178,7 @@ public class JobProcessGiornata {
 
 			fcGiocatore = p.getFcGiocatore();
 			int idGiocatore = fcGiocatore.getIdGiocatore();
-			log.info("idGiocatore {}", idGiocatore);
+			//log.info("idGiocatore {}", idGiocatore);
 
 			if (idGiocatore == appoIdGiocatore) {
 

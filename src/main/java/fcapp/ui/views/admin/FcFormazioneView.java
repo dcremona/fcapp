@@ -11,7 +11,9 @@ import org.vaadin.crudui.form.impl.field.provider.ComboBoxProvider;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -147,7 +149,22 @@ public class FcFormazioneView extends VerticalLayout {
                 new ComboBoxProvider<>(
                         Costants.GIOCATORE,
                         giocatori,
-                        new TextRenderer<>(FcGiocatore::getCognGiocatore),
+                        new ComponentRenderer<>(g -> {
+                            VerticalLayout container = new VerticalLayout();
+                            container.setPadding(false);
+                            container.setSpacing(false);
+
+                            Span c1 = new Span(g.getCognGiocatore());
+                            Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+                            Span c3 = new Span("Q " + g.getQuotazione());
+
+                            c2.getStyle().set("fontSize", "smaller");
+                            c3.getStyle().set("fontSize", "smaller");
+
+                            container.add(c1, c2, c3);
+                            return container;
+                        })
+                        ,
                         FcGiocatore::getCognGiocatore));
     }
 

@@ -13,7 +13,9 @@ import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -149,6 +151,7 @@ public class FcGiornataDettView extends VerticalLayout {
         crud.getCrudFormFactory().setVisibleProperties(
                 CrudOperation.UPDATE,
                 FIELD_ORDINAMENTO,
+                FIELD_FC_GIOCATORE,
                 FIELD_FC_STATO_GIOCATORE,
                 FIELD_VOTO,
                 FIELD_FLAG_ATTIVO);
@@ -186,7 +189,22 @@ public class FcGiornataDettView extends VerticalLayout {
                 new ComboBoxProvider<>(
                         Costants.GIOCATORE,
                         giocatori,
-                        new TextRenderer<>(FcGiocatore::getCognGiocatore),
+                        new ComponentRenderer<>(g -> {
+                            VerticalLayout container = new VerticalLayout();
+                            container.setPadding(false);
+                            container.setSpacing(false);
+
+                            Span c1 = new Span(g.getCognGiocatore());
+                            Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+                            Span c3 = new Span("Q " + g.getQuotazione());
+
+                            c2.getStyle().set("fontSize", "smaller");
+                            c3.getStyle().set("fontSize", "smaller");
+
+                            container.add(c1, c2, c3);
+                            return container;
+                        })
+                        ,
                         FcGiocatore::getCognGiocatore));
 
         crud.getCrudFormFactory().setFieldProvider(
@@ -206,7 +224,7 @@ public class FcGiornataDettView extends VerticalLayout {
                         item != null && item.getFcGiornataInfo() != null
                                 ? item.getFcGiornataInfo().getDescGiornataFc()
                                 : ""))
-                .setHeader("Giornata");
+                .setHeader(Costants.GIORNATA);
 
         crud.getGrid()
                 .addColumn(new TextRenderer<>(item ->

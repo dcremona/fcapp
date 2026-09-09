@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import fcapp.backend.data.entity.FcAttore;
 import fcapp.backend.data.entity.FcGiornataDett;
+import fcapp.backend.data.entity.FcGiornataDettId;
 import fcapp.backend.data.entity.FcGiornataInfo;
 
 @Service
@@ -33,6 +34,12 @@ public class GiornataDettService{
 	public FcGiornataDett save(FcGiornataDett c) {
 		FcGiornataDett fcGiornataDett = null;
 		try {
+			
+			FcGiornataDettId id = new FcGiornataDettId(c.getFcAttore().getIdAttore(),
+					c.getFcGiocatore().getIdGiocatore(),
+					c.getFcGiornataInfo().getCodiceGiornata()
+					);
+			c.setId(id);
 			fcGiornataDett = giornataDettRepository.save(c);
 		} catch (Exception ex) {
 			log.error(ex.getMessage());

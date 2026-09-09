@@ -167,7 +167,22 @@ public class FcPagelleView extends VerticalLayout {
                 new ComboBoxProvider<>(
                         Costants.GIOCATORE,
                         giocatori,
-                        new TextRenderer<>(FcGiocatore::getCognGiocatore),
+                        new ComponentRenderer<>(g -> {
+                            VerticalLayout container = new VerticalLayout();
+                            container.setPadding(false);
+                            container.setSpacing(false);
+
+                            Span c1 = new Span(g.getCognGiocatore());
+                            Span c2 = new Span(g.getFcRuolo().getIdRuolo() + " - " + g.getFcSquadra().getNomeSquadra());
+                            Span c3 = new Span("Q " + g.getQuotazione());
+
+                            c2.getStyle().set("fontSize", "smaller");
+                            c3.getStyle().set("fontSize", "smaller");
+
+                            container.add(c1, c2, c3);
+                            return container;
+                        })
+                        ,                        
                         FcGiocatore::getCognGiocatore));
     }
 
