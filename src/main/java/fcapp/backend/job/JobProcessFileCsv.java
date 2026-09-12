@@ -4,10 +4,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
@@ -607,12 +614,45 @@ public class JobProcessFileCsv{
 		}
 	}
 	
+	private void fileDownloadXlsx(String url,String path,String fileName) throws IOException, InterruptedException {
+
+		//url = "https://www.pianetafanta.it/api/voti/export" + "?variante=ufficiali" + "&stagione=2026_2027"+ "&bonusTipo=standard" + "&giornata=4";
+
+		Path output = Path.of(path+fileName + EXT_XLSX);
+
+		HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url))
+				.header("User-Agent",
+						"Mozilla/5.0 (Windows NT 10.0; Win64; x64) " + "AppleWebKit/537.36 " + "(KHTML, like Gecko) "
+								+ "Chrome/140.0.0.0 Safari/537.36")
+				.header("Accept",
+						"text/html,application/xhtml+xml,application/xml;" + "q=0.9,image/avif,image/webp,*/*;q=0.8")
+				.header("Referer", "https://www.pianetafanta.it/").GET().build();
+
+		HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+		log.info("HTTP status: " + response.statusCode());
+
+		if (response.statusCode() >= 200 && response.statusCode() < 300) {
+
+			Files.write(output, response.body());
+
+			log.info("File scaricato: " + output.toAbsolutePath());
+
+		} else {
+			log.info(new String(response.body()));
+
+			throw new IOException("Download fallito. HTTP status: " + response.statusCode());
+		}
+	}
+	
 	public void downloadVotiXlsxCsv(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadXlsx START");
 
 		try {
-			fileDownload(httpUrl, fileName + EXT_XLSX, pathCsv);
+			fileDownloadXlsx(httpUrl, pathCsv, fileName);
 			
 			File initialFile = new File(pathCsv + fileName + EXT_XLSX);
 			
