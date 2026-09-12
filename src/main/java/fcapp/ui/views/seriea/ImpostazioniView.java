@@ -23,6 +23,7 @@ import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -445,7 +446,15 @@ public class ImpostazioniView extends VerticalLayout
                 CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
             }
         });
-        return new Upload(inMemoryHandler);
+        
+        Upload upload = new Upload(inMemoryHandler);
+        upload.setMaxFiles(1);
+        upload.setAcceptedFileTypes("application/vnd.ms-excel", ".xlsx");
+
+        Button uploadButton = new Button("Upload Quotazioni XLSX...");
+        upload.setUploadButton(uploadButton);
+        
+        return upload;
     }
 
 
@@ -459,7 +468,15 @@ public class ImpostazioniView extends VerticalLayout
                 CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
             }
         });
-        return new Upload(inMemoryHandler);
+        
+        Upload upload = new Upload(inMemoryHandler);
+        upload.setMaxFiles(1);
+        upload.setAcceptedFileTypes("application/vnd.ms-excel", ".xlsx");
+
+        Button uploadButton = new Button("Upload Img XLSX...");
+        upload.setUploadButton(uploadButton);
+        
+        return upload;
     }
 
     private Upload buildUploadUpdateVoti() {
@@ -492,7 +509,14 @@ public class ImpostazioniView extends VerticalLayout
                 CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
             }
         });
-        return new Upload(inMemoryHandler);
+        Upload upload = new Upload(inMemoryHandler);
+        upload.setMaxFiles(1);
+        upload.setAcceptedFileTypes("application/vnd.ms-excel", ".xlsx");
+
+        Button uploadButton = new Button("Upload Voti XLSX...");
+        upload.setUploadButton(uploadButton);
+        
+        return upload;
     }
 
     private void onGiornataChanged(FcGiornataInfo giornata) {
