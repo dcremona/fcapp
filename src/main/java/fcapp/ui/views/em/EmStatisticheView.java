@@ -103,7 +103,6 @@ public class EmStatisticheView extends VerticalLayout
     private final transient AccessoService accessoService;
 
     private List<FcAttore> squadreA = new ArrayList<>();
-    private List<FcAttore> squadreB = new ArrayList<>();
     private ComboBox<FcAttore> comboAttoreA;
     private ComboBox<FcAttore> comboAttoreB;
     private ComboBox<String> comboPunti;
@@ -155,7 +154,6 @@ public class EmStatisticheView extends VerticalLayout
 
     private void initData() {
         squadreA = attoreService.findByActive(true);
-        squadreB = new ArrayList<>(squadreA);
         squadre = squadraService.findAll();
     }
 

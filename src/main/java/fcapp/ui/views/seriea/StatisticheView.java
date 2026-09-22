@@ -100,7 +100,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
     private final transient AccessoService accessoService;
 
     private List<FcAttore> squadreA = new ArrayList<>();
-    private List<FcAttore> squadreB = new ArrayList<>();
     private List<FcAttore> proprietari = new ArrayList<>();
     private List<FcSquadra> squadreSerieA = new ArrayList<>();
 
@@ -156,7 +155,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
     private void initData() {
         squadreA = attoreService.findByActive(true);
-        squadreB = new ArrayList<>(squadreA);
         proprietari = new ArrayList<>(squadreA);
         squadreSerieA = squadraService.findAll();
     }

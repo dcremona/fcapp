@@ -1072,9 +1072,9 @@ public class EmTeamInsertView extends VerticalLayout
         }
     }
 
-    private FcGiocatore getFcGiocatore(int i) {
-        return getPlayerInSlot(i);
-    }
+//    private FcGiocatore getFcGiocatore(int i) {
+//        return getPlayerInSlot(i);
+//    }
 
     private Grid<FcCalendarioCompetizione> getTablePartite(List<FcCalendarioCompetizione> listPartite) {
         Grid<FcCalendarioCompetizione> grid = new Grid<>();
