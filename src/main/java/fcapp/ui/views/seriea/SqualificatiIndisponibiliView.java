@@ -71,6 +71,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
     private final transient Environment env;
     private final transient AccessoService accessoService;
     private final transient GiornataGiocatoreService giornataGiocatoreService;
+    private final JobProcessFileCsv jobProcessFileCsv;
 
     private Button salvaDb;
     private Grid<FcGiornataGiocatore> tableSqualificati;
@@ -81,13 +82,14 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
             ResourceLoader resourceLoader,
             Environment env,
             AccessoService accessoService,
-            GiornataGiocatoreService giornataGiocatoreService) {
+            GiornataGiocatoreService giornataGiocatoreService,JobProcessFileCsv jobProcessFileCsv) {
 
         this.jobProcessGiornata = jobProcessGiornata;
         this.resourceLoader = resourceLoader;
         this.env = env;
         this.accessoService = accessoService;
         this.giornataGiocatoreService = giornataGiocatoreService;
+        this.jobProcessFileCsv = jobProcessFileCsv;
 
         log.info("SqualificatiIndisponibiliView()");
     }
@@ -196,13 +198,12 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
 
             giornataGiocatoreService.deleteByCustonm(giornataInfo);
 
-            JobProcessFileCsv jobCsv = new JobProcessFileCsv();
             boolean useFantaGazzetta = true;
 
             if (useFantaGazzetta) {
-                processFantaGazzettaFiles(jobCsv, giornataInfo, basePathData);
+                processFantaGazzettaFiles(giornataInfo, basePathData);
             } else {
-                processLegacyFiles(jobCsv, giornataInfo, basePathData, urlFanta);
+                processLegacyFiles(giornataInfo, basePathData, urlFanta);
             }
 
             refreshTables(giornataInfo);
@@ -216,7 +217,6 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
     }
 
     private void processLegacyFiles(
-            JobProcessFileCsv jobCsv,
             FcGiornataInfo giornataInfo,
             String basePathData,
             String urlFanta) throws Exception {
@@ -226,33 +226,32 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
         String urlSqualificati = urlFanta + "giocatori-squalificati.asp";
         log.info("httpUrlSqualificati {}", urlSqualificati);
         String fileNameSqualificati = FILE_SQUALIFICATI + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvSqualificatiInfortunati(urlSqualificati, basePathData, fileNameSqualificati);
+        jobProcessFileCsv.downloadCsvSqualificatiInfortunati(urlSqualificati, basePathData, fileNameSqualificati);
         fileName = buildCsvPath(basePathData, fileNameSqualificati);
         jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, true, false);
 
         String urlInfortunati = urlFanta + "giocatori-infortunati.asp";
         log.info("httpUrlInfortunati {}", urlInfortunati);
         String fileNameInfortunati = FILE_INFORTUNATI + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvSqualificatiInfortunati(urlInfortunati, basePathData, fileNameInfortunati);
+        jobProcessFileCsv.downloadCsvSqualificatiInfortunati(urlInfortunati, basePathData, fileNameInfortunati);
         fileName = buildCsvPath(basePathData, fileNameInfortunati);
         jobProcessGiornata.initDbGiornataGiocatore(giornataInfo, fileName, false, true);
 
         String urlProbabili = urlFanta + "probabili-formazioni-complete-serie-a-live.asp";
         log.info("httpUrlProbabili {}", urlProbabili);
         String fileNameProbabili = FILE_PROBABILI + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvProbabili(urlProbabili, basePathData, fileNameProbabili);
+        jobProcessFileCsv.downloadCsvProbabili(urlProbabili, basePathData, fileNameProbabili);
         fileName = buildCsvPath(basePathData, fileNameProbabili);
         jobProcessGiornata.initDbProbabili(fileName);
     }
 
     private void processFantaGazzettaFiles(
-            JobProcessFileCsv jobCsv,
             FcGiornataInfo giornataInfo,
             String basePathData) throws Exception {
 
         String fileNameSqualificatiInfortunati =
                 FILE_SQUALIFICATI_INFORTUNATI_FG + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(
+        jobProcessFileCsv.downloadCsvSqualificatiInfortunatiFantaGazzetta(
                 Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI,
                 basePathData,
                 fileNameSqualificatiInfortunati);
@@ -261,7 +260,7 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
         jobProcessGiornata.initDbSqualificatiInfortunatiFantaGazzetta(giornataInfo, fileName);
 
         String fileNameProbabili = FILE_PROBABILI_FG + giornataInfo.getCodiceGiornata();
-        jobCsv.downloadCsvProbabiliFantaGazzetta(
+        jobProcessFileCsv.downloadCsvProbabiliFantaGazzetta(
                 Costants.HTTP_URL_FANTAGAZZETTA_PROBABILI,
                 basePathData,
                 fileNameProbabili);

@@ -1,27 +1,16 @@
 package fcapp.backend.job;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -31,14 +20,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import fcapp.backend.data.entity.FcRuolo;
@@ -48,906 +34,882 @@ import fcapp.backend.service.SquadraService;
 import fcapp.utils.Costants;
 
 @Controller
-public class JobProcessFileCsv{
+public class JobProcessFileCsv {
 
 	private static final Logger log = LoggerFactory.getLogger(JobProcessFileCsv.class);
-
-	private static final int SIZE = 1024;
 
 	private static final String EXT_XLSX = ".xlsx";
 	private static final String EXT_HTML = ".html";
 	private static final String EXT_CSV = ".csv";
 
-	@Autowired
-	private SquadraService squadraService;
+	private static final String DEFAULT_BASE_URL = "https://example.com/";
 
-	@Autowired
-	private RuoloService ruoloService;
+	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " + "AppleWebKit/537.36 "
+			+ "(KHTML, like Gecko) " + "Chrome/140.0.0.0 Safari/537.36";
 
-	public void downloadCsv(String httpUrl, String pathCsv, String fileName,
-			int headCount) throws Exception {
+	private static final String PIANETAFANTA_REFERER = "https://www.pianetafanta.it/";
+
+	private static final Pattern NOMEGIO_PATTERN = Pattern.compile("nomegio=([^&]+)");
+
+	private final SquadraService squadraService;
+	private final RuoloService ruoloService;
+	private final HttpClient httpClient;
+
+	public JobProcessFileCsv(SquadraService squadraService, RuoloService ruoloService) {
+
+		this.squadraService = squadraService;
+		this.ruoloService = ruoloService;
+
+		this.httpClient = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+	}
+
+// -------------------------------------------------------------------------
+// PUBLIC API
+// -------------------------------------------------------------------------
+
+	public void downloadCsv(String httpUrl, String pathCsv, String fileName, int headCount) throws Exception {
 
 		log.info("downloadCsv START");
 
-		File input = null;
+		Path htmlFile = downloadHtml(httpUrl, pathCsv, fileName);
+
 		try {
-			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
-			input = new File(pathCsv + fileName + EXT_HTML);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
+			var document = Jsoup.parse(htmlFile.toFile(), StandardCharsets.UTF_8.name(), DEFAULT_BASE_URL);
 
-		StringBuilder data = new StringBuilder();
+			StringBuilder data = new StringBuilder();
 
-		assert input != null;
-		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
-
-		// select all <tr> or Table Row Elements
-		Elements tableRows = doc.select("table");
-
-		// Load ArrayList with table row strings
-		for (Element tableRow : tableRows) {
-
-			Elements trRows = tableRow.select("tr");
-			int conta = 0;
-			for (Element trRow : trRows) {
-				conta++;
-				if (conta > headCount) {
-					Elements tdRows = trRow.select("td");
-					for (Element tdRow : tdRows) {
-						String rowData = tdRow.text();
-						if (StringUtils.isEmpty(rowData)) {
-							Elements img = tdRow.select("img");
-							rowData = img.attr("title");
-							if (StringUtils.isEmpty(rowData)) {
-								rowData = img.attr("alt");
-							}
-						}
-						data.append(rowData);
-						data.append(";");
-					}
-					data.append("\n");
-				}
+			for (Element table : document.select("table")) {
+				appendTableRows(table, data, headCount);
 			}
+
+			writeCsv(pathCsv, fileName, data);
+
+		} finally {
+			log.info("downloadCsv END");
 		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-
-			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-			// cleanUp(path);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		log.info("downloadCsv END");
 	}
-	
+
 	public void downloadCsvCalendarioSerieA(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvCalendarioSerieA START");
 
-		File input = null;
+		Path htmlFile = downloadHtml(httpUrl, pathCsv, fileName);
+
 		try {
-			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
-			input = new File(pathCsv + fileName + EXT_HTML);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
+			var document = Jsoup.parse(htmlFile.toFile(), StandardCharsets.UTF_8.name(), DEFAULT_BASE_URL);
 
-		StringBuilder data = new StringBuilder();
+			StringBuilder data = new StringBuilder();
 
-		assert input != null;
-		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
-
-		Elements divRows = doc.select("div");
-
-		// Load ArrayList with table row strings
-		for (Element divRow : divRows) {
-
-			String className = divRow.className();
-			String rowData = divRow.text();
-			
-			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && "cal-partita-card".equals(className)) {
-				log.info(className);
-				List<Node> childNodes = divRow.childNodes();
-				
-				String sDataPartita = null;
-				String sOraPartita = null;
-				String sSquadraCasa = null;
-				String sSquadraFuori = null;
-				String sRis = null;
-
-				for (Node n : childNodes) {
-					String sclass = n.attr("class");
-					if ("cal-partita-datetime".equals(sclass)) {
-						for (Node n2 : n.childNodes()) {
-							String sclass2 = n2.attr("class");
-							if ("cal-partita-date".equals(sclass2)) {
-								Node dataPartita = n2.childNode(4);
-								if (dataPartita instanceof TextNode) {
-									TextNode textNode = (TextNode)dataPartita;
-									sDataPartita = textNode.text();
-									log.info(sDataPartita);
-								}
-							} else if ("cal-partita-time".equals(sclass2)) {
-								Node oraPartita = n2.childNode(2);
-								if (oraPartita instanceof TextNode) {
-									TextNode textNode = (TextNode)oraPartita;
-									sOraPartita = textNode.text();
-									log.info(sOraPartita);
-								}
-							}
-						}
-					} else if ("cal-partita-body".equals(sclass)) {
-						
-						for (Node n2 : n.childNodes()) {
-							String sclass2 = n2.attr("class");
-							if ("cal-partita-team".equals(sclass2)) {
-								Node teamName = n2.childNode(1);
-								if (teamName instanceof Element) {
-									Element e = (Element)teamName;
-									sSquadraCasa = e.text();
-									log.info(sSquadraCasa);
-								}
-							} else if ("cal-partita-score-wrap".equals(sclass2)) {
-								Node score = n2.childNode(0);
-								if (score instanceof Element) {
-									Element e = (Element)score;
-									sRis = e.text();
-									log.info(sRis);
-								}
-
-							} else if ("cal-partita-team cal-partita-team--away".equals(sclass2)) {
-								Node teamName = n2.childNode(0);
-								if (teamName instanceof Element) {
-									Element e = (Element)teamName;
-									sSquadraFuori = e.text();
-									log.info(sSquadraFuori);
-								}
-							}
-						}
-					}
-				}
-				data.append(sDataPartita + " " +sOraPartita);
-				data.append(";");
-				data.append(sSquadraCasa);
-				data.append(";");
-				data.append(sRis);
-				data.append(";");
-				data.append(sSquadraFuori);
-				data.append(";");
-				data.append("\n");
+			for (Element div : document.select("div.cal-partita-card")) {
+				appendCalendarRow(div, data);
 			}
+
+			writeCsv(pathCsv, fileName, data);
+
+		} finally {
+			log.info("downloadCsvCalendarioSerieA END");
 		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-
-			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-			// cleanUp(path);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		log.info("downloadCsvCalendarioSerieA END");
 	}
 
-	public void downloadCsvSqualificatiInfortunati(String httpUrl,
-			String pathCsv, String fileName) throws Exception {
+	public void downloadCsvSqualificatiInfortunati(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvSqualificatiInfortunati START");
 
-		File input = null;
+		Path htmlFile = downloadHtml(httpUrl, pathCsv, fileName);
+
 		try {
-			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
-			input = new File(pathCsv + fileName + EXT_HTML);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
+			var document = Jsoup.parse(htmlFile.toFile(), StandardCharsets.UTF_8.name(), DEFAULT_BASE_URL);
 
-		StringBuilder data = new StringBuilder();
+			StringBuilder data = new StringBuilder();
 
-		assert input != null;
-		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
-		// select all <tr> or Table Row Elements
-		Elements tableRows = doc.select("table");
-		// Load ArrayList with table row strings
-		for (Element tableRow : tableRows) {
-			Elements trRows = tableRow.select("tr");
-			for (Element trRow : trRows) {
-				Elements tdRows = trRow.select("td");
-				boolean bFind = false;
-				String nomegic = null;
-				for (Element tdRow : tdRows) {
-					if (bFind) {
-						String rowData = tdRow.text();
-						data.append(nomegic);
-						data.append(";");
-						data.append(rowData);
-						data.append("\n");
-						bFind = false;
-						nomegic = null;
-					}
-					Elements children = tdRow.children();
-
-					for (Element c : children) {
-						String href = c.attr("href");
-						if (StringUtils.isNotEmpty(href)) {
-							int idx = href.indexOf("nomegio=");
-							if (idx != -1) {
-								href = href.substring(idx);
-								idx = href.indexOf("=");
-								if (idx != -1) {
-									nomegic = href.substring(idx + 1);
-									log.info(nomegic);
-									bFind = true;
-								}
-							}
-						}
-					}
-				}
+			for (Element table : document.select("table")) {
+				appendSuspendedInjuredRows(table, data);
 			}
+
+			writeCsv(pathCsv, fileName, data);
+
+		} finally {
+			log.info("downloadCsvSqualificatiInfortunati END");
 		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-
-			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-			// cleanUp(path);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		log.info("downloadCsvSqualificatiInfortunati END");
 	}
 
-	public void downloadCsvProbabili(String httpUrl, String pathCsv,
-			String fileName) throws Exception {
+	public void downloadCsvProbabili(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvProbabili START");
 
-		File input = null;
+		Path htmlFile = downloadHtml(httpUrl, pathCsv, fileName);
+
 		try {
-			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
-			input = new File(pathCsv + fileName + EXT_HTML);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
+			var document = Jsoup.parse(htmlFile.toFile(), StandardCharsets.UTF_8.name(), DEFAULT_BASE_URL);
 
-		StringBuilder data = new StringBuilder();
+			StringBuilder data = new StringBuilder();
 
-		assert input != null;
-		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
-		// select all <tr> or Table Row Elements
-		Elements tableRows = doc.select("table");
-		// Load ArrayList with table row strings
-		for (Element tableRow : tableRows) {
-			Elements trRows = tableRow.select("tr");
-			for (Element trRow : trRows) {
-				Elements thRows = trRow.select("th");
-				for (Element tdRow : thRows) {
-					String rowData = tdRow.text();
-					if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && (Costants.TITOLARI.equals(rowData) || Costants.PANCHINA.equals(rowData))) {
-						data.append(rowData);
-						data.append(";");
-						data.append(rowData);
-						data.append("\n");
-					}
-				}
-
-				Elements tdRows = trRow.select("td");
-				for (Element tdRow : tdRows) {
-					String rowData = tdRow.text();
-					if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1) {
-						data.append(rowData);
-						data.append(";");
-						data.append(rowData);
-						data.append("\n");
-					}
-				}
+			for (Element table : document.select("table")) {
+				appendProbabiliRows(table, data);
 			}
+
+			writeCsv(pathCsv, fileName, data);
+
+		} finally {
+			log.info("downloadCsvProbabili END");
 		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-
-			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-			// cleanUp(path);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		log.info("downloadCsvProbabili END");
 	}
 
-	public void downloadCsvProbabiliFantaGazzetta(String httpUrl,
-			String pathCsv, String fileName) throws Exception {
+	public void downloadCsvProbabiliFantaGazzetta(String httpUrl, String pathCsv, String fileName) throws Exception {
 
 		log.info("downloadCsvProbabiliFantaGazzetta START");
 
-		File input = null;
+		Path htmlFile = downloadHtml(httpUrl, pathCsv, fileName);
+
 		try {
-			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
-			input = new File(pathCsv + fileName + EXT_HTML);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
+			var document = Jsoup.parse(htmlFile.toFile(), StandardCharsets.UTF_8.name(), DEFAULT_BASE_URL);
 
-		StringBuilder data = new StringBuilder();
+			StringBuilder data = new StringBuilder();
 
-		assert input != null;
-		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
-
-		Elements ulRows = doc.select("li");
-
-		for (Element liRow : ulRows) {
-			Element parent = liRow.parent();
-			assert parent != null;
-			String classNameParent = parent.className();
-			String rowData = liRow.text();
-			String className = liRow.className();
-			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && "player-item pill".equals(className)) {
-				String lastCharacter = rowData.substring(rowData.length() - 1);
-				if ("%".equals(lastCharacter)) {
-					Elements children = liRow.children();
-					String href;
-					for (Element c : children) {
-						href = c.attr("href");
-						if (StringUtils.isNotEmpty(href) && StringUtils.length(href) > 1) {
-							StringBuilder percentuale = new StringBuilder();
-							char[] letters = rowData.toCharArray();
-							for (char l : letters) {
-								boolean flag = Character.isDigit(l);
-								if (flag) {
-									percentuale.append(l);
-								}
-							}
-
-							StringBuilder nomeImg = new StringBuilder();
-							char[] letters2 = href.toCharArray();
-							for (char l : letters2) {
-								boolean flag = Character.isDigit(l);
-								if (flag) {
-									nomeImg.append(l);
-								}
-							}
-
-							data.append(nomeImg);
-							data.append(";");
-							if ("player-list starters".equals(classNameParent)) {
-								data.append(Costants.TITOLARE);
-							} else {
-								data.append(Costants.PANCHINA);
-							}
-							data.append(";");
-							data.append(percentuale);
-							data.append(";");
-							data.append(href);
-							data.append("\n");
-
-						}
-					}
-				}
+			for (Element player : document.select("li.player-item.pill")) {
+				appendFantaGazzettaPlayer(player, data);
 			}
+
+			writeCsv(pathCsv, fileName, data);
+
+		} finally {
+			log.info("downloadCsvProbabiliFantaGazzetta END");
 		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-
-			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-			// cleanUp(path);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		log.info("downloadCsvProbabiliFantaGazzetta END");
 	}
 
-	public void downloadCsvSqualificatiInfortunatiFantaGazzetta(String httpUrl,
-			String pathCsv, String fileName) throws Exception {
+	public void downloadCsvSqualificatiInfortunatiFantaGazzetta(String httpUrl, String pathCsv, String fileName)
+			throws Exception {
 
 		log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta START");
 
-		File input = null;
+		Path htmlFile = downloadHtml(httpUrl, pathCsv, fileName);
+
 		try {
-			fileDownload(httpUrl, fileName + EXT_HTML, pathCsv);
-			input = new File(pathCsv + fileName + EXT_HTML);
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
-		}
+			var document = Jsoup.parse(htmlFile.toFile(), StandardCharsets.UTF_8.name(), DEFAULT_BASE_URL);
 
-		StringBuilder data = new StringBuilder();
+			StringBuilder data = new StringBuilder();
 
-		assert input != null;
-		Document doc = Jsoup.parse(input, "UTF-8", "https://example.com/");
-
-		Elements ulRows = doc.select("ul");
-
-		for (Element ulRow : ulRows) {
-			String rowData = ulRow.text();
-			String className = ulRow.className();
-			assert ulRow.parent() != null;
-			Element parent = ulRow.parent().parent();
-			// String rowDataparent = parent.text();
-			assert parent != null;
-			String classNameparent = parent.className();
-
-			if (StringUtils.isNotEmpty(rowData) && StringUtils.length(rowData) > 1 && ("injured-list".equals(className) || "suspendeds-list".equals(className))) {
-				Elements children = ulRow.children();
-				String href;
-
-				for (Element c : children) {
-					Elements childrenLi = c.children();
-					for (Element li : childrenLi) {
-						href = li.attr("href");
-						if (StringUtils.isNotEmpty(href) && StringUtils.length(href) > 1) {
-							StringBuilder nomeImg = new StringBuilder();
-							char[] letters2 = href.toCharArray();
-							for (char l : letters2) {
-								boolean flag = Character.isDigit(l);
-								if (flag) {
-									nomeImg.append(l);
-								}
-							}
-
-							String infoSqualificatoInfortunato;
-							String note = "";
-							if ("injured-list".equals(className)) {
-								infoSqualificatoInfortunato = Costants.INFORTUNATO;
-								for (Element p : childrenLi) {
-									String classNameNote = p.className();
-									if ("description".equals(classNameNote)) {
-										note = p.text();
-									}
-								}
-							} else if ("suspendeds".equals(classNameparent)) {
-								infoSqualificatoInfortunato = Costants.SQUALIFICATO;
-								note = Costants.SQUALIFICATO;
-							} else {
-								log.info(" nomeImg={} percentuale=0 href {}", nomeImg, href);
-								continue;
-							}
-
-							data.append(nomeImg);
-							data.append(";");
-							data.append(infoSqualificatoInfortunato);
-							data.append(";");
-							data.append("0");
-							data.append(";");
-							data.append(href);
-							data.append(";");
-							data.append(note);
-							data.append("\n");
-
-						}
-					}
-				}
-			}
-		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-
-			// Path path = Paths.get(pathCsv + fileName + EXT_CSV);
-			// cleanUp(path);
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta END");
-	}
-
-	private void fileDownload(String fAddress, String localFileName,
-			String destinationDir) throws Exception {
-
-		// Create a new trust manager that trust all certificates
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager(){
-			@Override
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return null;
+			for (Element list : document.select("ul.injured-list, ul.suspendeds-list")) {
+				appendFantaGazzettaSuspendedInjured(list, data);
 			}
 
-			@Override
-			public void checkClientTrusted(
-					java.security.cert.X509Certificate[] certs,
-					String authType) {
-			}
+			writeCsv(pathCsv, fileName, data);
 
-			@Override
-			public void checkServerTrusted(
-					java.security.cert.X509Certificate[] certs,
-					String authType) {
-			}
-		} };
-
-		// Activate the new trust manager
-		try {
-			SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, trustAllCerts, new java.security.SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch (Exception ignored) {
-		}
-
-		URLConnection uCon;
-		InputStream is = null;
-
-		try (OutputStream outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + localFileName))) {
-			byte[] buf;
-			int byteRead;
-			int byteWritten = 0;
-			URL url = new URL(fAddress);
-
-			uCon = url.openConnection();
-			is = uCon.getInputStream();
-			buf = new byte[SIZE];
-			while ((byteRead = is.read(buf)) != -1) {
-				outStream.write(buf, 0, byteRead);
-				byteWritten += byteRead;
-			}
-			log.info("File name: {} bytes: {}", localFileName, byteWritten);
-			log.info("Downloaded Successfully.");
-		} catch (Exception e) {
-			log.error(e.getMessage());
 		} finally {
-			if (is != null) {
-				is.close();
-			}
+			log.info("downloadCsvSqualificatiInfortunatiFantaGazzetta END");
 		}
 	}
-	
-	private void fileDownloadXlsx(String url,String path,String fileName) throws IOException, InterruptedException {
 
-		//url = "https://www.pianetafanta.it/api/voti/export" + "?variante=ufficiali" + "&stagione=2026_2027"+ "&bonusTipo=standard" + "&giornata=4";
+	public void downloadVotiXlsxCsv(String httpUrl, String pathCsv, String fileName) throws Exception {
 
-		Path output = Path.of(path+fileName + EXT_XLSX);
+		log.info("downloadVotiXlsxCsv START");
 
-		HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+		try {
+			Path xlsxFile = downloadXlsx(httpUrl, pathCsv, fileName);
 
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url))
-				.header("User-Agent",
-						"Mozilla/5.0 (Windows NT 10.0; Win64; x64) " + "AppleWebKit/537.36 " + "(KHTML, like Gecko) "
-								+ "Chrome/140.0.0.0 Safari/537.36")
+			try (InputStream inputStream = Files.newInputStream(xlsxFile)) {
+				downloadCsvFromXlsx(inputStream, pathCsv, fileName);
+			}
+
+		} catch (Exception ex) {
+			log.error("Errore durante downloadVotiXlsxCsv", ex);
+			throw ex;
+		} finally {
+			log.info("downloadVotiXlsxCsv END");
+		}
+	}
+
+	public void downloadCsvFromXlsx(InputStream inputStream, String pathCsv, String fileName) throws Exception {
+
+		log.info("downloadCsvFromXlsx START");
+
+		try {
+			String data = parseVotiWorkbook(inputStream);
+			writeCsv(pathCsv, fileName, data);
+
+		} catch (Exception ex) {
+			log.error("Error in downloadCsvFromXlsx", ex);
+			throw ex;
+		} finally {
+			log.info("downloadCsvFromXlsx END");
+		}
+	}
+
+	public void downloadQuotazioniCsvFromXlsx(InputStream inputStream, String pathCsv, String fileName)
+			throws Exception {
+
+		log.info("downloadQuotazioniCsvFromXlsx START");
+
+		try {
+			String data = parseQuotazioniWorkbook(inputStream);
+			writeCsv(pathCsv, fileName, data);
+
+		} catch (Exception ex) {
+			log.error("Error in downloadQuotazioniCsvFromXlsx", ex);
+			throw ex;
+		} finally {
+			log.info("downloadQuotazioniCsvFromXlsx END");
+		}
+	}
+
+// -------------------------------------------------------------------------
+// HTML
+// -------------------------------------------------------------------------
+
+	private Path downloadHtml(String url, String destinationDir, String fileName)
+			throws IOException, InterruptedException {
+
+		Path output = resolvePath(destinationDir, fileName + EXT_HTML);
+
+		log.info("Download HTML: {} -> {}", url, output);
+
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("User-Agent", USER_AGENT)
 				.header("Accept",
 						"text/html,application/xhtml+xml,application/xml;" + "q=0.9,image/avif,image/webp,*/*;q=0.8")
-				.header("Referer", "https://www.pianetafanta.it/").GET().build();
+				.header("Referer", PIANETAFANTA_REFERER).GET().build();
 
-		HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+		HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
-		log.info("HTTP status: " + response.statusCode());
+		validateResponse(response);
 
-		if (response.statusCode() >= 200 && response.statusCode() < 300) {
+		Files.createDirectories(output.getParent());
+		Files.write(output, response.body());
 
-			Files.write(output, response.body());
+		log.info("HTML scaricato: {} ({} bytes)", output, response.body().length);
 
-			log.info("File scaricato: " + output.toAbsolutePath());
+		return output;
+	}
 
-		} else {
-			log.info(new String(response.body()));
+	private Path downloadXlsx(String url, String destinationDir, String fileName)
+			throws IOException, InterruptedException {
+
+		Path output = resolvePath(destinationDir, fileName + EXT_XLSX);
+
+		log.info("Download XLSX: {} -> {}", url, output);
+
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("User-Agent", USER_AGENT)
+				.header("Accept",
+						"text/html,application/xhtml+xml,application/xml;" + "q=0.9,image/avif,image/webp,*/*;q=0.8")
+				.header("Referer", PIANETAFANTA_REFERER).GET().build();
+
+		HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+		log.info("HTTP status: {}", response.statusCode());
+
+		validateResponse(response);
+
+		Files.createDirectories(output.getParent());
+		Files.write(output, response.body());
+
+		log.info("File XLSX scaricato: {} ({} bytes)", output.toAbsolutePath(), response.body().length);
+
+		return output;
+	}
+
+	private void validateResponse(HttpResponse<byte[]> response) throws IOException {
+
+		if (response.statusCode() < 200 || response.statusCode() >= 300) {
+			String body = new String(response.body(), StandardCharsets.UTF_8);
+
+			log.error("Download fallito. HTTP status: {} - {}", response.statusCode(), body);
 
 			throw new IOException("Download fallito. HTTP status: " + response.statusCode());
 		}
 	}
-	
-	public void downloadVotiXlsxCsv(String httpUrl, String pathCsv, String fileName) throws Exception {
 
-		log.info("downloadXlsx START");
+// -------------------------------------------------------------------------
+// HTML PARSING
+// -------------------------------------------------------------------------
 
-		try {
-			fileDownloadXlsx(httpUrl, pathCsv, fileName);
-			
-			File initialFile = new File(pathCsv + fileName + EXT_XLSX);
-			
-			InputStream is = new FileInputStream(initialFile);
-			
-			downloadCsvFromXlsx(is,pathCsv,fileName);
+	private void appendTableRows(Element table, StringBuilder data, int headCount) {
 
-		} catch (Exception ex) {
-			log.error(ex.getMessage());
+		int rowIndex = 0;
+
+		for (Element row : table.select("tr")) {
+			rowIndex++;
+
+			if (rowIndex <= headCount) {
+				continue;
+			}
+
+			for (Element cell : row.select("td")) {
+				String value = cell.text();
+
+				if (StringUtils.isEmpty(value)) {
+					Element image = cell.selectFirst("img");
+
+					if (image != null) {
+						value = image.attr("title");
+
+						if (StringUtils.isEmpty(value)) {
+							value = image.attr("alt");
+						}
+					}
+				}
+
+				appendValue(data, value);
+			}
+
+			newLine(data);
 		}
-		
-		log.info("downloadXlsx END");
 	}
 
-	public void downloadCsvFromXlsx(InputStream is, String pathCsv, String fileName) throws Exception {
+	private void appendCalendarRow(Element partita, StringBuilder data) {
 
-		log.info("downloadCsvFromXlsx START");
+		String date = "";
+		String time = "";
+		String homeTeam = "";
+		String awayTeam = "";
+		String result = "";
+
+		Element datetime = partita.selectFirst(".cal-partita-datetime");
+
+		if (datetime != null) {
+			Element dateElement = datetime.selectFirst(".cal-partita-date");
+
+			if (dateElement != null) {
+				date = extractTextNode(dateElement, 4);
+			}
+
+			Element timeElement = datetime.selectFirst(".cal-partita-time");
+
+			if (timeElement != null) {
+				time = extractTextNode(timeElement, 2);
+			}
+		}
+
+		Element body = partita.selectFirst(".cal-partita-body");
+
+		if (body != null) {
+			Element home = body.selectFirst(".cal-partita-team:not(.cal-partita-team--away)");
+
+			if (home != null) {
+				homeTeam = home.text();
+			}
+
+			Element score = body.selectFirst(".cal-partita-score-wrap");
+
+			if (score != null) {
+				result = score.text();
+			}
+
+			Element away = body.selectFirst(".cal-partita-team.cal-partita-team--away");
+
+			if (away != null) {
+				awayTeam = away.text();
+			}
+		}
+
+		appendValue(data, date + " " + time);
+		appendValue(data, homeTeam);
+		appendValue(data, result);
+		appendValue(data, awayTeam);
+		newLine(data);
+	}
+
+	private void appendSuspendedInjuredRows(Element table, StringBuilder data) {
+
+		for (Element row : table.select("tr")) {
+
+			String nomeGiocatore = null;
+			boolean found = false;
+
+			for (Element cell : row.select("td")) {
+
+				if (found) {
+					String rowData = cell.text();
+
+					appendValue(data, nomeGiocatore);
+					appendValue(data, rowData);
+					newLine(data);
+
+					found = false;
+					nomeGiocatore = null;
+				}
+
+				for (Element child : cell.children()) {
+
+					String href = child.attr("href");
+
+					String nomeGio = extractNomeGioco(href);
+
+					if (nomeGio != null) {
+						nomeGiocatore = nomeGio;
+						found = true;
+
+						log.info("nomegio={}", nomeGiocatore);
+					}
+				}
+			}
+		}
+	}
+
+	private void appendProbabiliRows(Element table, StringBuilder data) {
+
+		for (Element row : table.select("tr")) {
+
+			for (Element header : row.select("th")) {
+				String value = header.text();
+
+				if (isValidText(value) && (Costants.TITOLARI.equals(value) || Costants.PANCHINA.equals(value))) {
+
+					appendValue(data, value);
+					appendValue(data, value);
+					newLine(data);
+				}
+			}
+
+			for (Element cell : row.select("td")) {
+				String value = cell.text();
+
+				if (isValidText(value)) {
+					appendValue(data, value);
+					appendValue(data, value);
+					newLine(data);
+				}
+			}
+		}
+	}
+
+	private void appendFantaGazzettaPlayer(Element player, StringBuilder data) {
+
+		String rowData = player.text();
+
+		if (!isValidText(rowData) || !rowData.endsWith("%")) {
+			return;
+		}
+
+		Element parent = player.parent();
+
+		if (parent == null) {
+			return;
+		}
+
+		String playerType = "player-list starters".equals(parent.className()) ? Costants.TITOLARE : Costants.PANCHINA;
+
+		String percentage = extractDigits(rowData);
+
+		for (Element child : player.children()) {
+
+			String href = child.attr("href");
+
+			if (StringUtils.isEmpty(href)) {
+				continue;
+			}
+
+			String playerId = extractDigits(href);
+
+			if (StringUtils.isEmpty(playerId)) {
+				continue;
+			}
+
+			appendValue(data, playerId);
+			appendValue(data, playerType);
+			appendValue(data, percentage);
+			appendValue(data, href);
+			newLine(data);
+		}
+	}
+
+	private void appendFantaGazzettaSuspendedInjured(Element list, StringBuilder data) {
+
+		String listClass = list.className();
+
+		boolean injured = "injured-list".equals(listClass);
+
+		boolean suspended = "suspendeds-list".equals(listClass);
+
+		if (!injured && !suspended) {
+			return;
+		}
+
+		for (Element child : list.children()) {
+
+			for (Element item : child.children()) {
+
+				String href = item.attr("href");
+
+				if (StringUtils.isEmpty(href)) {
+					continue;
+				}
+
+				String playerId = extractDigits(href);
+
+				if (StringUtils.isEmpty(playerId)) {
+					continue;
+				}
+
+				String type;
+				String note = "";
+
+				if (injured) {
+					type = Costants.INFORTUNATO;
+
+					Element description = item.selectFirst(".description");
+
+					if (description != null) {
+						note = description.text();
+					}
+
+				} else {
+					type = Costants.SQUALIFICATO;
+					note = Costants.SQUALIFICATO;
+				}
+
+				appendValue(data, playerId);
+				appendValue(data, type);
+				appendValue(data, "0");
+				appendValue(data, href);
+				appendValue(data, note);
+				newLine(data);
+			}
+		}
+	}
+
+	private String extractTextNode(Element element, int childIndex) {
+
+		if (element.childNodeSize() <= childIndex) {
+			return "";
+		}
+
+		Node node = element.childNode(childIndex);
+
+		if (node instanceof TextNode textNode) {
+			return textNode.text();
+		}
+
+		return "";
+	}
+
+	private String extractNomeGioco(String href) {
+
+		if (StringUtils.isEmpty(href)) {
+			return null;
+		}
+
+		Matcher matcher = NOMEGIO_PATTERN.matcher(href);
+
+		return matcher.find() ? matcher.group(1) : null;
+	}
+
+// -------------------------------------------------------------------------
+// XLSX
+// -------------------------------------------------------------------------
+
+	private String parseVotiWorkbook(InputStream inputStream) throws IOException {
 
 		StringBuilder data = new StringBuilder();
 
-		try {
+		try (Workbook workbook = WorkbookFactory.create(inputStream)) {
 
-			Workbook workbook = WorkbookFactory.create(is);
+			logWorkbookSheets(workbook);
 
-			// Retrieving the number of sheets in the Workbook
-			log.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
-
-			// 1. You can obtain a sheetIterator and iterate over it
-			Iterator<Sheet> sheetIterator = workbook.sheetIterator();
-			log.info("Retrieving Sheets using Iterator");
-			while (sheetIterator.hasNext()) {
-				Sheet sheet = sheetIterator.next();
-				log.info("=> {}", sheet.getSheetName());
-			}
-
-			// Getting the Sheet at index zero
 			Sheet sheet = workbook.getSheetAt(0);
-			DataFormatter dataFormatter = new DataFormatter();
+			DataFormatter formatter = new DataFormatter();
 
-			int conta = 0;
+			int rowIndex = 0;
+
 			for (Row row : sheet) {
 
-				if (conta == 0 || conta == 1 || conta == 2) {
-					conta++;
-					log.info("SCARTO RIGA HEADER ");
+				if (rowIndex++ < 3) {
+					log.info("SCARTO RIGA HEADER");
 					continue;
 				}
 
-				String idGiocatore = "";
-				String cognGiocatore = "";
-				String ruolo = "";
-				String squadra = "";
-				String minGiocati = "";
-				String g = "";
-				String goalRealizzato = "";
-				String goalSubito = "";
-				String autorete = "";
-				String assist = "";
-				String cs = "";
-				String ts = "";
-				String m3 = "";
-				String ammonizione = "";
-				String espulsione = "";
-				String rigoreFallito = "";
-				String rigoreParato = "";
-				String rigoreSegnato = "";
-				
-				for (Cell cell : row) {
+				VotiRow values = readVotiRow(row, formatter);
 
-					String cellValue = dataFormatter.formatCellValue(cell);
-					if (cell.getColumnIndex() == 0) {
-						idGiocatore = cellValue;
-					} else if (cell.getColumnIndex() == 1) {
-						cognGiocatore = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 2) {
-						ruolo = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 4) {
-						squadra = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 5) {
-						minGiocati = cellValue;
-					} else if (cell.getColumnIndex() == 6) {
-						g = cellValue;
-					} else if (cell.getColumnIndex() == 7) {
-						goalRealizzato = cellValue;
-					} else if (cell.getColumnIndex() == 8) {
-						goalSubito = cellValue;
-					} else if (cell.getColumnIndex() == 9) {
-						autorete = cellValue;
-					} else if (cell.getColumnIndex() == 10) {
-						assist = cellValue;
-					} else if (cell.getColumnIndex() == 11) {
-						cs = cellValue;
-					} else if (cell.getColumnIndex() == 16) {
-						ts = cellValue;
-					} else if (cell.getColumnIndex() == 22) {
-						m3 = cellValue;
-					} else if (cell.getColumnIndex() == 23) {
-						ammonizione = cellValue;
-					} else if (cell.getColumnIndex() == 24) {
-						espulsione = cellValue;
-					} else if (cell.getColumnIndex() == 27) {
-						rigoreFallito = cellValue;
-					} else if (cell.getColumnIndex() == 28) {
-						rigoreParato = cellValue;
-					} else if (cell.getColumnIndex() == 29) {
-						rigoreSegnato = cellValue;
-					}
-				}
-				
-				if (StringUtils.isEmpty(cognGiocatore) && StringUtils.isEmpty(ruolo)
-						&& StringUtils.isEmpty(squadra) && StringUtils.isEmpty(idGiocatore)) {
-					log.info("SCARTO RIGA VUOTA ");
+				if (values.isEmpty()) {
+					log.info("SCARTO RIGA VUOTA");
 					continue;
 				}
-				
-				data.append(idGiocatore);
-				data.append(";");
-				data.append(cognGiocatore);
-				data.append(";");
-				data.append(ruolo);
-				data.append(";");
-				data.append(squadra);
-				data.append(";");
-				data.append(minGiocati);
-				data.append(";");
-				data.append(g);
-				data.append(";");
-				data.append(goalRealizzato);
-				data.append(";");
-				data.append(goalSubito);
-				data.append(";");
-				data.append(autorete);
-				data.append(";");
-				data.append(assist);
-				data.append(";");
-				data.append(cs);
-				data.append(";");
-				data.append(ts);
-				data.append(";");
-				data.append(m3);
-				data.append(";");
-				data.append(ammonizione);
-				data.append(";");
-				data.append(espulsione);
-				data.append(";");
-				data.append(rigoreFallito);
-				data.append(";");
-				data.append(rigoreParato);
-				data.append(";");
-				data.append(rigoreSegnato);
-				data.append(";");
-				data.append("\n");
+
+				appendVotiRow(data, values);
 			}
-
-		} catch (Exception e) {
-			log.error("Error in downloadCsvFromXlsx !!!");
-			throw e;
 		}
 
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			throw e;
-		}
-
-		log.info("downloadCsvFromXlsx END");
+		return data.toString();
 	}
 
-	public void downloadQuotazioniCsvFromXlsx(InputStream is, String pathCsv, String fileName) throws Exception {
+	private VotiRow readVotiRow(Row row, DataFormatter formatter) {
 
-		log.info("downloadQuotazioniFromXlsx START");
+		VotiRow values = new VotiRow();
+
+		for (Cell cell : row) {
+
+			String value = formatter.formatCellValue(cell);
+
+			switch (cell.getColumnIndex()) {
+
+			case 0 -> values.idGiocatore = value;
+
+			case 1 -> values.cognGiocatore = value.toUpperCase();
+
+			case 2 -> values.ruolo = value.toUpperCase();
+
+			case 4 -> values.squadra = value.toUpperCase();
+
+			case 5 -> values.minGiocati = value;
+
+			case 6 -> values.g = value;
+
+			case 7 -> values.goalRealizzato = value;
+
+			case 8 -> values.goalSubito = value;
+
+			case 9 -> values.autorete = value;
+
+			case 10 -> values.assist = value;
+
+			case 11 -> values.cs = value;
+
+			case 16 -> values.ts = value;
+
+			case 22 -> values.m3 = value;
+
+			case 23 -> values.ammonizione = value;
+
+			case 24 -> values.espulsione = value;
+
+			case 27 -> values.rigoreFallito = value;
+
+			case 28 -> values.rigoreParato = value;
+
+			case 29 -> values.rigoreSegnato = value;
+
+			default -> {
+				// Colonna non utilizzata
+			}
+			}
+		}
+
+		return values;
+	}
+
+	private void appendVotiRow(StringBuilder data, VotiRow values) {
+
+		appendValue(data, values.idGiocatore);
+		appendValue(data, values.cognGiocatore);
+		appendValue(data, values.ruolo);
+		appendValue(data, values.squadra);
+		appendValue(data, values.minGiocati);
+		appendValue(data, values.g);
+		appendValue(data, values.goalRealizzato);
+		appendValue(data, values.goalSubito);
+		appendValue(data, values.autorete);
+		appendValue(data, values.assist);
+		appendValue(data, values.cs);
+		appendValue(data, values.ts);
+		appendValue(data, values.m3);
+		appendValue(data, values.ammonizione);
+		appendValue(data, values.espulsione);
+		appendValue(data, values.rigoreFallito);
+		appendValue(data, values.rigoreParato);
+		appendValue(data, values.rigoreSegnato);
+
+		newLine(data);
+	}
+
+	private String parseQuotazioniWorkbook(InputStream inputStream) throws IOException {
 
 		StringBuilder data = new StringBuilder();
 
-		try {
+		appendValue(data, "idGiocatore");
+		appendValue(data, "giocatore");
+		appendValue(data, "r");
+		appendValue(data, "r1");
+		appendValue(data, "squadra");
+		appendValue(data, "qi");
+		appendValue(data, "qa");
+		newLine(data);
 
-			Workbook workbook = WorkbookFactory.create(is);
+		try (Workbook workbook = WorkbookFactory.create(inputStream)) {
 
-			// Retrieving the number of sheets in the Workbook
-			log.info("Workbook has {} Sheets : ", workbook.getNumberOfSheets());
+			logWorkbookSheets(workbook);
 
-			// 1. You can obtain a sheetIterator and iterate over it
-			Iterator<Sheet> sheetIterator = workbook.sheetIterator();
-			log.info("Retrieving Sheets using Iterator");
-			while (sheetIterator.hasNext()) {
-				Sheet sheet = sheetIterator.next();
-				log.info("=> {}", sheet.getSheetName());
-			}
-
-			// Getting the Sheet at index zero
 			Sheet sheet = workbook.getSheetAt(0);
-			DataFormatter dataFormatter = new DataFormatter();
-
-			data.append("idGiocatore");
-			data.append(";");
-			data.append("giocatore");
-			data.append(";");
-			data.append("r");
-			data.append(";");
-			data.append("r1");
-			data.append(";");
-			data.append("squadra");
-			data.append(";");
-			data.append("qi");
-			data.append(";");
-			data.append("qa");
-			data.append(";");
-			data.append("\n");
+			DataFormatter formatter = new DataFormatter();
 
 			for (Row row : sheet) {
 
-				String idGiocatore = "";
-				String r = "";
-				String r1 = "";
-				String giocatore = "";
-				String squadra = "";
-				String qi = "";
-				String qa = "";
-				
-				for (Cell cell : row) {
+				QuotazioneRow values = readQuotazioneRow(row, formatter);
 
-					String cellValue = dataFormatter.formatCellValue(cell);
-					if (cell.getColumnIndex() == 0) {
-						idGiocatore = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 1) {
-						r = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 2) {
-						r1 = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 3) {
-						giocatore = cellValue.toUpperCase();
-					} else if (cell.getColumnIndex() == 4) {
-						squadra = cellValue;
-					} else if (cell.getColumnIndex() == 5) {
-						qi = cellValue;
-					} else if (cell.getColumnIndex() == 6) {
-						qa = cellValue;
-					}
-				}
-				
-				if (StringUtils.isEmpty(idGiocatore) && StringUtils.isEmpty(r) && StringUtils.isEmpty(giocatore) && StringUtils.isEmpty(squadra) && StringUtils.isEmpty(qa)) {
-					log.info("SCARTO RIGA VUOTA ");
+				if (values.isEmpty()) {
+					log.info("SCARTO RIGA VUOTA");
 					continue;
 				}
 
-				FcRuolo fcRuolo = ruoloService.findByIdRuolo(r);
-				if (fcRuolo == null) {
-					log.error(" FcRuolo null " + r);
-					continue;
-				}
-				
-				FcSquadra fcSquadra = squadraService.findByNomeSquadra(squadra);
-				if (fcSquadra == null) {
-					log.error(" FcSquadra null " + squadra);
+				FcRuolo ruolo = ruoloService.findByIdRuolo(values.r);
+
+				if (ruolo == null) {
+					log.error("FcRuolo null: {}", values.r);
 					continue;
 				}
 
-				data.append(idGiocatore);
-				data.append(";");
-				data.append(giocatore);
-				data.append(";");
-				data.append(r);
-				data.append(";");
-				data.append(r1);
-				data.append(";");
-				data.append(squadra);
-				data.append(";");
-				data.append(qi);
-				data.append(";");
-				data.append(qa);
-				data.append(";");
-				data.append("\n");
+				FcSquadra squadra = squadraService.findByNomeSquadra(values.squadra);
+
+				if (squadra == null) {
+					log.error("FcSquadra null: {}", values.squadra);
+					continue;
+				}
+
+				appendQuotazioneRow(data, values);
 			}
-
-		} catch (Exception e) {
-			log.error("Error in downloadQuotazioniFromXlsx !!!");
-			throw e;
 		}
 
-		try (FileOutputStream outputStream = new FileOutputStream(pathCsv + fileName + EXT_CSV)) {
-			byte[] strToBytes = data.toString().getBytes();
-			outputStream.write(strToBytes);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			throw e;
-		}
-
-		log.info("downloadQuotazioniFromXlsx END");
+		return data.toString();
 	}
 
-	// public void cleanUp(Path path) throws IOException {
-	// log.info("START cleanUp... ");
-	// Files.delete(path);
-	// log.info("END cleanUp Successfully.");
-	// }
+	private QuotazioneRow readQuotazioneRow(Row row, DataFormatter formatter) {
+
+		QuotazioneRow values = new QuotazioneRow();
+
+		for (Cell cell : row) {
+
+			String value = formatter.formatCellValue(cell);
+
+			switch (cell.getColumnIndex()) {
+
+			case 0 -> values.idGiocatore = value.toUpperCase();
+
+			case 1 -> values.r = value.toUpperCase();
+
+			case 2 -> values.r1 = value.toUpperCase();
+
+			case 3 -> values.giocatore = value.toUpperCase();
+
+			case 4 -> values.squadra = value;
+
+			case 5 -> values.qi = value;
+
+			case 6 -> values.qa = value;
+
+			default -> {
+				// Colonna non utilizzata
+			}
+			}
+		}
+
+		return values;
+	}
+
+	private void appendQuotazioneRow(StringBuilder data, QuotazioneRow values) {
+
+		appendValue(data, values.idGiocatore);
+		appendValue(data, values.giocatore);
+		appendValue(data, values.r);
+		appendValue(data, values.r1);
+		appendValue(data, values.squadra);
+		appendValue(data, values.qi);
+		appendValue(data, values.qa);
+
+		newLine(data);
+	}
+
+	private void logWorkbookSheets(Workbook workbook) {
+
+		log.info("Workbook has {} sheets", workbook.getNumberOfSheets());
+
+		for (Sheet sheet : workbook) {
+			log.info("Sheet: {}", sheet.getSheetName());
+		}
+	}
+
+// -------------------------------------------------------------------------
+// FILE / CSV
+// -------------------------------------------------------------------------
+
+	private void writeCsv(String directory, String fileName, CharSequence data) throws IOException {
+
+		Path output = resolvePath(directory, fileName + EXT_CSV);
+
+		Files.createDirectories(output.getParent());
+
+		Files.writeString(output, data.toString(), StandardCharsets.UTF_8);
+
+		log.info("CSV scritto: {} ({} bytes)", output.toAbsolutePath(), Files.size(output));
+	}
+
+	private Path resolvePath(String directory, String fileName) {
+
+		return Path.of(directory).resolve(fileName).normalize();
+	}
+
+	private void appendValue(StringBuilder data, String value) {
+
+		data.append(value == null ? "" : value);
+		data.append(';');
+	}
+
+	private void newLine(StringBuilder data) {
+		data.append(System.lineSeparator());
+	}
+
+	private boolean isValidText(String value) {
+		return StringUtils.isNotEmpty(value) && value.length() > 1;
+	}
+
+	private String extractDigits(String value) {
+
+		if (StringUtils.isEmpty(value)) {
+			return "";
+		}
+
+		StringBuilder result = new StringBuilder();
+
+		for (char character : value.toCharArray()) {
+			if (Character.isDigit(character)) {
+				result.append(character);
+			}
+		}
+
+		return result.toString();
+	}
+
+// -------------------------------------------------------------------------
+// INTERNAL DTOs
+// -------------------------------------------------------------------------
+
+	private static final class VotiRow {
+
+		private String idGiocatore = "";
+		private String cognGiocatore = "";
+		private String ruolo = "";
+		private String squadra = "";
+		private String minGiocati = "";
+		private String g = "";
+		private String goalRealizzato = "";
+		private String goalSubito = "";
+		private String autorete = "";
+		private String assist = "";
+		private String cs = "";
+		private String ts = "";
+		private String m3 = "";
+		private String ammonizione = "";
+		private String espulsione = "";
+		private String rigoreFallito = "";
+		private String rigoreParato = "";
+		private String rigoreSegnato = "";
+
+		private boolean isEmpty() {
+			return StringUtils.isEmpty(cognGiocatore) && StringUtils.isEmpty(ruolo) && StringUtils.isEmpty(squadra)
+					&& StringUtils.isEmpty(idGiocatore);
+		}
+	}
+
+	private static final class QuotazioneRow {
+
+		private String idGiocatore = "";
+		private String r = "";
+		private String r1 = "";
+		private String giocatore = "";
+		private String squadra = "";
+		private String qi = "";
+		private String qa = "";
+
+		private boolean isEmpty() {
+			return StringUtils.isEmpty(idGiocatore) && StringUtils.isEmpty(r) && StringUtils.isEmpty(giocatore)
+					&& StringUtils.isEmpty(squadra) && StringUtils.isEmpty(qa);
+		}
+	}
 
 }

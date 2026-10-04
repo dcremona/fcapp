@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -52,433 +51,716 @@ import fcapp.utils.Utils;
 @Controller
 public class JobProcessSendMail {
 
-	private static final Logger log = LoggerFactory.getLogger(JobProcessSendMail.class);
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private EmailService emailService;
-
-	@Autowired
-	private GiornataInfoService giornataInfoService;
-
-	@Autowired
-	private AttoreService attoreService;
-
-	@Autowired
-	private GiornataService giornataService;
-
-	@Autowired
-	private GiornataDettService giornataDettService;
-
-	@Autowired
-	private ClassificaService classificaService;
-
-	@Autowired
-	private ClassificaTotalePuntiService classificaTotalePuntiService;
-
-	@Autowired
-	private GiornataDettInfoService giornataDettInfoService;
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
-
-	public byte[] getJasperRisultati(FcCampionato campionato, FcGiornataInfo giornataInfo, String pathImg) {
-		byte[] b = null;
-		try {
-			Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
-			Collection<RisultatoBean> collection = new ArrayList<>();
-			collection.add(new RisultatoBean("P", "S1", 6.0, 6.0, 6.0, 6.0));
-			Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
-			InputStream inputStream = resource.getInputStream();
-			b = JasperReportUtils.getReportByteCollectionDataSource(inputStream, params, collection);
-		} catch (Exception ex2) {
-			log.error(ex2.getMessage());
-		}
-		return b;
-	}
-
-	public void writePdfAndSendMail(FcCampionato campionato, FcGiornataInfo giornataInfo, Properties p, String pathOutputPdf) throws SQLException, IOException {
-
-		log.info("writePdfAndSendMail START");
-
-		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), Costants.PATH_IMAGES, campionato);
-		Collection<RisultatoBean> l = new ArrayList<>();
-		l.add(new RisultatoBean("P", "S1", 6.0, 6.0, 6.0, 6.0));
-		String testFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
-
-		Resource resource = resourceLoader.getResource("classpath:reports/risultati.jasper");
-		InputStream inputStream = resource.getInputStream();
-		FileOutputStream outputStream = new FileOutputStream(testFileName1);
-		try {
-			JasperReportUtils.runReportToPdfStream(inputStream, outputStream, params, l);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		String testFileName2 = pathOutputPdf + "Classifica.pdf";
-		try (FileOutputStream outputStream2 = new FileOutputStream(testFileName2)) {
-			Map<String, Object> parameters = new HashMap<>();
-			parameters.put("ID_CAMPIONATO", "" + campionato.getIdCampionato());
-			parameters.put("DIVISORE", "" + Costants.DIVISORE_100);
-
-			Resource resource2 = resourceLoader.getResource("classpath:reports/classifica.jasper");
-			InputStream inputStream2 = resource2.getInputStream();
-
-			DataSource datasource = jdbcTemplate.getDataSource();
-			if (datasource != null) {
-
-				try (Connection conn = datasource.getConnection()) {
-
-					JasperReportUtils.runReportToPdfStream(inputStream2, outputStream2, parameters, conn);
-
-					StringBuilder emailDestinatario = new StringBuilder();
-					String activeMail = p.getProperty("ACTIVE_MAIL");
-					if ("true".equals(activeMail)) {
-						List<FcAttore> attori = attoreService.findByActive(true);
-						for (FcAttore a : attori) {
-							if (a.isNotifiche()) {
-								emailDestinatario.append(a.getEmail());
-								emailDestinatario.append(";");
-							}
-						}
-					} else {
-						emailDestinatario.append(p.getProperty("to"));
-					}
-
-					String[] to = null;
-					if (StringUtils.isNotEmpty(emailDestinatario.toString())) {
-						to = Utils.tornaArrayString(emailDestinatario.toString(), ";");
-					}
-
-					String[] att = new String[] { testFileName1, testFileName2 };
-					String subject = "Risultati " + p.getProperty("INFO_RESULT") + " "
-							+ giornataInfo.getDescGiornataFc();
-					String message = getBody();
-
-					try {
-						String from = env.getProperty("spring.mail.secondary.username");
-						emailService.sendMail(false, from, to, null, null, subject, message, "text/html", att);
-					} catch (Exception e) {
-						log.error(e.getMessage());
-						try {
-							String from = env.getProperty("spring.mail.primary.username");
-							emailService.sendMail(true, from, to, null, null, subject, message, "text/html", att);
-						} catch (Exception e2) {
-							log.error(e2.getMessage());
-						}
-					}
-
-				} catch (Exception e) {
-					log.error(e.getMessage());
-				}
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		log.info("writePdfAndSendMail END");
-	}
-
-	private String getBody() {
-
-		String msgHtml = "";
-		msgHtml += "<html><head><title>FC</title></head>\n";
-		msgHtml += "<body>\n";
-		msgHtml += "<p>Sito aggiornato.</p>\n";
-		msgHtml += "<br>\n";
-		msgHtml += "<br>\n";
-		msgHtml += "<p>Ciao Davide</p>\n";
-		msgHtml += "</body>\n";
-		msgHtml += "<html>";
-
-		return msgHtml;
-	}
-
-	private Map<String, Object> getMap(int giornata, String pathImg, FcCampionato campionato) {
-
-		FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
-
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("path_img", pathImg);
-		parameters.put("titolo", giornataInfo.getDescGiornataFc());
-
-		List<FcGiornata> listCalendario = giornataService.findByFcGiornataInfo(giornataInfo);
-
-		int partita = 0;
-		int att = 0;
-		for (FcGiornata cal : listCalendario) {
-
-			HashMap<String, Collection<RisultatoBean>> mapCasa;
-			try {
-				mapCasa = buildData(campionato, cal.getFcAttoreByIdAttoreCasa(), cal.getTotCasa(), giornataInfo,
-						pathImg, true);
-				att++;
-				parameters.put("sq" + att, cal.getFcAttoreByIdAttoreCasa().getDescAttore());
-				parameters.put("data" + att, mapCasa.get("data"));
-				parameters.put("dataInfo" + att, mapCasa.get("dataInfo"));
-			} catch (Exception e) {
-				log.error(e.getMessage());
-			}
-
-			HashMap<String, Collection<RisultatoBean>> mapFuori;
-			try {
-				mapFuori = buildData(campionato, cal.getFcAttoreByIdAttoreFuori(), cal.getTotFuori(), giornataInfo,
-						pathImg, false);
-				att++;
-				parameters.put("sq" + att, cal.getFcAttoreByIdAttoreFuori().getDescAttore());
-				parameters.put("data" + att, mapFuori.get("data"));
-				parameters.put("dataInfo" + att, mapFuori.get("dataInfo"));
-			} catch (Exception e) {
-				log.error(e.getMessage());
-			}
-
-			partita++;
-			parameters.put("ris" + partita, cal.getGolCasa() + " - " + cal.getGolFuori());
-
-		}
-
-		return parameters;
-
-	}
-
-	private HashMap<String, Collection<RisultatoBean>> buildData(FcCampionato campionato, FcAttore attore,
-			Double totGiornata, FcGiornataInfo giornataInfo, String pathImg, boolean fc) {
-
-		NumberFormat formatter = new DecimalFormat("#0.00");
-
-		final Collection<RisultatoBean> data = new ArrayList<>();
-
-		List<FcGiornataDett> lGiocatori = giornataDettService
-				.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(attore, giornataInfo);
-		int countD = 0;
-		int countC = 0;
-		int countA = 0;
-
-		for (FcGiornataDett gd : lGiocatori) {
-
-			final RisultatoBean bean = new RisultatoBean();
-
-			FcGiocatore giocatore = gd.getFcGiocatore();
-
-			if (giocatore != null) {
-				FcPagelle pagelle = gd.getFcPagelle();
-				if ("S".equals(gd.getFlagAttivo())) {
-					switch (giocatore.getFcRuolo().getIdRuolo()) {
-					case "D" -> countD++;
-					case "C" -> countC++;
-					case "A" -> countA++;
-					}
-				}
-
-				bean.setR(giocatore.getFcRuolo().getIdRuolo());
-
-				if ("S".equals(gd.getFlagAttivo())
-						&& (gd.getOrdinamento() == 14 || gd.getOrdinamento() == 16 || gd.getOrdinamento() == 18)) {
-					String descGiocatore = "-0,5 " + giocatore.getCognGiocatore();
-					if (descGiocatore.length() > 13) {
-						descGiocatore = descGiocatore.substring(0, 13);
-					}
-					bean.setCalciatore(descGiocatore);
-				} else {
-					bean.setCalciatore(giocatore.getCognGiocatore());
-				}
-
-				if (gd.getVoto() != null) {
-					bean.setV(gd.getVoto() / Double.parseDouble("" + Costants.DIVISORE_100));
-				}
-
-				bean.setFlag_attivo(gd.getFlagAttivo() == null ? "N" : gd.getFlagAttivo());
-				bean.setOrdinamento(gd.getOrdinamento());
-				bean.setGoal_realizzato(pagelle.getGoalRealizzato());
-				bean.setGoal_subito(pagelle.getGoalSubito());
-				bean.setAmmonizione(pagelle.getAmmonizione());
-				bean.setEspulsione(pagelle.getEspulsione());
-				bean.setRigore_segnato(pagelle.getRigoreSegnato());
-				bean.setRigore_fallito(pagelle.getRigoreFallito());
-				bean.setRigore_parato(pagelle.getRigoreParato());
-				bean.setAutorete(pagelle.getAutorete());
-				bean.setAssist(pagelle.getAssist());
-
-				if (pagelle.getG() != null) {
-					bean.setG(pagelle.getG() / Double.parseDouble("" + Costants.DIVISORE_100));
-				}
-				if (pagelle.getCs() != null) {
-					bean.setCs(pagelle.getCs() / Double.parseDouble("" + Costants.DIVISORE_100));
-				}
-				if (pagelle.getTs() != null) {
-					bean.setTs(pagelle.getTs() / Double.parseDouble("" + Costants.DIVISORE_100));
-				}
-				bean.setPath_img(pathImg);
-			}
-			data.add(bean);
-		}
-
-		if (data.size() != 26) {
-			int addGiocatore = 26 - data.size();
-			int incremento = data.size();
-			for (int g = 0; g < addGiocatore; g++) {
-				RisultatoBean r = new RisultatoBean();
-				r.setOrdinamento(incremento);
-				r.setFlag_attivo("N");
-				data.add(r);
-				incremento++;
-			}
-		}
-
-		final Collection<RisultatoBean> newData = new ArrayList<>();
-		RisultatoBean r = new RisultatoBean();
-		r.setCalciatore("TITOLARI");
-		r.setFlag_attivo("TIT");
-		newData.add(r);
-
-		double malus = 0;
-
-		for (RisultatoBean rb : data) {
-			if (rb.getOrdinamento() == 12) {
-				r = new RisultatoBean();
-				r.setCalciatore("PANCHINA");
-				r.setFlag_attivo("PAN");
-				newData.add(r);
-			} else if (rb.getOrdinamento() == 19) {
-				r = new RisultatoBean();
-				r.setCalciatore("TRIBUNA");
-				r.setFlag_attivo("TRI");
-				newData.add(r);
-			}
-
-			if ("S".equals(rb.getFlag_attivo())
-					&& (rb.getOrdinamento() == 14 || rb.getOrdinamento() == 16 || rb.getOrdinamento() == 18)) {
-				malus += 0.5;
-			}
-
-			if (rb.getOrdinamento() < 12) {
-				newData.add(rb);
-			} else if (rb.getOrdinamento() > 11 && rb.getOrdinamento() < 19) {
-				newData.add(rb);
-			} else {
-				newData.add(rb);
-			}
-
-		}
-
-		String schema = countD + "-" + countC + "-" + countA;
-		String md = getModificatoreDifesa(schema);
-
-		final Collection<RisultatoBean> dataInfo = new ArrayList<>();
-
-		RisultatoBean b = new RisultatoBean();
-		b.setDesc("Modulo:");
-		b.setValue(schema);
-		dataInfo.add(b);
-
-		if (giornataInfo.getIdGiornataFc() < 15) {
-			b = new RisultatoBean();
-			if (fc) {
-				b.setDesc("Fattore Campo:");
-				b.setValue("1,5");
-			} else {
-				b.setDesc("Fattore Campo:");
-				b.setValue("0,00");
-			}
-			dataInfo.add(b);
-		}
-
-		if (giornataInfo.getIdGiornataFc() == 15) {
-			FcClassifica cl = classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
-			String res = "0";
-			if (cl.getIdPosiz() == 1) {
-				res = "8";
-			} else if (cl.getIdPosiz() == 2) {
-				res = "6";
-			} else if (cl.getIdPosiz() == 3) {
-				res = "4";
-			} else if (cl.getIdPosiz() == 4) {
-				res = "2";
-			}
-			b = new RisultatoBean();
-			b.setDesc("Bonus Quarti:");
-			b.setValue(res);
-			dataInfo.add(b);
-		}
-
-		if (giornataInfo.getIdGiornataFc() == 17) {
-			FcClassifica cl = classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
-			b = new RisultatoBean();
-			b.setDesc("Bonus Semifinali:");
-			b.setValue("" + cl.getVinte());
-			dataInfo.add(b);
-		}
-
-		b = new RisultatoBean();
-		b.setDesc("Modificatore Difesa:");
-		b.setValue(md);
-		dataInfo.add(b);
-
-		b = new RisultatoBean();
-		b.setDesc("Malus Secondo Cambio:");
-		if (malus == 0) {
-			b.setValue(formatter.format(malus));
-		} else {
-			b.setValue("-" + formatter.format(malus));
-		}
-		dataInfo.add(b);
-
-		String totaleGiornata = "";
-		if (totGiornata != null) {
-			totaleGiornata = formatter.format(totGiornata / Double.parseDouble("" + Costants.DIVISORE_100));
-		}
-
-		b = new RisultatoBean();
-		b.setDesc("Totale Giornata:");
-		b.setValue(totaleGiornata);
-		dataInfo.add(b);
-
-		FcClassificaTotPt totPunti = classificaTotalePuntiService
-				.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(campionato, attore, giornataInfo);
-		String puntiTotali = "";
-		if (totPunti != null) {
-			puntiTotali = formatter.format(totPunti.getTotPtRosa() / Double.parseDouble("" + Costants.DIVISORE_100));
-		}
-
-		b = new RisultatoBean();
-		b.setDesc("Totale Punteggio Rosa:");
-		b.setValue(puntiTotali);
-		dataInfo.add(b);
-
-		b = new RisultatoBean();
-		b.setDesc("Totale Punteggio TvsT:");
-		if (totPunti != null) {
-			b.setValue("" + totPunti.getPtTvsT());
-		}
-		dataInfo.add(b);
-
-		FcGiornataDettInfo info = giornataDettInfoService.findByFcAttoreAndFcGiornataInfo(attore, giornataInfo);
-
-		b = new RisultatoBean();
-		b.setDesc("Inviata alle:");
-		b.setValue((info == null ? "" : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss")));
-		dataInfo.add(b);
-
-		HashMap<String, Collection<RisultatoBean>> result = new HashMap<>();
-		result.put("data", newData);
-		result.put("dataInfo", dataInfo);
-
-		return result;
-	}
-
-	private String getModificatoreDifesa(String value) {
-
-		return switch (value) {
-		case "5-4-1" -> "2";
-		case "5-3-2", "4-5-1" -> "1";
-		case "4-3-3" -> "-1";
-		case "3-4-3" -> "-2";
-		default -> "0";
-		};
-	}
-
+    private static final Logger log = LoggerFactory.getLogger(JobProcessSendMail.class);
+
+    private static final String REPORT_RISULTATI = "classpath:reports/risultati.jasper";
+    private static final String REPORT_CLASSIFICA = "classpath:reports/classifica.jasper";
+
+    private static final String DATA_KEY = "data";
+    private static final String DATA_INFO_KEY = "dataInfo";
+
+    private static final int MAX_PLAYERS = 26;
+    private static final int TITOLARI_END = 12;
+    private static final int PANCHINA_END = 19;
+
+    private final Environment env;
+    private final EmailService emailService;
+    private final GiornataInfoService giornataInfoService;
+    private final AttoreService attoreService;
+    private final GiornataService giornataService;
+    private final GiornataDettService giornataDettService;
+    private final ClassificaService classificaService;
+    private final ClassificaTotalePuntiService classificaTotalePuntiService;
+    private final GiornataDettInfoService giornataDettInfoService;
+    private final JdbcTemplate jdbcTemplate;
+    private final ResourceLoader resourceLoader;
+
+    public JobProcessSendMail(
+            Environment env,
+            EmailService emailService,
+            GiornataInfoService giornataInfoService,
+            AttoreService attoreService,
+            GiornataService giornataService,
+            GiornataDettService giornataDettService,
+            ClassificaService classificaService,
+            ClassificaTotalePuntiService classificaTotalePuntiService,
+            GiornataDettInfoService giornataDettInfoService,
+            JdbcTemplate jdbcTemplate,
+            ResourceLoader resourceLoader) {
+
+        this.env = env;
+        this.emailService = emailService;
+        this.giornataInfoService = giornataInfoService;
+        this.attoreService = attoreService;
+        this.giornataService = giornataService;
+        this.giornataDettService = giornataDettService;
+        this.classificaService = classificaService;
+        this.classificaTotalePuntiService = classificaTotalePuntiService;
+        this.giornataDettInfoService = giornataDettInfoService;
+        this.jdbcTemplate = jdbcTemplate;
+        this.resourceLoader = resourceLoader;
+    }
+
+    public byte[] getJasperRisultati(FcCampionato campionato, FcGiornataInfo giornataInfo, String pathImg) {
+        try {
+            Map<String, Object> parameters =
+                    buildReportParameters(giornataInfo.getCodiceGiornata(), pathImg, campionato);
+
+            Collection<RisultatoBean> data = createTestResultData();
+
+            Resource resource = resourceLoader.getResource(REPORT_RISULTATI);
+            try (InputStream inputStream = resource.getInputStream()) {
+                return JasperReportUtils.getReportByteCollectionDataSource(inputStream, parameters, data);
+            }
+        } catch (Exception ex) {
+            log.error("Errore nella generazione del report risultati", ex);
+            return null;
+        }
+    }
+
+    public void writePdfAndSendMail(
+            FcCampionato campionato,
+            FcGiornataInfo giornataInfo,
+            Properties properties,
+            String pathOutputPdf) throws SQLException, IOException {
+
+        log.info("writePdfAndSendMail START");
+
+        try {
+            String risultatiFile = writeRisultatiPdf(campionato, giornataInfo, pathOutputPdf);
+            String classificaFile = writeClassificaPdf(campionato, pathOutputPdf);
+
+            sendResultMail(
+                    giornataInfo,
+                    properties,
+                    risultatiFile,
+                    classificaFile);
+
+        } finally {
+            log.info("writePdfAndSendMail END");
+        }
+    }
+
+    private String writeRisultatiPdf(
+            FcCampionato campionato,
+            FcGiornataInfo giornataInfo,
+            String pathOutputPdf) {
+
+        String fileName = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
+
+        try {
+            Map<String, Object> parameters =
+                    buildReportParameters(giornataInfo.getCodiceGiornata(), Costants.PATH_IMAGES, campionato);
+
+            Collection<RisultatoBean> data = createTestResultData();
+            Resource resource = resourceLoader.getResource(REPORT_RISULTATI);
+
+            try (
+                    InputStream inputStream = resource.getInputStream();
+                    FileOutputStream outputStream = new FileOutputStream(fileName)) {
+
+                JasperReportUtils.runReportToPdfStream(inputStream, outputStream, parameters, data);
+            }
+        } catch (Exception ex) {
+            log.error("Errore nella generazione del PDF risultati: {}", fileName, ex);
+        }
+
+        return fileName;
+    }
+
+    private String writeClassificaPdf(FcCampionato campionato, String pathOutputPdf) {
+        String fileName = pathOutputPdf + "Classifica.pdf";
+
+        try {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
+            parameters.put("DIVISORE", String.valueOf(Costants.DIVISORE_100));
+
+            Resource resource = resourceLoader.getResource(REPORT_CLASSIFICA);
+            DataSource dataSource = jdbcTemplate.getDataSource();
+
+            if (dataSource == null) {
+                return fileName;
+            }
+
+            try (
+                    InputStream inputStream = resource.getInputStream();
+                    FileOutputStream outputStream = new FileOutputStream(fileName);
+                    Connection connection = dataSource.getConnection()) {
+
+                JasperReportUtils.runReportToPdfStream(inputStream, outputStream, parameters, connection);
+            }
+        } catch (Exception ex) {
+            log.error("Errore nella generazione del PDF classifica: {}", fileName, ex);
+        }
+
+        return fileName;
+    }
+
+    private void sendResultMail(
+            FcGiornataInfo giornataInfo,
+            Properties properties,
+            String risultatiFile,
+            String classificaFile) {
+
+        try {
+            DataSource dataSource = jdbcTemplate.getDataSource();
+            if (dataSource == null) {
+                return;
+            }
+
+            String[] recipients = resolveRecipients(properties);
+            String[] attachments = {risultatiFile, classificaFile};
+
+            String subject = "Risultati "
+                    + properties.getProperty("INFO_RESULT")
+                    + " "
+                    + giornataInfo.getDescGiornataFc();
+
+            String message = getBody();
+            sendMailWithFallback(recipients, subject, message, attachments);
+
+        } catch (Exception ex) {
+            log.error("Errore nell'invio della mail dei risultati", ex);
+        }
+    }
+
+    private String[] resolveRecipients(Properties properties) {
+        StringBuilder recipients = new StringBuilder();
+
+        if ("true".equals(properties.getProperty("ACTIVE_MAIL"))) {
+            List<FcAttore> attori = attoreService.findByActive(true);
+
+            for (FcAttore attore : attori) {
+                if (attore.isNotifiche()) {
+                    recipients.append(attore.getEmail()).append(";");
+                }
+            }
+        } else {
+            recipients.append(properties.getProperty("to"));
+        }
+
+        if (StringUtils.isEmpty(recipients.toString())) {
+            return null;
+        }
+
+        return Utils.tornaArrayString(recipients.toString(), ";");
+    }
+
+    private void sendMailWithFallback(
+            String[] recipients,
+            String subject,
+            String message,
+            String[] attachments) {
+
+        String secondaryFrom = env.getProperty("spring.mail.secondary.username");
+
+        try {
+            emailService.sendMail(
+                    false,
+                    secondaryFrom,
+                    recipients,
+                    null,
+                    null,
+                    subject,
+                    message,
+                    "text/html",
+                    attachments);
+        } catch (Exception secondaryException) {
+            log.error("Invio mail con account secondario fallito", secondaryException);
+
+            try {
+                String primaryFrom = env.getProperty("spring.mail.primary.username");
+
+                emailService.sendMail(
+                        true,
+                        primaryFrom,
+                        recipients,
+                        null,
+                        null,
+                        subject,
+                        message,
+                        "text/html",
+                        attachments);
+            } catch (Exception primaryException) {
+                log.error("Invio mail con account primario fallito", primaryException);
+            }
+        }
+    }
+
+    private String getBody() {
+        return """
+                <html>
+                <head><title>FC</title></head>
+                <body>
+                <p>Sito aggiornato.</p>
+                <br>
+                <br>
+                <p>Ciao Davide</p>
+                </body>
+                <html>
+                """;
+    }
+
+    private Map<String, Object> buildReportParameters(
+            int giornata,
+            String pathImg,
+            FcCampionato campionato) {
+
+        FcGiornataInfo giornataInfo = giornataInfoService.findByCodiceGiornata(giornata);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("path_img", pathImg);
+        parameters.put("titolo", giornataInfo.getDescGiornataFc());
+
+        List<FcGiornata> calendario =
+                giornataService.findByFcGiornataInfo(giornataInfo);
+
+        int partita = 0;
+        int attoreIndex = 0;
+
+        for (FcGiornata g : calendario) {
+            attoreIndex = addTeamData(
+                    parameters,
+                    campionato,
+                    g.getFcAttoreByIdAttoreCasa(),
+                    g.getTotCasa(),
+                    giornataInfo,
+                    pathImg,
+                    true,
+                    attoreIndex);
+
+            attoreIndex = addTeamData(
+                    parameters,
+                    campionato,
+                    g.getFcAttoreByIdAttoreFuori(),
+                    g.getTotFuori(),
+                    giornataInfo,
+                    pathImg,
+                    false,
+                    attoreIndex);
+
+            partita++;
+            parameters.put(
+                    "ris" + partita,
+                    g.getGolCasa() + " - " + g.getGolFuori());
+        }
+
+        return parameters;
+    }
+
+    private int addTeamData(
+            Map<String, Object> parameters,
+            FcCampionato campionato,
+            FcAttore attore,
+            Double totaleGiornata,
+            FcGiornataInfo giornataInfo,
+            String pathImg,
+            boolean fattoreCampo,
+            int currentIndex) {
+
+        try {
+            Map<String, Collection<RisultatoBean>> teamData =
+                    buildData(
+                            campionato,
+                            attore,
+                            totaleGiornata,
+                            giornataInfo,
+                            pathImg,
+                            fattoreCampo);
+
+            int index = currentIndex + 1;
+
+            parameters.put("sq" + index, attore.getDescAttore());
+            parameters.put("data" + index, teamData.get(DATA_KEY));
+            parameters.put("dataInfo" + index, teamData.get(DATA_INFO_KEY));
+
+            return index;
+        } catch (Exception ex) {
+            log.error("Errore nella costruzione dei dati per la squadra", ex);
+            return currentIndex;
+        }
+    }
+
+    private HashMap<String, Collection<RisultatoBean>> buildData(
+            FcCampionato campionato,
+            FcAttore attore,
+            Double totGiornata,
+            FcGiornataInfo giornataInfo,
+            String pathImg,
+            boolean fattoreCampo) {
+
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        Collection<RisultatoBean> data =
+                buildPlayersData(attore, giornataInfo, pathImg);
+
+        PlayerCounters counters = countPlayers(data);
+        ReportData report = addReportSections(data);
+
+        String schema = counters.schema();
+        String modificatoreDifesa = getModificatoreDifesa(schema);
+
+        Collection<RisultatoBean> dataInfo = buildDataInfo(
+                campionato,
+                attore,
+                giornataInfo,
+                fattoreCampo,
+                schema,
+                modificatoreDifesa,
+                totGiornata,
+                formatter,
+                report.malus());
+
+        HashMap<String, Collection<RisultatoBean>> result = new HashMap<>();
+        result.put(DATA_KEY, report.data());
+        result.put(DATA_INFO_KEY, dataInfo);
+
+        return result;
+    }
+
+    private Collection<RisultatoBean> buildPlayersData(
+            FcAttore attore,
+            FcGiornataInfo giornataInfo,
+            String pathImg) {
+
+        List<FcGiornataDett> giocatori =
+                giornataDettService.findByFcAttoreAndFcGiornataInfoOrderByOrdinamentoAsc(
+                        attore,
+                        giornataInfo);
+
+        Collection<RisultatoBean> data = new ArrayList<>();
+
+        for (FcGiornataDett giornataDett : giocatori) {
+            RisultatoBean bean = createPlayerBean(giornataDett, pathImg);
+
+            if (bean != null) {
+                data.add(bean);
+            }
+        }
+
+        fillPlayers(data);
+        return data;
+    }
+
+    private RisultatoBean createPlayerBean(FcGiornataDett giornataDett, String pathImg) {
+        RisultatoBean bean = new RisultatoBean();
+        FcGiocatore giocatore = giornataDett.getFcGiocatore();
+
+        if (giocatore == null) {
+            return bean;
+        }
+
+        FcPagelle pagelle = giornataDett.getFcPagelle();
+
+        bean.setR(giocatore.getFcRuolo().getIdRuolo());
+        bean.setCalciatore(getPlayerDescription(giornataDett, giocatore));
+        bean.setV(toReportValue(giornataDett.getVoto()));
+        bean.setFlag_attivo(
+                giornataDett.getFlagAttivo() == null
+                        ? "N"
+                        : giornataDett.getFlagAttivo());
+        bean.setOrdinamento(giornataDett.getOrdinamento());
+
+        bean.setGoal_realizzato(pagelle.getGoalRealizzato());
+        bean.setGoal_subito(pagelle.getGoalSubito());
+        bean.setAmmonizione(pagelle.getAmmonizione());
+        bean.setEspulsione(pagelle.getEspulsione());
+        bean.setRigore_segnato(pagelle.getRigoreSegnato());
+        bean.setRigore_fallito(pagelle.getRigoreFallito());
+        bean.setRigore_parato(pagelle.getRigoreParato());
+        bean.setAutorete(pagelle.getAutorete());
+        bean.setAssist(pagelle.getAssist());
+
+        bean.setG(toReportValue(pagelle.getG()));
+        bean.setCs(toReportValue(pagelle.getCs()));
+        bean.setTs(toReportValue(pagelle.getTs()));
+        bean.setPath_img(pathImg);
+
+        return bean;
+    }
+
+    /*
+     * The original implementation counted the roles while iterating over the
+     * players. The counters are now calculated separately to keep the player
+     * mapping focused only on creating RisultatoBean instances.
+     */
+    private PlayerCounters countPlayers(Collection<RisultatoBean> data) {
+        int defenders = 0;
+        int midfielders = 0;
+        int forwards = 0;
+
+        for (RisultatoBean bean : data) {
+            if (!"S".equals(bean.getFlag_attivo())) {
+                continue;
+            }
+
+            switch (bean.getR()) {
+                case "D" -> defenders++;
+                case "C" -> midfielders++;
+                case "A" -> forwards++;
+                default -> {
+                    // Same effective behavior as the previous switch.
+                }
+            }
+        }
+
+        return new PlayerCounters(defenders, midfielders, forwards);
+    }
+
+
+    private String getPlayerDescription(
+            FcGiornataDett giornataDett,
+            FcGiocatore giocatore) {
+
+        if ("S".equals(giornataDett.getFlagAttivo())
+                && isSecondChange(giornataDett.getOrdinamento())) {
+
+            String description = "-0,5 " + giocatore.getCognGiocatore();
+            return description.length() > 13
+                    ? description.substring(0, 13)
+                    : description;
+        }
+
+        return giocatore.getCognGiocatore();
+    }
+
+    private boolean isSecondChange(int ordinamento) {
+        return ordinamento == 14
+                || ordinamento == 16
+                || ordinamento == 18;
+    }
+
+    private Double toReportValue(Double value) {
+        return value == null
+                ? null
+                : value / Double.parseDouble(String.valueOf(Costants.DIVISORE_100));
+    }
+
+    private void fillPlayers(Collection<RisultatoBean> data) {
+        if (data.size() >= MAX_PLAYERS) {
+            return;
+        }
+
+        int ordinamento = data.size();
+
+        while (data.size() < MAX_PLAYERS) {
+            RisultatoBean bean = new RisultatoBean();
+            bean.setOrdinamento(ordinamento++);
+            bean.setFlag_attivo("N");
+            data.add(bean);
+        }
+    }
+
+    private ReportData addReportSections(Collection<RisultatoBean> data) {
+        Collection<RisultatoBean> reportData = new ArrayList<>();
+        reportData.add(createSectionBean("TITOLARI", "TIT"));
+
+        double malus = 0;
+
+        for (RisultatoBean bean : data) {
+            addSectionIfNeeded(reportData, bean.getOrdinamento());
+            malus = calculateMalus(bean, malus);
+            reportData.add(bean);
+        }
+
+        return new ReportData(reportData, malus);
+    }
+
+    private void addSectionIfNeeded(Collection<RisultatoBean> data, int ordinamento) {
+        if (ordinamento == TITOLARI_END) {
+            data.add(createSectionBean("PANCHINA", "PAN"));
+        } else if (ordinamento == PANCHINA_END) {
+            data.add(createSectionBean("TRIBUNA", "TRI"));
+        }
+    }
+
+    private double calculateMalus(RisultatoBean bean, double currentMalus) {
+        if ("S".equals(bean.getFlag_attivo())
+                && isSecondChange(bean.getOrdinamento())) {
+            return currentMalus + 0.5;
+        }
+
+        return currentMalus;
+    }
+
+    private Collection<RisultatoBean> buildDataInfo(
+            FcCampionato campionato,
+            FcAttore attore,
+            FcGiornataInfo giornataInfo,
+            boolean fattoreCampo,
+            String schema,
+            String modificatoreDifesa,
+            Double totGiornata,
+            NumberFormat formatter,
+            double malus) {
+
+        Collection<RisultatoBean> dataInfo = new ArrayList<>();
+
+        dataInfo.add(createInfoBean("Modulo:", schema));
+
+        addFattoreCampo(dataInfo, giornataInfo, fattoreCampo);
+        addBonusQuarti(dataInfo, campionato, attore, giornataInfo);
+        addBonusSemifinali(dataInfo, campionato, attore, giornataInfo);
+
+        dataInfo.add(createInfoBean("Modificatore Difesa:", modificatoreDifesa));
+        dataInfo.add(createMalusBean(formatMalus(malus, formatter)));
+        dataInfo.add(createInfoBean("Totale Giornata:", formatValue(totGiornata, formatter)));
+
+        addTotalPointsInfo(dataInfo, campionato, attore, giornataInfo, formatter);
+        addSentAtInfo(dataInfo, attore, giornataInfo);
+
+        return dataInfo;
+    }
+
+    private void addFattoreCampo(
+            Collection<RisultatoBean> dataInfo,
+            FcGiornataInfo giornataInfo,
+            boolean fattoreCampo) {
+
+        if (giornataInfo.getIdGiornataFc() < 15) {
+            dataInfo.add(createInfoBean(
+                    "Fattore Campo:",
+                    fattoreCampo ? "1,5" : "0,00"));
+        }
+    }
+
+    private void addBonusQuarti(
+            Collection<RisultatoBean> dataInfo,
+            FcCampionato campionato,
+            FcAttore attore,
+            FcGiornataInfo giornataInfo) {
+
+        if (giornataInfo.getIdGiornataFc() != 15) {
+            return;
+        }
+
+        FcClassifica classifica =
+                classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
+
+        String bonus = switch (classifica.getIdPosiz()) {
+            case 1 -> "8";
+            case 2 -> "6";
+            case 3 -> "4";
+            case 4 -> "2";
+            default -> "0";
+        };
+
+        dataInfo.add(createInfoBean("Bonus Quarti:", bonus));
+    }
+
+    private void addBonusSemifinali(
+            Collection<RisultatoBean> dataInfo,
+            FcCampionato campionato,
+            FcAttore attore,
+            FcGiornataInfo giornataInfo) {
+
+        if (giornataInfo.getIdGiornataFc() == 17) {
+            FcClassifica classifica =
+                    classificaService.findByFcCampionatoAndFcAttore(campionato, attore);
+
+            dataInfo.add(createInfoBean(
+                    "Bonus Semifinali:",
+                    String.valueOf(classifica.getVinte())));
+        }
+    }
+
+    private String formatMalus(double malus, NumberFormat formatter) {
+        String value = formatter.format(malus);
+        return malus == 0 ? value : "-" + value;
+    }
+
+    private void addTotalPointsInfo(
+            Collection<RisultatoBean> dataInfo,
+            FcCampionato campionato,
+            FcAttore attore,
+            FcGiornataInfo giornataInfo,
+            NumberFormat formatter) {
+
+        FcClassificaTotPt totalPoints =
+                classificaTotalePuntiService.findByFcCampionatoAndFcAttoreAndFcGiornataInfo(
+                        campionato,
+                        attore,
+                        giornataInfo);
+
+        String totalTeamPoints = "";
+        String totalVsT = "";
+
+        if (totalPoints != null) {
+            totalTeamPoints = formatValue(totalPoints.getTotPtRosa(), formatter);
+            totalVsT = String.valueOf(totalPoints.getPtTvsT());
+        }
+
+        dataInfo.add(createInfoBean("Totale Punteggio Rosa:", totalTeamPoints));
+        dataInfo.add(createInfoBean("Totale Punteggio TvsT:", totalVsT));
+    }
+
+    private void addSentAtInfo(
+            Collection<RisultatoBean> dataInfo,
+            FcAttore attore,
+            FcGiornataInfo giornataInfo) {
+
+        FcGiornataDettInfo info =
+                giornataDettInfoService.findByFcAttoreAndFcGiornataInfo(
+                        attore,
+                        giornataInfo);
+
+        String sentAt = info == null
+                ? ""
+                : Utils.formatDate(info.getDataInvio(), "dd/MM/yyyy HH:mm:ss");
+
+        dataInfo.add(createInfoBean("Inviata alle:", sentAt));
+    }
+
+    private RisultatoBean createSectionBean(String description, String flag) {
+        RisultatoBean bean = new RisultatoBean();
+        bean.setCalciatore(description);
+        bean.setFlag_attivo(flag);
+        return bean;
+    }
+
+    private RisultatoBean createInfoBean(String description, String value) {
+        RisultatoBean bean = new RisultatoBean();
+        bean.setDesc(description);
+        bean.setValue(value);
+        return bean;
+    }
+
+    private RisultatoBean createMalusBean(String value) {
+        return createInfoBean("Malus Secondo Cambio:", value);
+    }
+
+    private String formatValue(Double value, NumberFormat formatter) {
+        if (value == null) {
+            return "";
+        }
+
+        return formatter.format(
+                value / Double.parseDouble(String.valueOf(Costants.DIVISORE_100)));
+    }
+
+    private Collection<RisultatoBean> createTestResultData() {
+        Collection<RisultatoBean> data = new ArrayList<>();
+        data.add(new RisultatoBean("P", "S1", 6.0, 6.0, 6.0, 6.0));
+        return data;
+    }
+
+    private String getModificatoreDifesa(String value) {
+        return switch (value) {
+            case "5-4-1" -> "2";
+            case "5-3-2", "4-5-1" -> "1";
+            case "4-3-3" -> "-1";
+            case "3-4-3" -> "-2";
+            default -> "0";
+        };
+    }
+
+    private record ReportData(Collection<RisultatoBean> data, double malus) {
+    }
+
+    private record PlayerCounters(int defenders, int midfielders, int forwards) {
+
+        private String schema() {
+            return defenders + "-" + midfielders + "-" + forwards;
+        }
+    }
 }

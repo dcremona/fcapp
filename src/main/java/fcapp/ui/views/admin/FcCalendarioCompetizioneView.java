@@ -80,7 +80,8 @@ public class FcCalendarioCompetizioneView extends VerticalLayout {
     private final transient GiornataInfoService giornataInfoService;
     private final transient AccessoService accessoService;
     private final transient SquadraService squadraService;
-
+    private final JobProcessFileCsv jobProcessFileCsv;
+    
     private final ComboBox<FcGiornataInfo> giornataInfoFilter = new ComboBox<>();
 
     private Button initDbButton;
@@ -92,7 +93,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout {
             CalendarioCompetizioneService calendarioCompetizioneService,
             GiornataInfoService giornataInfoService,
             AccessoService accessoService,
-            SquadraService squadraService) {
+            SquadraService squadraService,JobProcessFileCsv jobProcessFileCsv) {
         LOG.info("Initializing {}", FcCalendarioCompetizioneView.class.getSimpleName());
         this.env = env;
         this.jobProcessGiornata = jobProcessGiornata;
@@ -100,6 +101,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout {
         this.giornataInfoService = giornataInfoService;
         this.accessoService = accessoService;
         this.squadraService = squadraService;
+        this.jobProcessFileCsv = jobProcessFileCsv;
     }
 
     @PostConstruct
@@ -433,8 +435,7 @@ public class FcCalendarioCompetizioneView extends VerticalLayout {
     }
 
     private void downloadCsv(String httpUrl, String basePathData, String fileName) throws Exception {
-        JobProcessFileCsv jobCsv = new JobProcessFileCsv();
-        jobCsv.downloadCsvCalendarioSerieA(httpUrl, basePathData, fileName);
+    	jobProcessFileCsv.downloadCsvCalendarioSerieA(httpUrl, basePathData, fileName);
     }
 
     private String getBasePathData() {
