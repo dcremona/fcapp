@@ -102,12 +102,11 @@ public class JobProcessSendMail {
 		return b;
 	}
 
-	public void writePdfAndSendMail(FcCampionato campionato, FcGiornataInfo giornataInfo, Properties p, String pathImg,
-			String pathOutputPdf) throws SQLException, IOException {
+	public void writePdfAndSendMail(FcCampionato campionato, FcGiornataInfo giornataInfo, Properties p, String pathOutputPdf) throws SQLException, IOException {
 
 		log.info("writePdfAndSendMail START");
 
-		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), pathImg, campionato);
+		Map<String, Object> params = getMap(giornataInfo.getCodiceGiornata(), Costants.PATH_IMAGES, campionato);
 		Collection<RisultatoBean> l = new ArrayList<>();
 		l.add(new RisultatoBean("P", "S1", 6.0, 6.0, 6.0, 6.0));
 		String testFileName1 = pathOutputPdf + giornataInfo.getDescGiornataFc() + ".pdf";
