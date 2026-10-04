@@ -146,8 +146,6 @@ public class MyScheduledTasks{
 			}
 		}
 
-		String pathImg = "images/";
-
 		String basePathData = env.getProperty("PATH_TMP");
         log.info("basePathData {}", basePathData);
 
@@ -178,7 +176,7 @@ public class MyScheduledTasks{
 
 		Thread.sleep(60000L);
 
-		jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathImg, pathOutputPdf + FILE_SEP);
+		jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, p, pathOutputPdf + FILE_SEP);
 
 	}
 

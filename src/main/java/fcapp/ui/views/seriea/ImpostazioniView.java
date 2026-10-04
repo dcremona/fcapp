@@ -772,11 +772,11 @@ public class ImpostazioniView extends VerticalLayout
             Properties properties,
             String basePathData) throws SQLException, IOException {
 
-        String pathImg = "images/";
+        
         properties.setProperty("ACTIVE_MAIL", String.valueOf(chkSendMail.getValue()));
         properties.setProperty("INFO_RESULT", Boolean.TRUE.equals(chkUfficiali.getValue()) ? "UFFICIALI" : "UFFICIOSI");
 
-        jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, properties, pathImg, basePathData);
+        jobProcessSendMail.writePdfAndSendMail(campionato, giornataInfo, properties, basePathData);
     }
 
     private void handleSalvaDate(FcGiornataInfo giornataInfo) {
