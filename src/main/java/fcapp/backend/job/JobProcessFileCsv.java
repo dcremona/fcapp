@@ -650,31 +650,31 @@ public class JobProcessFileCsv {
 
 			case 5 -> values.minGiocati = value;
 
-			case 6 -> values.g = value;
+			case 8 -> values.g = value;
 
-			case 7 -> values.goalRealizzato = value;
+			case 9 -> values.goalRealizzato = value;
 
-			case 8 -> values.goalSubito = value;
+			case 10 -> values.goalSubito = value;
 
-			case 9 -> values.autorete = value;
+			case 11 -> values.autorete = value;
 
-			case 10 -> values.assist = value;
+			case 12 -> values.assist = value;
 
-			case 11 -> values.cs = value;
+			case 14 -> values.cs = value;
 
-			case 16 -> values.ts = value;
+			case 20 -> values.ts = value;
 
-			case 22 -> values.m3 = value;
+			case 27 -> values.m3 = value;
 
-			case 23 -> values.ammonizione = value;
+			case 28 -> values.ammonizione = value;
 
-			case 24 -> values.espulsione = value;
+			case 29 -> values.espulsione = value;
 
-			case 27 -> values.rigoreFallito = value;
+			case 32 -> values.rigoreFallito = value;
 
-			case 28 -> values.rigoreParato = value;
+			case 33 -> values.rigoreParato = value;
 
-			case 29 -> values.rigoreSegnato = value;
+			case 34 -> values.rigoreSegnato = value;
 
 			default -> {
 				// Colonna non utilizzata
