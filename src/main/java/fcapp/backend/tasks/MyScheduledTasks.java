@@ -42,7 +42,7 @@ public class MyScheduledTasks {
 	private static final String PROPERTY_FOLDER_PDF = "folderPdf";
 	private static final String PROPERTY_PATH_TMP = "PATH_TMP";
 	private static final String PROPERTY_FUSO_ORARIO = "FUSO_ORARIO";
-//	private static final String PROPERTY_INFO_RESULT = "INFO_RESULT";
+	private static final String PROPERTY_INFO_RESULT = "INFO_RESULT";
 
 	private static final String RESULT_UFFICIOSI = "UFFICIOSI";
 	private static final String RESULT_UFFICIALI = "UFFICIALI";
@@ -181,6 +181,8 @@ public class MyScheduledTasks {
 
 			return;
 		}
+		
+		properties.setProperty(PROPERTY_INFO_RESULT, infoResult);
 
 		FcPagelle currentGG = pagelleService.findCurrentGiornata();
 

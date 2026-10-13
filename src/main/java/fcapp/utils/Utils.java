@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URL;
-import java.net.URLConnection;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -50,455 +49,459 @@ import fcapp.backend.data.entity.FcGiocatore;
 import fcapp.backend.data.entity.FcGiornataInfo;
 import fcapp.backend.data.entity.FcPagelle;
 
-public class Utils {
-	private Utils() {
-		/* This utility class should not be instantiated */
-	}
-
-	private static final Logger log = LoggerFactory.getLogger(Utils.class);
-
-	public static boolean isValidVaadinSession() {
-		if (VaadinSession.getCurrent().getAttribute("CAMPIONATO") == null
-				|| VaadinSession.getCurrent().getAttribute("ATTORE") == null) {
-			log.info("isValidVaadinSession = false ");
-			return false;
-		}
-		log.info("isValidVaadinSession = true ");
-		return true;
-	}
-
-	public static String replaceString(String sText, String old, String nuovo) {
-		String x1;
-		String x2;
-
-		int lunOld = old.length();
-
-		int p = sText.indexOf(old);
-
-		while (p != -1) {
-			x1 = sText.substring(0, p);
-			x2 = sText.substring(p + lunOld);
-			sText = x1 + nuovo + x2;
-			p = sText.indexOf(old, (x1 + nuovo).length());
-		}
-
-		return sText;
-	}
-
-	public static String formatDate(Date d, String newFormat) {
-
-		String item = "";
-		try {
-
-			if (d != null) {
-				SimpleDateFormat formatter = new SimpleDateFormat(newFormat);
-				item = formatter.format(d);
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			item = "";
-		}
-		return item;
-	}
-
-	public static String formatLocalDateTime(LocalDateTime d, String newFormat) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(newFormat);
-		return d.format(formatter);
-	}
-
-	public static String[] tornaArrayString(String sArray, String div) {
-		StringTokenizer st = new StringTokenizer(sArray, div);
-		String[] vet = new String[st.countTokens()];
-		int conta = 0;
-		while (st.hasMoreTokens()) {
-			vet[conta] = st.nextToken();
-			conta++;
-		}
-		return vet;
-	}
-
-	public static boolean downloadFile(String fAddress, String filePath) throws Exception {
-
-		int size = 1024;
-
-		URLConnection uCon;
-
-		InputStream is = null;
-		try (OutputStream outStream = new BufferedOutputStream(new FileOutputStream(filePath))) {
-			URL url;
-			byte[] buf;
-			int byteRead;
-			url = new URL(fAddress);
-
-			uCon = url.openConnection();
-			is = uCon.getInputStream();
-			buf = new byte[size];
-
-			while ((byteRead = is.read(buf)) != -1) {
-				outStream.write(buf, 0, byteRead);
-			}
-
-			return true;
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return false;
-		} finally {
-			if (is != null) {
-				is.close();
-			}
-		}
-	}
-
-	public static boolean buildFileSmall(String filePathInput, String filePathOutput) throws Exception {
-
-		try (InputStream is = new FileInputStream(new File(filePathInput))) {
-			resizeImage(is, filePathOutput);
-			return true;
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return false;
-		}
-	}
-
-	private static void resizeImage(InputStream uploadedInputStream, String fileName) {
-
-		try {
-			BufferedImage image = ImageIO.read(uploadedInputStream);
-			java.awt.Image originalImage = image.getScaledInstance(40, 60, java.awt.Image.SCALE_DEFAULT);
-
-			int type = ((image.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : image.getType());
-			BufferedImage resizedImage = new BufferedImage(40, 60, type);
-
-			Graphics2D g2d = resizedImage.createGraphics();
-			g2d.drawImage(originalImage, 0, 0, 40, 60, null);
-			g2d.dispose();
-			g2d.setComposite(AlphaComposite.Src);
-			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-			ImageIO.write(resizedImage, "png", new File(fileName));
-
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-	}
-
-	public static byte[] getImage(String fileName) {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				BufferedImage bufferedImage = ImageIO.read(file);
-				ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
-				ImageIO.write(bufferedImage, "png", byteOutStream);
-				return byteOutStream.toByteArray();
-			} catch (IOException e) {
-				log.error(e.getMessage());
-			}
-		}
-		return new byte[0];
-	}
-
-	public static String buildInfoGiornataRight(FcGiornataInfo giornataInfo) {
-
-		if (giornataInfo != null) {
-			return " (" + giornataInfo.getIdGiornataFc() + "° Lega - " + giornataInfo.getCodiceGiornata()
-					+ "° Serie A) ";
-		}
-		return "ND";
-	}
-
-	public static String buildInfoGiornata(FcGiornataInfo giornataInfo) {
-
-		if (giornataInfo != null) {
-			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
-					+ giornataInfo.getCodiceGiornata() + "° Serie A) ";
-		}
-		return "ND";
-	}
-
-	public static String buildInfoGiornataMobile(FcGiornataInfo giornataInfo) {
-
-		if (giornataInfo != null) {
-			return giornataInfo.getCodiceGiornata() + "° Serie A ";
-		}
-		return "ND";
-	}
-
-	public static String buildInfoGiornataHtml(FcGiornataInfo giornataInfo) {
-
-		if (giornataInfo != null) {
-			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + " Lega - "
-					+ giornataInfo.getCodiceGiornata() + " Serie A) ";
-		}
-		return "ND";
-	}
-
-	public static String buildInfoGiornataEm(FcGiornataInfo giornataInfo, FcCampionato campionato) {
-
-		if (giornataInfo != null) {
-			return giornataInfo.getDescGiornataFc() + " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
-					+ giornataInfo.getCodiceGiornata() + "° " + campionato.getDescCampionato() + ") ";
-		}
-		return "ND";
-	}
-
-	public static int buildVoto(FcPagelle pagelle, boolean bRoundVoto) {
-
-		String idRuolo = pagelle.getFcGiocatore().getFcRuolo().getIdRuolo();
-		int votoGiocatore = pagelle.getVotoGiocatore();
-
-		int goalRealizzato = pagelle.getGoalRealizzato();
-		int goalSubito = pagelle.getGoalSubito();
-
-		int ammonizione = pagelle.getAmmonizione();
-		int espulso = pagelle.getEspulsione();
-
-		int rf = pagelle.getRigoreFallito();
-		int rp = pagelle.getRigoreParato();
-		int aut = pagelle.getAutorete();
-		int assist = pagelle.getAssist();
-
-		int g = 0;
-		int cs = 0;
-		int ts = 0;
-		if (pagelle.getG() != null) {
-			g = pagelle.getG().intValue();
-		}
-		if (pagelle.getCs() != null) {
-			cs = pagelle.getCs().intValue();
-		}
-		if (pagelle.getTs() != null) {
-			ts = pagelle.getTs().intValue();
-		}
-
-		if (goalRealizzato != 0) {
-			votoGiocatore = votoGiocatore + (goalRealizzato * Costants.DIV_3_0);
-		}
-		if (goalSubito != 0) {
-			votoGiocatore = votoGiocatore - (goalSubito * Costants.DIV_1_0);
-		}
-		if (ammonizione != 0 && votoGiocatore != 0) {
-			votoGiocatore = votoGiocatore - Costants.DIV_0_5;
-		}
-		if (espulso != 0) {
-			if (ammonizione != 0) {
-				votoGiocatore = votoGiocatore + Costants.DIV_0_5;
-			}
-			votoGiocatore = votoGiocatore - Costants.DIV_1_0;
-		}
-		/*
-		 * if (RS!=0) { VOTO_GIOCATORE = VOTO_GIOCATORE - (RS*DIV_10); }
-		 */
-		if (rf != 0) {
-			votoGiocatore = votoGiocatore - (rf * Costants.DIV_3_0);
-		}
-		if (rp != 0) {
-			votoGiocatore = votoGiocatore + (rp * Costants.DIV_3_0);
-		}
-		if (aut != 0) {
-			votoGiocatore = votoGiocatore - (aut * Costants.DIV_2_0);
-		}
-		if (assist != 0) {
-			votoGiocatore = votoGiocatore + (assist * Costants.DIV_1_0);
-		}
-		if (idRuolo.equals("P") && goalSubito == 0 && espulso == 0 && votoGiocatore != 0 && g != 0 && cs != 0
-				&& ts != 0) {
-			votoGiocatore = votoGiocatore + Costants.DIVISORE_100;
-		}
-
-		log.debug("bRoundVoto          -----> {}", bRoundVoto);
-		log.debug("VOTO_GIOCATORE      -----> {}", votoGiocatore);
-		if (bRoundVoto) {
-			int roundVotoGiocatore = Utils.arrotonda(votoGiocatore);
-			log.debug("roundVotoGiocatore      -----> {}", roundVotoGiocatore);
-			return roundVotoGiocatore;
-		} else {
-			return votoGiocatore;
-		}
-	}
-
-	public static int arrotonda(int input) {
-
-		BigDecimal bdInput = new BigDecimal(input);
-		BigDecimal bd10 = new BigDecimal(Costants.DIVISORE_10);
-		BigDecimal bd = bdInput.divide(bd10);
-		// log.debug(bd.toString());
-		BigDecimal bd2 = Utils.roundBigDecimal(bd);
-		// log.debug(bd2.toPlainString());
-		BigDecimal bd3 = bd2.multiply(bd10);
-		// log.debug("" + bd3.intValue());
-		return bd3.intValue();
-	}
-
-	public static BigDecimal roundBigDecimal(final BigDecimal input) {
-		return input.round(new MathContext(input.toBigInteger().toString().length(), RoundingMode.HALF_UP));
-	}
-
-	public static HashMap getNextDate(FcGiornataInfo giornataInfo) {
-
-		HashMap map = new HashMap();
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime currentDate = LocalDateTime.now();
-
-		LocalDateTime dataAnticipo = getLocalDateTime(giornataInfo, now);
-		LocalDateTime dataGiornata = giornataInfo.getDataGiornata();
-		LocalDateTime dataPosticipo = giornataInfo.getDataPosticipo();
-
-		if (dataGiornata != null) {
-			currentDate = dataGiornata;
-
-			log.info("now.getDayOfWeek() : {}", now.getDayOfWeek());
-			if (dataAnticipo != null) {
-				currentDate = dataAnticipo;
-				log.info("dataGiornata.getDayOfWeek() : {}", dataGiornata.getDayOfWeek());
-				if (now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
-					currentDate = dataGiornata;
-				}
-			}
-
-			if (dataPosticipo != null) {
-				log.info("dataPosticipo.getDayOfWeek() : {}", dataPosticipo.getDayOfWeek());
-				if (now.getDayOfWeek() == dataPosticipo.getDayOfWeek()) {
-					currentDate = dataGiornata;
-				}
-			} else {
-				if (dataAnticipo != null) {
-					currentDate = dataAnticipo;
-				}
-			}
-		}
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		
-		map.put("1", currentDate);
-		map.put("2", currentDate.format(formatter));
-		return map;
-	}
-
-	private static @Nullable LocalDateTime getLocalDateTime(FcGiornataInfo giornataInfo, LocalDateTime now) {
-		LocalDateTime dataAnticipo = null;
-		LocalDateTime dataAnticipo1 = giornataInfo.getDataAnticipo1();
-		LocalDateTime dataAnticipo2 = giornataInfo.getDataAnticipo2();
-		if (dataAnticipo1 != null && dataAnticipo2 != null) {
-			if (now.isBefore(dataAnticipo1)) {
-				dataAnticipo = dataAnticipo1;
-			} else if (now.isAfter(dataAnticipo1) && now.getDayOfWeek() == dataAnticipo2.getDayOfWeek()) {
-				dataAnticipo = dataAnticipo2;
-			} else {
-				dataAnticipo = dataAnticipo1;
-			}
-		} else if (dataAnticipo1 == null && dataAnticipo2 != null) {
-			dataAnticipo = dataAnticipo2;
-		}
-		return dataAnticipo;
-	}
-
-	public static long getMillisDiff(String nextDate, String fusoOrario) throws Exception {
-
-		Calendar c = Calendar.getInstance();
-		DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		String strDate1 = fmt.format(c.getTime());
-
-		fmt.setLenient(false);
-		Date d1 = fmt.parse(strDate1);
-		Date d2 = fmt.parse(nextDate);
-
-		// Calculates the difference in milliseconds.
-		long millisDiff = d2.getTime() - d1.getTime();
-		int seconds = (int) (millisDiff / 1000 % 60);
-		int minutes = (int) (millisDiff / 60000 % 60);
-		int hours = (int) (millisDiff / 3600000 % 24);
-		int days = (int) (millisDiff / 86400000);
-
-		log.info("{} days, ", days);
-		log.info("{} hours, ", hours);
-		log.info("{} minutes, ", minutes);
-		log.info("{} seconds", seconds);
-
-		long diffFuso = Long.parseLong(fusoOrario) * 3600000;
-		millisDiff = millisDiff - diffFuso;
-
-		if (millisDiff < 0) {
-			millisDiff = 0;
-		}
-
-		return millisDiff;
-	}
-
-	public static Image getImage(String nomeImg, InputStream inputStream) {
-		StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
-		return new Image(resource, "");
-	}
-
-	public static Image buildImage(String nomeImg, Resource r) {
-		StreamResource resource = new StreamResource(nomeImg, () -> {
-			InputStream inputStream = null;
-			try {
-				inputStream = r.getInputStream();
-			} catch (IOException e) {
-				log.error(e.getMessage());
-			}
-			return inputStream;
-		});
-
-		return new Image(resource, "");
-	}
-
-	public static StreamResource getStreamResource(String fiileName, Connection conn, Map<String, Object> hm,
-			InputStream inputStream) {
-		return new StreamResource(fiileName, () -> {
-			try {
-				return JasperReportUtils.runReportToPdf(inputStream, hm, conn);
-			} catch (Exception ex2) {
-				log.error(ex2.getMessage());
-			}
-			return null;
-		});
-	}
-
-	public static StreamResource getStreamResource(String fiileName, List<FormazioneJasper> coll,
-			Map<String, Object> hm, InputStream inputStream) {
-		return new StreamResource(fiileName, () -> {
-			try {
-				return JasperReportUtils.runReportToPdf(inputStream, hm, coll);
-			} catch (Exception ex2) {
-				log.error(ex2.getMessage());
-			}
-			return null;
-		});
-	}
-
-	public static StreamResource getStreamResource(String inputStreamName, byte[] bytes) {
-
-		return new StreamResource(inputStreamName, () -> new ByteArrayInputStream(bytes));
-
-	}
-
-	public static String getInfoPlayer(FcGiocatore bean) {
-		String info = bean.getCognGiocatore() + "\n";
-		info += "Squadra: " + bean.getFcSquadra().getNomeSquadra() + "\n";
-		info += "Giocate: " + bean.getFcStatistiche().getGiocate() + "\n";
-		if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
-			NumberFormat formatter = new DecimalFormat("#0.00");
-			String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / Costants.DIVISORE_100);
-			String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / Costants.DIVISORE_100);
-
-			info += "MV: " + mv + "\n";
-			info += "FV: " + fv + "\n";
-			info += "Goal: " + bean.getFcStatistiche().getGoalFatto() + "\n";
-			info += "Assist: " + bean.getFcStatistiche().getAssist() + "\n";
-			info += "Ammonizione: " + bean.getFcStatistiche().getAmmonizione() + "\n";
-			info += "Espulsione: " + bean.getFcStatistiche().getEspulsione() + "\n";
-			if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
-				info += "Goal Subito: " + bean.getFcStatistiche().getGoalSubito() + "\n";
-			}
-		}
-		info += "Probabile: " + (StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.")
-				+ "\n";
-		return info;
-	}
-
+/**
+ * Utility methods for the Fantasy Calcio application.
+ * <p>
+ * This class is not meant to be instantiated.
+ */
+public final class Utils {
+
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
+
+    private static final int THUMB_WIDTH = 40;
+    private static final int THUMB_HEIGHT = 60;
+    private static final DateTimeFormatter DEFAULT_DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+    private Utils() {
+        // utility class
+    }
+
+    // -------------------------------------------------------------------------
+    // Session
+    // -------------------------------------------------------------------------
+
+    public static boolean isValidVaadinSession() {
+        VaadinSession session = VaadinSession.getCurrent();
+        boolean valid = session != null
+                && session.getAttribute("CAMPIONATO") != null
+                && session.getAttribute("ATTORE") != null;
+
+        log.info("isValidVaadinSession = {}", valid);
+        return valid;
+    }
+
+    // -------------------------------------------------------------------------
+    // String helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * Replaces all occurrences of {@code old} with {@code nuovo}.
+     * Prefer {@link String#replace(CharSequence, CharSequence)} when possible.
+     */
+    public static String replaceString(String text, String old, String nuovo) {
+        if (text == null || old == null || nuovo == null) {
+            return text;
+        }
+        return text.replace(old, nuovo);
+    }
+
+    public static String[] tornaArrayString(String sArray, String div) {
+        if (sArray == null || div == null) {
+            return new String[0];
+        }
+        StringTokenizer st = new StringTokenizer(sArray, div);
+        String[] result = new String[st.countTokens()];
+        int i = 0;
+        while (st.hasMoreTokens()) {
+            result[i++] = st.nextToken();
+        }
+        return result;
+    }
+
+    // -------------------------------------------------------------------------
+    // Date / time formatting
+    // -------------------------------------------------------------------------
+
+    public static String formatDate(Date d, String newFormat) {
+        if (d == null || newFormat == null) {
+            return "";
+        }
+        try {
+            return new SimpleDateFormat(newFormat).format(d);
+        } catch (Exception e) {
+            log.error("formatDate failed: {}", e.getMessage());
+            return "";
+        }
+    }
+
+    public static String formatLocalDateTime(LocalDateTime d, String newFormat) {
+        if (d == null || newFormat == null) {
+            return "";
+        }
+        return d.format(DateTimeFormatter.ofPattern(newFormat));
+    }
+
+    // -------------------------------------------------------------------------
+    // File / image utilities
+    // -------------------------------------------------------------------------
+
+    public static boolean downloadFile(String fAddress, String filePath) {
+        final int bufferSize = 1024;
+        try (InputStream is = new URL(fAddress).openConnection().getInputStream();
+             OutputStream out = new BufferedOutputStream(new FileOutputStream(filePath))) {
+
+            byte[] buf = new byte[bufferSize];
+            int n;
+            while ((n = is.read(buf)) != -1) {
+                out.write(buf, 0, n);
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("downloadFile failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean buildFileSmall(String filePathInput, String filePathOutput) {
+        try (InputStream is = new FileInputStream(filePathInput)) {
+            resizeImage(is, filePathOutput);
+            return true;
+        } catch (Exception e) {
+            log.error("buildFileSmall failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    private static void resizeImage(InputStream uploadedInputStream, String fileName) {
+        try {
+            BufferedImage image = ImageIO.read(uploadedInputStream);
+            if (image == null) {
+                log.warn("Could not read image from stream");
+                return;
+            }
+
+            int type = (image.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : image.getType();
+            BufferedImage resized = new BufferedImage(THUMB_WIDTH, THUMB_HEIGHT, type);
+
+            Graphics2D g2d = resized.createGraphics();
+            try {
+                g2d.setComposite(AlphaComposite.Src);
+                g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.drawImage(image, 0, 0, THUMB_WIDTH, THUMB_HEIGHT, null);
+            } finally {
+                g2d.dispose();
+            }
+
+            ImageIO.write(resized, "png", new File(fileName));
+        } catch (IOException e) {
+            log.error("resizeImage failed: {}", e.getMessage());
+        }
+    }
+
+    public static byte[] getImage(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            return new byte[0];
+        }
+        try {
+            BufferedImage img = ImageIO.read(file);
+            if (img == null) {
+                return new byte[0];
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, "png", baos);
+            return baos.toByteArray();
+        } catch (IOException e) {
+            log.error("getImage failed: {}", e.getMessage());
+            return new byte[0];
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Giornata info builders
+    // -------------------------------------------------------------------------
+
+    public static String buildInfoGiornataRight(FcGiornataInfo giornataInfo) {
+        if (giornataInfo == null) {
+            return "ND";
+        }
+        return " (" + giornataInfo.getIdGiornataFc() + "° Lega - "
+                + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+    }
+
+    public static String buildInfoGiornata(FcGiornataInfo giornataInfo) {
+        if (giornataInfo == null) {
+            return "ND";
+        }
+        return giornataInfo.getDescGiornataFc() + " ("
+                + giornataInfo.getIdGiornataFc() + "° Lega - "
+                + giornataInfo.getCodiceGiornata() + "° Serie A) ";
+    }
+
+    public static String buildInfoGiornataMobile(FcGiornataInfo giornataInfo) {
+        if (giornataInfo == null) {
+            return "ND";
+        }
+        return giornataInfo.getCodiceGiornata() + "° Serie A ";
+    }
+
+    public static String buildInfoGiornataHtml(FcGiornataInfo giornataInfo) {
+        if (giornataInfo == null) {
+            return "ND";
+        }
+        return giornataInfo.getDescGiornataFc() + " ("
+                + giornataInfo.getIdGiornataFc() + " Lega - "
+                + giornataInfo.getCodiceGiornata() + " Serie A) ";
+    }
+
+    public static String buildInfoGiornataEm(FcGiornataInfo giornataInfo, FcCampionato campionato) {
+        if (giornataInfo == null) {
+            return "ND";
+        }
+        String campionatoDesc = (campionato != null) ? campionato.getDescCampionato() : "Serie A";
+        return giornataInfo.getDescGiornataFc() + " ("
+                + giornataInfo.getIdGiornataFc() + "° Lega - "
+                + giornataInfo.getCodiceGiornata() + "° " + campionatoDesc + ") ";
+    }
+
+    // -------------------------------------------------------------------------
+    // Voto calculation
+    // -------------------------------------------------------------------------
+
+    public static int buildVoto(FcPagelle pagelle, boolean bRoundVoto) {
+        if (pagelle == null || pagelle.getFcGiocatore() == null) {
+            return 0;
+        }
+
+        String idRuolo = pagelle.getFcGiocatore().getFcRuolo().getIdRuolo();
+        int voto = pagelle.getVotoGiocatore();
+
+        int goalRealizzato = pagelle.getGoalRealizzato();
+        int goalSubito = pagelle.getGoalSubito();
+        int ammonizione = pagelle.getAmmonizione();
+        int espulso = pagelle.getEspulsione();
+        int rf = pagelle.getRigoreFallito();
+        int rp = pagelle.getRigoreParato();
+        int aut = pagelle.getAutorete();
+        int assist = pagelle.getAssist();
+
+        int g = nullSafeInt(pagelle.getG());
+        int cs = nullSafeInt(pagelle.getCs());
+        int ts = nullSafeInt(pagelle.getTs());
+
+        if (goalRealizzato != 0) {
+            voto += goalRealizzato * Costants.DIV_3_0;
+        }
+        if (goalSubito != 0) {
+            voto -= goalSubito * Costants.DIV_1_0;
+        }
+        if (ammonizione != 0 && voto != 0) {
+            voto -= Costants.DIV_0_5;
+        }
+        if (espulso != 0) {
+            if (ammonizione != 0) {
+                voto += Costants.DIV_0_5; // compensate the previous yellow
+            }
+            voto -= Costants.DIV_1_0;
+        }
+        if (rf != 0) {
+            voto -= rf * Costants.DIV_3_0;
+        }
+        if (rp != 0) {
+            voto += rp * Costants.DIV_3_0;
+        }
+        if (aut != 0) {
+            voto -= aut * Costants.DIV_2_0;
+        }
+        if (assist != 0) {
+            voto += assist * Costants.DIV_1_0;
+        }
+
+        // clean sheet bonus for goalkeepers
+        if ("P".equals(idRuolo)
+                && goalSubito == 0
+                && espulso == 0
+                && voto != 0
+                && g != 0 && cs != 0 && ts != 0) {
+            voto += Costants.DIVISORE_100;
+        }
+
+        log.info("giocatore={},bRoundVoto={}, voto={}", pagelle.getFcGiocatore().getCognGiocatore(),bRoundVoto, voto);
+
+        return bRoundVoto ? arrotonda(voto) : voto;
+    }
+
+    private static int nullSafeInt(Double value) {
+        return value != null ? value.intValue() : 0;
+    }
+
+    public static int arrotonda(int input) {
+        BigDecimal bdInput = BigDecimal.valueOf(input);
+        BigDecimal bd10 = BigDecimal.valueOf(Costants.DIVISORE_10);
+        BigDecimal divided = bdInput.divide(bd10);
+        BigDecimal rounded = roundBigDecimal(divided);
+        return rounded.multiply(bd10).intValue();
+    }
+
+    public static BigDecimal roundBigDecimal(final BigDecimal input) {
+        int precision = input.toBigInteger().toString().length();
+        return input.round(new MathContext(precision, RoundingMode.HALF_UP));
+    }
+
+    // -------------------------------------------------------------------------
+    // Next date / countdown helpers
+    // -------------------------------------------------------------------------
+
+    public static Map<String, Object> getNextDate(FcGiornataInfo giornataInfo) {
+        Map<String, Object> map = new HashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime currentDate = now;
+
+        if (giornataInfo != null && giornataInfo.getDataGiornata() != null) {
+            LocalDateTime dataGiornata = giornataInfo.getDataGiornata();
+            LocalDateTime dataAnticipo = resolveDataAnticipo(giornataInfo, now);
+            LocalDateTime dataPosticipo = giornataInfo.getDataPosticipo();
+
+            currentDate = dataGiornata;
+
+            if (dataAnticipo != null) {
+                currentDate = dataAnticipo;
+                if (now.isAfter(dataAnticipo) && now.getDayOfWeek() == dataGiornata.getDayOfWeek()) {
+                    currentDate = dataGiornata;
+                }
+            }
+
+            if (dataPosticipo != null) {
+                if (now.getDayOfWeek() == dataPosticipo.getDayOfWeek()) {
+                    currentDate = dataGiornata;
+                }
+            } else if (dataAnticipo != null) {
+                currentDate = dataAnticipo;
+            }
+        }
+
+        map.put("1", currentDate);
+        map.put("2", currentDate.format(DEFAULT_DTF));
+        return map;
+    }
+
+    private static @Nullable LocalDateTime resolveDataAnticipo(FcGiornataInfo giornataInfo, LocalDateTime now) {
+        LocalDateTime anticipo1 = giornataInfo.getDataAnticipo1();
+        LocalDateTime anticipo2 = giornataInfo.getDataAnticipo2();
+
+        if (anticipo1 != null && anticipo2 != null) {
+            if (now.isBefore(anticipo1)) {
+                return anticipo1;
+            }
+            if (now.isAfter(anticipo1) && now.getDayOfWeek() == anticipo2.getDayOfWeek()) {
+                return anticipo2;
+            }
+            return anticipo1;
+        }
+        if (anticipo1 == null && anticipo2 != null) {
+            return anticipo2;
+        }
+        return anticipo1;
+    }
+
+    public static long getMillisDiff(String nextDate, String fusoOrario) throws Exception {
+        DateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        fmt.setLenient(false);
+
+        Date now = Calendar.getInstance().getTime();
+        Date target = fmt.parse(nextDate);
+
+        long millisDiff = target.getTime() - now.getTime();
+
+        // logging for diagnostics
+        long seconds = (millisDiff / 1000) % 60;
+        long minutes = (millisDiff / 60_000) % 60;
+        long hours = (millisDiff / 3_600_000) % 24;
+        long days = millisDiff / 86_400_000;
+        log.info("{} days, {} hours, {} minutes, {} seconds", days, hours, minutes, seconds);
+
+        long timezoneOffsetMs = Long.parseLong(fusoOrario) * 3_600_000L;
+        millisDiff -= timezoneOffsetMs;
+
+        return Math.max(millisDiff, 0L);
+    }
+
+    // -------------------------------------------------------------------------
+    // Vaadin Image / StreamResource helpers
+    // -------------------------------------------------------------------------
+
+    public static Image getImage(String nomeImg, InputStream inputStream) {
+        StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
+        return new Image(resource, "");
+    }
+
+    public static Image buildImage(String nomeImg, Resource r) {
+        StreamResource resource = new StreamResource(nomeImg, () -> {
+            try {
+                return r.getInputStream();
+            } catch (IOException e) {
+                log.error("buildImage failed: {}", e.getMessage());
+                return null;
+            }
+        });
+        return new Image(resource, "");
+    }
+
+    public static StreamResource getStreamResource(String fileName, Connection conn,
+                                                   Map<String, Object> hm, InputStream inputStream) {
+        return new StreamResource(fileName, () -> {
+            try {
+                return JasperReportUtils.runReportToPdf(inputStream, hm, conn);
+            } catch (Exception e) {
+                log.error("getStreamResource (JDBC) failed: {}", e.getMessage());
+                return null;
+            }
+        });
+    }
+
+    public static StreamResource getStreamResource(String fileName, List<FormazioneJasper> coll,
+                                                   Map<String, Object> hm, InputStream inputStream) {
+        return new StreamResource(fileName, () -> {
+            try {
+                return JasperReportUtils.runReportToPdf(inputStream, hm, coll);
+            } catch (Exception e) {
+                log.error("getStreamResource (collection) failed: {}", e.getMessage());
+                return null;
+            }
+        });
+    }
+
+    public static StreamResource getStreamResource(String inputStreamName, byte[] bytes) {
+        return new StreamResource(inputStreamName, () -> new ByteArrayInputStream(bytes));
+    }
+
+    // -------------------------------------------------------------------------
+    // Player info
+    // -------------------------------------------------------------------------
+
+    public static String getInfoPlayer(FcGiocatore bean) {
+        if (bean == null) {
+            return "";
+        }
+
+        StringBuilder info = new StringBuilder();
+        info.append(bean.getCognGiocatore()).append('\n');
+        info.append("Squadra: ").append(bean.getFcSquadra().getNomeSquadra()).append('\n');
+        info.append("Giocate: ").append(bean.getFcStatistiche().getGiocate()).append('\n');
+
+        if (bean.getFcStatistiche() != null && bean.getFcStatistiche().getMediaVoto() != 0) {
+            NumberFormat formatter = new DecimalFormat("#0.00");
+            String mv = formatter.format(bean.getFcStatistiche().getMediaVoto() / (double) Costants.DIVISORE_100);
+            String fv = formatter.format(bean.getFcStatistiche().getFantaMedia() / (double) Costants.DIVISORE_100);
+
+            info.append("MV: ").append(mv).append('\n');
+            info.append("FV: ").append(fv).append('\n');
+            info.append("Goal: ").append(bean.getFcStatistiche().getGoalFatto()).append('\n');
+            info.append("Assist: ").append(bean.getFcStatistiche().getAssist()).append('\n');
+            info.append("Ammonizione: ").append(bean.getFcStatistiche().getAmmonizione()).append('\n');
+            info.append("Espulsione: ").append(bean.getFcStatistiche().getEspulsione()).append('\n');
+
+            if (Costants.P.equalsIgnoreCase(bean.getFcRuolo().getIdRuolo())) {
+                info.append("Goal Subito: ").append(bean.getFcStatistiche().getGoalSubito()).append('\n');
+            }
+        }
+
+        info.append("Probabile: ")
+            .append(StringUtils.isNotEmpty(bean.getNomeGiocatore()) ? bean.getNomeGiocatore() : "N.D.")
+            .append('\n');
+
+        return info.toString();
+    }
 }

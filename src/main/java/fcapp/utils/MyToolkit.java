@@ -1,164 +1,153 @@
-/*
- * @(#)SivaToolkit.java	2.2 - 21/12/1999
- */
-
 package fcapp.utils;
 
-public class MyToolkit {
-	private MyToolkit() {
-		/* This utility class should not be instantiated */
-	}
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Comparator;
 
-	// Metodo utilizzato per ordinare un array di campi del buffer
-	// considerando solo il campo passato
-	public static void sortBuffer(String[] a, Object[] valoreBuffer) {
-		int l;
-		int r;
-		Object x;
+/**
+ * Utility class providing common helper methods.
+ * <p>
+ * This class cannot be instantiated.
+ */
+public final class MyToolkit {
 
-		l = ((a.length) / 2) + 1;
-		r = a.length - 1;
+    private MyToolkit() {
+        // Utility class – prevent instantiation
+    }
 
-		while (l > 0) {
-			siftBuffer(--l, r, a, valoreBuffer);
-		}
+    /**
+     * Sorts the given {@code keys} array in ascending order and rearranges
+     * the parallel {@code values} array so that the association between
+     * elements is preserved.
+     *
+     * @param keys   the array used as the sort key (must not be {@code null})
+     * @param values parallel array that will be reordered together with {@code keys}
+     *               (must have the same length as {@code keys})
+     * @throws NullPointerException     if {@code keys} or {@code values} is {@code null}
+     * @throws IllegalArgumentException if the two arrays have different lengths
+     */
+    public static void sortBuffer(String[] keys, Object[] values) {
+        requireSameLength(keys, values);
+        sortParallel(keys, values, Comparator.naturalOrder());
+    }
 
-		while (r > 0) {
-			x = a[0];
-			a[0] = a[r];
-			a[r] = (String) x;
-			x = valoreBuffer[0];
-			valoreBuffer[0] = valoreBuffer[r];
-			valoreBuffer[r] = x;
-			siftBuffer(l, --r, a, valoreBuffer);
-		}
+    /**
+     * Sorts the given {@code keys} array in ascending order and rearranges
+     * the parallel {@code values} array so that the association between
+     * elements is preserved.
+     *
+     * @param keys   the array used as the sort key (must not be {@code null})
+     * @param values parallel array that will be reordered together with {@code keys}
+     *               (must have the same length as {@code keys})
+     * @throws NullPointerException     if {@code keys} or {@code values} is {@code null}
+     * @throws IllegalArgumentException if the two arrays have different lengths
+     */
+    public static void sortBufferN(long[] keys, Object[] values) {
+        requireSameLength(keys, values);
+        // Wrapper needed because primitive arrays cannot be used directly with Comparator
+        Long[] boxed = Arrays.stream(keys).boxed().toArray(Long[]::new);
+        sortParallel(boxed, values, Comparator.naturalOrder());
+        // Write the sorted order back into the original primitive array
+        for (int i = 0; i < keys.length; i++) {
+            keys[i] = boxed[i];
+        }
+    }
 
-	}
+    /**
+     * Pads or truncates a string to the requested length.
+     * <ul>
+     *   <li>If the string is longer than {@code length}, it is truncated.</li>
+     *   <li>If shorter, it is padded with the given fill character.</li>
+     * </ul>
+     *
+     * @param text        the original string (may be {@code null}, treated as empty)
+     * @param length      desired final length (must be ≥ 0)
+     * @param fillChar    character used for padding
+     * @param padLeft     {@code true} → left-pad, {@code false} → right-pad
+     * @return the formatted string of exactly {@code length} characters
+     */
+    public static String formatText(String text, int length, char fillChar, boolean padLeft) {
+        if (length < 0) {
+            throw new IllegalArgumentException("length must be ≥ 0");
+        }
+        String s = (text == null) ? "" : text;
 
-	private static void siftBuffer(int l, int r, String[] a, Object[] rstDati) {
-		int i;
-		int j;
-		String x;
-		Object x2;
+        if (s.length() >= length) {
+            return s.substring(0, length);
+        }
 
-		i = l;
-		j = 2 * l;
-		x = a[l];
-		x2 = rstDati[l];
+        String padding = String.valueOf(fillChar).repeat(length - s.length());
+        return padLeft ? padding + s : s + padding;
+    }
 
-		if ((j < r) && (a[j].compareTo(a[j + 1]) < 0)) {
-			j++;
-		}
+    /**
+     * Convenience overload that accepts the fill character as a {@code String}
+     * (only the first character is used) and a positional flag matching the
+     * original API ({@code 0} = left-pad, any other value = right-pad).
+     */
+    public static String formatText(String text, int length, String fill, int pos) {
+        char fillChar = (fill == null || fill.isEmpty()) ? ' ' : fill.charAt(0);
+        return formatText(text, length, fillChar, pos == 0);
+    }
 
-		while ((j <= r) && (x.compareTo(a[j]) < 0)) {
-			a[i] = a[j];
-			rstDati[i] = rstDati[j];
-			i = j;
-			j *= 2;
-			if ((j < r) && (a[j].compareTo(a[j + 1]) < 0)) {
-				j++;
-			}
-		}
+    /**
+     * Checks whether the given day/month/year combination represents a valid date.
+     * Years ≤ 1900 are considered invalid (historical restriction from the original code).
+     *
+     * @param day   day of month (1-31)
+     * @param month month (1-12)
+     * @param year  year (> 1900)
+     * @return {@code true} if the date is valid, {@code false} otherwise
+     */
+    public static boolean isValidDate(int day, int month, int year) {
+        if (year <= 1900) {
+            return false;
+        }
+        try {
+            LocalDate.of(year, month, day);
+            return true;
+        } catch (DateTimeException e) {
+            return false;
+        }
+    }
 
-		a[i] = x;
-		rstDati[i] = x2;
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
 
-	}
+    private static void requireSameLength(Object a, Object b) {
+        if (a == null || b == null) {
+            throw new NullPointerException("arrays must not be null");
+        }
+        int lenA = java.lang.reflect.Array.getLength(a);
+        int lenB = java.lang.reflect.Array.getLength(b);
+        if (lenA != lenB) {
+            throw new IllegalArgumentException(
+                    "arrays must have the same length: " + lenA + " vs " + lenB);
+        }
+    }
 
-	public static void sortBufferN(long[] a, Object[] valoreBuffer) {
-		int l;
-		int r;
-		Object x2;
-		long x;
+    /**
+     * Sorts two parallel arrays using the provided comparator on the key array.
+     * The values array is reordered so that the original key→value association
+     * is preserved.
+     */
+    private static <K> void sortParallel(K[] keys, Object[] values, Comparator<? super K> cmp) {
+        Integer[] indices = new Integer[keys.length];
+        for (int i = 0; i < indices.length; i++) {
+            indices[i] = i;
+        }
 
-		l = ((a.length) / 2) + 1;
-		r = a.length - 1;
+        Arrays.sort(indices, Comparator.comparing(i -> keys[i], cmp));
 
-		while (l > 0) {
-			siftBufferN(--l, r, a, valoreBuffer);
-		}
+        // Apply the permutation to both arrays (in-place, using a temporary copy of keys)
+        K[] sortedKeys = keys.clone();
+        Object[] sortedValues = values.clone();
 
-		while (r > 0) {
-			x = a[0];
-			a[0] = a[r];
-			a[r] = x;
-			x2 = valoreBuffer[0];
-			valoreBuffer[0] = valoreBuffer[r];
-			valoreBuffer[r] = x2;
-			siftBufferN(l, --r, a, valoreBuffer);
-		}
-
-	}
-
-	private static void siftBufferN(int l, int r, long[] a, Object[] rstDati) {
-		int i;
-		int j;
-		long x;
-		Object x2;
-		i = l;
-		j = 2 * l;
-		x = a[l];
-		x2 = rstDati[l];
-
-		if ((j < r) && (a[j] < a[j + 1])) {
-			j++;
-		}
-
-		while ((j <= r) && (x < a[j])) {
-			a[i] = a[j];
-			rstDati[i] = rstDati[j];
-			i = j;
-			j *= 2;
-			if ((j < r) && (a[j] < a[j + 1])) {
-				j++;
-			}
-		}
-
-		a[i] = x;
-		rstDati[i] = x2;
-
-	}
-
-	// metodo utilizzato per formattare una stringa con tanti caratteri
-	// uguali a quello passato, quanti sono quelli richiesti..
-	public static String formatText(String s, int lng, String f, int pos) {
-		int iLen = s.length();
-
-		if (iLen > lng) {
-			return s.substring(0, lng);
-		}
-
-		lng -= iLen;
-
-		StringBuilder sRiempimento = new StringBuilder(lng);
-
-		sRiempimento.append(String.valueOf(f).repeat(lng));
-
-		if (pos == 0) {
-			return sRiempimento + s;
-		} else {
-			return s + sRiempimento;
-		}
-	}
-
-	public static boolean isValidDate(int giorno, int mese, int anno) {
-		boolean dataValida = false;
-
-		if (anno > 1900) {
-			int[] nGiorniMese = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-			boolean annoBisestile;
-
-			annoBisestile = (anno % 4 == 0 && anno % 100 != 0) || anno % 400 == 0;
-			if (mese < 13 && mese > 0) {
-				if (giorno <= nGiorniMese[mese - 1] && giorno > 0) {
-					dataValida = true;
-				} else {
-					dataValida = mese == 2 && annoBisestile && giorno == 29;
-				}
-			}
-		}
-
-		return dataValida;
-	}
-
+        for (int i = 0; i < indices.length; i++) {
+            keys[i] = sortedKeys[indices[i]];
+            values[i] = sortedValues[indices[i]];
+        }
+    }
 }

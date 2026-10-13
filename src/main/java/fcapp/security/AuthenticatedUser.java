@@ -3,8 +3,8 @@ package fcapp.security;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -107,7 +107,7 @@ public class AuthenticatedUser{
         LOG.info("CurrentGG: {}", giornataInfo.getCodiceGiornata());
 
 		String fusoOrario = properties.getProperty("FUSO_ORARIO");
-		HashMap map = Utils.getNextDate(giornataInfo);
+		Map<String, Object> map = Utils.getNextDate(giornataInfo);
 		LocalDateTime nextDate = (LocalDateTime)map.get("1");
 		String nextDateFormat = (String)map.get("2");
 

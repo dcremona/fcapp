@@ -54,6 +54,7 @@ import fcapp.backend.data.entity.FcProperties;
 import fcapp.backend.data.entity.FcSquadra;
 import fcapp.backend.job.JobProcessFileCsv;
 import fcapp.backend.job.JobProcessGiornata;
+import fcapp.backend.job.JobProcessGiornataNew;
 import fcapp.backend.job.JobProcessSendMail;
 import fcapp.backend.service.AccessoService;
 import fcapp.backend.service.AttoreService;
@@ -95,6 +96,7 @@ public class ImpostazioniView extends VerticalLayout
     private final transient Environment env;
     private final transient JobProcessFileCsv jobProcessFileCsv;
     private final transient JobProcessGiornata jobProcessGiornata;
+    private final transient JobProcessGiornataNew jobProcessGiornataNew;
     private final transient JobProcessSendMail jobProcessSendMail;
     private final transient CalendarioCompetizioneService calendarioCompetizioneService;
     private final transient GiornataInfoService giornataInfoService;
@@ -140,6 +142,7 @@ public class ImpostazioniView extends VerticalLayout
     private Button calcola;
     private ToggleButton chkForzaVotoGiocatore;
     private ToggleButton chkRoundVotoGiocatore;
+    private ToggleButton chkAI;
     private Button calcolaStatistiche;
     private Button pdfAndMail;
 
@@ -158,6 +161,7 @@ public class ImpostazioniView extends VerticalLayout
             Environment env,
             JobProcessFileCsv jobProcessFileCsv,
             JobProcessGiornata jobProcessGiornata,
+            JobProcessGiornataNew jobProcessGiornataNew,
             JobProcessSendMail jobProcessSendMail,
             GiornataInfoService giornataInfoService,
             CalendarioCompetizioneService calendarioCompetizioneService,
@@ -174,6 +178,7 @@ public class ImpostazioniView extends VerticalLayout
         this.env = env;
         this.jobProcessFileCsv = jobProcessFileCsv;
         this.jobProcessGiornata = jobProcessGiornata;
+        this.jobProcessGiornataNew = jobProcessGiornataNew;
         this.jobProcessSendMail = jobProcessSendMail;
         this.calendarioCompetizioneService = calendarioCompetizioneService;
         this.giornataInfoService = giornataInfoService;
@@ -319,6 +324,12 @@ public class ImpostazioniView extends VerticalLayout
     }
 
     private void buildCalcolaSection() {
+    	
+        chkAI = new ToggleButton();
+        chkAI.setLabel("AI");
+        chkAI.setValue(false);
+
+
         init = createButton("Avvia", VaadinIcon.ADD_DOCK, this);
         downloadVoti = createButton("Download Voti", VaadinIcon.DOWNLOAD, this);
         seiPolitico = createButton("Sei Politico", VaadinIcon.PIN, this);
@@ -363,7 +374,7 @@ public class ImpostazioniView extends VerticalLayout
         VerticalLayout layoutCalcola = new VerticalLayout();
         layoutCalcola.setMargin(true);
         layoutCalcola.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
-        layoutCalcola.add(init, row1, row2, pdfAndMail, chkSendMail);
+        layoutCalcola.add(chkAI,init, row1, row2, pdfAndMail, chkSendMail);
 
         Details panelCalcola = new Details("Calcola", layoutCalcola);
         panelCalcola.addThemeVariants(DetailsVariant.REVERSE, DetailsVariant.FILLED);
@@ -461,7 +472,12 @@ public class ImpostazioniView extends VerticalLayout
         InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory((metadata, data) -> {
             try {
                 InputStream is = new ByteArrayInputStream(data);
-                jobProcessGiornata.updateImgGiocatore(is);
+                if (chkAI.getValue().booleanValue()) {
+                	jobProcessGiornataNew.updateImgGiocatore(is);
+                } else {
+                	jobProcessGiornata.updateImgGiocatore(is);	
+                }
+                
                 CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
             } catch (Exception e) {
                 CustomMessageDialog.showMessageErrorDetails(CustomMessageDialog.MSG_ERROR_GENERIC, e.getMessage());
@@ -496,10 +512,18 @@ public class ImpostazioniView extends VerticalLayout
                 jobProcessFileCsv.downloadCsvFromXlsx(is,basePathData,fileName);
                 
                 fileName = basePathData + "voti_" + codiceGiornata + ".csv";
-                jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
-
+                if (chkAI.getValue().booleanValue()) {
+                	jobProcessGiornataNew.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));	
+                } else {
+                	jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
+                }
+                
                 if (giornataInfo != null) {
-                	jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+                	if (chkAI.getValue().booleanValue()) {
+                		jobProcessGiornataNew.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+                	} else {
+                		jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());	
+                	}
                 }
                 
               	CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
@@ -606,7 +630,12 @@ public class ImpostazioniView extends VerticalLayout
             } else if (event.getSource() == updateGiocatori) {
                 handleUpdateGiocatori(basePathData, codiceGiornata);
             } else if (event.getSource() == generaCalendar) {
-                jobProcessGiornata.generaCalendario(campionato);
+            	if (chkAI.getValue().booleanValue()) {
+            		jobProcessGiornataNew.generaCalendario(campionato);	
+            	} else {
+            		jobProcessGiornata.generaCalendario(campionato);
+            	}
+                
             } else if (event.getSource() == formazione422) {
                 validateGiornata(codiceGiornata);
                 getConfirmDialog(codiceGiornata, campionato).open();
@@ -614,14 +643,27 @@ public class ImpostazioniView extends VerticalLayout
             } else if (event.getSource() == resetFormazione) {
                 validateGiornata(codiceGiornata);
                 validateAttore(attore);
-                jobProcessGiornata.resetFormazione(attore.getIdAttore(), codiceGiornata);
+                if (chkAI.getValue().booleanValue()) {
+                	jobProcessGiornataNew.resetFormazione(attore.getIdAttore(), codiceGiornata);
+                } else {
+                	jobProcessGiornata.resetFormazione(attore.getIdAttore(), codiceGiornata);	
+                }
             } else if (event.getSource() == ultimaFormazione) {
                 validateGiornata(codiceGiornata);
                 validateAttore(attore);
-                jobProcessGiornata.inserisciUltimaFormazione(attore.getIdAttore(), codiceGiornata);
+                if (chkAI.getValue().booleanValue()) {
+                	jobProcessGiornataNew.inserisciUltimaFormazione(attore.getIdAttore(), codiceGiornata);	
+                } else {
+                	jobProcessGiornata.inserisciUltimaFormazione(attore.getIdAttore(), codiceGiornata);
+                }
             } else if (event.getSource() == init) {
                 validateGiornata(codiceGiornata);
-                jobProcessGiornata.initPagelle(codiceGiornata);
+                if (chkAI.getValue().booleanValue()) {
+                	jobProcessGiornataNew.initPagelle(codiceGiornata);	
+                } else {
+                	jobProcessGiornata.initPagelle(codiceGiornata);
+                }
+                
                 try {
                     sendMailInfoGiornata(giornataInfo);
                 } catch (Exception e) {
@@ -634,7 +676,12 @@ public class ImpostazioniView extends VerticalLayout
             } else if (event.getSource() == calcola) {
                 handleCalcola(codiceGiornata, campionato);
             } else if (event.getSource() == calcolaStatistiche) {
-                jobProcessGiornata.statistiche(campionato);
+            	if (chkAI.getValue().booleanValue()) {
+            		jobProcessGiornataNew.statistiche(campionato);
+            	} else {
+            		jobProcessGiornata.statistiche(campionato);	
+            	}
+                
             } else if (event.getSource() == pdfAndMail) {
                 handlePdfAndMail(campionato, giornataInfo, properties, basePathData);
             } else if (event.getSource() == salva) {
@@ -696,13 +743,25 @@ public class ImpostazioniView extends VerticalLayout
         boolean updateImg = chkUpdateImg.getValue();
         String percentuale = String.valueOf(txtPercentuale.getValue().intValue());
 
-        HashMap<Object, Object> map = jobProcessGiornata.initDbGiocatori(
-                Costants.HTTP_URL_IMG,
-                basePathData,
-                fileName,
-                updateQuotazioni,
-                updateImg,
-                percentuale);
+        HashMap<Object, Object> map = null;
+        if (chkAI.getValue().booleanValue()) {
+            map = jobProcessGiornataNew.initDbGiocatori(
+                    Costants.HTTP_URL_IMG,
+                    basePathData,
+                    fileName,
+                    updateQuotazioni,
+                    updateImg,
+                    percentuale);
+        	
+        } else {
+            map = jobProcessGiornata.initDbGiocatori(
+                    Costants.HTTP_URL_IMG,
+                    basePathData,
+                    fileName,
+                    updateQuotazioni,
+                    updateImg,
+                    percentuale);
+        }
 
         @SuppressWarnings("unchecked")
         ArrayList<FcGiocatore> listGiocatoriAdd = (ArrayList<FcGiocatore>) map.get("listAdd");
@@ -733,10 +792,19 @@ public class ImpostazioniView extends VerticalLayout
         jobProcessFileCsv.downloadVotiXlsxCsv(httpUrl, basePathData, fileName);
 
         fileName = basePathData + "voti_" + codiceGiornata + ".csv";
-        jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
-
+        if (chkAI.getValue().booleanValue()) {
+        	jobProcessGiornataNew.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));
+        } else {
+        	jobProcessGiornata.aggiornamentoPFGiornata(properties, fileName, String.valueOf(codiceGiornata));	
+        }
+        
         if (giornataInfo != null) {
-            jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+        	if (chkAI.getValue().booleanValue()) {
+        		jobProcessGiornataNew.checkSeiPolitico(giornataInfo.getCodiceGiornata());
+        	} else {
+        		jobProcessGiornata.checkSeiPolitico(giornataInfo.getCodiceGiornata());	
+        	}
+            
         }
     }
 
@@ -746,24 +814,45 @@ public class ImpostazioniView extends VerticalLayout
             throw new IllegalArgumentException("Squadra obbligatoria");
         }
 
-        jobProcessGiornata.seiPolitico(codiceGiornata, squadra);
+        if (chkAI.getValue().booleanValue()) {
+        	jobProcessGiornataNew.seiPolitico(codiceGiornata, squadra);
+        } else {
+        	jobProcessGiornata.seiPolitico(codiceGiornata, squadra);	
+        }
+        
     }
 
     private void handleCalcola(int codiceGiornata, FcCampionato campionato) {
         int forzaVotoGiocatore = Boolean.TRUE.equals(chkForzaVotoGiocatore.getValue()) ? 0 : -1;
 
-        jobProcessGiornata.algoritmo(
-                codiceGiornata,
-                campionato,
-                forzaVotoGiocatore,
-                chkRoundVotoGiocatore.getValue());
+        if (chkAI.getValue().booleanValue()) {
+            jobProcessGiornataNew.algoritmo(
+                    codiceGiornata,
+                    campionato,
+                    forzaVotoGiocatore,
+                    chkRoundVotoGiocatore.getValue());
 
-        jobProcessGiornata.statistiche(campionato);
-        jobProcessGiornata.aggiornaVotiGiocatori(codiceGiornata, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
-        jobProcessGiornata.aggiornaTotRosa(String.valueOf(campionato.getIdCampionato()), codiceGiornata);
-        jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt", "score");
-        jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_old");
-        jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_grand_prix");
+            jobProcessGiornataNew.statistiche(campionato);
+            jobProcessGiornataNew.aggiornaVotiGiocatori(codiceGiornata, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
+            jobProcessGiornataNew.aggiornaTotRosa(String.valueOf(campionato.getIdCampionato()), codiceGiornata);
+            jobProcessGiornataNew.aggiornaScore(codiceGiornata, "tot_pt", "score");
+            jobProcessGiornataNew.aggiornaScore(codiceGiornata, "tot_pt_old", "score_old");
+            jobProcessGiornataNew.aggiornaScore(codiceGiornata, "tot_pt_old", "score_grand_prix");
+        	
+        } else {
+            jobProcessGiornata.algoritmo(
+                    codiceGiornata,
+                    campionato,
+                    forzaVotoGiocatore,
+                    chkRoundVotoGiocatore.getValue());
+
+            jobProcessGiornata.statistiche(campionato);
+            jobProcessGiornata.aggiornaVotiGiocatori(codiceGiornata, forzaVotoGiocatore, chkRoundVotoGiocatore.getValue());
+            jobProcessGiornata.aggiornaTotRosa(String.valueOf(campionato.getIdCampionato()), codiceGiornata);
+            jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt", "score");
+            jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_old");
+            jobProcessGiornata.aggiornaScore(codiceGiornata, "tot_pt_old", "score_grand_prix");
+        }
     }
 
     private void handlePdfAndMail(
@@ -885,7 +974,12 @@ public class ImpostazioniView extends VerticalLayout
                         : 0;
 
                 for (FcAttore a : squadre) {
-                    jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
+                	if (chkAI.getValue().booleanValue()) {
+                		jobProcessGiornataNew.inserisciFormazione442(campionato, a, giornata);	
+                	} else {
+                		jobProcessGiornata.inserisciFormazione442(campionato, a, giornata);
+                	}
+                    
                 }
 
                 CustomMessageDialog.showMessageInfo(CustomMessageDialog.MSG_OK);
