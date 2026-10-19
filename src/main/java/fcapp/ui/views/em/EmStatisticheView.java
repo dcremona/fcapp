@@ -1,7 +1,8 @@
 package fcapp.ui.views.em;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serial;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -14,11 +15,8 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.klaudeta.PaginatedGrid;
-import org.vaadin.olli.FileDownloadWrapper;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
@@ -41,6 +39,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -55,6 +54,8 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.ClassificaBean;
 import fcapp.backend.data.Role;
@@ -67,6 +68,7 @@ import fcapp.backend.job.JobProcessGiornata;
 import fcapp.backend.service.AccessoService;
 import fcapp.backend.service.AttoreService;
 import fcapp.backend.service.ClassificaTotalePuntiService;
+import fcapp.backend.service.JasperPdfService;
 import fcapp.backend.service.SquadraService;
 import fcapp.backend.service.StatisticheService;
 import fcapp.ui.views.MainLayout;
@@ -85,7 +87,7 @@ public class EmStatisticheView extends VerticalLayout
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final String REPORT_STATISTICHE_VOTI = "classpath:reports/statisticheVoti.jasper";
+    private static final String REPORT_STATISTICHE_VOTI = "/reports/statisticheVoti.jasper";
     private static final String PUNTI_TOTALI = "TOTALE_PUNTI";
     private static final String TUTTI = "Tutti";
     private static final String ATTIVI = "Attivi";
@@ -93,7 +95,6 @@ public class EmStatisticheView extends VerticalLayout
     private static final Set<String> RUOLI_VALIDI = Set.of("P", "D", "C", "A");
 
     private final transient Logger log = LoggerFactory.getLogger(getClass());
-    private final transient JdbcTemplate jdbcTemplate;
     private final transient JobProcessGiornata jobProcessGiornata;
     private final transient ResourceLoader resourceLoader;
     private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
@@ -101,6 +102,7 @@ public class EmStatisticheView extends VerticalLayout
     private final transient AttoreService attoreService;
     private final transient SquadraService squadraService;
     private final transient AccessoService accessoService;
+    private final transient JasperPdfService jasperPdfService;
 
     private List<FcAttore> squadreA = new ArrayList<>();
     private ComboBox<FcAttore> comboAttoreA;
@@ -122,16 +124,15 @@ public class EmStatisticheView extends VerticalLayout
     private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
     public EmStatisticheView(
-            JdbcTemplate jdbcTemplate,
             JobProcessGiornata jobProcessGiornata,
             ResourceLoader resourceLoader,
             ClassificaTotalePuntiService classificaTotalePuntiService,
             StatisticheService statisticheService,
             AttoreService attoreService,
             SquadraService squadraService,
-            AccessoService accessoService) {
+            AccessoService accessoService,
+            JasperPdfService jasperPdfService) {
         log.info("EmStatisticheView()");
-        this.jdbcTemplate = jdbcTemplate;
         this.jobProcessGiornata = jobProcessGiornata;
         this.resourceLoader = resourceLoader;
         this.classificaTotalePuntiService = classificaTotalePuntiService;
@@ -139,6 +140,7 @@ public class EmStatisticheView extends VerticalLayout
         this.attoreService = attoreService;
         this.squadraService = squadraService;
         this.accessoService = accessoService;
+        this.jasperPdfService = jasperPdfService;
     }
 
     @PostConstruct
@@ -281,7 +283,12 @@ public class EmStatisticheView extends VerticalLayout
         HorizontalLayout actionsLayout = new HorizontalLayout();
         actionsLayout.setSpacing(true);
 
-        addIfNotNull(actionsLayout, buildStatistichePdfButton(campionato));
+        //addIfNotNull(actionsLayout, buildStatistichePdfButton(campionato));
+        
+        actionsLayout.add(createPdfDownloadLink("Statistiche Voti pdf", "StatisticheVoti.pdf", REPORT_STATISTICHE_VOTI, params -> {
+			params.put("PATH_IMG", "img/");
+		}, campionato));
+
         addAdminActions(actionsLayout, attore);
 
         layout.add(actionsLayout);
@@ -294,28 +301,58 @@ public class EmStatisticheView extends VerticalLayout
 
         layout.add(grid);
     }
+    
+	// -------------------------------------------------------------------------
+	// Report downloads
+	// -------------------------------------------------------------------------
 
-    private FileDownloadWrapper buildStatistichePdfButton(FcCampionato campionato) {
-        try {
-            Button stampaPdf = new Button("Statistiche Voti pdf");
-            stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
+	private Anchor createPdfDownloadLink(String linkText, String fileName, String reportPath,
+			java.util.function.Consumer<Map<String, Object>> extraParams, FcCampionato campionato) {
+		return new Anchor(DownloadHandler.fromInputStream(event -> {
+			try (InputStream report = getClass().getResourceAsStream(reportPath)) {
+				if (report == null) {
+					throw new IllegalStateException("File report non trovato: " + reportPath);
+				}
+				Map<String, Object> params = baseReportParams(campionato);
+				extraParams.accept(params);
+				byte[] pdf = jasperPdfService.generaPdf(reportPath, params);
+				return new DownloadResponse(new ByteArrayInputStream(pdf), fileName, "application/pdf", pdf.length);
+			} catch (Exception e) {
+				log.error("Errore generazione PDF {}", fileName, e);
+				return DownloadResponse.error(500);
+			}
+		}), linkText);
+	}
 
-            try (Connection conn = getConnection()) {
-                Map<String, Object> params = new HashMap<>();
-                params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
-                params.put("DIVISORE", String.valueOf(Costants.DIVISORE_10));
+	private Map<String, Object> baseReportParams(FcCampionato campionato) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
+		params.put("DIVISORE", String.valueOf(Costants.DIVISORE_10));
+		return params;
+	}
+    
 
-                Resource resource = resourceLoader.getResource(REPORT_STATISTICHE_VOTI);
-                FileDownloadWrapper wrapper = new FileDownloadWrapper(
-                        Utils.getStreamResource("StatisticheVoti.pdf", conn, params, resource.getInputStream()));
-                wrapper.wrapComponent(stampaPdf);
-                return wrapper;
-            }
-        } catch (Exception e) {
-            log.error("Errore creazione pulsante download statistiche", e);
-            return null;
-        }
-    }
+//    private FileDownloadWrapper buildStatistichePdfButton(FcCampionato campionato) {
+//        try {
+//            Button stampaPdf = new Button("Statistiche Voti pdf");
+//            stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
+//
+//            try (Connection conn = getConnection()) {
+//                Map<String, Object> params = new HashMap<>();
+//                params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
+//                params.put("DIVISORE", String.valueOf(Costants.DIVISORE_10));
+//
+//                Resource resource = resourceLoader.getResource(REPORT_STATISTICHE_VOTI);
+//                FileDownloadWrapper wrapper = new FileDownloadWrapper(
+//                        Utils.getStreamResource("StatisticheVoti.pdf", conn, params, resource.getInputStream()));
+//                wrapper.wrapComponent(stampaPdf);
+//                return wrapper;
+//            }
+//        } catch (Exception e) {
+//            log.error("Errore creazione pulsante download statistiche", e);
+//            return null;
+//        }
+//    }
 
     private void addAdminActions(HorizontalLayout layout, FcAttore attore) {
         if (attore == null || attore.getRoles() == null) {
@@ -674,19 +711,6 @@ public class EmStatisticheView extends VerticalLayout
         }
         String normalized = role.toUpperCase();
         return RUOLI_VALIDI.contains(normalized) ? normalized : "";
-    }
-
-    private void addIfNotNull(HorizontalLayout layout, Component component) {
-        if (component != null) {
-            layout.add(component);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        if (jdbcTemplate.getDataSource() == null) {
-            throw new SQLException("DataSource non disponibile");
-        }
-        return jdbcTemplate.getDataSource().getConnection();
     }
 
     @SuppressWarnings("unchecked")

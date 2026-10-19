@@ -13,10 +13,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ResourceLoader;
-import org.vaadin.olli.FileDownloadWrapper;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
@@ -25,9 +23,9 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -35,8 +33,9 @@ import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.entity.FcAttore;
 import fcapp.backend.data.entity.FcCampionato;
@@ -162,7 +161,12 @@ public class FormazioniView extends VerticalLayout {
                         campionato.getStart(),
                         campionato.getEnd());
 
-        Button stampaPdf = buildPdfDownloadButton(campionato);
+        //Button stampaPdf = buildPdfDownloadButton(campionato);
+        
+        Anchor stampaPdf = createPdfDownloadLink(
+                "Risultati.pdf",
+                "Risultati.pdf",
+                campionato);
 
         comboGiornata.setItemLabelGenerator(Utils::buildInfoGiornata);
         comboGiornata.setItems(giornate);
@@ -173,7 +177,10 @@ public class FormazioniView extends VerticalLayout {
 
         mainLayout.setSizeFull();
 
-        add(wrapDownloadButton(stampaPdf));
+        //add(wrapDownloadButton(stampaPdf));
+        
+        add(stampaPdf);
+        
         add(comboGiornata);
         add(mainLayout);
         add(buildLegenda());
@@ -181,28 +188,49 @@ public class FormazioniView extends VerticalLayout {
         comboGiornata.setValue(giornataInfo);
     }
 
-    private Button buildPdfDownloadButton(FcCampionato campionato) {
-        Button stampaPdf = new Button("Risultati pdf");
-        stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
-        stampaPdf.setEnabled(false);
-        return stampaPdf;
+//    private Button buildPdfDownloadButton(FcCampionato campionato) {
+//        Button stampaPdf = new Button("Risultati pdf");
+//        stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
+//        stampaPdf.setEnabled(false);
+//        return stampaPdf;
+//    }
+
+//    private FileDownloadWrapper wrapDownloadButton(Button button) {
+//        FcCampionato campionato = getSessionAttribute("CAMPIONATO", FcCampionato.class);
+//
+//        StreamResource resource = new StreamResource("Risultati.pdf", () -> {
+//            String pathImg = "images/";
+//            byte[] bytes = jobProcessSendMail.getJasperRisultati(campionato, comboGiornata.getValue(), pathImg);
+//            return new ByteArrayInputStream(bytes);
+//        });
+//
+//        FileDownloadWrapper wrapper = new FileDownloadWrapper(resource);
+//        wrapper.wrapComponent(button);
+//        return wrapper;
+//    }
+    
+    private Anchor createPdfDownloadLink(
+            String linkText,
+            String fileName,
+            FcCampionato campionato) {
+
+        return new Anchor(DownloadHandler.fromInputStream(event -> {
+            try {
+                String pathImg = "images/";
+                byte[] pdf = jobProcessSendMail.getJasperRisultati(campionato, comboGiornata.getValue(), pathImg);
+                return new DownloadResponse(
+                        new ByteArrayInputStream(pdf),
+                        fileName,
+                        "application/pdf",
+                        pdf.length);
+            } catch (Exception e) {
+                log.error("Errore generazione PDF {}", fileName, e);
+                return DownloadResponse.error(500);
+            }
+        }), linkText);
     }
-
-    private FileDownloadWrapper wrapDownloadButton(Button button) {
-        FcCampionato campionato = getSessionAttribute("CAMPIONATO", FcCampionato.class);
-
-        StreamResource resource = new StreamResource("Risultati.pdf", () -> {
-            String pathImg = "images/";
-            byte[] bytes = jobProcessSendMail.getJasperRisultati(campionato, comboGiornata.getValue(), pathImg);
-            return new ByteArrayInputStream(bytes);
-        });
-
-        FileDownloadWrapper wrapper = new FileDownloadWrapper(resource);
-        wrapper.wrapComponent(button);
-        return wrapper;
-    }
-
-    private void onGiornataChanged(FcGiornataInfo fcGiornataInfo, Button stampaPdf) {
+    
+    private void onGiornataChanged(FcGiornataInfo fcGiornataInfo, Anchor stampaPdf) {
         log.info("addValueChangeListener");
 
         mainLayout.removeAll();

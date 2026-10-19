@@ -1,7 +1,8 @@
 package fcapp.ui.views.seriea;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serial;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -14,11 +15,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.vaadin.klaudeta.PaginatedGrid;
-import org.vaadin.olli.FileDownloadWrapper;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
@@ -43,6 +41,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -57,6 +56,8 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.ClassificaBean;
 import fcapp.backend.data.Role;
@@ -68,6 +69,7 @@ import fcapp.backend.job.JobProcessGiornata;
 import fcapp.backend.service.AccessoService;
 import fcapp.backend.service.AttoreService;
 import fcapp.backend.service.ClassificaTotalePuntiService;
+import fcapp.backend.service.JasperPdfService;
 import fcapp.backend.service.SquadraService;
 import fcapp.backend.service.StatisticheService;
 import fcapp.ui.views.MainLayout;
@@ -90,7 +92,6 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
     private static final String GIOCATORI_NON_ATTIVI = "Non Attivi";
 
     private final transient Logger log = LoggerFactory.getLogger(getClass());
-    private final transient JdbcTemplate jdbcTemplate;
     private final transient JobProcessGiornata jobProcessGiornata;
     private final transient ResourceLoader resourceLoader;
     private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
@@ -98,6 +99,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
     private final transient AttoreService attoreService;
     private final transient SquadraService squadraService;
     private final transient AccessoService accessoService;
+    private final transient JasperPdfService jasperPdfService;
 
     private List<FcAttore> squadreA = new ArrayList<>();
     private List<FcAttore> proprietari = new ArrayList<>();
@@ -122,16 +124,15 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
     private final VerticalLayout verticalLayoutGrafico = new VerticalLayout();
 
     public StatisticheView(
-            JdbcTemplate jdbcTemplate,
             JobProcessGiornata jobProcessGiornata,
             ResourceLoader resourceLoader,
             ClassificaTotalePuntiService classificaTotalePuntiService,
             StatisticheService statisticheService,
             AttoreService attoreService,
             SquadraService squadraService,
-            AccessoService accessoService) {
+            AccessoService accessoService,
+            JasperPdfService jasperPdfService) {
         log.info("StatisticheView()");
-        this.jdbcTemplate = jdbcTemplate;
         this.jobProcessGiornata = jobProcessGiornata;
         this.resourceLoader = resourceLoader;
         this.classificaTotalePuntiService = classificaTotalePuntiService;
@@ -139,6 +140,7 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         this.attoreService = attoreService;
         this.squadraService = squadraService;
         this.accessoService = accessoService;
+        this.jasperPdfService = jasperPdfService;
     }
 
     @PostConstruct
@@ -293,16 +295,16 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
 
         addPdfDownloadButton(
                 actionsLayout,
-                "Statistiche Voti pdf",
+                "Download Statistiche Voti Pdf",
                 "StatisticheVoti.pdf",
-                "classpath:reports/statisticheVoti.jasper",
+                "/reports/statisticheVoti.jasper",
                 campionato);
 
         addPdfDownloadButton(
                 actionsLayout,
-                "Statistiche Voti Free Players pdf",
+                "Download Statistiche Voti Free Players Pdf",
                 "StatisticheVotiFreePlayers.pdf",
-                "classpath:reports/statisticheVotiFreePlayers.jasper",
+                "/reports/statisticheVotiFreePlayers.jasper",
                 campionato);
 
         if (isAdmin(attore)) {
@@ -330,31 +332,44 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
             String reportPath,
             FcCampionato campionato) {
         try {
-            Button button = new Button(buttonText);
-            FileDownloadWrapper wrapper = createPdfWrapper(fileName, reportPath, campionato);
-            wrapper.wrapComponent(button);
-            layout.add(wrapper);
+			layout.add(createPdfDownloadLink(buttonText, fileName, reportPath, params -> {
+				params.put("PATH_IMG", "img/");
+			}, campionato));
+        	
         } catch (Exception e) {
             log.error("Errore nella creazione del download PDF {}: {}", fileName, e.getMessage(), e);
         }
     }
 
-    private FileDownloadWrapper createPdfWrapper(String fileName, String reportPath, FcCampionato campionato) throws Exception {
-        if (jdbcTemplate.getDataSource() == null) {
-            throw new IllegalStateException("DataSource non disponibile");
-        }
+	// -------------------------------------------------------------------------
+	// Report downloads
+	// -------------------------------------------------------------------------
 
-        Connection conn = jdbcTemplate.getDataSource().getConnection();
-        Map<String, Object> params = new HashMap<>();
-        params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
-        params.put("DIVISORE", String.valueOf(Costants.DIVISORE_100));
+	private Anchor createPdfDownloadLink(String linkText, String fileName, String reportPath,
+			java.util.function.Consumer<Map<String, Object>> extraParams, FcCampionato campionato) {
+		return new Anchor(DownloadHandler.fromInputStream(event -> {
+			try (InputStream report = getClass().getResourceAsStream(reportPath)) {
+				if (report == null) {
+					throw new IllegalStateException("File report non trovato: " + reportPath);
+				}
+				Map<String, Object> params = baseReportParams(campionato);
+				extraParams.accept(params);
+				byte[] pdf = jasperPdfService.generaPdf(reportPath, params);
+				return new DownloadResponse(new ByteArrayInputStream(pdf), fileName, "application/pdf", pdf.length);
+			} catch (Exception e) {
+				log.error("Errore generazione PDF {}", fileName, e);
+				return DownloadResponse.error(500);
+			}
+		}), linkText);
+	}
 
-        Resource resource = resourceLoader.getResource(reportPath);
-
-        return new FileDownloadWrapper(
-                Utils.getStreamResource(fileName, conn, params, resource.getInputStream()));
-    }
-
+	private Map<String, Object> baseReportParams(FcCampionato campionato) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
+		params.put("DIVISORE", String.valueOf(Costants.DIVISORE_100));
+		return params;
+	}
+    
     private boolean isAdmin(FcAttore attore) {
         return attore != null && attore.getRoles().stream().anyMatch(Role.ADMIN::equals);
     }

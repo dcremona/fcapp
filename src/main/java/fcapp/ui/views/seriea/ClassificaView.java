@@ -1,21 +1,18 @@
 package fcapp.ui.views.seriea;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serial;
-import java.sql.Connection;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.vaadin.olli.FileDownloadWrapper;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
@@ -29,20 +26,20 @@ import com.github.appreciated.apexcharts.config.plotoptions.builder.BarBuilder;
 import com.github.appreciated.apexcharts.config.subtitle.Align;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.entity.FcAttore;
 import fcapp.backend.data.entity.FcCampionato;
@@ -50,6 +47,7 @@ import fcapp.backend.data.entity.FcClassifica;
 import fcapp.backend.data.entity.FcClassificaTotPt;
 import fcapp.backend.service.AccessoService;
 import fcapp.backend.service.ClassificaService;
+import fcapp.backend.service.JasperPdfService;
 import fcapp.ui.views.MainLayout;
 import fcapp.utils.Costants;
 import fcapp.utils.Utils;
@@ -64,38 +62,35 @@ public class ClassificaView extends VerticalLayout {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final String REPORT_CLASSIFICA = "classpath:reports/classifica.jasper";
+    private static final String REPORT_CLASSIFICA = "/reports/classifica.jasper";
     private static final String DECIMAL_PATTERN = "#0.00";
+    private static final String SESSION_CAMPIONATO = "CAMPIONATO";
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(ClassificaView.class);
 
     private final transient JdbcTemplate jdbcTemplate;
-    private final transient ResourceLoader resourceLoader;
     private final transient ClassificaService classificaService;
     private final transient AccessoService accessoService;
+    private final transient JasperPdfService jasperPdfService;
 
     public ClassificaView(
             JdbcTemplate jdbcTemplate,
-            ResourceLoader resourceLoader,
             ClassificaService classificaService,
-            AccessoService accessoService) {
-
+            AccessoService accessoService,
+            JasperPdfService jasperPdfService) {
         this.jdbcTemplate = jdbcTemplate;
-        this.resourceLoader = resourceLoader;
         this.classificaService = classificaService;
         this.accessoService = accessoService;
-
+        this.jasperPdfService = jasperPdfService;
         log.info("ClassificaView()");
     }
 
     @PostConstruct
     void init() {
         log.info("init");
-
         if (!Utils.isValidVaadinSession()) {
             return;
         }
-
         accessoService.insertAccesso(getClass().getName());
         initLayout();
     }
@@ -103,40 +98,37 @@ public class ClassificaView extends VerticalLayout {
     private void initLayout() {
         log.info("initLayout");
 
-        FcCampionato campionato = getSessionAttribute("CAMPIONATO", FcCampionato.class);
+        FcCampionato campionato = getSessionAttribute(SESSION_CAMPIONATO, FcCampionato.class);
         if (campionato == null) {
+            log.warn("Campionato non presente in sessione");
             return;
         }
 
-        HorizontalLayout layoutGrid = new HorizontalLayout();
-        layoutGrid.setMargin(false);
-        layoutGrid.setPadding(false);
-        layoutGrid.setSpacing(false);
-        layoutGrid.setSizeFull();
+        try {
+            HorizontalLayout pdfButtons = buildButtonPdf(campionato);
+            if (pdfButtons != null) {
+                add(pdfButtons);
+            }
+        } catch (Exception e) {
+            log.error("Errore nella costruzione del pulsante PDF classifica", e);
+        }
 
         try {
-            layoutGrid.add(buildTableClassifica(campionato));
+            HorizontalLayout gridLayout = new HorizontalLayout(buildTableClassifica(campionato));
+            gridLayout.setMargin(false);
+            gridLayout.setPadding(false);
+            gridLayout.setSpacing(false);
+            gridLayout.setSizeFull();
+            add(gridLayout);
         } catch (Exception e) {
             log.error("Errore nella costruzione della tabella classifica", e);
         }
-
-        try {
-            HorizontalLayout buttonPdf = buildButtonPdf(campionato);
-            if (buttonPdf != null) {
-                add(buttonPdf);
-            }
-        } catch (Exception e) {
-            log.error("Errore nella costruzione del pulsante pdf classifica", e);
-        }
-
-        add(layoutGrid);
 
         try {
             Component graficoRosa = buildGrafico(campionato);
             if (graficoRosa != null) {
                 add(graficoRosa);
             }
-
             Component graficoTvst = buildGraficoTuttiVsTutti(campionato);
             if (graficoTvst != null) {
                 add(graficoTvst);
@@ -152,8 +144,13 @@ public class ClassificaView extends VerticalLayout {
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Charts
+    // -------------------------------------------------------------------------
+
     public Component buildGrafico(FcCampionato campionato) {
-        List<FcClassifica> classifica = classificaService.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
+        List<FcClassifica> classifica =
+                classificaService.findByFcCampionatoOrderByTotPuntiRosaDesc(campionato);
         if (classifica.isEmpty()) {
             return null;
         }
@@ -171,7 +168,8 @@ public class ClassificaView extends VerticalLayout {
     }
 
     public Component buildGraficoTuttiVsTutti(FcCampionato campionato) {
-        List<FcClassifica> classifica = classificaService.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
+        List<FcClassifica> classifica =
+                classificaService.findByFcCampionatoOrderByTotPuntiTvsTDesc(campionato);
         if (classifica.isEmpty()) {
             return null;
         }
@@ -188,7 +186,10 @@ public class ClassificaView extends VerticalLayout {
                 values);
     }
 
-    private Component buildBarChart(String title, String seriesName, String[] categories, Object[] values) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private Component buildBarChart(
+            String title, String seriesName, String[] categories, Object[] values) {
+
         Series series = new Series(seriesName, values);
 
         ApexCharts barChart = ApexChartsBuilder.get()
@@ -196,7 +197,10 @@ public class ClassificaView extends VerticalLayout {
                 .withPlotOptions(PlotOptionsBuilder.get()
                         .withBar(BarBuilder.get().withHorizontal(false).build())
                         .build())
-                .withTitle(TitleSubtitleBuilder.get().withText(title).withAlign(Align.LEFT).build())
+                .withTitle(TitleSubtitleBuilder.get()
+                        .withText(title)
+                        .withAlign(Align.LEFT)
+                        .build())
                 .withDataLabels(DataLabelsBuilder.get().withEnabled(false).build())
                 .withSeries(series)
                 .withXaxis(XAxisBuilder.get().withCategories(categories).build())
@@ -213,223 +217,241 @@ public class ClassificaView extends VerticalLayout {
                 .toArray(String[]::new);
     }
 
+    // -------------------------------------------------------------------------
+    // PDF download
+    // -------------------------------------------------------------------------
+
     private HorizontalLayout buildButtonPdf(FcCampionato campionato) {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
 
         try {
-            Button stampaPdf = new Button("Classifica pdf");
-            stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
-
-            if (jdbcTemplate.getDataSource() != null) {
-                Connection connection = jdbcTemplate.getDataSource().getConnection();
-
-                Map<String, Object> parameters = new HashMap<>();
-                parameters.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
-                parameters.put("DIVISORE", String.valueOf(Costants.DIVISORE_100));
-
-                Resource resource = resourceLoader.getResource(REPORT_CLASSIFICA);
-
-                FileDownloadWrapper wrapper = new FileDownloadWrapper(
-                        Utils.getStreamResource(
-                                "Classifica.pdf",
-                                connection,
-                                parameters,
-                                resource.getInputStream()));
-
-                wrapper.wrapComponent(stampaPdf);
-                layout.add(wrapper);
-            }
-
+            layout.add(createPdfDownloadLink(
+                    "Download Classifica Pdf",
+                    "Classifica.pdf",
+                    REPORT_CLASSIFICA,
+                    params -> params.put("PATH_IMG", "img/"),
+                    campionato));
         } catch (Exception e) {
-            log.error("Errore nella creazione del pdf classifica", e);
+            log.error("Errore nella creazione del PDF classifica", e);
         }
 
         return layout;
     }
 
+    private Anchor createPdfDownloadLink(
+            String linkText,
+            String fileName,
+            String reportPath,
+            Consumer<Map<String, Object>> extraParams,
+            FcCampionato campionato) {
+
+        return new Anchor(DownloadHandler.fromInputStream(event -> {
+            try {
+                Map<String, Object> params = baseReportParams(campionato);
+                extraParams.accept(params);
+
+                byte[] pdf = jasperPdfService.generaPdf(reportPath, params);
+                return new DownloadResponse(
+                        new ByteArrayInputStream(pdf),
+                        fileName,
+                        "application/pdf",
+                        pdf.length);
+            } catch (Exception e) {
+                log.error("Errore generazione PDF {}", fileName, e);
+                return DownloadResponse.error(500);
+            }
+        }), linkText);
+    }
+
+    private Map<String, Object> baseReportParams(FcCampionato campionato) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("ID_CAMPIONATO", String.valueOf(campionato.getIdCampionato()));
+        params.put("DIVISORE", String.valueOf(Costants.DIVISORE_100));
+        return params;
+    }
+
+    // -------------------------------------------------------------------------
+    // Main standings grid
+    // -------------------------------------------------------------------------
+
     private Grid<FcClassifica> buildTableClassifica(FcCampionato campionato) {
-        List<FcClassifica> items = classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
+        List<FcClassifica> items =
+                classificaService.findByFcCampionatoOrderByPuntiDescIdPosizAsc(campionato);
 
-        Grid<FcClassifica> grid = new Grid<>();
+        Grid<FcClassifica> grid = createBaseGrid();
         grid.setItems(items);
-        grid.addThemeVariants(
-                GridVariant.LUMO_NO_BORDER,
-                GridVariant.LUMO_NO_ROW_BORDERS,
-                GridVariant.LUMO_ROW_STRIPES);
-        grid.setAllRowsVisible(true);
-        grid.setSelectionMode(Grid.SelectionMode.NONE);
-        grid.setMultiSort(true);
 
-        Column<FcClassifica> posizioneColumn = grid.addColumn(FcClassifica::getIdPosiz);
-        posizioneColumn.setSortable(false);
+        grid.addColumn(FcClassifica::getIdPosiz).setSortable(false);
 
-        Column<FcClassifica> squadraColumn = grid.addColumn(c -> c.getFcAttore().getDescAttore());
-        squadraColumn.setSortable(false);
-        squadraColumn.setHeader(Costants.SQUADRA);
-        squadraColumn.setAutoWidth(true);
+        Column<FcClassifica> squadraColumn = grid.addColumn(c -> c.getFcAttore().getDescAttore())
+                .setHeader(Costants.SQUADRA)
+                .setSortable(false)
+                .setAutoWidth(true);
 
-        Column<FcClassifica> puntiColumn = grid.addColumn(FcClassifica::getPunti);
-        puntiColumn.setHeader("Punti");
-        puntiColumn.setSortable(true);
-        puntiColumn.setAutoWidth(true);
-
-        Column<FcClassifica> vinteColumn = grid.addColumn(FcClassifica::getVinte);
-        vinteColumn.setHeader("Vinte");
-        vinteColumn.setSortable(true);
-        vinteColumn.setAutoWidth(true);
-
-        Column<FcClassifica> pariColumn = grid.addColumn(FcClassifica::getPari);
-        pariColumn.setHeader("Pari");
-        pariColumn.setSortable(true);
-        pariColumn.setAutoWidth(true);
-
-        Column<FcClassifica> perseColumn = grid.addColumn(FcClassifica::getPerse);
-        perseColumn.setHeader("Perse");
-        perseColumn.setSortable(true);
-        perseColumn.setAutoWidth(true);
-
-        Column<FcClassifica> gfColumn = grid.addColumn(FcClassifica::getGf);
-        gfColumn.setHeader("Gf");
-        gfColumn.setSortable(true);
-        gfColumn.setAutoWidth(true);
-
-        Column<FcClassifica> gsColumn = grid.addColumn(FcClassifica::getGs);
-        gsColumn.setHeader("Gs");
-        gsColumn.setSortable(true);
-        gsColumn.setAutoWidth(true);
-
-        Column<FcClassifica> drColumn = grid.addColumn(FcClassifica::getDr);
-        drColumn.setHeader("Dr");
-        drColumn.setSortable(true);
-        drColumn.setAutoWidth(true);
+        Column<FcClassifica> puntiColumn = addSortableColumn(grid, "Punti", FcClassifica::getPunti);
+        Column<FcClassifica> vinteColumn = addSortableColumn(grid, "Vinte", FcClassifica::getVinte);
+        Column<FcClassifica> pariColumn = addSortableColumn(grid, "Pari", FcClassifica::getPari);
+        Column<FcClassifica> perseColumn = addSortableColumn(grid, "Perse", FcClassifica::getPerse);
+        Column<FcClassifica> gfColumn = addSortableColumn(grid, "Gf", FcClassifica::getGf);
+        Column<FcClassifica> gsColumn = addSortableColumn(grid, "Gs", FcClassifica::getGs);
+        Column<FcClassifica> drColumn = addSortableColumn(grid, "Dr", FcClassifica::getDr);
 
         Column<FcClassifica> totPuntiRosaColumn = grid.addColumn(
-                new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPuntiRosa()))));
-        totPuntiRosaColumn.setHeader("Tot Pt Rosa");
-        totPuntiRosaColumn.setSortable(true);
-        totPuntiRosaColumn.setComparator(Comparator.comparing(FcClassifica::getTotPuntiRosa));
-        totPuntiRosaColumn.setAutoWidth(true);
+                        new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPuntiRosa()))))
+                .setHeader("Tot Pt Rosa")
+                .setSortable(true)
+                .setComparator(Comparator.comparing(FcClassifica::getTotPuntiRosa))
+                .setAutoWidth(true);
 
-        Column<FcClassifica> totPuntiTVsTColumn = grid.addColumn(FcClassifica::getTotPuntiTvsT);
-        totPuntiTVsTColumn.setHeader("Tot Pt TvsT");
-        totPuntiTVsTColumn.setSortable(true);
-        totPuntiTVsTColumn.setAutoWidth(true);
-
-        Column<FcClassifica> totfmColumn = grid.addColumn(FcClassifica::getTotFm);
-        totfmColumn.setHeader("Tot FM");
-        totfmColumn.setSortable(true);
-        totfmColumn.setAutoWidth(true);
+        Column<FcClassifica> totPuntiTVsTColumn =
+                addSortableColumn(grid, "Tot Pt TvsT", FcClassifica::getTotPuntiTvsT);
+        Column<FcClassifica> totFmColumn =
+                addSortableColumn(grid, "Tot FM", FcClassifica::getTotFm);
 
         HeaderRow headerRow = grid.prependHeaderRow();
-        HeaderCell headerCell = headerRow.join(
-                squadraColumn,
-                puntiColumn,
-                vinteColumn,
-                pariColumn,
-                perseColumn,
-                gfColumn,
-                gsColumn,
-                drColumn,
-                totPuntiRosaColumn,
-                totPuntiTVsTColumn,
-                totfmColumn);
-        headerCell.setText("Classifica Prima Fase");
+        headerRow.join(
+                        squadraColumn,
+                        puntiColumn,
+                        vinteColumn,
+                        pariColumn,
+                        perseColumn,
+                        gfColumn,
+                        gsColumn,
+                        drColumn,
+                        totPuntiRosaColumn,
+                        totPuntiTVsTColumn,
+                        totFmColumn)
+                .setText("Classifica Prima Fase");
 
+        // posizioneColumn is intentionally not joined into the group header
+        // (keeps the original layout: only the other columns share the title)
         return grid;
     }
+
+    // -------------------------------------------------------------------------
+    // Info / aggregated standings grid
+    // -------------------------------------------------------------------------
 
     private Grid<FcClassificaTotPt> buildTableInfoClassifica(FcCampionato campionato) {
         List<FcClassificaTotPt> items = loadInfoClassifica(campionato);
 
-        Grid<FcClassificaTotPt> grid = new Grid<>();
+        Grid<FcClassificaTotPt> grid = createBaseGrid();
         grid.setItems(items);
-        grid.addThemeVariants(
-                GridVariant.LUMO_NO_BORDER,
-                GridVariant.LUMO_NO_ROW_BORDERS,
-                GridVariant.LUMO_ROW_STRIPES);
-        grid.setAllRowsVisible(true);
-        grid.setSelectionMode(Grid.SelectionMode.NONE);
-        grid.setMultiSort(true);
 
-        Column<FcClassificaTotPt> squadraColumn = grid.addColumn(c -> c.getFcAttore().getDescAttore());
-        squadraColumn.setSortable(false);
-        squadraColumn.setHeader(Costants.SQUADRA);
+        Column<FcClassificaTotPt> squadraColumn =
+                grid.addColumn(c -> c.getFcAttore().getDescAttore())
+                        .setHeader(Costants.SQUADRA)
+                        .setSortable(false);
 
         Column<FcClassificaTotPt> totPtRosaColumn = grid.addColumn(
-                new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPtRosa()))));
-        totPtRosaColumn.setHeader("Tot Pt Rosa");
-        totPtRosaColumn.setSortable(true);
-        totPtRosaColumn.setComparator(Comparator.comparing(FcClassificaTotPt::getTotPtRosa));
+                        new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPtRosa()))))
+                .setHeader("Tot Pt Rosa")
+                .setSortable(true)
+                .setComparator(Comparator.comparing(FcClassificaTotPt::getTotPtRosa));
 
-        Column<FcClassificaTotPt> ptTvsTColumn = grid.addColumn(FcClassificaTotPt::getPtTvsT);
-        ptTvsTColumn.setHeader("Tot Pt TvsT");
-        ptTvsTColumn.setSortable(true);
+        Column<FcClassificaTotPt> ptTvsTColumn = grid.addColumn(FcClassificaTotPt::getPtTvsT)
+                .setHeader("Tot Pt TvsT")
+                .setSortable(true);
 
         Column<FcClassificaTotPt> totPuntiColumn = grid.addColumn(
-                new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPt()))));
-        totPuntiColumn.setHeader("Tot Pt 18");
-        totPuntiColumn.setSortable(true);
-        totPuntiColumn.setComparator(Comparator.comparing(FcClassificaTotPt::getTotPt));
+                        new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPt()))))
+                .setHeader("Tot Pt 18")
+                .setSortable(true)
+                .setComparator(Comparator.comparing(FcClassificaTotPt::getTotPt));
 
         Column<FcClassificaTotPt> totPuntiOldColumn = grid.addColumn(
-                new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPtOld()))));
-        totPuntiOldColumn.setHeader("Tot Pt 11");
-        totPuntiOldColumn.setSortable(true);
-        totPuntiOldColumn.setComparator(Comparator.comparing(FcClassificaTotPt::getTotPtOld));
+                        new ComponentRenderer<>(c -> new Span(formatDecimal(c.getTotPtOld()))))
+                .setHeader("Tot Pt 11")
+                .setSortable(true)
+                .setComparator(Comparator.comparing(FcClassificaTotPt::getTotPtOld));
 
-        Column<FcClassificaTotPt> scoreColumn = grid.addColumn(FcClassificaTotPt::getScore);
-        scoreColumn.setHeader("GrandPrix G18");
-        scoreColumn.setSortable(true);
+        Column<FcClassificaTotPt> scoreColumn = grid.addColumn(FcClassificaTotPt::getScore)
+                .setHeader("GrandPrix G18")
+                .setSortable(true);
 
-        Column<FcClassificaTotPt> scoreOldColumn = grid.addColumn(FcClassificaTotPt::getScoreOld);
-        scoreOldColumn.setHeader("GrandPrix G11");
-        scoreOldColumn.setSortable(true);
+        Column<FcClassificaTotPt> scoreOldColumn = grid.addColumn(FcClassificaTotPt::getScoreOld)
+                .setHeader("GrandPrix G11")
+                .setSortable(true);
 
-        Column<FcClassificaTotPt> scoreGrandPrixColumn = grid.addColumn(FcClassificaTotPt::getScoreGrandPrix);
-        scoreGrandPrixColumn.setHeader("GrandPrix F1");
-        scoreGrandPrixColumn.setSortable(true);
+        Column<FcClassificaTotPt> scoreGrandPrixColumn =
+                grid.addColumn(FcClassificaTotPt::getScoreGrandPrix)
+                        .setHeader("GrandPrix F1")
+                        .setSortable(true);
 
         HeaderRow headerRow = grid.prependHeaderRow();
-        HeaderCell headerCell = headerRow.join(
-                squadraColumn,
-                totPuntiColumn,
-                totPuntiOldColumn,
-                totPtRosaColumn,
-                ptTvsTColumn,
-                scoreColumn,
-                scoreOldColumn,
-                scoreGrandPrixColumn);
-        headerCell.setText("Info Classifiche Generali");
+        headerRow.join(
+                        squadraColumn,
+                        totPuntiColumn,
+                        totPuntiOldColumn,
+                        totPtRosaColumn,
+                        ptTvsTColumn,
+                        scoreColumn,
+                        scoreOldColumn,
+                        scoreGrandPrixColumn)
+                .setText("Info Classifiche Generali");
 
         return grid;
     }
 
     private List<FcClassificaTotPt> loadInfoClassifica(FcCampionato campionato) {
-        List<FcClassificaTotPt> result = new ArrayList<>();
+        String sql = """
+                SELECT a.desc_attore,
+                       SUM(pt.tot_pt)            AS tot18,
+                       SUM(pt.tot_pt_old)        AS tot11,
+                       SUM(pt.tot_pt_rosa)       AS totRosa,
+                       SUM(pt.pt_tvst)           AS pt_tvst,
+                       SUM(pt.score)             AS score18,
+                       SUM(pt.score_old)         AS score11,
+                       SUM(pt.score_grand_prix)  AS score_grand_prix
+                FROM fc_classifica_tot_pt pt
+                JOIN fc_attore a ON a.id_attore = pt.id_attore
+                WHERE pt.id_campionato = ?
+                GROUP BY a.desc_attore
+                ORDER BY 3 DESC
+                """;
 
-        jdbcTemplate.query(getString(campionato), rs -> {
-            while (rs.next()) {
-                FcClassificaTotPt item = new FcClassificaTotPt();
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            FcClassificaTotPt item = new FcClassificaTotPt();
 
-                FcAttore attore = new FcAttore();
-                attore.setDescAttore(rs.getString(1));
+            FcAttore attore = new FcAttore();
+            attore.setDescAttore(rs.getString("desc_attore"));
+            item.setFcAttore(attore);
 
-                item.setFcAttore(attore);
-                item.setTotPt(rs.getDouble(2));
-                item.setTotPtOld(rs.getDouble(3));
-                item.setTotPtRosa(rs.getDouble(4));
-                item.setPtTvsT(rs.getInt(5));
-                item.setScore(rs.getInt(6));
-                item.setScoreOld(rs.getInt(7));
-                item.setScoreGrandPrix(rs.getInt(8));
+            item.setTotPt(rs.getDouble("tot18"));
+            item.setTotPtOld(rs.getDouble("tot11"));
+            item.setTotPtRosa(rs.getDouble("totRosa"));
+            item.setPtTvsT(rs.getInt("pt_tvst"));
+            item.setScore(rs.getInt("score18"));
+            item.setScoreOld(rs.getInt("score11"));
+            item.setScoreGrandPrix(rs.getInt("score_grand_prix"));
 
-                result.add(item);
-            }
-            return "1";
-        });
+            return item;
+        }, campionato.getIdCampionato());
+    }
 
-        return result;
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private <T> Grid<T> createBaseGrid() {
+        Grid<T> grid = new Grid<>();
+        grid.addThemeVariants(
+                GridVariant.LUMO_NO_BORDER,
+                GridVariant.LUMO_NO_ROW_BORDERS,
+                GridVariant.LUMO_ROW_STRIPES);
+        grid.setAllRowsVisible(true);
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        grid.setMultiSort(true);
+        return grid;
+    }
+
+    private <T, V> Column<T> addSortableColumn(
+            Grid<T> grid, String header, Function<T, V> valueProvider) {
+        return grid.addColumn(valueProvider::apply)
+                .setHeader(header)
+                .setSortable(true)
+                .setAutoWidth(true);
     }
 
     private String formatDecimal(Number value) {
@@ -438,28 +460,16 @@ public class ClassificaView extends VerticalLayout {
         return formatter.format(normalized);
     }
 
-    private @NonNull String getString(FcCampionato campionato) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" select a.desc_attore, ");
-        sql.append(" sum(pt.tot_pt) as tot18, ");
-        sql.append(" sum(pt.tot_pt_old) as tot11, ");
-        sql.append(" sum(pt.tot_pt_rosa) as totRosa, ");
-        sql.append(" sum(pt.pt_tvst) as pt_tvst, ");
-        sql.append(" sum(pt.score) as score18, ");
-        sql.append(" sum(pt.score_old) as score11, ");
-        sql.append(" sum(pt.score_grand_prix) as score_grand_prix ");
-        sql.append(" from fc_classifica_tot_pt pt, ");
-        sql.append(" fc_attore a ");
-        sql.append(" where pt.id_campionato = ").append(campionato.getIdCampionato());
-        sql.append(" and a.id_attore = pt.id_attore ");
-        sql.append(" group by a.desc_attore ");
-        sql.append(" order by 3 desc ");
-        return sql.toString();
-    }
-
     @SuppressWarnings("unchecked")
     private <T> T getSessionAttribute(String key, Class<T> type) {
         Object value = VaadinSession.getCurrent().getAttribute(key);
-        return value == null ? null : (T) value;
+        if (value == null) {
+            return null;
+        }
+        if (!type.isInstance(value)) {
+            log.warn("Session attribute '{}' is not of type {}", key, type.getName());
+            return null;
+        }
+        return (T) value;
     }
 }

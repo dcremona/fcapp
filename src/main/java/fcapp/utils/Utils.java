@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URL;
-import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -27,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -43,7 +41,6 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 
-import fcapp.backend.data.FormazioneJasper;
 import fcapp.backend.data.entity.FcCampionato;
 import fcapp.backend.data.entity.FcGiocatore;
 import fcapp.backend.data.entity.FcGiornataInfo;
@@ -439,29 +436,29 @@ public final class Utils {
         return new Image(resource, "");
     }
 
-    public static StreamResource getStreamResource(String fileName, Connection conn,
-                                                   Map<String, Object> hm, InputStream inputStream) {
-        return new StreamResource(fileName, () -> {
-            try {
-                return JasperReportUtils.runReportToPdf(inputStream, hm, conn);
-            } catch (Exception e) {
-                log.error("getStreamResource (JDBC) failed: {}", e.getMessage());
-                return null;
-            }
-        });
-    }
+//    public static StreamResource getStreamResource(String fileName, Connection conn,
+//                                                   Map<String, Object> hm, InputStream inputStream) {
+//        return new StreamResource(fileName, () -> {
+//            try {
+//                return JasperReportUtils.runReportToPdf(inputStream, hm, conn);
+//            } catch (Exception e) {
+//                log.error("getStreamResource (JDBC) failed: {}", e.getMessage());
+//                return null;
+//            }
+//        });
+//    }
 
-    public static StreamResource getStreamResource(String fileName, List<FormazioneJasper> coll,
-                                                   Map<String, Object> hm, InputStream inputStream) {
-        return new StreamResource(fileName, () -> {
-            try {
-                return JasperReportUtils.runReportToPdf(inputStream, hm, coll);
-            } catch (Exception e) {
-                log.error("getStreamResource (collection) failed: {}", e.getMessage());
-                return null;
-            }
-        });
-    }
+//    public static StreamResource getStreamResource(String fileName, List<FormazioneJasper> coll,
+//                                                   Map<String, Object> hm, InputStream inputStream) {
+//        return new StreamResource(fileName, () -> {
+//            try {
+//                return JasperReportUtils.runReportToPdf(inputStream, hm, coll);
+//            } catch (Exception e) {
+//                log.error("getStreamResource (collection) failed: {}", e.getMessage());
+//                return null;
+//            }
+//        });
+//    }
 
     public static StreamResource getStreamResource(String inputStreamName, byte[] bytes) {
         return new StreamResource(inputStreamName, () -> new ByteArrayInputStream(bytes));

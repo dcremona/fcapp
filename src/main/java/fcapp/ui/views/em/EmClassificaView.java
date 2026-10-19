@@ -1,8 +1,8 @@
 package fcapp.ui.views.em;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serial;
-import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +12,6 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.vaadin.olli.FileDownloadWrapper;
 
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
@@ -29,22 +25,24 @@ import com.github.appreciated.apexcharts.config.plotoptions.builder.BarBuilder;
 import com.github.appreciated.apexcharts.config.subtitle.Align;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.ClassificaBean;
 import fcapp.backend.data.entity.FcGiornataInfo;
 import fcapp.backend.service.AccessoService;
 import fcapp.backend.service.ClassificaTotalePuntiService;
+import fcapp.backend.service.JasperPdfService;
 import fcapp.ui.views.MainLayout;
 import fcapp.utils.Costants;
 import fcapp.utils.Utils;
@@ -67,26 +65,23 @@ public class EmClassificaView extends VerticalLayout {
 
     private final transient Logger log = LoggerFactory.getLogger(getClass());
     private final transient Environment env;
-    private final transient JdbcTemplate jdbcTemplate;
-    private final transient ResourceLoader resourceLoader;
     private final transient ClassificaTotalePuntiService classificaTotalePuntiService;
     private final transient AccessoService accessoService;
+    private final transient JasperPdfService jasperPdfService;
 
     private List<ClassificaBean> items;
     private FcGiornataInfo giornataInfo;
 
     public EmClassificaView(
             Environment env,
-            JdbcTemplate jdbcTemplate,
-            ResourceLoader resourceLoader,
             ClassificaTotalePuntiService classificaTotalePuntiService,
-            AccessoService accessoService) {
+            AccessoService accessoService,
+            JasperPdfService jasperPdfService) {
         log.info("EmClassificaView()");
         this.env = env;
-        this.jdbcTemplate = jdbcTemplate;
-        this.resourceLoader = resourceLoader;
         this.classificaTotalePuntiService = classificaTotalePuntiService;
         this.accessoService = accessoService;
+        this.jasperPdfService = jasperPdfService;
     }
 
     @PostConstruct
@@ -175,42 +170,41 @@ public class EmClassificaView extends VerticalLayout {
         horLayout.setSpacing(true);
 
         try {
-            Button stampaPdf = new Button("Classifica pdf");
-            stampaPdf.setIcon(VaadinIcon.DOWNLOAD.create());
-
-            if (jdbcTemplate.getDataSource() == null) {
-                throw new IllegalStateException("DataSource non disponibile");
-            }
-
-            Map<String, Object> parameters = buildPdfParameters();
-            Resource resource = resourceLoader.getResource("classpath:reports/em/classifica.jasper");
-
-            try (Connection connection = jdbcTemplate.getDataSource().getConnection();
-                 InputStream inputStream = resource.getInputStream()) {
-
-                FileDownloadWrapper wrapper = new FileDownloadWrapper(
-                        Utils.getStreamResource("Classifica.pdf", connection, parameters, inputStream)
-                );
-
-                wrapper.wrapComponent(stampaPdf);
-                horLayout.add(wrapper);
-            }
+        	horLayout.add(createPdfDownloadLink("Download Classifica Pdf", "Classifica.pdf", "reports/em/classifica.jasper"));
         } catch (Exception e) {
             log.error("Errore durante la costruzione del PDF", e);
         }
-
         return horLayout;
     }
+    
+	// -------------------------------------------------------------------------
+	// Report downloads
+	// -------------------------------------------------------------------------
 
-    private Map<String, Object> buildPdfParameters() {
-        Map<String, Object> parameters = new HashMap<>();
+	private Anchor createPdfDownloadLink(String linkText, String fileName, String reportPath) {
+		return new Anchor(DownloadHandler.fromInputStream(event -> {
+			try (InputStream report = getClass().getResourceAsStream(reportPath)) {
+				if (report == null) {
+					throw new IllegalStateException("File report non trovato: " + reportPath);
+				}
+				Map<String, Object> params = baseReportParams();
+
+				byte[] pdf = jasperPdfService.generaPdf(reportPath, params);
+				return new DownloadResponse(new ByteArrayInputStream(pdf), fileName, "application/pdf", pdf.length);
+			} catch (Exception e) {
+				log.error("Errore generazione PDF {}", fileName, e);
+				return DownloadResponse.error(500);
+			}
+		}), linkText);
+	}
+
+	private Map<String, Object> baseReportParams() {
+		Map<String, Object> params = new HashMap<>();
         String imgLogo = env.getProperty("img.logo");
-
-        parameters.put("DIVISORE", String.valueOf(Costants.DIVISORE_10));
-        parameters.put("PATH_IMG", "images/" + imgLogo);
-
-        return parameters;
-    }
+        params.put("DIVISORE", String.valueOf(Costants.DIVISORE_10));
+        params.put("PATH_IMG", "images/" + imgLogo);
+		return params;
+	}
 
     private Grid<ClassificaBean> buildTableClassifica(List<ClassificaBean> items, FcGiornataInfo giornataInfo) {
         Grid<ClassificaBean> grid = new Grid<>();

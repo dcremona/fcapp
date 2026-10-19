@@ -1,6 +1,5 @@
 package fcapp.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -15,22 +14,22 @@ public class JasperReportUtils {
 		/* This utility class should not be instantiated */
 	}
 
-	public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm, Connection conn)
-			throws Exception {
-
-		byte[] b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
-		assert b != null;
-		return new ByteArrayInputStream(b);
-	}
-
-	@SuppressWarnings("rawtypes")
-	public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm, Collection coll)
-			throws Exception {
-
-		byte[] b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
-		assert b != null;
-		return new ByteArrayInputStream(b);
-	}
+//	public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm, Connection conn)
+//			throws Exception {
+//
+//		byte[] b = JasperRunManager.runReportToPdf(inputStream, hm, conn);
+//		assert b != null;
+//		return new ByteArrayInputStream(b);
+//	}
+//
+//	@SuppressWarnings("rawtypes")
+//	public static ByteArrayInputStream runReportToPdf(InputStream inputStream, Map<String, Object> hm, Collection coll)
+//			throws Exception {
+//
+//		byte[] b = JasperRunManager.runReportToPdf(inputStream, hm, new JRBeanCollectionDataSource(coll));
+//		assert b != null;
+//		return new ByteArrayInputStream(b);
+//	}
 
 	@SuppressWarnings("rawtypes")
 	public static byte[] getReportByteCollectionDataSource(InputStream inputStream, Map<String, Object> hm,
