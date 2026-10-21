@@ -1,5 +1,7 @@
 package fcapp.ui.views.admin;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serial;
 import java.security.SecureRandom;
 
@@ -7,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.vaadin.crudui.crud.CrudOperation;
-import org.vaadin.crudui.crud.CrudOperationException;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.HorizontalSplitCrudLayout;
@@ -21,6 +22,8 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.Role;
 import fcapp.backend.data.entity.FcAttore;
@@ -215,7 +218,20 @@ public class FcUserView extends VerticalLayout {
 
         if (user != null && user.getProfilePicture() != null) {
             Avatar avatar = new Avatar(user.getName());
-            avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
+            //avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
+			avatar.setImageHandler(DownloadHandler.fromInputStream(event -> {
+				try {
+					InputStream inputStream = new ByteArrayInputStream(user.getProfilePicture());
+					String fileName = "profile-pic";
+					String contentType = "image/png";
+					long contentLength = -1; // or -1 if unknown
+		
+					return new DownloadResponse(inputStream,fileName,contentType,contentLength);
+				} catch (Exception e) {
+					return DownloadResponse.error(500);
+				}
+			}));
+            
             avatar.setThemeName("xsmall");
             avatar.getElement().setAttribute("tabindex", "-1");
             cellLayout.add(avatar);

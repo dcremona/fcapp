@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -422,6 +421,20 @@ public final class Utils {
     public static Image getImage(String nomeImg, InputStream inputStream) {
         StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
         return new Image(resource, "");
+        
+//		return new Image(DownloadHandler.fromInputStream(event -> {
+        
+//		try {
+//			String fileName = nomeImg;
+//			String contentType = "image/png";
+//			long contentLength = -1; // or -1 if unknown
+//
+//			return new DownloadResponse(inputStream,fileName,contentType,contentLength);
+//		} catch (Exception e) {
+//			return DownloadResponse.error(500);
+//		}
+//	}),"");
+        
     }
 
     public static Image buildImage(String nomeImg, Resource r) {
@@ -434,6 +447,15 @@ public final class Utils {
             }
         });
         return new Image(resource, "");
+        
+//		return new Image(DownloadHandler.forClassResource(r.getClass(), "/images/"+nomeImg),nomeImg);
+		
+//		try {
+//			return new Image(DownloadHandler.forFile(r.getFile()),"");
+//		} catch (IOException e) {
+//		}
+//		return null;
+        
     }
 
 //    public static StreamResource getStreamResource(String fileName, Connection conn,
@@ -460,9 +482,9 @@ public final class Utils {
 //        });
 //    }
 
-    public static StreamResource getStreamResource(String inputStreamName, byte[] bytes) {
-        return new StreamResource(inputStreamName, () -> new ByteArrayInputStream(bytes));
-    }
+//    public static StreamResource getStreamResource(String inputStreamName, byte[] bytes) {
+//        return new StreamResource(inputStreamName, () -> new ByteArrayInputStream(bytes));
+//    }
 
     // -------------------------------------------------------------------------
     // Player info

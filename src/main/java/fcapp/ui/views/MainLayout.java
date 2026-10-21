@@ -1,5 +1,7 @@
 package fcapp.ui.views;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serial;
 import java.util.Optional;
 
@@ -22,6 +24,8 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import fcapp.backend.data.entity.FcAttore;
@@ -69,7 +73,6 @@ import fcapp.ui.views.seriea.TeamInsertMobileView;
 import fcapp.ui.views.seriea.TeamInsertView;
 import fcapp.ui.views.user.ProfiloView;
 import fcapp.utils.Costants;
-import fcapp.utils.Utils;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -375,7 +378,20 @@ public class MainLayout extends AppLayout{
 			FcAttore user = maybeUser.get();
 
 			Avatar avatar = new Avatar(user.getName());
-			avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
+			//avatar.setImageResource(Utils.getStreamResource("profile-pic", user.getProfilePicture()));
+			avatar.setImageHandler(DownloadHandler.fromInputStream(event -> {
+				try {
+					InputStream inputStream = new ByteArrayInputStream(user.getProfilePicture());
+					String fileName = "profile-pic";
+					String contentType = "image/png";
+					long contentLength = -1; // or -1 if unknown
+		
+					return new DownloadResponse(inputStream,fileName,contentType,contentLength);
+				} catch (Exception e) {
+					return DownloadResponse.error(500);
+				}
+			}));
+			
 			avatar.setThemeName("xsmall");
 			avatar.getElement().setAttribute("tabindex", "-1");
 
