@@ -2,6 +2,7 @@ package fcapp.ui.views.em;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.Connection;
@@ -711,10 +712,14 @@ public class EmImpostazioniView extends VerticalLayout implements ComponentEvent
             HorizontalLayout cellLayout = createGridCellLayout();
             if (g != null) {
                 String ruolo = g.getFcRuolo().getIdRuolo().toLowerCase();
-                Image img = Utils.buildImage(
-                        ruolo + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png"));
-                cellLayout.add(img);
+                Image img;
+				try {
+					img = Utils.getImage(
+					        ruolo + ".png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png").getInputStream());
+					cellLayout.add(img);
+				} catch (IOException e) {
+				}
             }
             return cellLayout;
         }));

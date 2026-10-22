@@ -1,6 +1,7 @@
 package fcapp.ui.views.em;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -341,9 +342,13 @@ public class EmSquadreView extends VerticalLayout {
 					&& formazione.getFcGiocatore().getFcRuolo() != null
 					&& !StringUtils.isEmpty(formazione.getFcGiocatore().getFcRuolo().getIdRuolo())) {
 				String ruolo = formazione.getFcGiocatore().getFcRuolo().getIdRuolo().toLowerCase();
-				Image image = Utils.buildImage(ruolo + ".png",
-						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png"));
-				cellLayout.add(image);
+				Image image;
+				try {
+					image = Utils.getImage(ruolo + ".png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png").getInputStream());
+					cellLayout.add(image);
+				} catch (IOException e) {
+				}
 			}
 			return cellLayout;
 		}));
@@ -472,9 +477,13 @@ public class EmSquadreView extends VerticalLayout {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (item != null && item.getFcGiocatoreByIdGiocAcq() != null) {
 				String ruolo = item.getFcGiocatoreByIdGiocAcq().getFcRuolo().getIdRuolo().toLowerCase();
-				Image image = Utils.buildImage(ruolo + ".png",
-						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png"));
-				cellLayout.add(image);
+				Image image;
+				try {
+					image = Utils.getImage(ruolo + ".png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png").getInputStream());
+					cellLayout.add(image);
+				} catch (IOException e) {
+				}
 			}
 			return cellLayout;
 		}));
@@ -491,9 +500,13 @@ public class EmSquadreView extends VerticalLayout {
 			HorizontalLayout cellLayout = new HorizontalLayout();
 			if (item != null && item.getFcGiocatoreByIdGiocVen() != null) {
 				String ruolo = item.getFcGiocatoreByIdGiocVen().getFcRuolo().getIdRuolo().toLowerCase();
-				Image image = Utils.buildImage(ruolo + ".png",
-						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png"));
-				cellLayout.add(image);
+				Image image;
+				try {
+					image = Utils.getImage(ruolo + ".png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png").getInputStream());
+					cellLayout.add(image);
+				} catch (IOException e) {
+				}
 			}
 			return cellLayout;
 		}));
@@ -569,7 +582,11 @@ public class EmSquadreView extends VerticalLayout {
 			}
 		}
 
-		return Utils.buildImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName));
+		try {
+			return Utils.getImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName).getInputStream());
+		} catch (IOException e) {
+		}
+		return null;
 	}
 
 	private String formatStatValue(double value) {

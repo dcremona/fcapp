@@ -1,5 +1,6 @@
 package fcapp.ui.views.em;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -513,11 +514,19 @@ public class EmFormazioniView extends VerticalLayout {
     }
 
     private Image buildImage(String fileName) {
-        return Utils.buildImage(fileName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + fileName));
+        try {
+			return Utils.getImage(fileName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + fileName).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     private Image buildSmallImage(String fileName) {
-        return Utils.buildImage(fileName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + fileName));
+        try {
+			return Utils.getImage(fileName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + fileName).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     private record SquadData(

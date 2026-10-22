@@ -1,5 +1,6 @@
 package fcapp.ui.views.em;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -307,8 +308,11 @@ public class EmTeamInsertView extends VerticalLayout
                 calendarioCompetizioneService.findByIdGiornataOrderByDataAsc(giornataInfo.getCodiceGiornata());
         Grid<FcCalendarioCompetizione> tablePartite = getTablePartite(listPartite);
 
-        Image panchina = Utils.buildImage("panchina.jpg",
-                resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "panchina.jpg"));
+        Image panchina = null;
+		try {
+			panchina = Utils.getImage("panchina.jpg",resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "panchina.jpg").getInputStream());
+		} catch (IOException e) {
+		}
 
         final VerticalLayout layoutAvviso = new VerticalLayout();
         layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
@@ -333,9 +337,12 @@ public class EmTeamInsertView extends VerticalLayout
         absLayout.add(comboModulo, 20, 50);
         absLayout.add(tableFormazione, 10, 150);
 
-        Image campo = Utils.buildImage("campo.jpg",
-                resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "campo.jpg"));
-        absLayout.add(campo, PX_350, 150);
+        Image campo;
+		try {
+			campo = Utils.getImage("campo.jpg",resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "campo.jpg").getInputStream());
+			absLayout.add(campo, PX_350, 150);
+		} catch (IOException e) {
+		}
 
         this.add(absLayout);
 
@@ -594,11 +601,15 @@ public class EmTeamInsertView extends VerticalLayout
                 cellLayout.add(lblOrdinamento);
                 cellLayout.setAlignSelf(Alignment.CENTER, lblOrdinamento);
 
-                Image imgR = Utils.buildImage(
-                        ruolo.toLowerCase() + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo.toLowerCase() + ".png"));
-                imgR.setTitle(title);
-                cellLayout.add(imgR);
+                Image imgR;
+				try {
+					imgR = Utils.getImage(
+					        ruolo.toLowerCase() + ".png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo.toLowerCase() + ".png").getInputStream());
+	                imgR.setTitle(title);
+	                cellLayout.add(imgR);
+				} catch (IOException e) {
+				}
 
                 Span lblGiocatore = new Span(g.getCognGiocatore());
                 lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
@@ -655,12 +666,16 @@ public class EmTeamInsertView extends VerticalLayout
             cellLayout.setAlignItems(Alignment.STRETCH);
             if (g != null && g.getFcRuolo() != null) {
                 String title = getInfoPlayer(g);
-                Image img = Utils.buildImage(
-                        g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-                        resourceLoader.getResource(
-                                Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-                img.setTitle(title);
-                cellLayout.add(img);
+                Image img;
+				try {
+					img = Utils.getImage(
+					        g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+					        resourceLoader.getResource(
+					                Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png").getInputStream());
+	                img.setTitle(title);
+	                cellLayout.add(img);
+				} catch (IOException e) {
+				}
             }
             return cellLayout;
         }));
@@ -747,9 +762,13 @@ public class EmTeamInsertView extends VerticalLayout
                     }
                 }
 
-                Image img = Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
-                img.setTitle(title);
-                cellLayout.add(img);
+                Image img;
+				try {
+					img = Utils.getImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink).getInputStream());
+	                img.setTitle(title);
+	                cellLayout.add(img);
+				} catch (IOException e) {
+				}
 
                 DecimalFormat myFormatter = new DecimalFormat("#0.00");
                 Double d = 0d;

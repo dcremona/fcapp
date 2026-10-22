@@ -1,6 +1,7 @@
 package fcapp.ui.views.seriea;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -424,7 +425,11 @@ public class SquadreAllView extends VerticalLayout {
     }
 
     private Image buildImage(String imageName) {
-        return Utils.buildImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName));
+        try {
+			return Utils.getImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     private String resolveTrendImage(double mediaVoto) {

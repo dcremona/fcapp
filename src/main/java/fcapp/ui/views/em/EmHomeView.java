@@ -1,5 +1,6 @@
 package fcapp.ui.views.em;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -116,12 +117,15 @@ public class EmHomeView extends VerticalLayout {
             return;
         }
 
-        Image logo = Utils.buildImage(
-                logoName,
-                resourceLoader.getResource(Costants.CLASSPATH_IMAGES + logoName));
-
-        add(logo);
-        setHorizontalComponentAlignment(Alignment.CENTER, logo);
+        Image logo;
+		try {
+			logo = Utils.getImage(
+			        logoName,
+			        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + logoName).getInputStream());
+	        add(logo);
+	        setHorizontalComponentAlignment(Alignment.CENTER, logo);
+		} catch (IOException e) {
+		}
     }
 
     private TabSheet buildGiornateTabSheet() {

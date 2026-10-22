@@ -1,6 +1,7 @@
 package fcapp.ui.views.seriea;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serial;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -761,12 +762,20 @@ public class FormazioniView extends VerticalLayout {
     }
 
     private Image buildImage(String imageName) {
-        return Utils.buildImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName));
+        try {
+			return Utils.getImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     private Image buildScoreImage(Integer goal) {
         String imageName = (goal == null ? 0 : goal) + ".png";
-        return Utils.buildImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "number/" + imageName));
+        try {
+			return Utils.getImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "number/" + imageName).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     @SuppressWarnings("unchecked")

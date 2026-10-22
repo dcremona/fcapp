@@ -1,6 +1,7 @@
 package fcapp.ui.views.em;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -613,7 +614,11 @@ public class EmStatisticheView extends VerticalLayout
 
     private Image buildRoleImage(String ruolo) {
         String fileName = ruolo.toLowerCase() + ".png";
-        return Utils.buildImage(fileName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + fileName));
+        try {
+			return Utils.getImage(fileName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + fileName).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     private Image buildTrendImage(double value) {
@@ -625,7 +630,11 @@ public class EmStatisticheView extends VerticalLayout
                 imgThink = "3.png";
             }
         }
-        return Utils.buildImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
+        try {
+			return Utils.getImage(imgThink, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     private int getQuotazione(FcStatistiche stat) {

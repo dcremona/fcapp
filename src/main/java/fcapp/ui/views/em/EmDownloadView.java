@@ -1,5 +1,6 @@
 package fcapp.ui.views.em;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -214,8 +215,12 @@ public class EmDownloadView extends VerticalLayout
 			String ruolo = getString(i, f);
 
 			if (("P".equals(ruolo) || "D".equals(ruolo) || "C".equals(ruolo) || "A".equals(ruolo))) {
-                Image img = Utils.buildImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo.toLowerCase() + ".png"));
-                cellLayout.add(img);
+                Image img;
+				try {
+					img = Utils.getImage(ruolo.toLowerCase() + ".png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo.toLowerCase() + ".png").getInputStream());
+	                cellLayout.add(img);
+				} catch (IOException e) {
+				}
             }
             return cellLayout;
         }));

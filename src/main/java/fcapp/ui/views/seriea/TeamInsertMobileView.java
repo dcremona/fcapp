@@ -1,5 +1,6 @@
 package fcapp.ui.views.seriea;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -412,10 +413,17 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		layoutAvviso.setSpacing(false);
 		layoutAvviso.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-		Image campo = Utils.buildImage("small-campo.jpg",
-				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-campo.jpg"));
-		Image panchina = Utils.buildImage("small-panchina.png",
-				resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-panchina.png"));
+		Image panchina = null;
+		try {
+			panchina = Utils.getImage("small-panchina.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-panchina.png").getInputStream());
+		} catch (IOException e) {
+		}
+		Image campo = null;
+		try {
+			campo = Utils.getImage("small-campo.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-campo.jpg").getInputStream());
+		} catch (IOException e) {
+		}
+
 
 		if (millisDiff == 0) {
 			Span labelInfo = new Span("Impossibile inserire la formazione, tempo scaduto!");
@@ -674,11 +682,14 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 				cellLayoutImg.setSpacing(false);
 				cellLayoutImg.setSizeUndefined();
 
-				Image imgR = Utils.buildImage(player.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-						resourceLoader.getResource(
-								Costants.CLASSPATH_IMAGES + player.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-				imgR.setTitle(title);
-				cellLayoutImg.add(imgR);
+				Image imgR;
+				try {
+					imgR = Utils.getImage(player.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + player.getFcRuolo().getIdRuolo().toLowerCase() + ".png").getInputStream());
+					imgR.setTitle(title);
+					cellLayoutImg.add(imgR);
+				} catch (IOException e) {
+				}
 
 				FcSquadra sq = player.getFcSquadra();
 				if (sq != null && sq.getImg() != null) {
@@ -700,13 +711,19 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 						imgThink = "3.png";
 					}
 				}
-				Image imgMv = Utils.buildImage(imgThink,
-						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink));
-				imgMv.setTitle(title);
-				cellLayoutImg.add(imgMv);
+				Image imgMv;
+				try {
+					imgMv = Utils.getImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink).getInputStream());
+					imgMv.setTitle(title);
+					cellLayoutImg.add(imgMv);
+				} catch (IOException e) {
+				}
 
 				if (ggOut != null) {
-					cellLayoutImg.add(getImageGiocatoreOut(ggOut));
+					try {
+						cellLayoutImg.add(getImageGiocatoreOut(ggOut));
+					} catch (IOException e) {
+					}
 				}
 
 				Span lblGiocatore = new Span(player.getCognGiocatore());
@@ -768,11 +785,14 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 			if (g != null) {
 				String title = Utils.getInfoPlayer(g);
 				if (g.getFcRuolo() != null) {
-					Image img = Utils.buildImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-							resourceLoader.getResource(
-									Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-					img.setTitle(title);
-					cellLayout.add(img);
+					Image img;
+					try {
+						img = Utils.getImage(g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+								resourceLoader.getResource(Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png").getInputStream());
+						img.setTitle(title);
+						cellLayout.add(img);
+					} catch (IOException e) {
+					}
 				}
 				if (g.getCognGiocatore() != null) {
 					Span lblGiocatore = new Span();
@@ -785,7 +805,10 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 				if (gg != null) {
 					cellLayout.getElement().getStyle().set(Costants.BACKGROUND, Costants.LOWER_GRAY);
 					cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
-					cellLayout.add(getImageGiocatoreOut(gg));
+					try {
+						cellLayout.add(getImageGiocatoreOut(gg));
+					} catch (IOException e) {
+					}
 				}
 			}
 			return cellLayout;
@@ -1339,21 +1362,20 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		return null;
 	}
 
-	private Image getImageGiocatoreOut(FcGiornataGiocatore gg) {
+	private Image getImageGiocatoreOut(FcGiornataGiocatore gg) throws IOException {
 		Image img = null;
 		if (gg != null) {
 			if (gg.isInfortunato()) {
 				if (gg.getNote().contains("INCERTO")) {
-					img = Utils.buildImage("help.png",
-							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/help.png"));
+					img = Utils.getImage("help.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/" + "help.png").getInputStream());
+					img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
 				} else {
-					img = Utils.buildImage("ospedale_s.png",
-							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png"));
+					img = Utils.getImage("ospedale_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png").getInputStream());
+					img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
 				}
-				img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
+
 			} else if (gg.isSqualificato()) {
-				img = Utils.buildImage("esp_s.png",
-						resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png"));
+				img = Utils.getImage("esp_s.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png").getInputStream());
 				img.setTitle(gg.getNote() != null ? gg.getNote() : "ND");
 			}
 		}

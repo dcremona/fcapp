@@ -31,6 +31,7 @@ import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -1073,9 +1074,11 @@ public class ImpostazioniView extends VerticalLayout
 
             if (g != null && g.getFcRuolo() != null) {
                 String ruolo = g.getFcRuolo().getIdRuolo().toLowerCase();
-                cellLayout.add(Utils.buildImage(
-                        ruolo + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png")));
+                try {
+					Image img = Utils.getImage(ruolo + ".png",resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png").getInputStream());
+	                cellLayout.add(img);
+				} catch (IOException e) {
+				}
             }
             return cellLayout;
         }));

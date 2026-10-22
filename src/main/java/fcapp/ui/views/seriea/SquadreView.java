@@ -1,6 +1,7 @@
 package fcapp.ui.views.seriea;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -500,12 +501,20 @@ public class SquadreView extends VerticalLayout {
 
 	private Image buildRoleImage(String ruolo) {
 		String imageName = ruolo.toLowerCase() + ".png";
-		return Utils.buildImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName));
+		try {
+			return Utils.getImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName).getInputStream());
+		} catch (IOException e) {
+		}
+		return null;
 	}
 
 	private Image buildTrendImage(double value) {
 		String imageName = resolveTrendImage(value);
-		return Utils.buildImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName));
+		try {
+			return Utils.getImage(imageName, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName).getInputStream());
+		} catch (IOException e) {
+		}
+		return null;
 	}
 
 	private String resolveTrendImage(double value) {

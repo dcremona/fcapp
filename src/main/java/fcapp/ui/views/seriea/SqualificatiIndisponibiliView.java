@@ -1,5 +1,6 @@
 package fcapp.ui.views.seriea;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -358,7 +359,11 @@ public class SqualificatiIndisponibiliView extends VerticalLayout
     }
 
     private Image buildImage(String resourcePath, String imageName) {
-        return Utils.buildImage(imageName, resourceLoader.getResource(resourcePath));
+        try {
+			return Utils.getImage(imageName, resourceLoader.getResource(resourcePath).getInputStream());
+		} catch (IOException e) {
+		}
+        return null;
     }
 
     @SuppressWarnings("unchecked")

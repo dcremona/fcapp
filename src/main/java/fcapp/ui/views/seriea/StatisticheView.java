@@ -1,6 +1,7 @@
 package fcapp.ui.views.seriea;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -526,12 +527,14 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
                 Checkbox check = new Checkbox();
                 check.setValue(stat.isFlagAttivo());
                 check.setEnabled(false);
-
-                Image img = Utils.buildImage(
-                        stat.getIdRuolo().toLowerCase() + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + stat.getIdRuolo().toLowerCase() + ".png"));
-
-                cellLayout.add(check, img);
+                Image img;
+				try {
+					img = Utils.getImage(
+					        stat.getIdRuolo().toLowerCase() + ".png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + stat.getIdRuolo().toLowerCase() + ".png").getInputStream());
+	                cellLayout.add(check, img);
+				} catch (IOException e) {
+				}
             }
 
             return cellLayout;
@@ -556,11 +559,16 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
             HorizontalLayout cellLayout = createCompactCellLayout();
 
             if (stat != null && stat.getNomeSquadra() != null) {
-                Image img = Utils.buildImage(
-                        stat.getNomeSquadra() + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMG_SQUADRE + stat.getNomeSquadra() + ".png"));
-                Span label = new Span(stat.getNomeSquadra());
-                cellLayout.add(img, label);
+                Image img;
+				try {
+					img = Utils.getImage(
+					        stat.getNomeSquadra() + ".png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMG_SQUADRE + stat.getNomeSquadra() + ".png").getInputStream());
+	                Span label = new Span(stat.getNomeSquadra());
+	                cellLayout.add(img, label);
+
+				} catch (IOException e) {
+				}
             }
 
             return cellLayout;
@@ -633,10 +641,13 @@ public class StatisticheView extends VerticalLayout implements ComponentEventLis
         double value = mediaVoto ? stat.getMediaVoto() : stat.getFantaMedia();
         String trendIcon = getTrendIcon(value);
 
-        Image img = Utils.buildImage(trendIcon, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + trendIcon));
-        Span label = new Span(formatStatValue(value));
-
-        cellLayout.add(img, label);
+        Image img;
+		try {
+			img = Utils.getImage(trendIcon, resourceLoader.getResource(Costants.CLASSPATH_IMAGES + trendIcon).getInputStream());
+	        Span label = new Span(formatStatValue(value));
+	        cellLayout.add(img, label);
+		} catch (IOException e) {
+		}
         return cellLayout;
     }
 

@@ -1,5 +1,6 @@
 package fcapp.ui.views.seriea;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -270,10 +271,14 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
             HorizontalLayout layout = createCompactCellLayout();
             if (g != null && g.getFcRuolo() != null) {
                 String ruolo = g.getFcRuolo().getIdRuolo().toLowerCase();
-                Image img = Utils.buildImage(
-                        ruolo + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png"));
-                layout.add(img);
+                Image img;
+				try {
+					img = Utils.getImage(
+					        ruolo + ".png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo + ".png").getInputStream());
+	                layout.add(img);
+				} catch (IOException e) {
+				}
             }
             return layout;
         }));
@@ -457,12 +462,16 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
             double value = statistiche != null ? valueProvider.apply(g) : 0d;
             String imageName = getTrendImageName(value);
 
-            Image img = Utils.buildImage(
-                    imageName,
-                    resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName));
+            Image img;
+			try {
+				img = Utils.getImage(
+				        imageName,
+				        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imageName).getInputStream());
+	            Span label = new Span(formatScore(value / Costants.DIVISORE_100));
+	            layout.add(img, label);
+			} catch (IOException e) {
+			}
 
-            Span label = new Span(formatScore(value / Costants.DIVISORE_100));
-            layout.add(img, label);
             return layout;
         }));
 
@@ -568,25 +577,37 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
 
         if (giornataGiocatore.isInfortunato()) {
             if (giornataGiocatore.getNote() != null && giornataGiocatore.getNote().contains("INCERTO")) {
-                Image img = Utils.buildImage(
-                        "help.png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/help.png"));
-                img.setTitle(giornataGiocatore.getNote());
+                Image img = null;
+				try {
+					img = Utils.getImage(
+					        "help.png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "icons/16/help.png").getInputStream());
+	                img.setTitle(giornataGiocatore.getNote());
+				} catch (IOException e) {
+				}
                 return img;
             }
 
-            Image img = Utils.buildImage(
-                    "ospedale_s.png",
-                    resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png"));
-            img.setTitle(giornataGiocatore.getNote());
+            Image img = null;
+			try {
+				img = Utils.getImage(
+				        "ospedale_s.png",
+				        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "ospedale_s.png").getInputStream());
+	            img.setTitle(giornataGiocatore.getNote());
+			} catch (IOException e) {
+			}
             return img;
         }
 
         if (giornataGiocatore.isSqualificato()) {
-            Image img = Utils.buildImage(
-                    "esp_s.png",
-                    resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png"));
-            img.setTitle(giornataGiocatore.getNote());
+        	Image img = null;
+			try {
+				img = Utils.getImage(
+				        "esp_s.png",
+				        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "esp_s.png").getInputStream());
+	            img.setTitle(giornataGiocatore.getNote());
+			} catch (IOException e) {
+			}
             return img;
         }
 

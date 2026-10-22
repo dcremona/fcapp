@@ -34,10 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
@@ -420,43 +418,37 @@ public final class Utils {
     // Vaadin Image / StreamResource helpers
     // -------------------------------------------------------------------------
 
-    public static Image getImage(String nomeImg, InputStream inputStream) {
+    public static Image getImage(String image, InputStream inputStream) {
 //        StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
 //        return new Image(resource, "");
 		return new Image(DownloadHandler.fromInputStream(event -> {
 		try {
-			String fileName = nomeImg;
-			String contentType = "image/png";
+	    	String estensione = "";
+	    	int i = image.lastIndexOf('.');
+	    	if (i > 0) {
+	    	    estensione = image.substring(i + 1);
+	    	}
+			String contentType = "image/"+estensione;
 			long contentLength = -1; // or -1 if unknown
-
-			return new DownloadResponse(inputStream,fileName,contentType,contentLength);
+			return new DownloadResponse(inputStream,image,contentType,contentLength);
 		} catch (Exception e) {
 			return DownloadResponse.error(500);
 		}
-	}),"");
+	}),image);
         
     }
 
-    public static Image buildImage(String nomeImg, Resource r) {
-        StreamResource resource = new StreamResource(nomeImg, () -> {
-            try {
-                return r.getInputStream();
-            } catch (IOException e) {
-                log.error("buildImage failed: {}", e.getMessage());
-                return null;
-            }
-        });
-        return new Image(resource, "");
-        
-//		return new Image(DownloadHandler.forClassResource(r.getClass(), "/images/"+nomeImg),nomeImg);
-		
-//		try {
-//			return new Image(DownloadHandler.forFile(r.getFile()),"");
-//		} catch (IOException e) {
-//		}
-//		return null;
-        
-    }
+//    public static Image buildImage(String nomeImg, Resource r) {
+//        StreamResource resource = new StreamResource(nomeImg, () -> {
+//            try {
+//                return r.getInputStream();
+//            } catch (IOException e) {
+//                log.error("buildImage failed: {}", e.getMessage());
+//                return null;
+//            }
+//        });
+//        return new Image(resource, "");
+//    }
 
 //    public static StreamResource getStreamResource(String fileName, Connection conn,
 //                                                   Map<String, Object> hm, InputStream inputStream) {

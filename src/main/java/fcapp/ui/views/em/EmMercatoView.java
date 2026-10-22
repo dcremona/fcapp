@@ -1,5 +1,6 @@
 package fcapp.ui.views.em;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.sql.SQLException;
@@ -333,9 +334,13 @@ public class EmMercatoView extends VerticalLayout
         comboRuolo.setPlaceholder(Costants.RUOLO);
         comboRuolo.setRenderer(new ComponentRenderer<>(item -> {
             VerticalLayout container = new VerticalLayout();
-            Image imgR = Utils.buildImage(item.getIdRuolo().toLowerCase() + ".png",
-                    resourceLoader.getResource(Costants.CLASSPATH_IMAGES + item.getIdRuolo().toLowerCase() + ".png"));
-            container.add(imgR);
+            Image imgR;
+			try {
+				imgR = Utils.getImage(item.getIdRuolo().toLowerCase() + ".png",
+				        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + item.getIdRuolo().toLowerCase() + ".png").getInputStream());
+	            container.add(imgR);
+			} catch (IOException e) {
+			}
             return container;
         }));
 
@@ -473,19 +478,26 @@ public class EmMercatoView extends VerticalLayout
         layoutInfoRuolo.setSpacing(true);
         layoutInfoRuolo.setAlignItems(FlexComponent.Alignment.END);
 
-        Image imgP = Utils.buildImage("p.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "p.png"));
-        Image imgD = Utils.buildImage("d.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "d.png"));
-        Image imgC = Utils.buildImage("c.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "c.png"));
-        Image imgA = Utils.buildImage("a.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "a.png"));
+        Image imgP;
+        Image imgD;
+        Image imgC;
+        Image imgA;
+		try {
+			imgP = Utils.getImage("p.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "p.png").getInputStream());
+			imgD = Utils.getImage("d.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "d.png").getInputStream());
+			imgC = Utils.getImage("c.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "c.png").getInputStream());
+			imgA = Utils.getImage("a.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "a.png").getInputStream());
+			
+	        lblInfoP = new Span("0");
+	        lblInfoD = new Span("0");
+	        lblInfoC = new Span("0");
+	        lblInfoA = new Span("0");
 
-        lblInfoP = new Span("0");
-        lblInfoD = new Span("0");
-        lblInfoC = new Span("0");
-        lblInfoA = new Span("0");
+	        layoutInfoRuolo.add(imgP, lblInfoP, imgD, lblInfoD, imgC, lblInfoC, imgA, lblInfoA);
+		} catch (IOException e) {
+		}
 
-        layoutInfoRuolo.add(imgP, lblInfoP, imgD, lblInfoD, imgC, lblInfoC, imgA, lblInfoA);
-
-        left = 950;
+		left = 950;
         absLayout.add(layoutInfoRuolo, left, top);
 
         addSquadTablesToLayout();
@@ -1031,11 +1043,15 @@ public class EmMercatoView extends VerticalLayout
                     cellLayout.getElement().getStyle().set("-webkit-text-fill-color", Costants.RED);
                 }
 
-                Image imgR = Utils.buildImage(ruolo.toLowerCase() + ".png",
-                        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo.toLowerCase() + ".png"));
-                imgR.setTitle(title);
-                cellLayout.add(imgR);
-                cellLayout.setAlignSelf(Alignment.CENTER, imgR);
+                Image imgR;
+				try {
+					imgR = Utils.getImage(ruolo.toLowerCase() + ".png",
+					        resourceLoader.getResource(Costants.CLASSPATH_IMAGES + ruolo.toLowerCase() + ".png").getInputStream());
+	                imgR.setTitle(title);
+	                cellLayout.add(imgR);
+	                cellLayout.setAlignSelf(Alignment.CENTER, imgR);
+				} catch (IOException e) {
+				}
 
                 Span lblGiocatore = new Span(g.getCognGiocatore());
                 lblGiocatore.getStyle().set(Costants.FONT_SIZE, "11px");
@@ -1206,12 +1222,16 @@ public class EmMercatoView extends VerticalLayout
             cellLayout.setAlignItems(Alignment.STRETCH);
             if (g != null && g.getFcRuolo() != null) {
                 String title = getInfoPlayer(g);
-                Image img = Utils.buildImage(
-                        g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
-                        resourceLoader.getResource(
-                                Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png"));
-                img.setTitle(title);
-                cellLayout.add(img);
+                Image img;
+				try {
+					img = Utils.getImage(
+					        g.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+					        resourceLoader.getResource(
+					                Costants.CLASSPATH_IMAGES + g.getFcRuolo().getIdRuolo().toLowerCase() + ".png").getInputStream());
+	                img.setTitle(title);
+	                cellLayout.add(img);
+				} catch (IOException e) {
+				}
             }
             return cellLayout;
         }));
