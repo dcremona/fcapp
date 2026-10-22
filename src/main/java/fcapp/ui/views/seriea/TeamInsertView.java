@@ -447,7 +447,13 @@ public class TeamInsertView extends VerticalLayout
 		absLayout.add(comboModulo, 20, 50);
 		absLayout.add(tableFormazione, 10, 150);
 		absLayout.add(campo, PX_350, 150);
-
+		
+		if (millisDiff == 0) {
+			Span labelInfo = new Span("Impossibile inserire la formazione, tempo scaduto!");
+			labelInfo.getElement().getThemeList().add("badge error");
+			absLayout.add(labelInfo, PX_450, 120);	
+		}
+		 
 		add(absLayout);
 
 		try {
@@ -457,8 +463,14 @@ public class TeamInsertView extends VerticalLayout
 		}
 
 		if (millisDiff == 0) {
-			showMessageStopInsert();
+			save.setEnabled(false);
+			checkMail.setEnabled(false);
+			comboModulo.setEnabled(false);
+			//showMessageStopInsert();
 		} else {
+			save.setEnabled(true);
+			checkMail.setEnabled(true);
+			comboModulo.setEnabled(true);
 			//Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
 			layoutAvviso.add(new RelativeTime(dateTime).setFormat(Format.DURATION));
 		}
@@ -468,14 +480,14 @@ public class TeamInsertView extends VerticalLayout
 		String activeCheckFormazione = p.getProperty("ACTIVE_CHECK_FORMAZIONE");
 		if ("true".equals(activeCheckFormazione)) {
 			log.info("showMessageStopInsert");
-			setEnabled(false);
+			//setEnabled(false);
 			CustomMessageDialog.showMessageInfo("Impossibile inserire la formazione, tempo scaduto!");
 		}
 	}
 
     private void setPopover(Component cellLayout, FcGiocatore g) {
 
-		// log.info("setPopover " + g);
+		//log.info("setPopover " + g);
 		Popover popover = new Popover();
 		popover.addThemeVariants(PopoverVariant.ARROW);
 		popover.setPosition(PopoverPosition.TOP);
@@ -905,6 +917,11 @@ public class TeamInsertView extends VerticalLayout
 				Element element = cellLayout.getElement(); // DOM element
 				element.addEventListener("click", e -> {
 
+					if (millisDiff == 0) {
+						showMessageStopInsert();
+						return;
+					}
+
                     if (isGiocatorePartitaGiocata(p)) {
 						CustomMessageDialog.showMessageError("Impossibile muovere il giocatore!");
 						return;
@@ -970,9 +987,7 @@ public class TeamInsertView extends VerticalLayout
 					}
 				});
 
-				if (millisDiff != 0) {
-					setPopover(cellLayout, p);
-				}
+				setPopover(cellLayout, p);
 			}
 			return cellLayout;
 
@@ -1015,9 +1030,7 @@ public class TeamInsertView extends VerticalLayout
 					cellLayout.add(getImageGiocatoreOut(giocatoreOut));
 				}
 
-				if (millisDiff != 0) {
-					setPopover(cellLayout, g);
-				}
+				setPopover(cellLayout, g);
 			}
 			return cellLayout;
 		}));
@@ -1054,9 +1067,7 @@ public class TeamInsertView extends VerticalLayout
 				cellLayout.add(progressBarPercentuale);
 				cellLayout.add(lblPercentuale);
 
-				if (millisDiff != 0) {
-					setPopover(cellLayout, g);
-				}
+				setPopover(cellLayout, g);
 			}
 			return cellLayout;
 		}));
@@ -1075,6 +1086,11 @@ public class TeamInsertView extends VerticalLayout
 			FcGiocatore bean = event.getItem();
 
 			if (bean != null) {
+
+				if (millisDiff == 0) {
+					showMessageStopInsert();
+					return;
+				}
 
 				if (isGiocatorePartitaGiocata(bean)) {
 					CustomMessageDialog.showMessageError("Impossibile muovere il giocatore!");
@@ -1561,8 +1577,6 @@ public class TeamInsertView extends VerticalLayout
 
 		String schema = countD + "-" + countC + "-" + countA;
 
-		comboModulo.setValue(schema);
-
 		modelFormazione.clear();
 		refreshAndSortGridFormazione();
 
@@ -1646,7 +1660,9 @@ public class TeamInsertView extends VerticalLayout
 				refreshAndSortGridFormazione();
 			}
 		}
-		
+
+		comboModulo.setValue(schema);
+
 		log.info("END loadFcGiornatadett");
 	}
 

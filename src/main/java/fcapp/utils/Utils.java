@@ -39,6 +39,8 @@ import org.springframework.core.io.Resource;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 
 import fcapp.backend.data.entity.FcCampionato;
 import fcapp.backend.data.entity.FcGiocatore;
@@ -419,21 +421,19 @@ public final class Utils {
     // -------------------------------------------------------------------------
 
     public static Image getImage(String nomeImg, InputStream inputStream) {
-        StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
-        return new Image(resource, "");
-        
-//		return new Image(DownloadHandler.fromInputStream(event -> {
-        
-//		try {
-//			String fileName = nomeImg;
-//			String contentType = "image/png";
-//			long contentLength = -1; // or -1 if unknown
-//
-//			return new DownloadResponse(inputStream,fileName,contentType,contentLength);
-//		} catch (Exception e) {
-//			return DownloadResponse.error(500);
-//		}
-//	}),"");
+//        StreamResource resource = new StreamResource(nomeImg, () -> inputStream);
+//        return new Image(resource, "");
+		return new Image(DownloadHandler.fromInputStream(event -> {
+		try {
+			String fileName = nomeImg;
+			String contentType = "image/png";
+			long contentLength = -1; // or -1 if unknown
+
+			return new DownloadResponse(inputStream,fileName,contentType,contentLength);
+		} catch (Exception e) {
+			return DownloadResponse.error(500);
+		}
+	}),"");
         
     }
 
