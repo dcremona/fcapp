@@ -434,7 +434,7 @@ public final class Utils {
 		} catch (Exception e) {
 			return DownloadResponse.error(500);
 		}
-	}),image);
+	}),"");
         
     }
 
