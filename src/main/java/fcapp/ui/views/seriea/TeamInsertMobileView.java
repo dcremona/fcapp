@@ -88,7 +88,6 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
 	private static final int TOTAL_SLOTS = 18;
 	private static final int STARTER_SLOTS = 11;
-	// private static final int BENCH_START_INDEX = 11;
 
 	private static final int GK_STARTER_SLOT = 0;
 	private static final int GK_BENCH_SLOT = 11;
@@ -408,18 +407,22 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
 		layoutAvviso.setWidth("300px");
+		layoutAvviso.setMargin(false);
+		layoutAvviso.setPadding(false);
+		layoutAvviso.setSpacing(false);
 		
 		Image panchina = null;
 		try {
 			panchina = Utils.getImage("small-panchina.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-panchina.png").getInputStream());
 		} catch (IOException e) {
+			log.error(e.getMessage());
 		}
 		Image campo = null;
 		try {
 			campo = Utils.getImage("small-campo.jpg", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-campo.jpg").getInputStream());
 		} catch (IOException e) {
+			log.error(e.getMessage());
 		}
-
 
 		absLayout.add(save, 0, 0);
 		absLayout.add(checkMail, 100, 0);
@@ -434,9 +437,9 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		if (millisDiff == 0) {
 			Span labelInfo = new Span("Impossibile inserire la formazione, tempo scaduto!");
 			labelInfo.getElement().getThemeList().add("badge error");
-			absLayout.add(labelInfo, 0, 50);	
+			absLayout.add(labelInfo, 10, 55);	
 		} else {
-			absLayout.add(layoutAvviso, 0, 50);
+			absLayout.add(layoutAvviso, 10, 55);
 		}
 
 		absLayout.add(campo, 0, 100);
@@ -685,6 +688,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 					imgR.setTitle(title);
 					cellLayoutImg.add(imgR);
 				} catch (IOException e) {
+					log.error(e.getMessage());
 				}
 
 				FcSquadra sq = player.getFcSquadra();
@@ -713,12 +717,14 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 					imgMv.setTitle(title);
 					cellLayoutImg.add(imgMv);
 				} catch (IOException e) {
+					log.error(e.getMessage());
 				}
 
 				if (ggOut != null) {
 					try {
 						cellLayoutImg.add(getImageGiocatoreOut(ggOut));
 					} catch (IOException e) {
+						log.error(e.getMessage());
 					}
 				}
 
@@ -788,6 +794,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 						img.setTitle(title);
 						cellLayout.add(img);
 					} catch (IOException e) {
+						log.error(e.getMessage());
 					}
 				}
 				if (g.getCognGiocatore() != null) {
@@ -804,6 +811,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 					try {
 						cellLayout.add(getImageGiocatoreOut(gg));
 					} catch (IOException e) {
+						log.error(e.getMessage());
 					}
 				}
 			}
@@ -861,10 +869,12 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 
 			FcGiocatore bean = event.getItem();
 			if (bean == null) {
+				log.info("bean null");
 				return;
 			}
 
 			if (millisDiff == 0) {
+				log.info("millisDiff 0");
 				showMessageStopInsert();
 				return;
 			}
