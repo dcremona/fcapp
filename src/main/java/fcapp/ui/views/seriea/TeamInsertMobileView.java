@@ -212,7 +212,6 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
 		millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
-		millisDiff = 0;
 		dateTime = (LocalDateTime) VaadinSession.getCurrent().getAttribute("FUTURE");
 
 		idAttore = String.valueOf(attore.getIdAttore());
