@@ -1618,6 +1618,7 @@ public class TeamInsertView extends VerticalLayout
 		}
 
 		String schema = countD + "-" + countC + "-" + countA;
+		comboModulo.setValue(schema);
 
 		modelFormazione.clear();
 		refreshAndSortGridFormazione();
@@ -1702,8 +1703,6 @@ public class TeamInsertView extends VerticalLayout
 				refreshAndSortGridFormazione();
 			}
 		}
-
-		comboModulo.setValue(schema);
 
 		log.info("END loadFcGiornatadett");
 	}

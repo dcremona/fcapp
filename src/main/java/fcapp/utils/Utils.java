@@ -230,7 +230,7 @@ public final class Utils {
         if (giornataInfo == null) {
             return "ND";
         }
-        return giornataInfo.getCodiceGiornata() + "° Serie A ";
+        return giornataInfo.getCodiceGiornata() + "°";
     }
 
     public static String buildInfoGiornataHtml(FcGiornataInfo giornataInfo) {

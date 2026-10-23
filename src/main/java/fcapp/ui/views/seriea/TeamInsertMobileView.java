@@ -97,10 +97,10 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 	private static final List<Integer> MID_BENCH_SLOTS = List.of(14, 15);
 	private static final List<Integer> ATT_BENCH_SLOTS = List.of(16, 17);
 
-	private static final int PX_P = 60;
-	private static final int PX_D = 180;
-	private static final int PX_C = 300;
-	private static final int PX_A = 420;
+	private static final int PX_P = 100;
+	private static final int PX_D = 220;
+	private static final int PX_C = 340;
+	private static final int PX_A = 460;
 
 	private static final int PX_0 = 0;
 	private static final int PX_20 = 20;
@@ -212,6 +212,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		campionato = (FcCampionato) VaadinSession.getCurrent().getAttribute("CAMPIONATO");
 		nextDate = (String) VaadinSession.getCurrent().getAttribute("NEXTDATE");
 		millisDiff = (long) VaadinSession.getCurrent().getAttribute("MILLISDIFF");
+		millisDiff = 0;
 		dateTime = (LocalDateTime) VaadinSession.getCurrent().getAttribute("FUTURE");
 
 		idAttore = String.valueOf(attore.getIdAttore());
@@ -326,7 +327,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		save.setIcon(VaadinIcon.DATABASE.create());
 		save.addClickListener(this);
 
-		rosa = new Button("Rosa");
+		rosa = new Button("");
 		rosa.setIcon(VaadinIcon.PLUS.create());
 		rosa.addClickListener(this);
 
@@ -407,12 +408,8 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
-		layoutAvviso.setWidth("100px");
-		layoutAvviso.setMargin(false);
-		layoutAvviso.setPadding(false);
-		layoutAvviso.setSpacing(false);
-		layoutAvviso.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-
+		layoutAvviso.setWidth("300px");
+		
 		Image panchina = null;
 		try {
 			panchina = Utils.getImage("small-panchina.png", resourceLoader.getResource(Costants.CLASSPATH_IMAGES + "small-panchina.png").getInputStream());
@@ -425,26 +422,28 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		}
 
 
+		absLayout.add(save, 0, 0);
+		absLayout.add(checkMail, 100, 0);
+		absLayout.add(comboModulo, 200, 0);
+
+		Button home = new Button("");
+		home.setIcon(VaadinIcon.HOME.create());
+		RouterLink menuHome = new RouterLink("", HomeView.class);
+		menuHome.getElement().appendChild(home.getElement());
+		absLayout.add(menuHome, 350, 50);
+
 		if (millisDiff == 0) {
 			Span labelInfo = new Span("Impossibile inserire la formazione, tempo scaduto!");
 			labelInfo.getElement().getThemeList().add("badge error");
-			absLayout.add(labelInfo, 10, 10);	
+			absLayout.add(labelInfo, 0, 50);	
 		} else {
-			absLayout.add(comboModulo, 0, 0);
-			absLayout.add(rosa, 180, 0);
-			absLayout.add(layoutAvviso, 290, 10);
+			absLayout.add(layoutAvviso, 0, 50);
 		}
 
-		absLayout.add(campo, 0, 50);
-		absLayout.add(save, 0, 550);
-		absLayout.add(checkMail, 100, 560);
-		absLayout.add(viewPartite, 200, 550);
+		absLayout.add(campo, 0, 100);
 		absLayout.add(panchina, 0, 600);
-
-		Button home = new Button("Home");
-		RouterLink menuHome = new RouterLink("", HomeView.class);
-		menuHome.getElement().appendChild(home.getElement());
-		absLayout.add(menuHome, 0, 700);
+		absLayout.add(rosa, 20, 670);
+		absLayout.add(viewPartite, 0, 720);
 
 		add(absLayout);
 
@@ -458,12 +457,10 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 			save.setEnabled(false);
 			checkMail.setEnabled(false);
 			comboModulo.setEnabled(false);
-			// showMessageStopInsert();
 		} else {
 			save.setEnabled(true);
 			checkMail.setEnabled(true);
 			comboModulo.setEnabled(true);
-			// Instant future = dateTime.atZone(ZoneId.of("UTC")).toInstant();
 			layoutAvviso.add(new RelativeTime(dateTime).setFormat(Format.DURATION));
 		}
 	}
