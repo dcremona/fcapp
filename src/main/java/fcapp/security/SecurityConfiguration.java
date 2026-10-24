@@ -47,3 +47,39 @@ public class SecurityConfiguration {
     }
 
 }
+
+//@EnableWebSecurity
+//@Configuration
+//public class SecurityConfiguration extends VaadinWebSecurity {   // or use VaadinSecurityConfigurer
+//
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        // Permit Vaadin internals + error page
+//        http.authorizeHttpRequests(auth -> auth
+//            .requestMatchers(
+//                "/error",
+//                "/VAADIN/**",
+//                "/frontend/**",
+//                "/frontend-es5/**",
+//                "/frontend-es6/**",
+//                "/images/**",
+//                "/icons/**"
+//            ).permitAll()
+//        );
+//
+//        // Important: ignore CSRF for Vaadin (it has its own protection)
+//        http.csrf(csrf -> csrf.ignoringRequestMatchers(
+//            new AntPathRequestMatcher("/VAADIN/**"),
+//            new AntPathRequestMatcher("/**")   // or more specific if you have REST APIs
+//        ));
+//
+//        super.configure(http);   // must come after the custom rules in most cases
+//        setLoginView(http, LoginView.class);
+//    }
+//    
+//  @Bean
+//  public PasswordEncoder passwordEncoder() {
+//      return new BCryptPasswordEncoder();
+//  }
+//
+//}

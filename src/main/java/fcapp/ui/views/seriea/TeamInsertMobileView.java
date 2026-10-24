@@ -65,6 +65,7 @@ import fcapp.backend.service.FormazioneService;
 import fcapp.backend.service.GiornataDettService;
 import fcapp.backend.service.GiornataGiocatoreService;
 import fcapp.backend.service.SquadraService;
+import fcapp.ui.views.MainLayout;
 import fcapp.utils.ContentIdGenerator;
 import fcapp.utils.Costants;
 import fcapp.utils.CustomMessageDialog;
@@ -73,7 +74,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Mobile")
-@Route(value = "mobile")
+@Route(value = "mobile", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class TeamInsertMobileView extends VerticalLayout implements ComponentEventListener<ClickEvent<Button>> {
 
@@ -406,7 +407,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		final VerticalLayout layoutAvviso = new VerticalLayout();
 		layoutAvviso.getStyle().set(Costants.BORDER, Costants.BORDER_COLOR);
 		layoutAvviso.getStyle().set(Costants.BACKGROUND, Costants.YELLOW);
-		layoutAvviso.setWidth("300px");
+		layoutAvviso.setWidth("290px");
 		layoutAvviso.setMargin(false);
 		layoutAvviso.setPadding(false);
 		layoutAvviso.setSpacing(false);
@@ -432,19 +433,21 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 		home.setIcon(VaadinIcon.HOME.create());
 		RouterLink menuHome = new RouterLink("", HomeView.class);
 		menuHome.getElement().appendChild(home.getElement());
-		absLayout.add(menuHome, 350, 50);
+
+		absLayout.add(menuHome, 0, 50);
 
 		if (millisDiff == 0) {
 			Span labelInfo = new Span("Impossibile inserire la formazione, tempo scaduto!");
 			labelInfo.getElement().getThemeList().add("badge error");
-			absLayout.add(labelInfo, 10, 55);	
+			labelInfo.setWidth("290px");
+			absLayout.add(labelInfo, 50, 55);	
 		} else {
-			absLayout.add(layoutAvviso, 10, 55);
+			absLayout.add(layoutAvviso, 50, 55);
 		}
-
+		absLayout.add(rosa, 350, 50);
+		
 		absLayout.add(campo, 0, 100);
 		absLayout.add(panchina, 0, 600);
-		absLayout.add(rosa, 20, 670);
 		absLayout.add(viewPartite, 0, 720);
 
 		add(absLayout);
@@ -656,7 +659,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 			cellLayout.setSizeUndefined();
 
 			if (player != null) {
-				String title = Utils.getInfoPlayer(player);
+				//String title = Utils.getInfoPlayer(player);
 
 				String ruolo = player.getFcRuolo().getIdRuolo();
 				if (Costants.P.equals(ruolo)) {
@@ -681,11 +684,10 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 				cellLayoutImg.setSpacing(false);
 				cellLayoutImg.setSizeUndefined();
 
-				Image imgR;
 				try {
-					imgR = Utils.getImage(player.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
+					Image imgR = Utils.getImage(player.getFcRuolo().getIdRuolo().toLowerCase() + ".png",
 							resourceLoader.getResource(Costants.CLASSPATH_IMAGES + player.getFcRuolo().getIdRuolo().toLowerCase() + ".png").getInputStream());
-					imgR.setTitle(title);
+					//imgR.setTitle(title);
 					cellLayoutImg.add(imgR);
 				} catch (IOException e) {
 					log.error(e.getMessage());
@@ -695,7 +697,7 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 				if (sq != null && sq.getImg() != null) {
 					try {
 						Image imgSq = Utils.getImage(sq.getNomeSquadra(), sq.getImg().getBinaryStream());
-						imgSq.setTitle(title);
+						//imgSq.setTitle(title);
 						cellLayoutImg.add(imgSq);
 					} catch (Exception e) {
 						log.error(e.getMessage());
@@ -711,10 +713,10 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 						imgThink = "3.png";
 					}
 				}
-				Image imgMv;
+				
 				try {
-					imgMv = Utils.getImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink).getInputStream());
-					imgMv.setTitle(title);
+					Image imgMv = Utils.getImage(imgThink,resourceLoader.getResource(Costants.CLASSPATH_IMAGES + imgThink).getInputStream());
+					//imgMv.setTitle(title);
 					cellLayoutImg.add(imgMv);
 				} catch (IOException e) {
 					log.error(e.getMessage());
@@ -728,15 +730,15 @@ public class TeamInsertMobileView extends VerticalLayout implements ComponentEve
 					}
 				}
 
+				cellLayout.add(cellLayoutImg);
+
 				Span lblGiocatore = new Span(player.getCognGiocatore());
 				lblGiocatore.getStyle().set(Costants.FONT_SIZE, "9px");
-				lblGiocatore.setTitle(title);
+				//lblGiocatore.setTitle(title);
 				lblGiocatore.setWidth("60px");
-
-				cellLayout.add(cellLayoutImg);
 				try {
 					Image img = Utils.getImage(player.getNomeImg(), player.getImgSmall().getBinaryStream());
-					img.setTitle(title);
+					//img.setTitle(title);
 					cellLayout.add(img);
 				} catch (Exception e) {
 					log.error(e.getMessage());
