@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -17,14 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ResourceLoader;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-import com.flowingcode.vaadin.addons.gridexporter.GridExporter;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -126,10 +122,14 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
     private void initLayout() {
         add(buildToolbar());
 
-        VerticalLayout layoutP = createRoleLayout(Costants.P, "Export to Excel P");
-        VerticalLayout layoutD = createRoleLayout(Costants.D, "Export to Excel D");
-        VerticalLayout layoutC = createRoleLayout(Costants.C, "Export to Excel C");
-        VerticalLayout layoutA = createRoleLayout(Costants.A, "Export to Excel A");
+//        VerticalLayout layoutP = createRoleLayout(Costants.P, "Export to Excel P");
+//        VerticalLayout layoutD = createRoleLayout(Costants.D, "Export to Excel D");
+//        VerticalLayout layoutC = createRoleLayout(Costants.C, "Export to Excel C");
+//        VerticalLayout layoutA = createRoleLayout(Costants.A, "Export to Excel A");
+        VerticalLayout layoutP = createRoleLayout(Costants.P);
+        VerticalLayout layoutD = createRoleLayout(Costants.D);
+        VerticalLayout layoutC = createRoleLayout(Costants.C);
+        VerticalLayout layoutA = createRoleLayout(Costants.A);
 
         tabs = new TabSheet();
         tabs.add(TAB_PORTIERI, layoutP);
@@ -164,27 +164,34 @@ public class FreePlayersView extends VerticalLayout implements ComponentEventLis
         return layout;
     }
 
-    private VerticalLayout createRoleLayout(String ruolo, String exportLabel) {
-        PaginatedGrid<FcGiocatore, ?> grid = getTableGiocatore(getModelAsta(ruolo));
-        assignGridByRole(ruolo, grid);
+//    private VerticalLayout createRoleLayout(String ruolo, String exportLabel) {
+//        PaginatedGrid<FcGiocatore, ?> grid = getTableGiocatore(getModelAsta(ruolo));
+//        assignGridByRole(ruolo, grid);
+//        GridExporter<FcGiocatore> exporter = createExporter(grid, ruolo);
+//        Anchor excelLink = new Anchor("", exportLabel);
+//        excelLink.setHref(exporter.getExcelDownloadHandler());
+//        excelLink.getElement().setAttribute("download", true);
+//        VerticalLayout layout = new VerticalLayout();
+//        layout.add(new HorizontalLayout(excelLink), grid);
+//        layout.add(grid);
+//        return layout;
+//    }
 
-        GridExporter<FcGiocatore> exporter = createExporter(grid, ruolo);
-        Anchor excelLink = new Anchor("", exportLabel);
-        excelLink.setHref(exporter.getExcelStreamResource());
-        excelLink.getElement().setAttribute("download", true);
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new HorizontalLayout(excelLink), grid);
-        return layout;
+    private VerticalLayout createRoleLayout(String ruolo) {
+	  PaginatedGrid<FcGiocatore, ?> grid = getTableGiocatore(getModelAsta(ruolo));
+	  assignGridByRole(ruolo, grid);
+	  VerticalLayout layout = new VerticalLayout();
+	  layout.add(grid);
+	  return layout;
     }
 
-    private GridExporter<FcGiocatore> createExporter(Grid<FcGiocatore> grid, String ruolo) {
-        GridExporter<FcGiocatore> exporter = GridExporter.createFor(grid);
-        exporter.setAutoAttachExportButtons(false);
-        exporter.setTitle(ruolo);
-        exporter.setFileName(ruolo + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
-        return exporter;
-    }
+//    private GridExporter<FcGiocatore> createExporter(Grid<FcGiocatore> grid, String ruolo) {
+//        GridExporter<FcGiocatore> exporter = GridExporter.createFor(grid);
+//        exporter.setAutoAttachExportButtons(false);
+//        exporter.setTitle(ruolo);
+//        exporter.setFileName(ruolo + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
+//        return exporter;
+//    }
 
     private void assignGridByRole(String ruolo, PaginatedGrid<FcGiocatore, ?> grid) {
         switch (ruolo) {

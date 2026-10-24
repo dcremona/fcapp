@@ -9,7 +9,7 @@
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-icon-button": "^3.0.2",
     "@polymer/polymer": "3.5.2",
-    "@vaadin-component-factory/vcf-pdf-viewer": "3.1.0",
+    "@vaadin-component-factory/vcf-pdf-viewer": "3.2.0",
     "@vaadin/bundles": "24.9.6",
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/polymer-legacy-adapter": "24.9.6",
@@ -161,7 +161,7 @@
       "@polymer/paper-button": "^3.0.1",
       "@polymer/paper-icon-button": "^3.0.2",
       "@polymer/polymer": "3.5.2",
-      "@vaadin-component-factory/vcf-pdf-viewer": "3.1.0",
+      "@vaadin-component-factory/vcf-pdf-viewer": "3.2.0",
       "@vaadin/bundles": "24.9.6",
       "@vaadin/common-frontend": "0.0.19",
       "@vaadin/polymer-legacy-adapter": "24.9.6",
@@ -206,6 +206,6 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "31682b990b366cccf6fa9972a5f02e20b18e9fd8bb9e71658abfe7f8032f3ba4"
+    "hash": "d421611fdff68dfbb1a67de45c6fe3ff95bf49334c441e423e6fc216c784c1fd"
   }
 }

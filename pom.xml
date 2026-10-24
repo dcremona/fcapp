@@ -148,7 +148,7 @@
 		<dependency>
 		   <groupId>org.vaadin.addons.flowingcode</groupId>
 		   <artifactId>grid-exporter-addon</artifactId>
-		   <version>3.0.0</version>
+		   <version>3.1.1</version>
 		</dependency>
 		<dependency>
 		   <groupId>com.vaadin.componentfactory</groupId>
@@ -183,7 +183,7 @@
 		<dependency>
 		   <groupId>org.vaadin.addons.componentfactory</groupId>
 		   <artifactId>vcf-pdf-viewer</artifactId>
-		   <version>5.0.0</version>
+		   <version>5.1.0</version>
 		</dependency>
 		<dependency>
 		   <groupId>org.vaadin.crudui</groupId>

@@ -195,7 +195,7 @@ public class EmDownloadView extends VerticalLayout
 		exporter.setTitle("Nazionali");
 		exporter.setFileName("Nazionali" + new SimpleDateFormat("yyyyddMM").format(Calendar.getInstance().getTime()));
 		Anchor excelLink = new Anchor("","Export to Excel");
-		excelLink.setHref(exporter.getExcelStreamResource());
+		excelLink.setHref(exporter.getExcelDownloadHandler());
 		excelLink.getElement().setAttribute("download", true);
 		layout.add(new HorizontalLayout(excelLink));
 

@@ -358,7 +358,7 @@ public class DownloadView extends VerticalLayout implements ComponentEventListen
         exporter.setFileName(title + new SimpleDateFormat(DATE_PATTERN).format(Calendar.getInstance().getTime()));
 
         Anchor excelLink = new Anchor("", "Export to Excel");
-        excelLink.setHref(exporter.getExcelStreamResource());
+        excelLink.setHref(exporter.getExcelDownloadHandler());
         excelLink.getElement().setAttribute("download", true);
 
         return excelLink;
