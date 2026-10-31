@@ -36,7 +36,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver{
 
 		LoginI18n i18n = LoginI18n.createDefault();
 		i18n.setHeader(new LoginI18n.Header());
-		i18n.getHeader().setTitle("Fc App");
+		i18n.getHeader().setTitle("⚽ Fantacalcio");
 		i18n.setAdditionalInformation(null);
 
 		LoginI18n.Form i18nForm = i18n.getForm();
